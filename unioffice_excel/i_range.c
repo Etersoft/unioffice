@@ -98,7 +98,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_QueryInterface(
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Range)) {
-        *ppvObject = &This->_rangeVtbl;
+        *ppvObject = &This->prangeVtbl;
         MSO_TO_OO_I_Range_AddRef(iface);
         return S_OK;
     }
@@ -4522,13 +4522,13 @@ extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    range->_rangeVtbl = &MSO_TO_OO_I_RangeVtbl;
+    range->prangeVtbl = &MSO_TO_OO_I_RangeVtbl;
     range->ref = 0;
     range->pOORange = NULL;
     range->pwsheet = NULL;
     range->is_release = 1;
 
-    *ppObj = &range->_rangeVtbl;
+    *ppObj = &range->prangeVtbl;
     
     CREATE_OBJECT;
     

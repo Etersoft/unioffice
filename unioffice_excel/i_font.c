@@ -68,15 +68,20 @@ HRESULT get_typeinfo_font(ITypeInfo **typeinfo)
 #define usBOLDDASHDOTDOT 17
 #define usBOLDWAVE 18
 
+#define FONT_THIS(iface) DEFINE_THIS(FontImpl, font, iface)
+
 /*IUnknown*/
 static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
         I_Font* iface)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     ULONG ref;
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
     ref = InterlockedIncrement(&This->ref);
     if (ref == 1) {
@@ -90,15 +95,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
 
-    if (This == NULL || ppvObject == NULL) return E_POINTER;
+    *ppvObject = NULL;
+
+    if ((!This) || (!ppvObject)) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Font)) {
-        *ppvObject = &This->_ifontVtbl;
-        MSO_TO_OO_I_Font_AddRef(iface);
+        *ppvObject = FONT_FONT(This);
+        I_Font_AddRef(FONT_FONT(This));
     }
     TRACE_OUT;
     return E_NOINTERFACE;
@@ -108,18 +118,25 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_I_Font_Release(
         I_Font* iface)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     ULONG ref;
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("object is NULL \n");
+        return E_POINTER;
+    }
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->prange!=NULL) {
-            IDispatch_Release(This->prange);
-            This->prange = NULL;
+        if (This->pRange) {
+            I_Range_Release(This->pRange);
+            This->pRange = NULL;
         }
+        if (This->pOORange) {
+            IDispatch_Release(This->pOORange);
+            This->pOORange = NULL;
+        }       
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
         DELETE_OBJECT;
@@ -133,7 +150,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Bold(
         I_Font* iface,
         VARIANT_BOOL *pvbBold)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
 
     /*In OO bold is specified as weight of the character*/
     VARIANT vBoldState;
@@ -141,10 +158,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Bold(
 
     VariantInit (&vBoldState);
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vBoldState, range->pOORange, L"CharWeight", 0);
-    if (hres != S_OK)  {
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vBoldState, This->pOORange, L"CharWeight", 0);
+    if (FAILED(hres))  {
+        ERR("CharWeight \n");
         *pvbBold = VARIANT_FALSE;
         return hres;
     }
@@ -161,7 +177,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Bold(
         I_Font* iface,
         VARIANT_BOOL vbBold)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vBoldState;
@@ -175,9 +191,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Bold(
 
     VARIANT res;
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharWeight", 1, vBoldState);
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharWeight", 1, vBoldState);
 
     TRACE_OUT;
     return hres;
@@ -187,17 +201,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Italic(
         I_Font* iface,
         VARIANT_BOOL *pvbItalic)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vItalicState;
     VariantInit (&vItalicState);
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vItalicState, range->pOORange, L"CharPosture", 0);
-    if (hres != S_OK)
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vItalicState, This->pOORange, L"CharPosture", 0);
+    if (FAILED(hres)) {
+        ERR("CharPosture \n");
         return hres;
+    }
+        
     if (V_I2(&vItalicState) != 0)  /* !!!!! V_INT */
         *pvbItalic = VARIANT_TRUE;
     else
@@ -212,7 +227,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Italic(
         I_Font* iface,
         VARIANT_BOOL vbItalic)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vItalicState;
@@ -226,30 +241,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Italic(
 
     VARIANT res;
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharPosture", 1, vItalicState);
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharPosture", 1, vItalicState);
 
     TRACE_OUT;
     return S_OK;
 }
+
 /* TODO 1 - нет подчеркивания 2-есть подчеркивание*/
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Underline(
         I_Font* iface,
         VARIANT *pvbUnderline)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
 
-    RangeImpl *range = (RangeImpl*)This->prange;
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vUnderlineState, This->pOORange, L"CharUnderline", 0);
 
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vUnderlineState, range->pOORange, L"CharUnderline", 0);
-
-    if (hres != S_OK)
+    if (FAILED(hres)) {
+       ERR("CharUnderline \n");
        return hres;
+    }
 
     V_VT(pvbUnderline) = VT_I4;
 
@@ -282,7 +296,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
         I_Font* iface,
         VARIANT vbUnderline)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     HRESULT hres;
     TRACE_IN;
 
@@ -318,9 +332,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
 
     VARIANT res;
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharUnderline", 1, vUnderlineState);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharUnderline", 1, vUnderlineState);
 
     TRACE_OUT;
     return hres;
@@ -330,20 +342,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
         I_Font* iface,
         long *plsize)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vsize;
     VariantInit (&vsize);
 
-    RangeImpl *range = (RangeImpl*)This->prange;
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vsize, This->pOORange, L"CharHeight", 0);
 
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vsize, range->pOORange, L"CharHeight", 0);
-
-    if (hres != S_OK)
+    if (FAILED(hres)) {
+        ERR("CharHeight \n");
         return hres;
+    }
 
-    hres = VariantChangeTypeEx(&vsize,&vsize,0,0,VT_I4);
+    hres = VariantChangeTypeEx(&vsize, &vsize, 0, 0, VT_I4);
     if (FAILED(hres)) {
         TRACE("Error when VariantChangeTypeEx\n");
     }
@@ -357,7 +369,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Size(
         I_Font* iface,
         long lsize)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
     TRACE(" %i \n",lsize);
 
@@ -369,9 +381,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Size(
 
     VARIANT res;
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharHeight", 1, vsize);
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharHeight", 1, vsize);
 
     TRACE_OUT;
     return S_OK;
@@ -381,18 +391,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Strikethrough(
         I_Font* iface,
         VARIANT_BOOL *pvbUnderline)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
 
-    RangeImpl *range = (RangeImpl*)This->prange;
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vUnderlineState, This->pOORange, L"CharStrikeout", 0);
 
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vUnderlineState, range->pOORange, L"CharStrikeout", 0);
-
-    if (hres != S_OK)
+    if (FAILED(hres)) {
+        ERR("CharStrikeout \n");
         return hres;
+    }
+    
     *pvbUnderline = V_BOOL(&vUnderlineState);
 
     TRACE_OUT;
@@ -403,7 +414,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Strikethrough(
         I_Font* iface,
         VARIANT_BOOL vbUnderline)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vUnderlineState;
@@ -414,9 +425,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Strikethrough(
 
     VARIANT res;
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharStrikeout", 1, vUnderlineState);
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharStrikeout", 1, vUnderlineState);
 
     TRACE_OUT;
     return S_OK;
@@ -426,12 +435,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Name(
         I_Font* iface,
         VARIANT *vName)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, vName, range->pOORange, L"CharFontName", 0);
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, vName, This->pOORange, L"CharFontName", 0);
 
     TRACE_OUT;
     return hres;
@@ -441,16 +448,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Name(
         I_Font* iface,
         VARIANT vName)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT res;
 
     MSO_TO_OO_CorrectArg(vName, &vName);
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharFontName", 1, vName);
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharFontName", 1, vName);
 
     TRACE_OUT;
     return S_OK;
@@ -460,28 +465,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Color(
         I_Font* iface,
         long *plcolor)
 {
-    InteriorImpl *This = (InteriorImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     HRESULT hres;
     VARIANT vret;
     VariantInit(&vret);
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
-    if (This->prange==NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
-    RangeImpl *cur_range = (RangeImpl*)(I_Range*)(This->prange);
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, cur_range->pOORange, L"CharColor", 0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, This->pOORange, L"CharColor", 0);
 
     if (FAILED(hres)) {
-        TRACE("ERROR when CharColor");
+        ERR("CharColor \n");
     }
 
     hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
-    return E_FAIL;
+        ERR("VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
     }
+    
     *plcolor = V_I4(&vret);
     TRACE(" lcolor=%i\n",*plcolor);
 
@@ -493,24 +499,27 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Color(
         I_Font* iface,
         long lcolor)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     HRESULT hres;
     VARIANT vret,param1;
     TRACE_IN;
     TRACE(" lcolor = %i\n",lcolor);
 
-    if (This==NULL) return E_POINTER;
-    if (This->prange==NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
-    RangeImpl *cur_range = (RangeImpl*)((I_Range*)(This->prange));
 
     VariantInit(&param1);
     V_VT(&param1) = VT_I4;
     V_I4(&param1) = lcolor;
 
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"CharColor", 1, param1);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"CharColor", 1, param1);
 
-    if (FAILED(hres)) TRACE("ERROR when CharColor");
+    if (FAILED(hres)) 
+        ERR("CharColor");
+        
     TRACE_OUT;
     return hres;
 }
@@ -519,26 +528,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_ColorIndex(
         I_Font* iface,
         long *plcolorindex)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     long tmpcolor;
     int i;
     HRESULT hres;
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
-
-    hres = MSO_TO_OO_I_Font_get_Color(iface,&tmpcolor);
+    hres = I_Font_get_Color(iface, &tmpcolor);
     if (FAILED(hres)) {
+        ERR("FONT_THIS \n");              
         return hres;
     }
+    
     for (i=0;i<56;i++)
         if (color[i]==tmpcolor) {
             *plcolorindex = i+1;
             return S_OK;
         }
 
-    TRACE("ERROR Color don`t have colorindex \n");
+    ERR("Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
     TRACE_OUT;
@@ -549,50 +562,60 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_ColorIndex(
         I_Font* iface,
         long lcolorindex)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     long tmpcolor;
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
     if (lcolorindex==xlColorIndexNone) lcolorindex = 2;
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
 
     TRACE_OUT;
     if ((lcolorindex<1)||(lcolorindex>56)) {
-        TRACE("ERROR Incorrect colorindex \n");
+        ERR("Incorrect colorindex \n");
         return S_OK;
     } else 
-        return MSO_TO_OO_I_Font_put_Color(iface,color[lcolorindex-1]);
+        return I_Font_put_Color(iface, color[lcolorindex-1]);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Application(
         I_Font* iface,
         IDispatch **value)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
+    
+    *value = NULL;
+    
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
-    if (This==NULL) return E_POINTER;
-    if (This->prange==NULL) return E_POINTER;
     TRACE_OUT;
-    return I_Range_get_Application((I_Range*)(This->prange),value);
+    return I_Range_get_Application(This->pRange, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Parent(
         I_Font* iface,
         IDispatch **value)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
+    *value = NULL;
 
-    if (value==NULL)
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_POINTER;
+    }
 
-    *value = This->prange;
-    I_Range_AddRef(This->prange);
+    *value = (IDispatch*)(This->pRange);
+    I_Range_AddRef(This->pRange);
 
     TRACE_OUT;
     return S_OK;
@@ -613,18 +636,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Shadow(
         I_Font* iface,
         VARIANT_BOOL *pvbshadow)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
 
-    RangeImpl *range = (RangeImpl*)This->prange;
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vUnderlineState, This->pOORange, L"CharShadowed", 0);
 
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vUnderlineState, range->pOORange, L"CharShadowed", 0);
-
-    if (hres != S_OK)
+    if (FAILED(hres)) {
+        ERR("CharShadowed \n");                  
         return hres;
+    }
+    
     *pvbshadow = V_BOOL(&vUnderlineState);
 
     TRACE_OUT;
@@ -635,7 +659,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Shadow(
         I_Font* iface,
         VARIANT_BOOL vbshadow)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
 
     VARIANT vUnderlineState;
@@ -646,9 +670,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Shadow(
 
     VARIANT res;
 
-    RangeImpl *range = (RangeImpl*)This->prange;
-
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharShadowed", 1, vUnderlineState);
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharShadowed", 1, vUnderlineState);
 
     TRACE_OUT;
     return S_OK;
@@ -683,7 +705,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_FontStyle(
     tmp = VARIANT_FALSE;
     hres = I_Font_get_Bold(iface, &tmp);
     if (FAILED(hres)) {
-        TRACE("ERROR when get_Bold");
+        ERR("when get_Bold");
     }
     if (tmp==VARIANT_TRUE) {
         if (pusto) swprintf(str, L"%s", L"bold");
@@ -694,7 +716,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_FontStyle(
     tmp = VARIANT_FALSE;
     hres = I_Font_get_Italic(iface, &tmp);
     if (FAILED(hres)) {
-        TRACE("ERROR when get_Italic");
+        ERR("when get_Italic");
     }
     if (tmp==VARIANT_TRUE) {
         if (pusto) swprintf(str, L"%s", L"italic");
@@ -733,7 +755,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_FontStyle(
     MSO_TO_OO_CorrectArg(RHS, &RHS);
 
     if (V_VT(&RHS)!=VT_BSTR) {
-        TRACE("ERROR parameter not BSTR");
+        ERR("parameter not BSTR");
         return E_FAIL;
     }
 
@@ -830,10 +852,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
         I_Font* iface,
         VARIANT RHS)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     HRESULT hres;
     VARIANT res;
-    RangeImpl *range = (RangeImpl*)This->prange;
     VARIANT vsubscript;
 
     TRACE(" \n");
@@ -845,7 +866,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
 
     hres = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
     if (FAILED(hres)) {
-        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        ERR("VariantChangeTypeEx   %08x\n",hres);
         return E_FAIL;
     }
     if (V_BOOL(&RHS)==VARIANT_TRUE) {
@@ -856,9 +877,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
         V_BOOL(&vsubscript) = 0;
     }
 
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharEscapement", 1, vsubscript);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharEscapement", 1, vsubscript);
     if (FAILED(hres)) {
-        TRACE("ERROR when put CharEscapement\n");
+        ERR("when put CharEscapement\n");
         return E_FAIL;
     }
 
@@ -910,10 +931,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
         I_Font* iface,
         VARIANT RHS)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
     HRESULT hres;
     VARIANT res;
-    RangeImpl *range = (RangeImpl*)This->prange;
     VARIANT vsubscript;
 
     TRACE(" \n");
@@ -925,7 +945,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
 
     hres = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
     if (FAILED(hres)) {
-        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        ERR("VariantChangeTypeEx   %08x\n",hres);
         return E_FAIL;
     }
     if (V_BOOL(&RHS)==VARIANT_TRUE) {
@@ -936,9 +956,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
         V_BOOL(&vsubscript) = 0;
     }
 
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharEscapement", 1, vsubscript);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharEscapement", 1, vsubscript);
     if (FAILED(hres)) {
-        TRACE("ERROR when put CharEscapement\n");
+        ERR("when put CharEscapement\n");
         return E_FAIL;
     }
 
@@ -1068,23 +1088,25 @@ const I_FontVtbl MSO_TO_OO_I_Font_Vtbl =
     MSO_TO_OO_I_Font_put_Underline
 };
 
+#undef FONT_THIS
+
 HRESULT _I_FontConstructor(LPVOID *ppObj)
 {
-    _FontImpl *_font;
+    FontImpl *font;
     TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
-    _font = HeapAlloc(GetProcessHeap(), 0, sizeof(*_font));
-    if (!_font)
+    font = HeapAlloc(GetProcessHeap(), 0, sizeof(*font));
+    if (!font)
     {
         return E_OUTOFMEMORY;
     }
 
-    _font->_ifontVtbl = &MSO_TO_OO_I_Font_Vtbl;
-    _font->ref = 0;
-    _font->prange = NULL;
-
-    *ppObj = &_font->_ifontVtbl;
+    font->pfontVtbl = &MSO_TO_OO_I_Font_Vtbl;
+    font->ref = 0;
+    font->pRange = NULL;
+    font->pOORange = NULL;
+    *ppObj = FONT_FONT(font);
     
     CREATE_OBJECT;
     

@@ -38,29 +38,39 @@ HRESULT MSO_TO_OO_I_Workbooks_Initialize(
     return S_OK;
 }
 
-
+#define FONT_THIS(iface) DEFINE_THIS(FontImpl, font, iface)
+#define RANGE_THIS(iface) DEFINE_THIS(RangeImpl, range, iface)
 HRESULT MSO_TO_OO_I_Font_Initialize(
         I_Font* iface,
         I_Range *range)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
+    RangeImpl *This_range = RANGE_THIS(range);
     TRACE_IN;
 
-    if (This == NULL) {
-        TRACE("ERROR THIS = NULL \n");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_POINTER;
     }
 
-    if (This->prange!=NULL) {
-         I_Range_Release((I_Range*)(This->prange));
+    if (This->pRange) {
+         I_Range_Release(This->pRange);
     }
+    This->pRange = range;
+    if (This->pRange) I_Range_AddRef(This->pRange);
 
-    This->prange = (IDispatch*)range;
-    if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
+    if (This->pOORange) {
+         IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_range->pOORange;
+    if (This->pOORange) IDispatch_AddRef(This->pOORange);
+
 
     TRACE_OUT;
     return S_OK;
 }
+#undef RANGE_THIS
+#undef FONT_THIS
 
 HRESULT MSO_TO_OO_I_Interior_Initialize(
         I_Interior* iface,

@@ -90,6 +90,16 @@ typedef struct
 
 typedef struct
 {
+    const I_FontVtbl *pfontVtbl;
+    LONG ref;
+    I_Range *pRange;        /*Pointer to IRange*/
+    IDispatch *pOORange;     /*Pointer to OO Range*/
+} FontImpl;
+
+#define FONT_FONT(x) ((I_Font*)&(x)->pfontVtbl)
+
+typedef struct
+{
     const I_InteriorVtbl *_interiorVtbl;
     LONG ref;
     IDispatch *prange;           /*Указатель на Range*/
@@ -128,9 +138,9 @@ typedef struct
 
 typedef struct
 {
-    const I_RangeVtbl *_rangeVtbl;
+    const I_RangeVtbl *prangeVtbl;
     LONG ref;
-    IDispatch *pOORange;     /*Указатель на Range openoffice*/
+    IDispatch *pOORange;     /*Pointer to OO Range*/
     IDispatch *pwsheet;      /*Указатель на worksheet*/
     int is_release;
 } RangeImpl;
@@ -233,14 +243,6 @@ typedef struct
     long sheetsinnewworkbook;
 
 } _ApplicationExcelImpl;
-
-typedef struct
-{
-    const I_FontVtbl *_ifontVtbl;
-    LONG ref;
-    IDispatch *prange;        /*указатель на range*/
-} _FontImpl;
-
 
 #define APPEXCEL(x) ((I_ApplicationExcel*) &(x)->pApplicationExcelVtbl)
 #define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)
