@@ -267,9 +267,91 @@ End If
 
 
 
+
+
+
+
+'++++++   IRange -> EntireRow   
+
+Set tmp = Excel.Range("C3:F4")
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] GET Excel - > Range")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] GET Excel -> Range")  
+    success = success + 1 
+End If
+
+If tmp.EntireRow.Row=3 then
+    If Err.Number <> 0 Then
+        otchetFile.WriteLine("[FAILED] GET IRange -> EntireRow")  
+        failed = failed + 1
+    Err.Clear
+    Else
+        otchetFile.WriteLine("[SUCCESS] GET IRange -> EntireRow")  
+        success = success + 1     
+   End If
+Else
+    otchetFile.WriteLine("[FAILED] NOT EQUAL IRange -> EntireRow")  
+    failed = failed + 1
+End If
+
+'++++++   IRange -> EntireColumn
+
+If tmp.EntireColumn.Column=3 then
+    If Err.Number <> 0 Then
+        otchetFile.WriteLine("[FAILED] GET IRange -> EntireColumn")  
+        failed = failed + 1
+    Err.Clear
+    Else
+        otchetFile.WriteLine("[SUCCESS] GET IRange -> EntireColumn")  
+        success = success + 1     
+   End If
+Else
+    otchetFile.WriteLine("[FAILED] NOT EQUAL IRange -> EntireColumn")  
+    failed = failed + 1
+End If
+
+'++++++   IRange -> Columns
+
+If tmp.Columns.Column=3 then
+    If Err.Number <> 0 Then
+        otchetFile.WriteLine("[FAILED] GET IRange -> Columns")  
+        failed = failed + 1
+    Err.Clear
+    Else
+        otchetFile.WriteLine("[SUCCESS] GET IRange -> Columns")  
+        success = success + 1     
+   End If
+Else
+    otchetFile.WriteLine("[FAILED] NOT EQUAL IRange -> Columns")  
+    failed = failed + 1
+End If
+ 
+'++++++   IRange -> Rows
+
+If tmp.Rows.Row=3 then
+    If Err.Number <> 0 Then
+        otchetFile.WriteLine("[FAILED] GET IRange -> Rows")  
+        failed = failed + 1
+    Err.Clear
+    Else
+        otchetFile.WriteLine("[SUCCESS] GET IRange -> Rows")  
+        success = success + 1     
+   End If
+Else
+    otchetFile.WriteLine("[FAILED] NOT EQUAL IRange -> Rows")  
+    failed = failed + 1
+End If
+
+'Set tmp = 0
+
+
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 'конец кода теста
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+'Err.Clear
 
 if show_excel then
    MsgBox "Тест пройден. Результат в файле otchet.txt"
