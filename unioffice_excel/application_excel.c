@@ -4429,6 +4429,32 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
 
     if (This == NULL) return E_POINTER;
 
+    /*special operation*/
+    if ((dispIdMember == dispid_worksheet_range) && (wFlags == DISPATCH_PROPERTYPUT)) {
+            switch (pDispParams->cArgs) {
+                case 2:
+                    hres = MSO_TO_OO_I_ApplicationExcel_get_Range(iface,pDispParams->rgvarg[1], vNull, &pretdisp);
+                    if (FAILED(hres)) {
+                        pExcepInfo->bstrDescription=SysAllocString(str_error);
+                        TRACE("(case 2) ERROR get_range hres = %08x\n",hres);
+                        return hres;
+                    }
+                    I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
+                    IDispatch_Release(pretdisp);
+                    return S_OK;
+                case 3:
+                    hres = MSO_TO_OO_I_ApplicationExcel_get_Range(iface,pDispParams->rgvarg[2], pDispParams->rgvarg[1], &pretdisp);
+                    if (FAILED(hres)) {
+                        pExcepInfo->bstrDescription=SysAllocString(str_error);
+                        TRACE("(case 2) ERROR get_range hres = %08x\n",hres);
+                        return hres;
+                    }
+                    I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
+                    IDispatch_Release(pretdisp);
+                return S_OK;
+            }
+    }
+
     switch (dispIdMember)
     {
     case dispid_application_displayalerts:
