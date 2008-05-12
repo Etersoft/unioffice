@@ -740,8 +740,8 @@ import "wtypes.idl";
 		[propget,id(15), helpstring("property EnableEvents")] HRESULT EnableEvents([out, retval] VARIANT_BOOL *pvbee);
 		[propput,id(15), helpstring("property EnableEvents")] HRESULT EnableEvents([in] VARIANT_BOOL vbee);
 //ScreenUpdating 	True if screen updating is turned on.
-		[propput,id(16), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([out, retval] VARIANT_BOOL vbscup);
-		[propget,id(16), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([in] VARIANT_BOOL *vbscup);
+		[propget,id(16), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([out, retval] VARIANT_BOOL *vbscup);
+		[propput,id(16), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([in] VARIANT_BOOL vbscup);
 //Caption 	The name that appears in the title bar of the main Microsoft Excel window. If you don't set a name, or if you set the name to Empty, this property returns "Microsoft Excel".
 		[propget,id(17), helpstring("property Caption")] HRESULT Caption([out, retval] VARIANT *vName);
 		[propput,id(17), helpstring("property Caption")] HRESULT Caption([in] VARIANT vName);
