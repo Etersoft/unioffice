@@ -43,7 +43,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_AddRef(
     SheetsImpl *This = (SheetsImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_sheets.c:AddRef REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -61,7 +61,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_QueryInterface(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_sheets.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -82,7 +82,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
     SheetsImpl *This = (SheetsImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_sheets.c:Release REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -110,7 +110,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_sheets.c:_Default (GET) \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -186,7 +186,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Count(
     VARIANT res;
     VariantInit(&res);
 
-    TRACE("mso_to_oo.dll:i_sheets.c:Count (GET) \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -194,11 +194,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Count(
 
     HRESULT hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheets, L"getCount", 0);
     if (hres!=S_OK) {
-        TRACE("mso_to_oo.dll:i_sheets.c:Count ERROR when getCount \n");
+        TRACE("ERROR when getCount \n");
         return hres;
     }
     *count = V_I4(&res);
-    TRACE("mso_to_oo.dll:i_sheets.c:Count return = %i \n",*count);
+    TRACE("return = %i \n",*count);
     return S_OK;
 }
 
@@ -208,20 +208,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Application(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_sheets.c:Application (GET) \n");
+    TRACE(" \n");
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:i_sheets.c:Application ERROR: This Object is NULL\n");
+        TRACE("ERROR: This Object is NULL\n");
         return E_POINTER;
     }
     if (This->pwb == NULL){
-        TRACE("mso_to_oo.dll:i_sheets.c:Application ERROR: pwb Object is NULL\n");
+        TRACE("ERROR: pwb Object is NULL\n");
         return E_POINTER;
     }
     WorkbookImpl *wb = (WorkbookImpl*)(This->pwb);
 
     if (wb->pApplication == NULL){
-        TRACE("mso_to_oo.dll:i_sheets.c:Application ERROR: wb->Application Object is NULL\n");
+        TRACE("ERROR: wb->Application Object is NULL\n");
         return E_POINTER;
     }
 
@@ -237,14 +237,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Parent(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_sheets.c:Parent (GET) \n");
+    TRACE("\n");
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:i_sheets.c:Parent ERROR: This Object is NULL\n");
+        TRACE("ERROR: This Object is NULL\n");
         return E_POINTER;
     }
     if (This->pwb == NULL){
-        TRACE("mso_to_oo.dll:i_sheets.c:Parent ERROR: pwb Object is NULL\n");
+        TRACE("ERROR: pwb Object is NULL\n");
         return E_POINTER;
     }
 
@@ -259,7 +259,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Item(
         VARIANT varIndex,
         IDispatch **ppSheet)
 {
-    TRACE("mso_to_oo.dll:i_sheets.c:Item (GET) \n");
+    TRACE("\n");
     return MSO_TO_OO_I_Sheets_get__Default(iface,varIndex,ppSheet);
 }
 
@@ -267,7 +267,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Creator(
         I_Sheets* iface,
         VARIANT *result)
 {
-    TRACE("mso_to_oo.dll:i_sheets.c:Creator (GET) \n");
+    TRACE("\n");
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
     return S_OK;
@@ -292,10 +292,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
     VariantInit(&par2);
     VariantInit(&res);
 
-    TRACE("mso_to_oo.dll:i_sheets.c:Add \n");
+    TRACE("\n");
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:i_sheets.c:Add ERROR: This Object is NULL\n");
+        TRACE("ERROR: This Object is NULL\n");
         return E_POINTER;
     }
     /*Приводим все значения к необходимому виду.*/
@@ -334,7 +334,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         switch (V_I4(&Type)) {
         case xlWorksheet:break;
         default :
-            TRACE("mso_to_oo.dll:i_sheets.c:Add ERROR: This Type not implemented \n");
+            TRACE("ERROR: This Type not implemented \n");
             return E_FAIL;
         }
     }
@@ -347,7 +347,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
 
     switch (ftype_add) {
     case 1: //перед указанным элементом
-        WTRACE(L"mso_to_oo.dll:i_sheets.c:Add before element %s\n",V_BSTR(&Before));
+        WTRACE(L" before element %s\n",V_BSTR(&Before));
         if (V_VT(&Before) == VT_I4) {
             /*Если нам повезло и прислан индекс, то*/
             V_I4(&par2) = V_I4(&Before) - 1;
@@ -359,7 +359,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         }
         break;
     case 2: //после указанного элемента
-        WTRACE(L"mso_to_oo.dll:i_sheets.c:Add after element %s\n",V_BSTR(&After));
+        WTRACE(L"after element %s\n",V_BSTR(&After));
         if (V_VT(&After) == VT_I4) {
             /*Если нам повезло и прислан индекс, то*/
             V_I4(&par2) = V_I4(&After);
@@ -372,7 +372,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         break;
     case 0: //в начало списка
     default:
-        TRACE("mso_to_oo.dll:i_sheets.c:Add to the begining of the list \n");
+        TRACE(" to the begining of the list \n");
         V_I4(&par2) = 0;
     }
 
@@ -382,14 +382,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         V_BSTR(&par1) = SysAllocString(L"Sheet");
         hres = VarBstrFromI4(count+i, 0, 0, &tmp);
         if (FAILED(hres)) {
-            TRACE("mso_to_oo.dll:i_sheets.c:Add ERROR when VarBSTRFromI4\n");
+            TRACE("ERROR when VarBSTRFromI4\n");
             tmp = SysAllocString(L"4");
         }
         VarBstrCat(V_BSTR(&par1), tmp, &(V_BSTR(&par1)));
 
         hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheets, L"insertNewByName", 2,par2,par1);
         if (FAILED(hres)) {
-            TRACE("mso_to_oo.dll:i_sheets.c:Add ERROR when insertNewByName\n");
+            TRACE("ERROR when insertNewByName\n");
             SysFreeString(tmp);
             return hres;
         }
@@ -411,7 +411,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetTypeInfoCount(
         I_Sheets* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:i_sheets.c:GetTypeInfoCount \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -421,7 +421,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:i_sheets.c:GetTypeInfoCount \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -463,7 +463,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetIDsOfNames(
     }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:i_sheets.c:Sheets - %s NOT REALIZE\n",*rgszNames);
+    WTRACE(L" NOT REALIZE\n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -585,7 +585,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
     case 7:
         switch(pDispParams->cArgs) {
         case 0:
-            TRACE("mso_to_oo.dll:i_sheets.c:Invoke (7) 0 parameter \n");
+            TRACE(" (7) 0 parameter \n");
             hres = MSO_TO_OO_I_Sheets_Add(iface, vNull, vNull, vNull, vNull, &dret);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -593,7 +593,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             break;
         case 1:
-            TRACE("mso_to_oo.dll:i_sheets.c:Invoke (7) 1 parameter \n");
+            TRACE(" (7) 1 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1))) return E_FAIL;
             hres = MSO_TO_OO_I_Sheets_Add(iface, par1, vNull, vNull, vNull, &dret);
             if (FAILED(hres)) {
@@ -602,7 +602,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             break;
         case 2:
-            TRACE("mso_to_oo.dll:i_sheets.c:Invoke (7) 2 parameters \n");
+            TRACE(" (7) 2 parameters \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par2))) return E_FAIL;
             hres = MSO_TO_OO_I_Sheets_Add(iface, par1, par2, vNull, vNull, &dret);
@@ -612,7 +612,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             break;
         case 3:
-            TRACE("mso_to_oo.dll:i_sheets.c:Invoke (7) 3 parameters \n");
+            TRACE(" (7) 3 parameters \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par3))) return E_FAIL;
@@ -623,7 +623,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             break;
         case 4:
-            TRACE("mso_to_oo.dll:i_sheets.c:Invoke (7) 4 parameters \n");
+            TRACE(" (7) 4 parameters \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3))) return E_FAIL;
@@ -635,7 +635,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             break;
         default:
-            TRACE("mso_to_oo.dll:i_sheets.c:Invoke (7) Error number of parameters \n");
+            TRACE(" (7) Error number of parameters \n");
             return E_FAIL;
         }
         if (pVarResult!=NULL) {
@@ -678,7 +678,7 @@ extern HRESULT _I_SheetsConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     SheetsImpl *sheets;
 
-    TRACE("mso_to_oo.dll:i_sheets.c:Constructor (%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
 
     sheets = HeapAlloc(GetProcessHeap(), 0, sizeof(*sheets));
     if (!sheets)

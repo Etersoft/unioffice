@@ -38,7 +38,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
     WorkbookImpl *This = (WorkbookImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_workbook.c:AddRef REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -57,7 +57,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_QueryInterface(
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_workbook.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -79,7 +79,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
     WorkbookImpl *This = (WorkbookImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_workbook.c:Release REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
     
     if (This == NULL) return E_POINTER;
 
@@ -111,7 +111,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Sheets(
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_workbook.c:Sheets (GET) \n");
+    TRACE("\n");
 
     if (This->pSheets == NULL) 
         return E_FAIL;
@@ -128,7 +128,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WorkSheets(
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
 
-    TRACE("msi_to_oo.dll:i_workbook.c:WorkSheets (GET) \n");
+    TRACE("\n");
 
     if (This->pSheets == NULL) 
         return E_FAIL;
@@ -154,7 +154,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
     IDispatch *pdtmp;
 /*TODO*/
 /*Игнорируем все параметры*/
-    TRACE("mso_to_oo.dll:i_workbook.c:Close \n");
+    TRACE("\n");
     filename = SysAllocString(L"");
     hres = MSO_TO_OO_CloseWorkbook(iface, filename);
     SysFreeString(filename);
@@ -191,14 +191,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     SAFEARRAY FAR* pPropVals;
     BSTR FilenameURL;
 
-    TRACE("mso_to_oo.dll:i_workbook.c:SaveAs \n");
+    TRACE(" \n");
 
     if (This==NULL) {
-        TRACE("mso_to_oo.dll:i_workbook.c:SaveAs ERROR objetct is NULL \n");
+        TRACE("ERROR objetct is NULL \n");
         return E_FAIL;
     }
     if (V_VT(&Filename)!=VT_BSTR) {
-        TRACE("mso_to_oo.dll:i_workbook.c:SaveAs ERROR no filename \n");
+        TRACE("ERROR no filename \n");
         return E_FAIL;
     }
 
@@ -227,9 +227,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     MSO_TO_OO_MakeURLFromFilename(V_BSTR(&Filename), &FilenameURL);
     V_BSTR(&p1) = SysAllocString(FilenameURL);
 
-    WTRACE(L"mso_to_oo.dll:i_workbook.c:SaveAs FILENAME = %s \n", V_BSTR(&Filename));
+    WTRACE(L"FILENAME = %s \n", V_BSTR(&Filename));
     TRACE("\n");
-    WTRACE(L"mso_to_oo.dll:i_workbook.c:SaveAs FILENAMEURL = %s  \n", FilenameURL);
+    WTRACE(L"SaveAs FILENAMEURL = %s  \n", FilenameURL);
     TRACE("\n");
     int i=0;
     while (*(FilenameURL+i)!=0) {
@@ -240,7 +240,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     /* Call StoreToURL for save document to file */
     hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"StoreToURL", 2, p3, p1);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_workbook.c:SaveAs ERROR when StoreToURL \n");
+        TRACE("ERROR when StoreToURL \n");
         return hres;
     }
     VariantClear(&res);
@@ -250,7 +250,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_Save(
         I_Workbook* iface)
 {
-    TRACE("mso_to_oo.dll:i_workbook.c:Save \n");
+    TRACE(" \n");
     return E_NOTIMPL;
 }
 
@@ -259,7 +259,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfoCount(
         I_Workbook* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:i_workbook.c:GetTypeInfoCount \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -270,7 +270,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:i_workbook.c:GetTypeInfo \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -304,7 +304,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetIDsOfNames(
     }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:i_workbook.c:Workbook - %s NOT REALIZE\n",*rgszNames);
+    WTRACE(L"%s NOT REALIZE\n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -339,7 +339,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     VariantInit(&par11);
     VariantInit(&par12);
 
-    TRACE("mso_to_oo.dll:i_workbook.c:Invoke \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -406,7 +406,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     case 3:
         switch(pDispParams->cArgs) {
         case 0:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (3) 0 parameter \n");
+            TRACE(" (3) 0 parameter \n");
             hr = MSO_TO_OO_I_Workbook_Close(iface, vNull, vNull, vNull);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -414,7 +414,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             }
             return hr;
         case 1:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (3) 1 parameter \n");
+            TRACE("(3) 1 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1))) return E_FAIL;
             hr = MSO_TO_OO_I_Workbook_Close(iface, par1, vNull, vNull);
             if (FAILED(hr)) {
@@ -423,7 +423,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             }
             return hr;
         case 2:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (3) 2 parameter \n");
+            TRACE(" (3) 2 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par2))) return E_FAIL;
             hr = MSO_TO_OO_I_Workbook_Close(iface, par1, par2, vNull);
@@ -433,7 +433,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             }
             return hr;
         case 3:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (3) 3 parameter \n");
+            TRACE(" (3) 3 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par3))) return E_FAIL;
@@ -444,35 +444,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             }
             return hr;
         default:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (3) ERROR Parameters");
+            TRACE(" (3) ERROR Parameters");
             return E_FAIL;
         }
     case 4:
         switch (pDispParams->cArgs) {
         case 0:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 0 parameter \n");
+            TRACE("(4) 0 parameter \n");
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, vNull, vNull, vNull, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
             break;
         case 1:
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1))) return E_FAIL;
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 1 parameter \n");
+            TRACE("(4) 1 parameter \n");
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, vNull, vNull, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
             break;
         case 2:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 2 parameter \n");
+            TRACE("(4) 2 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par2))) return E_FAIL;
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, vNull, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
             break;
         case 3:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 3 parameter \n");
+            TRACE(" (4) 3 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par3))) return E_FAIL;
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
             break;
         case 4:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 4 parameter \n");
+            TRACE(" (4) 4 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3))) return E_FAIL;
@@ -480,7 +480,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
             break;
         case 5:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 5 parameter \n");
+            TRACE(" (4) 5 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par3))) return E_FAIL;
@@ -489,7 +489,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, vNull, 0, vNull, vNull, vNull, vNull, vNull);
             break;
         case 6:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 6 parameter \n");
+            TRACE(" (4) 6 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par3))) return E_FAIL;
@@ -499,7 +499,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, 0, vNull, vNull, vNull, vNull, vNull);
             break;
         case 7:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 7 parameter \n");
+            TRACE(" (4) 7 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par3))) return E_FAIL;
@@ -511,7 +511,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), vNull, vNull, vNull, vNull, vNull);
             break;
         case 8:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 8 parameter \n");
+            TRACE(" (4) 8 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par3))) return E_FAIL;
@@ -524,7 +524,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, vNull, vNull, vNull, vNull);
             break;
         case 9:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 9 parameter \n");
+            TRACE(" (4) 9 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[8], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par3))) return E_FAIL;
@@ -538,7 +538,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, vNull, vNull, vNull);
             break;
         case 10:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 10 parameter \n");
+            TRACE(" (4) 10 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[9], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[8], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par3))) return E_FAIL;
@@ -553,7 +553,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, par10, vNull, vNull);
             break;
         case 11:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 11 parameter \n");
+            TRACE(" (4) 11 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[10], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[9], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[8], &par3))) return E_FAIL;
@@ -569,7 +569,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, par10, par11, vNull);
             break;
         case 12:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) 12 parameter \n");
+            TRACE(" (4) 12 parameter \n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[11], &par1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[10], &par2))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[9], &par3))) return E_FAIL;
@@ -586,7 +586,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, par10, par11, par12);
             break;
         default:
-            TRACE("mso_to_oo.dll:i_workbook.c:Invoke (4) ERROR Parameters");
+            TRACE(" (4) ERROR Parameters");
             hr = E_FAIL;
             break;
         }
@@ -629,7 +629,7 @@ extern HRESULT _I_WorkbookConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     WorkbookImpl *workbook;
 
-    TRACE("mso_to_oo.dll:i_workbook.c:Constructor (%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
 
     workbook = HeapAlloc(GetProcessHeap(), 0, sizeof(*workbook));
     if (!workbook)

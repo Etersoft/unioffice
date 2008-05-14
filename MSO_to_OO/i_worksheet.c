@@ -49,7 +49,7 @@ static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
     WorksheetImpl *This = (WorksheetImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:AddRef REF=%i \n", This->ref);
+    TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -67,7 +67,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_QueryInterface(
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -88,7 +88,7 @@ static ULONG WINAPI MSO_TO_OO_I_Worksheet_Release(
     WorksheetImpl *This = (WorksheetImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Release REF=%i \n", This->ref);
+    TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -121,7 +121,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Name(
     VARIANT res;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Name (GET) \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -143,7 +143,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_Name(
     VARIANT new_str;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Name (PUT) \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -165,7 +165,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Cells(
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Cells (GET) \n");
+    TRACE("\n");
 
     *ppRange = This->pAllRange;
     IDispatch_AddRef(This->pAllRange);
@@ -187,17 +187,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     VARIANT vNull;
     VariantInit(&vNull);
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Range (GET) \n");
+    TRACE("\n");
 
     if ((V_VT(&Cell2)==VT_NULL)||(V_VT(&Cell2)==VT_EMPTY)) {
         hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &pRange);
         if (FAILED(hres)) {
-            TRACE("mso_to_oo.dll:i_worksheet.c:Range (GET):ERROR when get_Cells\n");
+            TRACE("ERROR when get_Cells\n");
             return hres;
         }
         hres = I_Range_get__Default((I_Range*)pRange,Cell1,vNull,ppRange);
         if (FAILED(hres)) {
-            TRACE("mso_to_oo.dll:i_worksheet.c:Range (GET):ERROR when get__Default\n");
+            TRACE("ERROR when get__Default\n");
             IDispatch_Release(pRange);
             return hres;
         }
@@ -209,7 +209,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     I_Range *pCell2 = (I_Range*) V_DISPATCH(&Cell2);
 
     if ((pCell1 == NULL) || (pCell2 == NULL)) {
-        TRACE("i_worksheet.c:Range (GET): Error - one of the pointers is NULL \n");
+        TRACE("Error - one of the pointers is NULL \n");
         return E_INVALIDARG;
     }
 
@@ -243,8 +243,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     cell2.x = lCell2B + 1;
     cell2.y = lCell2R + 1;
     
-    TRACE("mso_to_oo.dll:i_worksheet.c:Range \n");
-    TRACE("    cell1.x=%i \n    cell1.y=%i \n    cell2.x=%i \n    cell2.y=%i \n", cell1.x, cell1.y, cell2.x, cell2.y);
+    TRACE(" cell1.x=%i \n    cell1.y=%i \n    cell2.x=%i \n    cell2.y=%i \n", cell1.x, cell1.y, cell2.x, cell2.y);
     
     hres = MSO_TO_OO_I_Range_Initialize(pRange,This->pAllRange, cell1, cell2);
     if (hres != S_OK) {
@@ -266,7 +265,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Paste(
         VARIANT Link,
         long lcid)
 {
-    TRACE("mso_to_oo.dll:i_worksheet.c:Paste (NOT REALISED)\n");
+    TRACE("NOT REALISED\n");
 /*
     WRITE_LOG_R_W((L"CWorksheet::Paste(...)"));
     if ((CApplication::s_pdOOApp == NULL) || (Destination.vt != VT_DISPATCH))
@@ -327,20 +326,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Activate(
     HRESULT hres;
     BSTR name;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Activate \n");
+    TRACE("\n");
 
     if (This==NULL) {
         return E_POINTER;
     }
     hres = I_Worksheet_get_Name(iface, &name);
     if (FAILED(hres)) {
-       TRACE("mso_to_oo.dll:i_worksheet.c:Activate ERROR when get_Name\n");
+       TRACE("ERROR when get_Name\n");
        /*просто выходим из процедуры*/ 
        return S_OK;
     }
     index = MSO_TO_OO_FindIndexWorksheetByName((I_Sheets*)(paren_wb->pSheets), name);
     if (index==-1) {
-       TRACE("mso_to_oo.dll:i_worksheet.c:Activate ERROR not find such name\n");
+       TRACE("ERROR not find such name\n");
        /*Если не нашли, то просто выходим из процедуры*/ 
        return S_OK;
     }
@@ -394,7 +393,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
     HRESULT hres;
     IDispatch *tmp_range;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Rows (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -412,7 +411,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
             TRACE("PARAMETER IS %i\n",V_I4(&Row));
             hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_worksheet.c:Row (GET) ERROR get_Cells\n");
+                TRACE("ERROR get_Cells\n");
                 return hres;
             }
             /*Создаем новый объект I_Range*/
@@ -466,7 +465,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
 
                 hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
                 if (FAILED(hres)) {
-                    TRACE("mso_to_oo.dll:i_worksheet.c:Rows (GET) ERROR get_Cells\n");
+                    TRACE("ERROR get_Cells\n");
                     return hres;
                 }
 
@@ -488,7 +487,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
 TRACE("PARAMETRS IS %i     %i \n", row1,row2);
                 hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
                 if (FAILED(hres)) {
-                    TRACE("mso_to_oo.dll:i_worksheet.c:Rows (GET) ERROR Range_Initialize\n");
+                    TRACE("ERROR Range_Initialize\n");
                     IDispatch_Release(pRange);
                     IDispatch_Release(tmp_range);
                     return hres;
@@ -522,7 +521,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
     HRESULT hres;
     IDispatch *tmp_range;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Columns (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -540,7 +539,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
             TRACE("PARAMETER IS %i\n",V_I4(&Column));
             hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_worksheet.c:Columns (GET) ERROR get_Cells\n");
+                TRACE("ERROR get_Cells\n");
                 return hres;
             }
             /*Создаем новый объект I_Range*/
@@ -596,7 +595,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
 
                 hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
                 if (FAILED(hres)) {
-                    TRACE("mso_to_oo.dll:i_worksheet.c:Columns (GET) ERROR get_Cells\n");
+                    TRACE("ERROR get_Cells\n");
                     return hres;
                 }
 
@@ -618,7 +617,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
 TRACE("PARAMETRS IS %i     %i \n", col1,col2);
                 hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
                 if (FAILED(hres)) {
-                    TRACE("mso_to_oo.dll:i_worksheet.c:Columns (GET) ERROR Range_Initialize\n");
+                    TRACE("ERROR Range_Initialize\n");
                     IDispatch_Release(pRange);
                     IDispatch_Release(tmp_range);
                     return hres;
@@ -661,7 +660,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
     IDispatch *range1,*range2, *range3;
     VARIANT cols,torange;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Copy \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -681,37 +680,37 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
 
 hres = I_Worksheet_get_Name((I_Worksheet*)tmp_wsh, &tmp_name);
 if (FAILED(hres)) {
-   TRACE("mso_to_oo.dll:i_worksheet.c:Copy ERROR when get_Name\n");
+   TRACE("ERROR when get_Name\n");
    /*просто выходим из процедуры*/ 
    return S_OK;
 }
 
 i = MSO_TO_OO_GlobalFindIndexWorksheetByName((I_ApplicationExcell*)app, tmp_name, &wb_find);
 if (i<0) {
-    TRACE("mso_to_oo.dll:i_worksheet.c:Copy Target not find \n");
+    TRACE("Target not find \n");
     return E_FAIL;
 } else {
-    TRACE("mso_to_oo.dll:i_worksheet.c:Copy -----------------> INDEX = %i \n", i);
+    TRACE(" INDEX = %i \n", i);
     sheets_find = (SheetsImpl*)(((WorkbookImpl*)wb_find)->pSheets);
 }
 
 switch (ftype_add) {
 case 1:
-    WTRACE(L"mso_to_oo.dll:i_worksheet.c:Copy  PAR-------> BEFORE %s\n",V_BSTR(&Before));
+    WTRACE(L"PAR-------> BEFORE %s\n",V_BSTR(&Before));
     VariantClear(&find_name);
     V_VT(&find_name) = VT_BSTR;
     V_BSTR(&find_name) = SysAllocString(tmp_name);
     hres = I_Sheets_Add((I_Sheets*)sheets_find, find_name, vNull, vNull, vNull, &new_wsh);
     break;
 case 2:
-    WTRACE(L"mso_to_oo.dll:i_worksheet.c:Copy  PAR-------> AFTER %s \n",V_BSTR(&After));
+    WTRACE(L"PAR-------> AFTER %s \n",V_BSTR(&After));
     VariantClear(&find_name);
     V_VT(&find_name) = VT_BSTR;
     V_BSTR(&find_name) = SysAllocString(tmp_name);
     hres = I_Sheets_Add((I_Sheets*)sheets_find, vNull, find_name, vNull, vNull, &new_wsh);
     break;
 default:
-    TRACE("mso_to_oo.dll:i_worksheet.c:Copy to the new Workbook \n");
+    TRACE("to the new Workbook \n");
     return E_NOTIMPL;
 }
 /*Теперь просто копируем все ячеки из одного Worksheet в другой*/
@@ -767,7 +766,7 @@ IDispatch_Release(trg);
 /*Переименовываем*/
 hres = I_Worksheet_get_Name(iface, &name);
 if (FAILED(hres)) {
-    TRACE("mso_to_oo.dll:i_worksheet.c:Copy ERROR when get_Name\n");
+    TRACE("ERROR when get_Name\n");
     /*просто выходим из процедуры*/ 
     return S_OK;
 }
@@ -775,7 +774,7 @@ VarBstrCat(name, L" 2",&name_of_copy);
 
 hres = I_Worksheet_put_Name((I_Worksheet*)new_wsh, name_of_copy);
 if (FAILED(hres)) {
-    TRACE("mso_to_oo.dll:i_worksheet.c:Copy ERROR when get_Name\n");
+    TRACE("ERROR when get_Name\n");
     /*просто выходим из процедуры*/ 
     return S_OK;
 }
@@ -802,7 +801,7 @@ return S_OK;
     IDispatch *new_wsh;
     _ApplicationExcellImpl *app = (_ApplicationExcellImpl*)parent_wb->pApplication;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Copy \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -895,13 +894,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Delete(
     WorkbookImpl *paren_wb = (WorkbookImpl*)This->pwb;
     SheetsImpl *sheets = (SheetsImpl*)((I_Sheets*)(paren_wb->pSheets));
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Delete \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
     hres = MSO_TO_OO_I_Worksheet_get_Name(iface, &name);
     if (FAILED(hres)) {
-       TRACE("mso_to_oo.dll:i_worksheet.c:Delete ERROR when get_Name\n");
+       TRACE("ERROR when get_Name\n");
        return hres;
     }
 
@@ -911,7 +910,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Delete(
 
     hres = AutoWrap(DISPATCH_METHOD, &res, sheets->pOOSheets, L"removeByName", 1,param1);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_worksheet.c:Delete ERROR when removeByName \n");
+        TRACE("ERROR when removeByName \n");
         return hres;
     }
 
@@ -931,10 +930,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_PageSetup(
     IDispatch *pPageSetup;
 
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:PageSetup (GET) \n");
+    TRACE("(GET) \n");
 
     if (This==NULL) {
-        TRACE("mso_to_oo.dll:i_worksheet.c:PageSetup (GET) ERROR Object is NULL \n");
+        TRACE("(GET) ERROR Object is NULL \n");
         return E_POINTER;
     }
 
@@ -966,7 +965,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetTypeInfoCount(
         I_Worksheet* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:i_worksheet.c:GetTypeInfoCount \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -976,7 +975,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:i_worksheet.c:GetTypeInfo \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -1030,7 +1029,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetIDsOfNames(
     }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:i_worksheet.c:Worksheet - %s NOT REALIZE\n",*rgszNames);
+    WTRACE(L" %s NOT REALIZE\n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -1058,10 +1057,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     VariantInit(&cell2);
     VariantInit(&tmpval);
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Invoke dispIdMember = %i\n",dispIdMember);
+    TRACE("dispIdMember = %i\n",dispIdMember);
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:i_worksheet.c:Invoke ERROR E_POINTER \n");
+        TRACE("ERROR E_POINTER \n");
         return E_POINTER;
     }
 
@@ -1097,7 +1096,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &dret);
                 if (FAILED(hres)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 2) ERROR get_cells hres = %08x\n",hres);
+                    TRACE("(case 2) ERROR get_cells hres = %08x\n",hres);
                     return hres;
                 }
                 /*необходимо привести к значению , т.к. иногда присылаются ссылки*/
@@ -1110,14 +1109,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 IDispatch_Release(pretdisp);
                 return S_OK;
             }
-            TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 2) (PUT) only realized with 3 parameters \n");
+            TRACE("(case 2) (PUT) only realized with 3 parameters \n");
             return E_NOTIMPL;
         } else {
 
             hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &dret);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 2) ERROR get_cells hres = %08x\n",hres);
+                TRACE("(case 2) ERROR get_cells hres = %08x\n",hres);
                 return hres;
             }
 
@@ -1159,7 +1158,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
         } else {
             switch (pDispParams->cArgs) {
             case 1:
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 3) ONE PARAMETR IS SEND\n");
+                TRACE("(case 3) ONE PARAMETR IS SEND\n");
                 return E_NOTIMPL;
             case 2:
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
@@ -1176,7 +1175,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             }
             return S_OK;
             default:
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 3) ERROR PARAMETR IS SEND\n");
+                TRACE("(case 3) ERROR PARAMETR IS SEND\n");
                 return E_FAIL;
             }
         }
@@ -1192,7 +1191,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
         } else {
             switch (pDispParams->cArgs) {
             case 0:
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 6) 0 Parameter\n");
+                TRACE("(case 6) 0 Parameter\n");
                 hres = MSO_TO_OO_I_Worksheet_get_Rows(iface, vNull, &dret);
                 if (FAILED(hres)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -1204,7 +1203,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 }
                 return S_OK;
             case 1:
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 6) 1 Parameter\n");
+                TRACE("(case 6) 1 Parameter\n");
                 /*Привести параметры к типу VARIANT если они переданы по ссылке*/
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
                 hres = MSO_TO_OO_I_Worksheet_get_Rows(iface, cell1, &dret);
@@ -1225,7 +1224,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
         } else {
             switch (pDispParams->cArgs) {
             case 0:
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 7) 0 Parameter\n");
+                TRACE("(case 7) 0 Parameter\n");
                 hres = MSO_TO_OO_I_Worksheet_get_Columns(iface, vNull, &dret);
                 if (FAILED(hres)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -1237,7 +1236,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 }
                 return S_OK;
             case 1:
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 7) 1 Parameter\n");
+                TRACE("(case 7) 1 Parameter\n");
                 /*Привести параметры к типу VARIANT если они переданы по ссылке*/
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
                 hres = MSO_TO_OO_I_Worksheet_get_Columns(iface, cell1, &dret);
@@ -1255,7 +1254,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     case 8:
         switch (pDispParams->cArgs) {
         case 0:
-            TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 8) 0 Parameter\n");
+            TRACE("(case 8) 0 Parameter\n");
             hres = MSO_TO_OO_I_Worksheet_Copy(iface, vNull, vNull);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -1263,7 +1262,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             }
             return S_OK;
         case 1:
-            TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 8) 1 Parameter\n");
+            TRACE("(case 8) 1 Parameter\n");
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2))) return E_FAIL;
 
             hres = MSO_TO_OO_I_Worksheet_Copy(iface, cell2, vNull);
@@ -1273,7 +1272,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             }
             return S_OK;
         case 2:
-            TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 8) 2 Parameter\n");
+            TRACE("(case 8) 2 Parameter\n");
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell1))) return E_FAIL;
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2))) return E_FAIL;
@@ -1346,7 +1345,7 @@ extern HRESULT _I_WorksheetConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     WorksheetImpl *worksheet;
 
-    TRACE("mso_to_oo.dll:i_worksheet.c:Constructor (%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
 
     worksheet = HeapAlloc(GetProcessHeap(), 0, sizeof(*worksheet));
     if (!worksheet)

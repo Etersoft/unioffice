@@ -53,7 +53,7 @@ static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
     _FontImpl *This = (_FontImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_font.c:AddRef REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -71,7 +71,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_QueryInterface(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -93,7 +93,7 @@ static ULONG WINAPI MSO_TO_OO_I_Font_Release(
     _FontImpl *This = (_FontImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_font.c:Release REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -121,7 +121,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Bold(
     VARIANT vBoldState;
     VariantInit (&vBoldState);
 
-    TRACE("mso_to_oo.dll:i_font.c:Bold (GET) \n");
+    TRACE("\n");
 
     RangeImpl *range = (RangeImpl*)This->prange;
 
@@ -144,7 +144,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Bold(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Bold (PUT) \n");
+    TRACE("\n");
 
     VARIANT vBoldState;
     VariantInit (&vBoldState);
@@ -170,7 +170,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Italic(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Italic (GET) \n");
+    TRACE("\n");
 
     VARIANT vItalicState;
     VariantInit (&vItalicState);
@@ -194,7 +194,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Italic(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Italic (PUT) \n");
+    TRACE("\n");
 
     VARIANT vItalicState;
     VariantInit (&vItalicState);
@@ -220,7 +220,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Underline(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Underline (GET) \n");
+    TRACE("\n");
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -242,7 +242,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Underline (PUT) \n");
+    TRACE("\n");
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -265,7 +265,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Size (GET) \n");
+    TRACE("\n");
 
     VARIANT vsize;
     VariantInit (&vsize);
@@ -279,7 +279,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
 
     hres = VariantChangeTypeEx(&vsize,&vsize,0,0,VT_I4);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_font.c:Size (GET) Error when VariantChangeTypeEx\n");
+        TRACE("Error when VariantChangeTypeEx\n");
     }
     *plsize = V_I4(&vsize);
     return S_OK;
@@ -291,7 +291,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Size(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Size (PUT) %i \n",lsize);
+    TRACE(" %i \n",lsize);
 
     VARIANT vsize;
     VariantInit (&vsize);
@@ -314,7 +314,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Strikethrough(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Strikethrought (GET) \n");
+    TRACE("\n");
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -336,7 +336,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Strikethrough(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Strikethrought (PUT) \n");
+    TRACE(" \n");
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -359,7 +359,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Name(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Name (GET) \n");
+    TRACE("\n");
 
     RangeImpl *range = (RangeImpl*)This->prange;
 
@@ -374,7 +374,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Name(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Name (PUT) \n");
+    TRACE("\n");
 
     VARIANT res;
 
@@ -394,7 +394,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Color(
     VARIANT vret;
     VariantInit(&vret);
 
-    TRACE("mso_to_oo.dll:i_font.c:Color (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -404,16 +404,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Color(
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, cur_range->pOORange, L"CharColor", 0);
 
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_font:Color ERROR when CharColor");
+        TRACE("ERROR when CharColor");
     }
 
     hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_font.c:Color (GET) ERROR VariantChangeTypeEx   %08x\n",hres);
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
     return E_FAIL;
     }
     *plcolor = V_I4(&vret);
-    TRACE("mso_to_oo.dll:i_font.c:Color (GET) lcolor=%i\n",*plcolor);
+    TRACE(" lcolor=%i\n",*plcolor);
     return S_OK;
 }
 
@@ -425,7 +425,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Color(
     HRESULT hres;
     VARIANT vret,param1;
 
-    TRACE("mso_to_oo.dll:i_font.c:Color (PUT) lcolor = %i\n",lcolor);
+    TRACE(" lcolor = %i\n",lcolor);
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -438,7 +438,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Color(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"CharColor", 1, param1);
 
-    if (FAILED(hres)) TRACE("mso_to_oo.dll:i_font:Color ERROR when CharColor");
+    if (FAILED(hres)) TRACE("ERROR when CharColor");
 
     return hres;
 }
@@ -451,7 +451,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_ColorIndex(
     long tmpcolor;
     int i;
     HRESULT hres;
-    TRACE("mso_to_oo.dll:i_font.c:ColorIndex (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -466,7 +466,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_ColorIndex(
             return S_OK;
         }
 
-    TRACE("mso_to_oo.dll:i_font.c:Colorindex (GET) ERROR Color don`t have colorindex \n");
+    TRACE("ERROR Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
     return S_OK;
@@ -478,7 +478,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_ColorIndex(
 {
     _FontImpl *This = (_FontImpl*)iface;
     long tmpcolor;
-    TRACE("mso_to_oo.dll:i_font.c:ColorIndex (PUT)\n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -486,7 +486,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_ColorIndex(
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
 
     if ((lcolorindex<1)||(lcolorindex>56)) {
-        TRACE("mso_to_oo.dll:i_font.c:Colorindex (PUT) ERROR Incorrect colorindex \n");
+        TRACE("ERROR Incorrect colorindex \n");
         return S_OK;
     } else 
         return MSO_TO_OO_I_Font_put_Color(iface,color[lcolorindex-1]);
@@ -498,7 +498,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Application(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Application (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -512,7 +512,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Parent(
 {
     _FontImpl *This = (_FontImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_font.c:Parent (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -529,7 +529,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Creator(
         I_Font* iface,
         VARIANT *result)
 {
-    TRACE("mso_to_oo.dll:i_interrior.c:Creator (GET) \n");
+    TRACE("\n");
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
     return S_OK;
@@ -542,7 +542,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetTypeInfoCount(
         I_Font* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:i_font.c:GetTypeInfoCount \n");
+    TRACE(" \n");
     return E_NOTIMPL;
 }
 
@@ -552,7 +552,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:i_font.c:GetTypeInfo \n");
+    TRACE(" \n");
     return E_NOTIMPL;
 }
 
@@ -611,7 +611,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
 
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:i_font.c:Font - %s NOT REALIZE \n",*rgszNames);
+    WTRACE(L" %s NOT REALIZE \n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -639,7 +639,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     VariantInit(&vresult);
     VariantInit(&vtmp);
     /* http://www.spravkaweb.ru/php/sovet/calccom/formatfont */
-    TRACE("mso_to_oo.dll:i_font.c:Invoke \n");
+    TRACE(" \n");
 
     if (This == NULL) return E_POINTER;
 
@@ -650,7 +650,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:i_font.c:Invoke (case 1) ERROR VariantChangeTypeEx   %08x\n",hr);
+                TRACE("ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -672,7 +672,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:i_font.c:Invoke (case 2) ERROR VariantChangeTypeEx   %08x\n",hr);
+                TRACE("ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -694,7 +694,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:i_font.c:Invoke (case 3) ERROR VariantChangeTypeEx   %08x\n",hr);
+                TRACE("(case 3) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -716,7 +716,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:i_font.c:Invoke (case 4) ERROR VariantChangeTypeEx   %08x\n",hr);
+                TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
             lret = V_I4(&vtmp);
@@ -738,7 +738,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:i_font.c:Invoke (case 5) ERROR VariantChangeTypeEx   %08x\n",hr);
+                TRACE(" (case 5) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -773,7 +773,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
 
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:i_font.c:Invoke (case 7) ERROR VariantChangeTypeEx   %08x\n",hr);
+                TRACE(" (case 7) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
             ltmp = V_I4(&vtmp);
@@ -801,7 +801,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
 
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:i_font.c:Invoke (case 8) ERROR VariantChangeTypeEx   %08x\n",hr);
+                TRACE("(case 8) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
             ltmp = V_I4(&vtmp);
@@ -911,7 +911,7 @@ HRESULT _I_FontConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     _FontImpl *_font;
 
-    TRACE("mso_to_oo.dll:i_font.c:Constructor  (%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
     
     _font = HeapAlloc(GetProcessHeap(), 0, sizeof(*_font));
     if (!_font)

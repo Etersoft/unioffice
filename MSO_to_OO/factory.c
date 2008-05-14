@@ -27,7 +27,7 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_AddRef(LPCLASSFACTORY iface)
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:factory.c:MSO_TO_OO_IClassFactory_AddRef \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -45,7 +45,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
 {
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
 
-    TRACE("mso_to_oo.dll:factory.c:MSO_TO_OO_IClassFactory_QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
 
@@ -64,7 +64,7 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_Release(LPCLASSFACTORY iface)
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:factory.c:MSO_TO_OO_IClassFactory_Release \n");
+    TRACE(" \n");
 
     if (This == NULL) return E_POINTER;
 
@@ -86,7 +86,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
     HRESULT res;
     IUnknown *punk = NULL;
 
-    TRACE("mso_to_oo.dll:factory.c:CreateInstance \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
 
@@ -107,7 +107,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_LockServer(
         LPCLASSFACTORY iface,
         BOOL fLock)
 {
-    TRACE("mso_to_oo.dll:factory.c:LockServer \n");
+    TRACE("\n");
 
     if (fLock != FALSE) {
         IClassFactory_AddRef(iface);

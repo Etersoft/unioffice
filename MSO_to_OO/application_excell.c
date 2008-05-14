@@ -77,7 +77,7 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcell_AddRef(
         InterlockedIncrement(&dll_ref);
     }
 
-    TRACE("mso_to_oo.dll:application_excell.c:AddRef REF=%i \n", This->ref);
+    TRACE("REF=%i \n", This->ref);
 
     return ref;
 }
@@ -89,7 +89,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_QueryInterface(
 {
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
 
-    TRACE("mso_to_oo.dll:application_excell.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -114,7 +114,7 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcell_Release(
 
     ref = InterlockedDecrement(&This->ref);
 
-    TRACE("mso_to_oo.dll:application_excell.c:Release REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (ref == 0) {
         InterlockedDecrement(&dll_ref);
@@ -143,7 +143,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_UserControl(
         I_ApplicationExcell* iface,
         VARIANT_BOOL vbUserControl)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:UserControl (PUT) \n");
+    TRACE("\n");
     return S_OK;
 }
 
@@ -151,7 +151,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_UserControl(
         I_ApplicationExcell* iface,
         VARIANT_BOOL *vbUserControl)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:UserControl (GET) \n");
+    TRACE("\n");
     return S_OK;
 }
 
@@ -159,7 +159,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_DisplayAlerts(
         I_ApplicationExcell* iface,
         VARIANT_BOOL vbDisplayAlerts)
 {
-   TRACE("mso_to_oo.dll:application_excell.c:DisplayAllerts (PUT) \n");
+   TRACE("\n");
    /*Возвращаем успех*/
    return S_OK;
 }
@@ -168,7 +168,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_DisplayAlerts(
         I_ApplicationExcell* iface,
         VARIANT_BOOL *vbDisplayAlerts)
 {
-   TRACE("mso_to_oo.dll:application_excell.c:DisplayAllerts (GET) \n");
+   TRACE("\n");
    /*Возвращаем успех*/
    *vbDisplayAlerts = VARIANT_FALSE;
    return S_OK;
@@ -178,7 +178,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_WindowState(
         I_ApplicationExcell* iface,
         XlWindowState State)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:WindowState (PUT) \n");
+    TRACE("\n");
     return S_OK;
 }
 
@@ -186,7 +186,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_WindowState(
         I_ApplicationExcell* iface,
         XlWindowState *State)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:WindowState (Get) \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -194,7 +194,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_Visible(
         I_ApplicationExcell* iface,
         VARIANT_BOOL vbVisible)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:Visible (PUT) \n");
+    TRACE("\n");
     return S_OK;
 }
 
@@ -202,7 +202,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Visible(
         I_ApplicationExcell* iface,
         VARIANT_BOOL *vbVisible)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:Visible (GET) \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -212,7 +212,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Workbooks(
 {
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
 
-    TRACE("mso_to_oo.dll:application_excell.c:Workbooks (GET) \n");
+    TRACE("\n");
 
     if (This->pdWorkbooks==NULL)
        return E_POINTER;
@@ -235,7 +235,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Sheets(
     I_Workbook *pwb;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:application_excell.c:Sheets (GET) \n");
+    TRACE("\n");
 
     hres = MSO_TO_OO_GetActiveWorkbook((I_Workbooks*)(This->pdWorkbooks), &pwb);
     if (FAILED(hres)) return E_FAIL;
@@ -251,7 +251,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Worksheets(
         IDispatch **ppSheets)
 {
    /*Используем Sheets - они выполняют одинаковые функции*/
-   TRACE("mso_to_oo.dll:application_excell.c:Worksheets (GET) \n");
+   TRACE("\n");
    return E_NOTIMPL;
 }
 
@@ -265,7 +265,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Cells(
     I_Worksheet *pworksheet;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:application_excell.c:Cells (GET) \n");
+    TRACE("\n");
 
     hres = MSO_TO_OO_GetActiveWorkbook((I_Workbooks*)(This->pdWorkbooks), &pwb);
     if (FAILED(hres)) return E_FAIL;
@@ -302,7 +302,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet(
     I_Sheets *pSheets;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:application_excell.c:ActiveSheet (GET) \n");
+    TRACE("\n");
 
     hres = MSO_TO_OO_GetActiveWorkbook((I_Workbooks*)(This->pdWorkbooks), &pwb);
     if (FAILED(hres)) return E_FAIL;
@@ -334,7 +334,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Version(
 {
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
 
-    TRACE("mso_to_oo.dll:application_excell.c:Version (GET) \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -358,7 +358,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_ConvertFormula(
 {
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
 
-    TRACE("mso_to_oo.dll:application_excell.c:ConvertFormula \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 /*
@@ -384,7 +384,7 @@ RelativeTo и ToAbsolute - пока игнорируются
     /*преобразовываем любой тип к I4*/
     HRESULT hr = VariantChangeTypeEx(&vtmp, &ToReferenceStyle, 0, 0, VT_I4);
     if (FAILED(hr)) {
-        TRACE("mso_to_oo.dll:application_excell.c:ConvertFormula ERROR when VariantChangeTypeEx\n");
+        TRACE("ERROR when VariantChangeTypeEx\n");
         return E_FAIL;
     }
     tmp = V_I4(&vtmp);
@@ -516,10 +516,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Quit(
 {
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
 
-    TRACE("mso_to_oo.dll:application_excell.c:Quit \n");
+    TRACE("\n");
 
     if (iface==NULL) {
-        TRACE("mso_to_oo.dll:application_excell.c:Quit ERROR Object is NULL\n");
+        TRACE("ERROR Object is NULL\n");
         return E_FAIL;
     }
     /*При вызове этого метода вызываем вызываем метод Close объекта WorkBooks*/
@@ -536,7 +536,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveCell(
 
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:application_excell.c:ActiveCell (GET) \n");
+    TRACE("\n");
 
     hres = MSO_TO_OO_GetActiveCells((I_Workbooks*)This->pdWorkbooks, (I_Range**) RHS);
 
@@ -548,7 +548,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Application(
         IDispatch **value)
 {
 
-    TRACE("mso_to_oo.dll:application_excell.c:Application (GET) \n");
+    TRACE(" \n");
 
     if (iface!=NULL) {
         *value = (IDispatch*)iface;
@@ -563,7 +563,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_EnableEvents(
         I_ApplicationExcell* iface,
         VARIANT_BOOL *pvbee)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:EnableEvents (GET) \n");
+    TRACE("\n");
     /*Always return TRUE*/
     *pvbee = VARIANT_TRUE;
 
@@ -574,7 +574,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_EnableEvents(
         I_ApplicationExcell* iface,
         VARIANT_BOOL vbee)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:EnableEvents (PUT) \n");
+    TRACE(" \n");
     /*Always return S_OK*/
     return S_OK;
 }
@@ -583,7 +583,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_ScreenUpdating(
         I_ApplicationExcell* iface,
         VARIANT_BOOL vbscup)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:ScreenUpdating (PUT) \n");
+    TRACE("\n");
     return S_OK;
 }
 
@@ -591,7 +591,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ScreenUpdating(
         I_ApplicationExcell* iface,
         VARIANT_BOOL *vbscup)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:ScreenUpdating (GET) \n");
+    TRACE("\n");
     /*Всегда возвращаем TRUE*/
     *vbscup = VARIANT_TRUE;
     return S_OK;
@@ -601,7 +601,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Caption(
         I_ApplicationExcell* iface,
         VARIANT *vName)
 {
-    TRACE("mso_to_oo.dll:applicationexcell.c:Caption (GET) \n");
+    TRACE("\n");
     V_VT(vName) = VT_BSTR;
     V_BSTR(vName) = SysAllocString(L"Microsoft Excel");
     return S_OK;
@@ -611,7 +611,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_Caption(
         I_ApplicationExcell* iface,
         VARIANT vName)
 {
-    TRACE("mso_to_oo.dll:applicationexcell.c:Caption (PUT) \n");
+    TRACE("\n");
     return S_OK;
 }
 
@@ -624,12 +624,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveWorkbook(
     I_Sheets *pSheets;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:applicationexcell.c:ActiveWorkbook (GET) \n");
+    TRACE(" \n");
     if (This==NULL) return E_FAIL;
 
     hres = MSO_TO_OO_GetActiveWorkbook((I_Workbooks*)(This->pdWorkbooks), &pwb);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:applicationexcell.c:ActiveWorkbook ERROR when GetActiveWorkbook\n");
+        TRACE("ERROR when GetActiveWorkbook\n");
         *result = NULL;
         return S_OK;
     }
@@ -650,7 +650,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Range(
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
     HRESULT hres; 
 
-    TRACE("mso_to_oo.dll:application_excell.c:Range (GET) \n");
+    TRACE("\n");
     I_Worksheet *wsh;
 
     hres = MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet(iface,(IDispatch**) &wsh);
@@ -667,7 +667,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetTypeInfoCount(
         I_ApplicationExcell* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:GetTypeInfoCount \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -677,7 +677,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:application_excell.c:GetTypeInfo \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -768,7 +768,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetIDsOfNames(
 
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:application_excell.c: Application - %s NOT REALIZE\n", *rgszNames);
+    WTRACE(L" %s NOT REALIZE\n", *rgszNames);
     return E_NOTIMPL;
 }
 
@@ -799,7 +799,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
     VariantInit(&cell2);
     VariantInit(&vRet);
 
-    TRACE("mso_to_oo.dll:application_excell.c:Invoke %i\n", dispIdMember);
+    TRACE(" %i\n", dispIdMember);
 
     if (This == NULL) return E_POINTER;
 
@@ -810,7 +810,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 1) ERROR when VariantChangeTypeEx\n");
+                TRACE(" (case 1) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -823,7 +823,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 2) ERROR when VariantChangeTypeEx\n");
+                TRACE(" (case 2) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -837,7 +837,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             /*преобразовываем любой тип к I4*/
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 3) ERROR when VariantChangeTypeEx\n");
+                TRACE(" (case 3) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             tmp = V_I4(&vtmp);
@@ -851,7 +851,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 4) ERROR when VariantChangeTypeEx\n");
+                TRACE(" (case 4) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -943,10 +943,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
                 IDispatch_Release(pretdisp);
                 return S_OK;
             }
-            TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 8) (PUT) only realized with 3 parameters \n");
+            TRACE(" (case 8) (PUT) only realized with 3 parameters \n");
             return E_NOTIMPL;
         } else {
-            TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 8 (cells))\n");
+            TRACE(" (case 8 (cells))\n");
             hr = MSO_TO_OO_I_ApplicationExcell_get_Cells(iface,&pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -1025,7 +1025,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         /*преобразовываем любой тип к I4*/
         hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[pDispParams->cArgs-2]), 0, 0, VT_I4);
         if (FAILED(hr)) {
-            TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 11) ERROR when VariantChangeTypeEx\n");
+            TRACE(" (case 11) ERROR when VariantChangeTypeEx\n");
             return E_FAIL;
         }
         tmp = V_I4(&vtmp);
@@ -1079,7 +1079,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 15) ERROR when VariantChangeTypeEx\n");
+                TRACE(" (case 15) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -1101,7 +1101,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 16) ERROR when VariantChangeTypeEx\n");
+                TRACE(" (case 16) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
@@ -1123,7 +1123,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BSTR);
             if (FAILED(hr)) {
-                TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 17) ERROR when VariantChangeTypeEx\n");
+                TRACE(" (case 17) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             hr = MSO_TO_OO_I_ApplicationExcell_put_Caption(iface, vtmp);
@@ -1137,7 +1137,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         }
     case 18:
         if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 18) ERROR when (PUT)\n");
+            TRACE(" (case 18) ERROR when (PUT)\n");
             return E_NOTIMPL;
         } else {
             hr = MSO_TO_OO_I_ApplicationExcell_get_ActiveWorkbook(iface, &pdisp);
@@ -1152,7 +1152,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         }
     case 19:
         if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("mso_to_oo.dll:application_excell.c:Invoke (case 19) ERROR when (PUT)\n");
+            TRACE(" (case 19) ERROR when (PUT)\n");
             return E_NOTIMPL;
         } else {
             switch (pDispParams->cArgs) {
@@ -1184,7 +1184,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
                 }
                 return S_OK;
             default :
-                TRACE("mso_to_oo.dll:i_worksheet.c:Invoke (case 3) ERROR PARAMETR IS SEND\n");
+                TRACE(" (case 3) ERROR PARAMETR IS SEND\n");
                 return E_FAIL;
             }
         }
@@ -1251,7 +1251,7 @@ HRESULT _ApplicationExcellConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
     VARIANT param1;
     IUnknown *punk = NULL;
 
-    TRACE("mso_to_oo.dll:application_excell.c:Constructor \n");
+    TRACE("\n");
 
     _applicationexcell = HeapAlloc(GetProcessHeap(), 0, sizeof(*_applicationexcell));
     if (!_applicationexcell) {

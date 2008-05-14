@@ -48,7 +48,7 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
     BordersImpl *This = (BordersImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_borders.c:AddRef REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -66,7 +66,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
 {
     BordersImpl *This = (BordersImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_borders.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -87,7 +87,7 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_Release(
     BordersImpl *This = (BordersImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Release REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -110,7 +110,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Application(
 {
     BordersImpl *This = (BordersImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Application (GET) \n");
+    TRACE(" \n");
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -124,7 +124,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Parent(
 {
     BordersImpl *This = (BordersImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Parent (GET) \n");
+    TRACE(" \n");
 
     if (This==NULL) return E_POINTER;
 
@@ -145,7 +145,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Color(
     HRESULT hres;
     IDispatch *border_tmp;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Color (GET) \n");
+    TRACE(" \n");
 
     I_Borders_get_Item(iface, xlEdgeTop, &border_tmp);
     I_Border_get_Color((I_Border*)border_tmp, plcolor);
@@ -162,7 +162,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
     HRESULT hres;
     IDispatch *border_tmp;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Color (PUT) lcolor = %i\n",lcolor);
+    TRACE(" lcolor = %i\n",lcolor);
 
     if (This==NULL) return E_POINTER;
 
@@ -196,7 +196,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_ColorIndex(
     long tmpcolor;
     int i;
     HRESULT hres;
-    TRACE("mso_to_oo.dll:i_borders.c:ColorIndex (GET) \n");
+    TRACE(" \n");
 
     if (This==NULL) return E_POINTER;
 
@@ -210,7 +210,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_ColorIndex(
             return S_OK;
         }
 
-    TRACE("mso_to_oo.dll:i_borders.c:Colorindex (GET) ERROR Color don`t have colorindex \n");
+    TRACE("ERROR Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
     return S_OK;
@@ -222,7 +222,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_ColorIndex(
 {
     BordersImpl *This = (BordersImpl*)iface;
     long tmpcolor;
-    TRACE("mso_to_oo.dll:i_borders.c:ColorIndex (PUT)\n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -230,7 +230,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_ColorIndex(
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
 
     if ((lcolorindex<1)||(lcolorindex>56)) {
-        TRACE("mso_to_oo.dll:i_borders.c:Colorindex (PUT) ERROR Incorrect colorindex %i\n", lcolorindex);
+        TRACE(" ERROR Incorrect colorindex %i\n", lcolorindex);
         return S_OK;
     } else 
         return MSO_TO_OO_I_Borders_put_Color(iface,color[lcolorindex-1]);
@@ -240,7 +240,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Creator(
         I_Borders* iface,
         VARIANT *result)
 {
-    TRACE("mso_to_oo.dll:i_borders.c:Creator (GET)\n");
+    TRACE("\n");
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
     return S_OK;
@@ -254,7 +254,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_LineStyle(
     HRESULT hres;
     IDispatch *border_tmp;
 
-    TRACE("mso_to_oo.dll:i_borders.c:LineStyle (PUT)\n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -273,7 +273,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
     HRESULT hres;
     IDispatch *border_tmp;
 
-    TRACE("mso_to_oo.dll:i_borders.c:LineStyle (PUT)\n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -307,7 +307,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Weight(
     HRESULT hres;
     IDispatch *border_tmp;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Weight (PUT)\n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -322,12 +322,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
         I_Borders* iface,
         XlBorderWeight weight)
 {
-    TRACE("mso_to_oo.dll:i_borders.c:Weight (PUT) \n");
+    TRACE(" \n");
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Weight (PUT)\n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -364,19 +364,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
     IDispatch *pborder;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:i_borders.c:_Default (GET) key=%08x\n",key);
+    TRACE("key=%08x\n",key);
 
     if (This==NULL) {
-        TRACE("mso_to_oo.dll:i_borders.c:_Default ERROR Object is NULL \n");
+        TRACE("ERROR Object is NULL \n");
         return E_FAIL;
     }
     switch (key) {
     case xlDiagonalUp:
-        TRACE("mso_to_oo.dll:i_border.c:_Defaul (GET) ERROR xlDiagonalUp\n");
+        TRACE("ERROR xlDiagonalUp\n");
         return E_NOTIMPL;
         break;
     case xlDiagonalDown:
-        TRACE("mso_to_oo.dll:i_border.c:_Defaul (GET) ERROR xlDiagonalDown\n");
+        TRACE("ERROR xlDiagonalDown\n");
         return E_NOTIMPL;
         break;
     }
@@ -409,7 +409,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Item(
         XlBordersIndex key,
         IDispatch **ppObject)
 {
-    TRACE("mso_to_oo.dll:i_borders.c:Item (GET) \n");
+    TRACE("\n");
     return MSO_TO_OO_I_Borders_get__Default(iface, key, ppObject);
 }
 
@@ -417,7 +417,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Value(
         I_Borders* iface,
         XlLineStyle *plinestyle)
 {
-    TRACE("mso_to_oo.dll:i_borders.c:Value (GET) \n");
+    TRACE("\n");
     return MSO_TO_OO_I_Borders_get_LineStyle(iface, plinestyle);
 }
 
@@ -425,7 +425,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Value(
         I_Borders* iface,
         XlLineStyle linestyle)
 {
-    TRACE("mso_to_oo.dll:i_borders.c:Value (PUT) \n");
+    TRACE("\n");
     return MSO_TO_OO_I_Borders_put_LineStyle(iface, linestyle);
 }
 
@@ -434,7 +434,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetTypeInfoCount(
         I_Borders* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:i_borders.c:GetTypeInfoCount \n");
+    TRACE(" \n");
     return E_NOTIMPL;
 }
 
@@ -444,7 +444,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:i_borders.c:GetTypeInfo \n");
+    TRACE(" \n");
     return E_NOTIMPL;
 }
 
@@ -499,7 +499,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetIDsOfNames(
 
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:i_borders.c:Borders - %s NOT REALIZE\n",*rgszNames);
+    WTRACE(L"%s NOT REALIZE\n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -566,7 +566,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
 
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_borders.c:Invoke (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
+                TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
                 return E_FAIL;
             }
             ltmp = V_I4(&vtmp);
@@ -594,7 +594,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_borders.c:Invoke (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
+                TRACE(" (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
                 return E_FAIL;
             }
             ltmp = V_I4(&vtmp);
@@ -629,7 +629,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
     case 6:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
-                TRACE("mso_to_oo.dll:i_borders:Invoke (6) ERROR Number of parameters \n");
+                TRACE(" (6) ERROR Number of parameters \n");
                 return E_FAIL;
             }
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
@@ -637,7 +637,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_borders:Invoke (6) ERROR when VariantChangeType \n");
+                TRACE(" (6) ERROR when VariantChangeType \n");
                 return hres;
             }
             lval = V_I4(&vtmp);
@@ -661,7 +661,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
     case 7://Weight
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
-                TRACE("mso_to_oo.dll:i_borders:Invoke (7) ERROR Number of parameters \n");
+                TRACE(" (7) ERROR Number of parameters \n");
                 return E_FAIL;
             }
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
@@ -669,7 +669,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_borders:Invoke (7) ERROR when VariantChangeType \n");
+                TRACE(" (7) ERROR when VariantChangeType \n");
                 return hres;
             }
             lval = V_I4(&vtmp);
@@ -695,7 +695,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             return E_NOTIMPL;
         } else {
             if (pDispParams->cArgs!=1) {
-                TRACE("mso_to_oo.dll:i_range:Invoke (8) ERROR Number of parameters \n");
+                TRACE(" (8) ERROR Number of parameters \n");
                 return E_FAIL;
             }
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
@@ -703,7 +703,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_range:Invoke (8) ERROR when VariantChangeType \n");
+                TRACE("(8) ERROR when VariantChangeType \n");
                 return hres;
             }
             lval = V_I4(&vtmp);
@@ -725,7 +725,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             return E_NOTIMPL;
         } else {
             if (pDispParams->cArgs!=1) {
-                TRACE("mso_to_oo.dll:i_range:Invoke (9) ERROR Number of parameters \n");
+                TRACE("(9) ERROR Number of parameters \n");
                 return E_FAIL;
             }
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
@@ -733,7 +733,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_range:Invoke (9) ERROR when VariantChangeType \n");
+                TRACE(" (9) ERROR when VariantChangeType \n");
                 return hres;
             }
             lval = V_I4(&vtmp);
@@ -753,7 +753,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
     case 10:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
-                TRACE("mso_to_oo.dll:i_borders:Invoke (10) ERROR Number of parameters \n");
+                TRACE("(10) ERROR Number of parameters \n");
                 return E_FAIL;
             }
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
@@ -761,7 +761,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_borders:Invoke (10) ERROR when VariantChangeType \n");
+                TRACE(" (10) ERROR when VariantChangeType \n");
                 return hres;
             }
             lval = V_I4(&vtmp);
@@ -784,7 +784,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
         }
     }
 
-    TRACE("mso_to_oo.dll:i_borders.c:Invoke dispIdMember = %i NOT REALIZE\n",dispIdMember);
+    TRACE(" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
 }
 
@@ -825,7 +825,7 @@ extern HRESULT _I_BordersConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     BordersImpl *borders;
 
-    TRACE("mso_to_oo.dll:i_borders.c:Constructor  (%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
     
     borders = HeapAlloc(GetProcessHeap(), 0, sizeof(*borders));
     if (!borders)

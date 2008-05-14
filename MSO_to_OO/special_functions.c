@@ -26,7 +26,7 @@ HRESULT MSO_TO_OO_I_Workbooks_Initialize(
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
-    TRACE("mso_to_oo.dll:special_function.c:Workbooks_Initialize \n");
+    TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
     if (This->pApplication != NULL) I_ApplicationExcell_AddRef(This->pApplication);
@@ -45,7 +45,7 @@ HRESULT MSO_TO_OO_I_Font_Initialize(
     _FontImpl *This = (_FontImpl*)iface;
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:special_functions.c:Font_Initialize:ERROR THIS = NULL \n");
+        TRACE("ERROR THIS = NULL \n");
         return E_POINTER;
     }
 
@@ -66,7 +66,7 @@ HRESULT MSO_TO_OO_I_Interior_Initialize(
     InteriorImpl *This = (InteriorImpl*)iface;
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:special_functions.c:Interior_Initialize:ERROR THIS = NULL \n");
+        TRACE("ERROR THIS = NULL \n");
         return E_POINTER;
     }
 
@@ -87,7 +87,7 @@ HRESULT MSO_TO_OO_I_Borders_Initialize(
     BordersImpl *This = (BordersImpl*)iface;
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:special_functions.c:Borders_Initialize:ERROR THIS = NULL \n");
+        TRACE("ERROR THIS = NULL \n");
         return E_POINTER;
     }
 
@@ -109,7 +109,7 @@ HRESULT MSO_TO_OO_I_Border_Initialize(
     BorderImpl *This = (BorderImpl*)iface;
 
     if (This == NULL) {
-        TRACE("mso_to_oo.dll:special_functions.c:Borders_Initialize:ERROR THIS = NULL \n");
+        TRACE("ERROR THIS = NULL \n");
         return E_POINTER;
     }
 
@@ -166,7 +166,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     IUnknown *punk = NULL;
     LPUNKNOWN pUnkOuter = NULL;
 
-    TRACE("mso_to_oo.dll:special_function.c:Workbook_Initialize \n");
+    TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
     if (This->pApplication != NULL) I_ApplicationExcell_AddRef(This->pApplication);
@@ -205,7 +205,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     /*теперь инициализируем*/
     hres = MSO_TO_OO_I_Sheets_Initialize((I_Sheets*)(This->pSheets), iface);
     if (FAILED(hres)){
-        TRACE("mso_to_oo.dll:special_function.c:Workbook_Initialize ERROR FAILED Sheets_Initialize \n");
+        TRACE("ERROR FAILED Sheets_Initialize \n");
     }
     /*освобождаем память выделенную под строки*/
     VariantClear(&param0);
@@ -223,10 +223,10 @@ HRESULT MSO_TO_OO_I_Sheets_Initialize(
     SheetsImpl *This = (SheetsImpl*)iface;
     VARIANT resultSheets;
 
-    TRACE("mso_to_oo.dll:special_function.c:Sheets_Initialize \n");
+    TRACE("\n");
 
     if (This==NULL) {
-        TRACE("mso_to_oo.dll:Sheets_Initialize: Object is NULL \n");
+        TRACE("Object is NULL \n");
         return E_POINTER;
     }
 
@@ -254,7 +254,7 @@ HRESULT MSO_TO_OO_GetActiveSheet(
     IUnknown *punk = NULL;
     LPUNKNOWN pUnkOuter = NULL;
     WorkbookImpl *wb = (WorkbookImpl*)This->pwb;
-    TRACE("mso_to_oo.dll:special_function.c:GetActiveSheet \n");
+    TRACE("\n");
     VARIANT res;
     HRESULT hres;
     VariantInit(&resultSheet);
@@ -262,13 +262,13 @@ HRESULT MSO_TO_OO_GetActiveSheet(
 /*TODO GET THE ACTIVE SHEET*/
     hres = AutoWrap(DISPATCH_METHOD, &res, wb->pDoc, L"getCurrentController",0);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_range.c:GetActiveSheet ERROR when getCurrentController \n");
+        TRACE("ERROR when getCurrentController \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &resultSheet, V_DISPATCH(&res), L"getActiveSheet",0);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_range.c:GetActiveSheet ERROR when getActiveSheet \n");
+        TRACE("ERROR when getActiveSheet \n");
         return hres;
     }
 
@@ -302,7 +302,7 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
     LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:special_function.c:Worksheet_Initialize \n");
+    TRACE("\n");
 
     This->pwb = (IDispatch*)wb;
     IDispatch_AddRef(This->pwb);
@@ -344,7 +344,7 @@ HRESULT MSO_TO_OO_GetDispatchPropertyValue(
     VARIANT res;
     VARIANT objstr;
 
-    TRACE("mso_to_oo.dll:special_function.c:GetDispatchPropertyValue \n");
+    TRACE("\n");
 
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)app;
 
@@ -372,7 +372,7 @@ HRESULT MSO_TO_OO_GetDispatchHelper(
     VARIANT res;
     VARIANT objstr;
 
-    TRACE("mso_to_oo.dll:special_function.c:GetDispatchHelper \n");
+    TRACE("\n");
 
     _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)app;
     if (This==NULL) {
@@ -402,7 +402,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
     HRESULT hres;
     VARIANT res;
 
-    TRACE("mso_to_oo.dll:special_function.c:ExecuteDispatchHelper \n");
+    TRACE("\n");
     if (This==NULL) {
         return E_POINTER;
     }
@@ -410,7 +410,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
     IDispatch *oodispatcher;
     hres = MSO_TO_OO_GetDispatchHelper(app, &oodispatcher);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:special_function.c:ExecuteDispatchHelper ERROR when GetDispatchHelper\n");
+        TRACE("ERROR when GetDispatchHelper\n");
         return E_FAIL;
     }
 
@@ -422,17 +422,17 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
 
     hres = I_ApplicationExcell_get_ActiveWorkbook(app,(IDispatch**) &wb);
     if (FAILED(hres)){
-        TRACE("mso_to_oo.dll:special_function.c:ExecuteDispatchHelper ERROR when get_ActiveWorkbook \n");
+        TRACE("ERROR when get_ActiveWorkbook \n");
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &res, wb->pDoc, L"getCurrentController",0);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_range.c:Select ERROR when getCurrentController \n");
+        TRACE("ERROR when getCurrentController \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &ooframe, V_DISPATCH(&res), L"getFrame",0);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_range.c:Select ERROR when getFrame \n");
+        TRACE("ERROR when getFrame \n");
         return hres;
     }
 
@@ -446,7 +446,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
 
     hres = AutoWrap (DISPATCH_METHOD, &res, oodispatcher, L"executeDispatch", 5, ooParams, param4, param3, param2, ooframe);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:special_function.c:ExecuteDispatchHelper ERROR whe executeDispatch\n");
+        TRACE("ERROR whe executeDispatch\n");
         return hres;
     }
 
@@ -471,7 +471,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_WB(
     HRESULT hres;
     VARIANT res;
 
-    TRACE("mso_to_oo.dll:special_function.c:ExecuteDispatchHelper \n");
+    TRACE("\n");
     if (This_wb==NULL) {
         return E_POINTER;
     }
@@ -482,19 +482,19 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_WB(
     IDispatch *oodispatcher;
     hres = MSO_TO_OO_GetDispatchHelper((I_ApplicationExcell*)This_app, &oodispatcher);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:special_function.c:ExecuteDispatchHelper ERROR when GetDispatchHelper\n");
+        TRACE("ERROR when GetDispatchHelper\n");
         return E_FAIL;
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &res, This_wb->pDoc, L"getCurrentController",0);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_range.c:Select ERROR when getCurrentController \n");
+        TRACE("ERROR when getCurrentController \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &ooframe, V_DISPATCH(&res), L"getFrame",0);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_range.c:Select ERROR when getFrame \n");
+        TRACE("ERROR when getFrame \n");
         return hres;
     }
 
@@ -508,7 +508,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_WB(
 
     hres = AutoWrap (DISPATCH_METHOD, &res, oodispatcher, L"executeDispatch", 5, ooParams, param4, param3, param2, ooframe);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:special_function.c:ExecuteDispatchHelper ERROR whe executeDispatch\n");
+        TRACE("ERROR whe executeDispatch\n");
         return hres;
     }
 
@@ -533,14 +533,14 @@ HRESULT MSO_TO_OO_CloseWorkbook(
     V_VT(&p2) = VT_BOOL;
     V_BOOL(&p2) = VARIANT_TRUE;
 
-    TRACE("mso_to_oo.dll:special_function.c:CloseWorkbook \n");
+    TRACE("\n");
 
     if (This==NULL) {
-        TRACE("mso_to_oo.dll:special_function.c:CloseWorkbook ERROR Object if NULL \n");
+        TRACE("ERROR Object if NULL \n");
         return S_OK;
     }
     if (This->pDoc==NULL) {
-        TRACE("mso_to_oo.dll:special_function.c:CloseWorkbook ERROR Object if NULL \n");
+        TRACE("ERROR Object if NULL \n");
         return S_OK;
     }
     if (!lstrcmpiW(filename, L"")) {
@@ -606,7 +606,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     IUnknown *punk = NULL;
     LPUNKNOWN pUnkOuter = NULL;
 
-    TRACE("mso_to_oo.dll:special_function.c:Workbook_Initialize2 \n");
+    TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
     if (This->pApplication != NULL) I_ApplicationExcell_AddRef(This->pApplication);
@@ -714,7 +714,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize(
     V_VT(&vBottom) = VT_I4;
     V_I4(&vBottom) = bottomRight.y - 1;
 
-    TRACE("mso_to_oo.dll:special_function.c:Range_Initialize \n");
+    TRACE("\n");
 
     HRESULT hres = AutoWrap(DISPATCH_METHOD, &resRange, This_parent->pOORange, L"getCellRangeByPosition", 4, vBottom, vRight, vTop, vLeft);
     if (FAILED(hres)) {
@@ -740,10 +740,10 @@ HRESULT MSO_TO_OO_I_Range_Initialize2(
 {
     RangeImpl *This = (RangeImpl*)iface;
 
-    TRACE("mso_to_oo.dll:special_function.c:Range_Initialize2 \n");
+    TRACE("\n");
 
     if (This == NULL) {
-        TRACE("special_functions.c:Range_Initialize2:ERROR THIS = NULL \n");
+        TRACE("ERROR THIS = NULL \n");
         return E_POINTER;
     }
 
@@ -769,7 +769,7 @@ HRESULT MSO_TO_OO_GetRangeAddress(
     RangeImpl *This = (RangeImpl*)iface;
 
     if (This==NULL) {
-        TRACE("GetRangeAddress: Error = Object is NULL \n");
+        TRACE("Error = Object is NULL \n");
         return E_FAIL;
     }
 
@@ -1118,7 +1118,7 @@ long MSO_TO_OO_FindIndexWorksheetByName(
     VARIANT par_tmp;
     BSTR tmp_name;
 
-    TRACE("special_functions.c:FindIndexWorksheetByName \n");
+    TRACE("\n");
     if (This==NULL) {
         return E_POINTER;
     }
@@ -1134,7 +1134,7 @@ long MSO_TO_OO_FindIndexWorksheetByName(
 
     hres = I_Sheets_get_Count(iface, &count);
     if (FAILED(hres)) {
-        TRACE("special_functions.c:FindIndexWorksheetByName ERROR when Sheets_get_Count\n");
+        TRACE("ERROR when Sheets_get_Count\n");
         return -1;
     }
     i=1;

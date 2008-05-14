@@ -24,7 +24,7 @@ LONG dll_ref = 0;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
-    TRACE("mso_to_oo.dll:DllMain:(%p, %d, %p)\n", hinstDLL, fdwReason, lpvReserved);
+    TRACE("(%p, %d, %p)\n", hinstDLL, fdwReason, lpvReserved);
 
     switch (fdwReason)
     {
@@ -50,7 +50,7 @@ __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVO
 
 __declspec(dllexport) STDAPI DllCanUnloadNow(void)
 {
-    TRACE("mso_to_oo.dll:DllCanUnloadNow:GLOBAL REF = %i \n",dll_ref);
+    TRACE("GLOBAL REF = %i \n",dll_ref);
     return dll_ref != 0 ? S_FALSE : S_OK;
 }
 

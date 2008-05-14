@@ -533,7 +533,7 @@ __declspec(dllexport) STDAPI DllRegisterServer(void)
 {
     HRESULT hr;
 
-    TRACE("mso_to_oo.dll:regsvr.c:DllRegisterServer \n");
+    TRACE("\n");
 
     hr = register_coclasses(coclass_list);
     if (SUCCEEDED(hr))
@@ -547,7 +547,7 @@ __declspec(dllexport) STDAPI DllUnregisterServer(void)
 {
     HRESULT hr;
 
-    TRACE("mso_to_oo.dll:regsvr.c:DllUnregisterServer \n");
+    TRACE("\n");
 
     hr = unregister_coclasses(coclass_list);
     if (SUCCEEDED(hr))

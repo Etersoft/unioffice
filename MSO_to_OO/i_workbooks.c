@@ -68,7 +68,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_AddRef(
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:AddRef REF=%i \n", This->ref);
+    TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -88,7 +88,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_QueryInterface(
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -115,7 +115,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
 
     ref = InterlockedDecrement(&This->ref);
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Release REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (ref == 0) {
         if (This->pApplication!=NULL) {
@@ -146,7 +146,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
     LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Add \n");
+    TRACE(" \n");
 
     if (This == NULL) return E_POINTER;
 
@@ -180,13 +180,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
        BSTR Filename;
        MSO_TO_OO_MakeURLFromFilename(V_BSTR(&varTemplate),&Filename);
        /*преобразовали*/
-       WTRACE(L"mso_to_oo.dll:i_workbooks.c:Add  FILENAME ------>  %s \n",Filename);
+       WTRACE(L"FILENAME ------>  %s \n",Filename);
        hres = MSO_TO_OO_I_Workbook_Initialize2( This->pworkbook[This->current_workbook], This->pApplication, Filename, VARIANT_TRUE);
        SysFreeString(Filename);
     }
     if (FAILED(hres)) {
         *ppWorkbook = NULL;
-        TRACE("mso_to_oo.dll:i_workbooks.c:Add  ERROR when Workbook_Initialize");
+        TRACE("ERROR when Workbook_Initialize");
         return hres;
     }
     I_Workbook_AddRef(*ppWorkbook);
@@ -211,7 +211,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__Open(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:_Open \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -223,7 +223,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Close(
     int i;
     BSTR filename;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Close \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -253,7 +253,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Count(
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Count (GET) \n");
+    TRACE(" \n");
 
     if (This == NULL) return E_POINTER;
 
@@ -268,7 +268,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Application(
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Application (GET) \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -287,7 +287,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Parent(
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Parent (GET) \n");
+    TRACE("\n");
 
     if (This == NULL) return E_POINTER;
 
@@ -329,7 +329,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Open \n");
+    TRACE(" \n");
 
     if (This == NULL) return E_POINTER;
 
@@ -359,7 +359,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     BSTR filenametmp;
     MSO_TO_OO_MakeURLFromFilename(Filename, &filenametmp);
     /*преобразовали*/
-    WTRACE(L"mso_to_oo.dll:i_workbooks.c:FILENAME ------>  %s \n",filenametmp);
+    WTRACE(L"FILENAME ------>  %s \n",filenametmp);
     VARIANT_BOOL astemp;
     astemp = VARIANT_FALSE;
 
@@ -396,7 +396,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenText(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:OpenText \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -421,7 +421,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__OpenText(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:_OpenText \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -433,7 +433,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenXML(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:OpenXML \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -444,7 +444,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__OpenXML(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:_OpenXML \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -458,7 +458,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenDatabase(
         long Lcid,
         IDispatch **ppWorkboo)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:OpenDatabase \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -467,7 +467,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_CanCheckOut(
         BSTR Filename,
         VARIANT_BOOL *result)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:CanCheckOut (GET) \n");
+    TRACE("\n");
     /*всегда возвращаем - нельзя получить*/
     *result = VARIANT_FALSE;
     
@@ -479,7 +479,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_put_CanCheckOut(
         BSTR Filename,
         VARIANT_BOOL result)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:CanCheckOut (PUT) \n");
+    TRACE("\n");
     return S_OK;
 }
 
@@ -487,7 +487,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_CheckOut(
         I_Workbooks* iface,
         BSTR Filename)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:CheckOut \n");
+    TRACE("\n");
     /*Возвращаем S_OK на всякий случай*/
     return S_OK;
 }
@@ -496,7 +496,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Creator(
         I_Workbooks* iface,
         VARIANT *result)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:Creator (GET) \n");
+    TRACE("\n");
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
     return S_OK;
@@ -507,7 +507,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__Default(
         VARIANT varIndex,
         IDispatch **ppSheet)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:_Default \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -517,7 +517,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Item(
         IDispatch **result)
 {
     /*Должны обрабатывать и имена и числовые значения*/
-    TRACE("mso_to_oo.dll:i_workbooks.c:Item \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -540,7 +540,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks___OpenText(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:__OpenText \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -549,7 +549,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetTypeInfoCount(
         I_Workbooks* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:GetTypeInfoCount \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -559,7 +559,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:i_workbooks.c:GetTypeInfo \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -645,7 +645,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetIDsOfNames(
     }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:i_workbooks.c:Workbooks - %s NOT REALIZE\n", *rgszNames);
+    WTRACE(L"%s NOT REALIZE\n", *rgszNames);
     return E_NOTIMPL;
 }
 
@@ -670,7 +670,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
     VARIANT vnull;
     long l;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Invoke \n");
+    TRACE("\n");
 
     VariantInit(&vnull);
     VariantInit(&astemp);
@@ -902,7 +902,7 @@ extern HRESULT _I_WorkbooksConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     WorkbooksImpl *workbooks;
 
-    TRACE("mso_to_oo.dll:i_workbooks.c:Constructor (%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
 
     workbooks = HeapAlloc(GetProcessHeap(), 0, sizeof(*workbooks));
     if (!workbooks) {

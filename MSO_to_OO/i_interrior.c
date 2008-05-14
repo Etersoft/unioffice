@@ -39,7 +39,7 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_AddRef(
     InteriorImpl *This = (InteriorImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_interrior.c:AddRef REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -57,7 +57,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_QueryInterface(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_interrior.c:QueryInterface \n");
+    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -78,7 +78,7 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_Release(
     InteriorImpl *This = (InteriorImpl*)iface;
     ULONG ref;
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Release REF = %i \n", This->ref);
+    TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
 
@@ -104,7 +104,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Color(
     VARIANT vret;
     VariantInit(&vret);
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Color (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -114,16 +114,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Color(
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, cur_range->pOORange, L"CellBackColor", 0);
 
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_interrior:Color ERROR when CellBackColor");
+        TRACE("ERROR when CellBackColor");
     }
 
     hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_interrior.c:Color (GET) ERROR VariantChangeTypeEx   %08x\n",hres);
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
     return E_FAIL;
     }
     *plcolor = V_I4(&vret);
-    TRACE("mso_to_oo.dll:i_interrior.c:Color (GET) lcolor=%i\n",*plcolor);
+    TRACE("lcolor=%i\n",*plcolor);
     return S_OK;
 }
 
@@ -135,7 +135,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Color(
     HRESULT hres;
     VARIANT vret,param1;
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Color (PUT) lcolor = %i\n",lcolor);
+    TRACE(" lcolor = %i\n",lcolor);
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -148,7 +148,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Color(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"IsCellBackgroundTransparent", 1, param1);
 
-    if (FAILED(hres)) TRACE("mso_to_oo.dll:i_interrior:Color ERROR when IsCellBackgroundTransparent");
+    if (FAILED(hres)) TRACE("ERROR when IsCellBackgroundTransparent");
 
     VariantClear(&param1);
     V_VT(&param1) = VT_I4;
@@ -156,7 +156,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Color(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"cellBackColor", 1, param1);
 
-    if (FAILED(hres)) TRACE("mso_to_oo.dll:i_interrior:Color ERROR when cellBackColor");
+    if (FAILED(hres)) TRACE("ERROR when cellBackColor");
 
     return hres;
 }
@@ -169,7 +169,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_ColorIndex(
     long tmpcolor;
     int i;
     HRESULT hres;
-    TRACE("mso_to_oo.dll:i_interrior.c:ColorIndex (GET) \n");
+    TRACE(" \n");
 
     if (This==NULL) return E_POINTER;
 
@@ -184,7 +184,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_ColorIndex(
             return S_OK;
         }
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Colorindex (GET) ERROR Color don`t have colorindex \n");
+    TRACE("ERROR Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
     return S_OK;
@@ -196,7 +196,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_ColorIndex(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
     long tmpcolor;
-    TRACE("mso_to_oo.dll:i_interrior.c:ColorIndex (PUT)\n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -204,7 +204,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_ColorIndex(
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
 
     if ((lcolorindex<1)||(lcolorindex>56)) {
-        TRACE("mso_to_oo.dll:i_interrior.c:Colorindex (PUT) ERROR Incorrect colorindex %i\n", lcolorindex);
+        TRACE("ERROR Incorrect colorindex %i\n", lcolorindex);
         return S_OK;
     } else 
         return MSO_TO_OO_I_Interior_put_Color(iface,color[lcolorindex-1]);
@@ -216,7 +216,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Application(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Application (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -230,7 +230,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Parent(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Parent (GET) \n");
+    TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
@@ -248,7 +248,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Creator(
         I_Interior* iface,
         VARIANT *result)
 {
-    TRACE("mso_to_oo.dll:i_interrior.c:Creator (GET) \n");
+    TRACE(" \n");
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
     return S_OK;
@@ -260,7 +260,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfoCount(
         I_Interior* iface,
         UINT *pctinfo)
 {
-    TRACE("mso_to_oo.dll:i_interrior.c:GetTypeInfoCount \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -270,7 +270,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("mso_to_oo.dll:i_interrior.c:GetTypeInfo \n");
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -304,7 +304,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetIDsOfNames(
     }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
-    WTRACE(L"mso_to_oo.dll:i_interrior.c:Interior - %s NOT REALIZE\n",*rgszNames);
+    WTRACE(L" %s NOT REALIZE\n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -337,7 +337,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_interrior.c:Invoke (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
+                TRACE(" (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
                 return E_FAIL;
             }
             ltmp = V_I4(&vtmp);
@@ -365,7 +365,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
 
             hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
             if (FAILED(hres)) {
-                TRACE("mso_to_oo.dll:i_interrior.c:Invoke (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
+                TRACE(" (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
                 return E_FAIL;
             }
             ltmp = V_I4(&vtmp);
@@ -433,7 +433,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
         }
     }
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Invoke dispIdMember = %i NOT REALIZE\n",dispIdMember);
+    TRACE(" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
 }
 
@@ -466,7 +466,7 @@ extern HRESULT _I_InteriorConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     InteriorImpl *interior;
 
-    TRACE("mso_to_oo.dll:i_interrior.c:Constructor  (%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
     
     interior = HeapAlloc(GetProcessHeap(), 0, sizeof(*interior));
     if (!interior)
