@@ -123,8 +123,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
     HRESULT hres;
     IUnknown *punk = NULL;
     LPUNKNOWN pUnkOuter = NULL;
-    /*Check params (I2, I4 or BSTR),  retrieve necessary sheet
-    and create excel-wrapper for this sheet*/
 
     /*преобразовываем любой тип к I4*/
     hres = VariantChangeTypeEx(&varIndex, &varIndex, 0, 0, VT_I4);
@@ -140,14 +138,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
         if (FAILED(hres)) return E_NOINTERFACE;
 
         hres = I_Worksheet_QueryInterface(punk, &IID_I_Worksheet, (void**) &(pSheet));
-/*        I_Worksheet_Release(punk);*/
         if (FAILED(hres)) return E_NOINTERFACE;
 
 
         MSO_TO_OO_I_Worksheet_Initialize(pSheet,(I_Workbook*)(This->pwb), V_DISPATCH(&resultSheet));
 
         *ppSheet = (IDispatch*)pSheet;
-/*        IDispatch_AddRef(*ppSheet);*/
         return S_OK;
     } else 
         if (V_VT(&varIndex) == VT_BSTR) {
@@ -163,13 +159,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
             if (FAILED(hres)) return E_NOINTERFACE;
 
             hres = I_Worksheet_QueryInterface(punk, &IID_I_Worksheet, (void**) &(pSheet));
-/*            I_Worksheet_Release(punk);*/
             if (FAILED(hres)) return E_NOINTERFACE;
 
             MSO_TO_OO_I_Worksheet_Initialize(pSheet,(I_Workbook*)(This->pwb), V_DISPATCH(&resultSheet));
 
             *ppSheet = (IDispatch*)pSheet;
-/*            IDispatch_AddRef(*ppSheet);*/
             return S_OK;
         } else {
             *ppSheet = NULL;
@@ -354,7 +348,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         } else {
             /*Если нет, то ищем по имени */
             i = MSO_TO_OO_FindIndexWorksheetByName(iface, V_BSTR(&Before));
-/*            if (i>=0) V_I4(&par2) = i-1; else V_I4(&par2) = 0;*/
             if (i>=0) V_I4(&par2) = i; else V_I4(&par2) = 0;
         }
         break;
@@ -366,7 +359,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         } else {
             /*Если нет, то ищем по имени */
             i = MSO_TO_OO_FindIndexWorksheetByName(iface, V_BSTR(&After));
-/*            if (i>=0) V_I4(&par2) = i; else V_I4(&par2) = 0;*/
             if (i>=0) V_I4(&par2) = i+1; else V_I4(&par2) = 0;
         }
         break;

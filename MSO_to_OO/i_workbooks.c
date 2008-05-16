@@ -721,7 +721,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             }
             return S_OK;
         case 3:
-            /*MSO_TO_OO_I_Workbooks_Close */
             MSO_TO_OO_I_Workbooks_Close(iface, l);
             return S_OK;
         case 4:
@@ -824,7 +823,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             hr = MSO_TO_OO_I_Workbooks_CheckOut(iface, V_BSTR(&(pDispParams->rgvarg[0])));
             return hr;
         case 15:
-            /*MSO_TO_OO_I_Workbooks_get_Creator*/
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 /*это свойство только для чтения*/
                 return E_NOTIMPL;

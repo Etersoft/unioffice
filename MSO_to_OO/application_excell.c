@@ -252,7 +252,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Worksheets(
 {
    /*Используем Sheets - они выполняют одинаковые функции*/
    TRACE("\n");
-   return E_NOTIMPL;
+   return MSO_TO_OO_I_ApplicationExcell_get_Sheets(iface, ppSheets);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Cells(

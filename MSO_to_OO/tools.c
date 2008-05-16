@@ -17,8 +17,7 @@ HRESULT AutoWrap(int autoType, VARIANT *pvResult, IDispatch *pDisp, LPOLESTR ptN
     DISPID dispidNamed = DISPID_PROPERTYPUT;
     DISPID dispID;
     HRESULT hr;
-    
-    /* VARIANT *pArgs;*/
+
     VARIANTARG vararg[10];
     EXCEPINFO exi;
 

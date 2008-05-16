@@ -200,7 +200,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         if (FAILED(hres)) return E_NOINTERFACE;
 
         hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
-/*        I_Range_Release(punk);*/
+
         if (pCell == NULL) {
             return E_FAIL;
         }
@@ -233,7 +233,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         if (FAILED(hres)) return E_NOINTERFACE;
 
         hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
-  /*      I_Range_Release(punk);*/
+
         if (pCell == NULL) {
             return E_FAIL;
         }
@@ -347,7 +347,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
     if (pFont == NULL) {
         return E_FAIL;
     }
-/*    I_Font_Release(punk);*/
+
     hr = MSO_TO_OO_I_Font_Initialize((I_Font*)pFont, iface);
 
     if (FAILED(hr)) {
@@ -356,7 +356,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
     }
 
     *ppFont = pFont;
-/*    I_Font_AddRef(*ppFont);*/
 
     return S_OK;
 }
@@ -425,6 +424,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
     /*Если одно измерение*/
     if (arr_dim == 1) {
     /*TODO*/
+        TRACE("1 Demension array NOT REALIZE NOW \n");
     }
     /*Если два измерения*/
     if (arr_dim == 2) {
@@ -474,7 +474,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
             TRACE("Error when SafeArrayUnaccessData \n");
         }
         return hres;
-        /*hres = AutoWrap(DISPATCH_METHOD, &res, This->pOORange, L"setDataArray", 1, varValue);*/
     }
     /*Если не равно ни 1 ни 2, то ничего не делаем*/
     return S_OK;
@@ -540,9 +539,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Select(
     }
     WorksheetImpl *wsh = (WorksheetImpl*)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
-    /*_ApplicationExcellImpl *tapp = (_ApplicationExcellImpl*) (This->pApplication);*/
 
-    VARIANT vRes,vRet,param/*,oDoc*/;
+    VARIANT vRes,vRet,param;
     VariantInit(&vRes);
     VariantInit(&vRet);
     VariantInit(&param);
@@ -563,7 +561,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Select(
     hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vRes), L"Select",1,param);
 
     if (FAILED(hres)) {
-        /*IDispatch_Release(V_DISPATCH(&oDoc));*/
         TRACE("ERROR when Select \n");
         return hres;
     }
@@ -571,7 +568,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Select(
     V_VT(pvarResult) = VT_BOOL;
     V_BOOL(pvarResult) = VARIANT_TRUE;
 
-    /*IDispatch_Release(V_DISPATCH(&oDoc));*/
     VariantClear(&vRes);
     VariantClear(&vRet);
     VariantClear(&param);
@@ -1307,7 +1303,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Interior(
         return E_FAIL;
     }
     /*проинициализируем его*/
-/*    I_Interior_Release(punk);*/
     hr = MSO_TO_OO_I_Interior_Initialize((I_Interior*)pInterior, iface);
 
     if (FAILED(hr)) {
@@ -1316,7 +1311,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Interior(
     }
 
     *value = pInterior;
-/*    I_Interior_AddRef(*value);*/
 
     return S_OK;
 }
@@ -1356,7 +1350,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Borders(
     }
 
     *value = pBorders;
-//    I_Borders_AddRef(pBorders);
 
     return S_OK;
 }
@@ -1559,11 +1552,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
     }
 
     command = SysAllocString(L".uno:Copy");
-    /* Create PropertyValue with save-format-data */
-/*    IDispatch *ooParams;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcell*)(paren_wb->pApplication), &ooParams);
-    if (ooParams == NULL)
-        return E_FAIL;*/
 
     pPropVals = SafeArrayCreateVector( VT_DISPATCH, 0, 0);
     VariantInit (&param);
@@ -1589,21 +1577,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
             TRACE("ERROR parameter\n");
             return E_FAIL;
         }
-
-/*        long startrow, startcolumn, endrow, endcolumn;
-
-        hres = MSO_TO_OO_GetRangeAddress((I_Range*)(V_DISPATCH(&RangeTo)), &startrow, &startcolumn, &endrow, &endcolumn);
-        if (FAILED(hres)) {
-            TRACE("mso_to_oo.dll:i_range.c:Count (GET) ERROR when GetRangeAddress\n");
-            return hres;
-        }
-        VARIANT col,row;
-        VariantInit(&col);
-        VariantInit(&row);
-        V_VT(&col)=VT_I4;
-        V_VT(&row)=VT_I4;
-        V_I4(&col)=startcolumn+1;
-        V_I4(&row)=startrow+1;*/
 
         hres = MSO_TO_OO_I_Range_Select((I_Range*)(V_DISPATCH(&RangeTo)),&tmp_var);
         if (FAILED(hres)) {

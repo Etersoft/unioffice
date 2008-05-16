@@ -277,7 +277,7 @@ HRESULT MSO_TO_OO_GetActiveSheet(
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Worksheet_QueryInterface(punk, &IID_I_Worksheet, (void**) &(pworksheet));
-/*    I_Worksheet_Release(punk);*/
+
     if (FAILED(hres)) return E_NOINTERFACE;
 
     MSO_TO_OO_I_Worksheet_Initialize(pworksheet, (I_Workbook*)This->pwb, V_DISPATCH(&resultSheet));
@@ -315,7 +315,7 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
         if (FAILED(hres)) return E_NOINTERFACE;
 
         hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &(This->pAllRange));
- /*       I_Range_Release(punk);*/
+
         if (FAILED(hres)) return E_NOINTERFACE;
     }
 
@@ -672,7 +672,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Sheets_QueryInterface(punk, &IID_I_Sheets, (void**) &(This->pSheets));
-/*    I_Sheets_Release(punk);*/
+
     if (FAILED(hres)) return E_NOINTERFACE;
     /*теперь инициализируем*/
     hres = MSO_TO_OO_I_Sheets_Initialize((I_Sheets*)(This->pSheets), iface);
@@ -878,7 +878,7 @@ HRESULT MSO_TO_OO_GetActiveCells(
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-/*    I_Range_Release(punk);*/
+
     if (pRange == NULL) {
         return E_FAIL;
     }

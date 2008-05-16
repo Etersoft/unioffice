@@ -98,9 +98,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
     res = I_ApplicationExcell_QueryInterface(punk, riid, ppvObj);
     if (FAILED(res)) return res;
 
-/*    I_ApplicationExcell_Release(punk);*/
     return res;
-
 }
 
 static HRESULT WINAPI MSO_TO_OO_IClassFactory_LockServer(

@@ -233,7 +233,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
- /*   I_Range_Release(punk);*/
     if (pRange == NULL) {
        return E_FAIL;
     }
@@ -251,7 +250,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
         return hres;
     }
 
-/*    I_Range_AddRef(pRange);*/
     *ppRange = pRange;
     I_Range_AddRef((I_Range*)*ppRange);
     I_Range_Release(pRange);
@@ -369,10 +367,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Activate(
     V_VT(&param) = VT_DISPATCH | VT_ARRAY;
     V_ARRAY(&param) = pPropVals;
 
-/*    hres = MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook((I_ApplicationExcell*) (paren_wb->pApplication), command, param);
-    if (FAILED(hres)){
-        return hres;
-    }*/
     hres = MSO_TO_OO_ExecuteDispatchHelper_WB((I_Workbook*)paren_wb, command, param);
     if (FAILED(hres)){
         return hres;
@@ -420,7 +414,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
             if (FAILED(hres)) return E_NOINTERFACE;
 
             hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
- /*           I_Range_Release(punk);*/
             if (pRange == NULL) {
                 return E_FAIL;
             }
@@ -436,7 +429,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
                 return hres;
             }
 
-   /*         I_Range_AddRef(pRange);*/
             *ppRange = pRange;
             I_Range_AddRef((I_Range*)*ppRange);
             I_Range_Release(pRange);
@@ -475,7 +467,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
                 if (FAILED(hres)) return E_NOINTERFACE;
 
                 hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-   /*             I_Range_Release(punk);*/
+
                 if (pRange == NULL) {
                     return E_FAIL;
                 }
@@ -493,7 +485,6 @@ TRACE("PARAMETRS IS %i     %i \n", row1,row2);
                     return hres;
                 }
 
-   /*             I_Range_AddRef(pRange);*/
                 *ppRange = pRange;
                 I_Range_AddRef((I_Range*)*ppRange);
                 I_Range_Release(pRange);
@@ -548,7 +539,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
             if (FAILED(hres)) return E_NOINTERFACE;
 
             hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-  /*          I_Range_Release(punk);*/
+
             if (pRange == NULL) {
                 return E_FAIL;
             }
@@ -564,7 +555,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
                 return hres;
             }
 
-  /*          I_Range_AddRef(pRange);*/
             *ppRange = pRange;
             I_Range_AddRef((I_Range*)*ppRange);
             IDispatch_Release(pRange);
@@ -605,7 +595,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
                 if (FAILED(hres)) return E_NOINTERFACE;
 
                 hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
- /*               I_Range_Release(punk);*/
+
                 if (pRange == NULL) {
                     return E_FAIL;
                 }
@@ -623,7 +613,6 @@ TRACE("PARAMETRS IS %i     %i \n", col1,col2);
                     return hres;
                 }
 
-            /*    I_Range_AddRef(pRange);*/
                 *ppRange = pRange;
                 I_Range_AddRef((I_Range*)pRange);
                 IDispatch_Release(pRange);
@@ -780,108 +769,6 @@ if (FAILED(hres)) {
 }
 
 return S_OK;
-
-/*
-
-    WorksheetImpl *This = (WorksheetImpl*)iface;
-    int ftype_add = 0,i;
-    HRESULT hres;
-    VARIANT par1,par2,par3, res,} vNull, find_name;
-    BSTR name,name_of_copy,tmp_name;
-    WorksheetImpl *tmp_wsh;
-    WorkbookImpl *parent_wb = (WorkbookImpl*)This->pwb;
-    SheetsImpl *parent_sheets = (SheetsImpl*)parent_wb->pSheets;
-    SheetsImpl *sheets_find;
-    IDispatch *wb_find; 
-    VariantInit(&par1);
-    VariantInit(&par2);
-    VariantInit(&par3);
-    VariantInit(&vNull);
-    VariantClear(&find_name);
-    IDispatch *new_wsh;
-    _ApplicationExcellImpl *app = (_ApplicationExcellImpl*)parent_wb->pApplication;
-
-    TRACE("\n");
-
-    if (This==NULL) return E_POINTER;
-
-
-    if ((V_VT(&Before)==VT_EMPTY) || (V_VT(&Before)==VT_NULL)) {
-        VariantClear(&Before);
-    } else {
-        tmp_wsh =(WorksheetImpl*)V_DISPATCH(&Before);
-        ftype_add = 1;
-    }
-    if ((V_VT(&After)==VT_EMPTY) || (V_VT(&After)==VT_NULL)) {
-        VariantClear(&After);
-    } else {
-        tmp_wsh =(WorksheetImpl*)V_DISPATCH(&After);
-        ftype_add = 2;
-    }
-
-    switch (ftype_add) {
-    case 1:
-        hres = I_Worksheet_get_Name((I_Worksheet*)tmp_wsh, &tmp_name);
-        if (FAILED(hres)) {
-            TRACE("mso_to_oo.dll:i_worksheet.c:Copy ERROR when get_Name\n");*/
-            /*просто выходим из процедуры*/ 
-/*            return S_OK;
-        }
-WTRACE(L"----------------------------> %s \n \n",tmp_name);
-TRACE("\n");
-        i = MSO_TO_OO_FindIndexWorksheetByName((I_Sheets*)(paren_wb->pSheets), tmp_name);
-        if (i>=0) V_I4(&par3) = i-1; else V_I4(&par3) = 0;
-        break;
-    case 2:
-        hres = I_Worksheet_get_Name((I_Worksheet*)tmp_wsh, &tmp_name);
-        if (FAILED(hres)) {
-            TRACE("mso_to_oo.dll:i_worksheet.c:Copy ERROR when get_Name\n");*/
-            /*просто выходим из процедуры*/ 
-/*            return S_OK;
-        }
-WTRACE(L"----------------------------> %s \n \n",tmp_name);
-TRACE("\n");
-        i = MSO_TO_OO_FindIndexWorksheetByName((I_Sheets*)(parent_wb->pSheets), tmp_name);
-        if (i>=0) V_I4(&par3) = i; else V_I4(&par3) = 0;
-        break;
-    case 0:
-    default:
-        TRACE("mso_to_oo.dll:i_worksheet.c:Copy to the new Workbook \n");
-        return E_NOTIMPL;
-    }
-    hres = I_Worksheet_get_Name(iface, &name);
-    if (FAILED(hres)) {
-       TRACE("mso_to_oo.dll:i_worksheet.c:Copy ERROR when get_Name\n");*/
-       /*просто выходим из процедуры*/ 
-/*       return S_OK;
-    }
-    VarBstrCat(name, L" 2",&name_of_copy);
-
-    V_VT(&par1) = VT_BSTR;
-    V_BSTR(&par1) = SysAllocString(name);
-    V_VT(&par2) = VT_BSTR;
-    V_BSTR(&par2) = SysAllocString(name_of_copy);
-*/
-/*?????? надо узнать куда вставлять*/
-
-/*
-    hres = AutoWrap(DISPATCH_METHOD, &res, sheets->pOOSheets, L"copyByName", 3,par3,par2,par1);
-    if (FAILED(hres)) {
-        TRACE("mso_to_oo.dll:i_worksheet.c:Copy ERROR when copyByName \n");
-        return hres;
-    }
-*/
-    /*Надо проверить на Excel делает ли он копию, активной*/
-
-/*    VariantClear(&par1);
-    VariantClear(&par2);
-    VariantClear(&par3);
-    SysFreeString(name_of_copy);
-    SysFreeString(name);
-    return S_OK;
-*/
-
-
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Delete(
