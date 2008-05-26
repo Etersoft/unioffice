@@ -92,6 +92,8 @@ static WCHAR const str_top[] = {
     'T','o','p',0};
 static WCHAR const str_shrinktofit[] = {
     'S','h','r','i','n','k','T','o','F','i','t',0};
+static WCHAR const str_mergecells[] = {
+    'M','e','r','g','e','C','e','l','l','s',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -1844,6 +1846,54 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_ShrinkToFit(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeCells(
+        I_Range* iface,
+        VARIANT *pparam)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT vRes,vtmp;
+    VariantInit(&vRes);
+    VariantInit(&vtmp);
+
+    TRACE(" \n");
+
+    if (This == NULL) return E_POINTER;
+
+    HRESULT hres = AutoWrap(DISPATCH_METHOD, &vRes, This->pOORange, L"getIsMerged", 0);
+
+    hres = VariantChangeTypeEx(&vtmp, &vRes,0,0,VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR when VariantChangeTypeEx\n");
+        return E_FAIL;
+    }
+    *pparam = vtmp;
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_MergeCells(
+        I_Range* iface,
+        VARIANT param)
+{
+    HRESULT hres;
+    VARIANT vtmp;
+
+    VariantInit(&vtmp);
+
+    hres = VariantChangeTypeEx(&vtmp, &param, 0, 0, VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR when VariantChangeTypeEx\n");
+    }
+
+    if (V_BOOL(&vtmp)==VARIANT_FALSE) {
+        hres = MSO_TO_OO_I_Range_UnMerge(iface);
+    } else {
+        hres = MSO_TO_OO_I_Range_Merge(iface, VARIANT_TRUE);
+    }
+
+    return hres;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -2009,6 +2059,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_shrinktofit)) {
         *rgDispId = 35;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_mergecells)) {
+        *rgDispId = 36;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -2677,6 +2731,31 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
+    case 36://MergeCells
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) {
+                TRACE("ERROR INVALID ARGUMENT \n");
+                return E_INVALIDARG;
+            }
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = MSO_TO_OO_I_Range_put_MergeCells(iface, var1);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
+        } else {
+            if (pVarResult!=NULL){
+                hres = MSO_TO_OO_I_Range_get_MergeCells(iface, pVarResult);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                return hres;
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -2734,7 +2813,9 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_get_Left,
     MSO_TO_OO_I_Range_get_Top,
     MSO_TO_OO_I_Range_get_ShrinkToFit,
-    MSO_TO_OO_I_Range_put_ShrinkToFit
+    MSO_TO_OO_I_Range_put_ShrinkToFit,
+    MSO_TO_OO_I_Range_get_MergeCells,
+    MSO_TO_OO_I_Range_put_MergeCells
 };
 
 

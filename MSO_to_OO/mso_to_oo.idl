@@ -378,6 +378,9 @@ import "wtypes.idl";
 //ShrinkToFit
 		[propget,id(35), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([out, retval] VARIANT *pparam);
 		[propput,id(35), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([in] VARIANT param);
+//MergeCells
+		[propget,id(36), helpstring("property MergeCells")] HRESULT MergeCells([out, retval] VARIANT *pparam);
+		[propput,id(36), helpstring("property MergeCells")] HRESULT MergeCells([in] VARIANT param);
 	};
 
 	[
