@@ -375,6 +375,9 @@ import "wtypes.idl";
 		[propget,id(33), helpstring("property Left")] HRESULT Left([out, retval] VARIANT *value);
 //Top
 		[propget,id(34), helpstring("property Top")] HRESULT Top([out, retval] VARIANT *value);
+//ShrinkToFit
+		[propget,id(35), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([out, retval] VARIANT *pparam);
+		[propput,id(35), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([in] VARIANT param);
 	};
 
 	[

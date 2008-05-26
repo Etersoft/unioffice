@@ -90,6 +90,8 @@ static WCHAR const str_left[] = {
     'L','e','f','t',0};
 static WCHAR const str_top[] = {
     'T','o','p',0};
+static WCHAR const str_shrinktofit[] = {
+    'S','h','r','i','n','k','T','o','F','i','t',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -1795,6 +1797,53 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Top(
     return S_OK;
 }
 
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_ShrinkToFit(
+        I_Range* iface,
+        VARIANT *pparam)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT vRes,vtmp;
+    VariantInit(&vRes);
+    VariantInit(&vtmp);
+
+    TRACE(" \n");
+
+    if (This == NULL) return E_POINTER;
+
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, This->pOORange, L"ShrinkToFit", 0);
+
+    hres = VariantChangeTypeEx(&vtmp, &vRes,0,0,VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR when VariantChangeTypeEx\n");
+        return E_FAIL;
+    }
+    *pparam = vtmp;
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_ShrinkToFit(
+        I_Range* iface,
+        VARIANT param)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT vRes;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, This->pOORange, L"ShrinkToFit", 1, param);
+    if (FAILED(hres))  {
+       TRACE("ERROR when ShrinkToFit \n");
+       return hres;
+    }
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -1956,6 +2005,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_top)) {
         *rgDispId = 34;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_shrinktofit)) {
+        *rgDispId = 35;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -2599,6 +2652,31 @@ TRACE("Parametr 1\n");
             }
             return hres;
         }
+    case 35://ShrinkToFit
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) {
+                TRACE("ERROR INVALID ARGUMENT \n");
+                return E_INVALIDARG;
+            }
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = MSO_TO_OO_I_Range_put_ShrinkToFit(iface, var1);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
+        } else {
+            if (pVarResult!=NULL){
+                hres = MSO_TO_OO_I_Range_get_ShrinkToFit(iface, pVarResult);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                return hres;
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -2654,7 +2732,9 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_get_Height,
     MSO_TO_OO_I_Range_get_Width,
     MSO_TO_OO_I_Range_get_Left,
-    MSO_TO_OO_I_Range_get_Top
+    MSO_TO_OO_I_Range_get_Top,
+    MSO_TO_OO_I_Range_get_ShrinkToFit,
+    MSO_TO_OO_I_Range_put_ShrinkToFit
 };
 
 
