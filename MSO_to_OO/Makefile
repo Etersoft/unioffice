@@ -22,7 +22,7 @@ OBJECTS = tools.o \
 	i_pagesetup.o\
 	i_sheets.o \
 	i_worksheet.o \
-	application_excell.o
+	application_excel.o
 
 .PHONY: all clean
 
