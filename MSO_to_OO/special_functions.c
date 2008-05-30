@@ -22,14 +22,14 @@
 
 HRESULT MSO_TO_OO_I_Workbooks_Initialize(
         I_Workbooks* iface,
-        I_ApplicationExcell *app)
+        I_ApplicationExcel *app)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
     TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
-    if (This->pApplication != NULL) I_ApplicationExcell_AddRef(This->pApplication);
+    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);
     This->count_workbooks = 0;
     This->current_workbook = -1;
     This->pworkbook = NULL;
@@ -142,11 +142,11 @@ HRESULT MSO_TO_OO_I_PageSetup_Initialize(
     }
 
     if (this->pApplication!=NULL) {
-        I_ApplicationExcell_Release((I_ApplicationExcell*)this->pApplication);
+        I_ApplicationExcel_Release((I_ApplicationExcel*)this->pApplication);
     }
     this->pApplication = wb->pApplication;
     if (this->pApplication!=NULL) {
-        I_ApplicationExcell_AddRef((I_ApplicationExcell*)this->pApplication);
+        I_ApplicationExcel_AddRef((I_ApplicationExcel*)this->pApplication);
     }
 
 
@@ -154,7 +154,7 @@ HRESULT MSO_TO_OO_I_PageSetup_Initialize(
 
 HRESULT MSO_TO_OO_I_Workbook_Initialize(
         I_Workbook* iface,
-        I_ApplicationExcell *app)
+        I_ApplicationExcel *app)
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
     /* External AddWorkbook */
@@ -169,8 +169,8 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
-    if (This->pApplication != NULL) I_ApplicationExcell_AddRef(This->pApplication);
-    _ApplicationExcellImpl *Thisapp = (_ApplicationExcellImpl*)app;
+    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);
+    _ApplicationExcelImpl *Thisapp = (_ApplicationExcelImpl*)app;
 
     VariantInit(&param0);
     VariantInit(&param1);
@@ -188,7 +188,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
 
     hres = AutoWrap(DISPATCH_METHOD, &resultDoc, Thisapp->pdOODesktop, L"loadComponentFromURL", 4, param3, param2, param1, param0);
     if (FAILED (hres)) {
-        I_ApplicationExcell_Release(This->pApplication);
+        I_ApplicationExcel_Release(This->pApplication);
         This->pApplication = NULL;
         return hres;
     }
@@ -335,7 +335,7 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
 }
 
 HRESULT MSO_TO_OO_GetDispatchPropertyValue(
-         I_ApplicationExcell *app,
+         I_ApplicationExcel *app,
          IDispatch** pIDispatch)
 {
     /* there are many of the Open Office functions use "com.sun.star.beans.PropertyValue",
@@ -346,7 +346,7 @@ HRESULT MSO_TO_OO_GetDispatchPropertyValue(
 
     TRACE("\n");
 
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)app;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)app;
 
     V_VT(&objstr) = VT_BSTR;
     V_BSTR(&objstr) = SysAllocString(L"com.sun.star.beans.PropertyValue");
@@ -363,7 +363,7 @@ HRESULT MSO_TO_OO_GetDispatchPropertyValue(
 }
 
 HRESULT MSO_TO_OO_GetDispatchHelper(
-         I_ApplicationExcell *app,
+         I_ApplicationExcel *app,
          IDispatch** pIDispatch)
 {
     /* there are many of the Open Office functions use "com.sun.star.frame.DispatchHelper",
@@ -374,7 +374,7 @@ HRESULT MSO_TO_OO_GetDispatchHelper(
 
     TRACE("\n");
 
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)app;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)app;
     if (This==NULL) {
         return E_POINTER;
     }
@@ -394,11 +394,11 @@ HRESULT MSO_TO_OO_GetDispatchHelper(
 }
 
 HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
-        I_ApplicationExcell *app,
+        I_ApplicationExcel *app,
         BSTR ooCommand,
         VARIANT ooParams) /*должен быть массив*/
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)app;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)app;
     HRESULT hres;
     VARIANT res;
 
@@ -420,7 +420,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
     VariantInit(&param4);
     WorkbookImpl *wb;
 
-    hres = I_ApplicationExcell_get_ActiveWorkbook(app,(IDispatch**) &wb);
+    hres = I_ApplicationExcel_get_ActiveWorkbook(app,(IDispatch**) &wb);
     if (FAILED(hres)){
         TRACE("ERROR when get_ActiveWorkbook \n");
     }
@@ -467,7 +467,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_WB(
     VariantInit(&param3);
     VariantInit(&param4);
     WorkbookImpl *This_wb = (WorkbookImpl*)wb; 
-    _ApplicationExcellImpl *This_app = (_ApplicationExcellImpl*)(This_wb->pApplication);
+    _ApplicationExcelImpl *This_app = (_ApplicationExcelImpl*)(This_wb->pApplication);
     HRESULT hres;
     VARIANT res;
 
@@ -480,7 +480,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_WB(
     }
 
     IDispatch *oodispatcher;
-    hres = MSO_TO_OO_GetDispatchHelper((I_ApplicationExcell*)This_app, &oodispatcher);
+    hres = MSO_TO_OO_GetDispatchHelper((I_ApplicationExcel*)This_app, &oodispatcher);
     if (FAILED(hres)) {
         TRACE("ERROR when GetDispatchHelper\n");
         return E_FAIL;
@@ -553,7 +553,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
 
     /* Create PropertyValue with save-format-data */
     IDispatch *dpv;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcell*)(This->pApplication), &dpv);
+    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(This->pApplication), &dpv);
     if (dpv == NULL)
         return E_FAIL;
 
@@ -592,7 +592,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
 
 HRESULT MSO_TO_OO_I_Workbook_Initialize2(
         I_Workbook* iface,
-        I_ApplicationExcell *app,
+        I_ApplicationExcel *app,
         BSTR Filename,
         VARIANT_BOOL astemplate)
 {
@@ -609,8 +609,8 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
-    if (This->pApplication != NULL) I_ApplicationExcell_AddRef(This->pApplication);
-    _ApplicationExcellImpl *Thisapp = (_ApplicationExcellImpl*)app;
+    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);
+    _ApplicationExcelImpl *Thisapp = (_ApplicationExcelImpl*)app;
 
     VariantInit(&param0);
     VariantInit(&param1);
@@ -660,7 +660,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     if (FAILED (hres)) {
         TRACE("Ne udalos` zagruzit \n");
         WTRACE(L"Filename = %s \n", Filename);
-        I_ApplicationExcell_Release(This->pApplication);
+        I_ApplicationExcel_Release(This->pApplication);
         This->pApplication = NULL;
         return hres;
     }
@@ -1163,11 +1163,11 @@ long MSO_TO_OO_FindIndexWorksheetByName(
 
 /*возвращает Workbook и индекс*/
 long MSO_TO_OO_GlobalFindIndexWorksheetByName(
-        I_ApplicationExcell *app,
+        I_ApplicationExcel *app,
         BSTR name,
         IDispatch **retval)
 {
-    _ApplicationExcellImpl *This_app = (_ApplicationExcellImpl*)app;
+    _ApplicationExcelImpl *This_app = (_ApplicationExcelImpl*)app;
     int i,id;
     WorkbooksImpl *wbs = (WorkbooksImpl*)This_app->pdWorkbooks;
     SheetsImpl *wsheets;

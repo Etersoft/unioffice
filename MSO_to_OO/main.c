@@ -41,7 +41,7 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
 __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVOID *ppv)
 {
     *ppv = NULL;
-    if (IsEqualGUID(rclsid, &CLSID__ApplicationExcell)) {
+    if (IsEqualGUID(rclsid, &CLSID__ApplicationExcel)) {
         return IClassFactory_QueryInterface((LPCLASSFACTORY)&OOFFICE_ClassFactory, iid, ppv);
     }
 

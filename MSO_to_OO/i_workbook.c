@@ -86,7 +86,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
         if (This->pApplication != NULL) {
-            I_ApplicationExcell_Release(This->pApplication);
+            I_ApplicationExcel_Release(This->pApplication);
             This->pApplication = NULL;
         }
         if (This->pDoc != NULL) {
@@ -148,7 +148,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
     WorkbookImpl *This = (WorkbookImpl*)iface;
     BSTR filename;
     HRESULT hres;
-    _ApplicationExcellImpl *app = (_ApplicationExcellImpl*)This->pApplication;
+    _ApplicationExcelImpl *app = (_ApplicationExcelImpl*)This->pApplication;
     WorkbooksImpl *wbs = (WorkbooksImpl*)app->pdWorkbooks;
     int i;
     IDispatch *pdtmp;
@@ -204,7 +204,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
 
     /* Create PropertyValue with save-format-data */
     IDispatch *dpv;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcell*)(This->pApplication), &dpv);
+    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(This->pApplication), &dpv);
     if (dpv == NULL)
         return E_FAIL;
 

@@ -689,7 +689,7 @@ import "wtypes.idl";
 		helpstring("I_Application Interface"),
 		pointer_default(unique)
 	]
-	interface I_ApplicationExcell : IDispatch
+	interface I_ApplicationExcel : IDispatch
 	{
 //UserControl 	True if the application is visible or if it was created or started by the user. False if you created or started the application programmatically by using the CreateObject or GetObject functions and the application is hidden.
 		[propput,id(1)] HRESULT UserControl([in] VARIANT_BOOL vbUserControl);
@@ -1031,8 +1031,8 @@ library MSO_TO_OOLib
 		uuid(AC49A062-65CE-42f1-9E14-89E8605677ED),
 		helpstring("_Application Class for Excel")
 	]
-	coclass _ApplicationExcell
+	coclass _ApplicationExcel
 	{
-		[default] interface I_ApplicationExcell;
+		[default] interface I_ApplicationExcel;
 	};
 };

@@ -67,10 +67,10 @@ static WCHAR const str_columns[] = {
 /*
 IUnknown
 */
-static ULONG WINAPI MSO_TO_OO_I_ApplicationExcell_AddRef(
-        I_ApplicationExcell* iface)
+static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_AddRef(
+        I_ApplicationExcel* iface)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     ULONG ref;
 
     if (This == NULL) return E_POINTER;
@@ -85,12 +85,12 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcell_AddRef(
     return ref;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_QueryInterface(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_QueryInterface(
+        I_ApplicationExcel* iface,
         REFIID riid,
         void **ppvObject)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
 
     TRACE("\n");
 
@@ -98,19 +98,19 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_QueryInterface(
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
-            IsEqualGUID(riid, &IID_I_ApplicationExcell)) {
+            IsEqualGUID(riid, &IID_I_ApplicationExcel)) {
         *ppvObject = &This->_applicationexcellVtbl;
-        MSO_TO_OO_I_ApplicationExcell_AddRef(iface);
+        MSO_TO_OO_I_ApplicationExcel_AddRef(iface);
         return S_OK;
     }
 
     return E_NOINTERFACE;
 }
 
-static ULONG WINAPI MSO_TO_OO_I_ApplicationExcell_Release(
-        I_ApplicationExcell* iface)
+static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_Release(
+        I_ApplicationExcel* iface)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     ULONG ref;
 
     if (This == NULL) return E_POINTER;
@@ -140,26 +140,26 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcell_Release(
 }
 
 /*
-I_ApplicationExcell
+I_ApplicationExcel
 */
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_UserControl(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_UserControl(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL vbUserControl)
 {
     TRACE("\n");
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_UserControl(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UserControl(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL *vbUserControl)
 {
     TRACE("\n");
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_DisplayAlerts(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL vbDisplayAlerts)
 {
    TRACE("\n");
@@ -167,8 +167,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_DisplayAlerts(
    return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_DisplayAlerts(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL *vbDisplayAlerts)
 {
    TRACE("\n");
@@ -177,43 +177,43 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_DisplayAlerts(
    return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_WindowState(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_WindowState(
+        I_ApplicationExcel* iface,
         XlWindowState State)
 {
     TRACE("\n");
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_WindowState(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_WindowState(
+        I_ApplicationExcel* iface,
         XlWindowState *State)
 {
     TRACE("\n");
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_Visible(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Visible(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL vbVisible)
 {
     TRACE("\n");
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Visible(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Visible(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL *vbVisible)
 {
     TRACE("\n");
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Workbooks(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Workbooks(
+        I_ApplicationExcel* iface,
         IDispatch **ppWorkbooks)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
 
     TRACE("\n");
 
@@ -230,11 +230,11 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Workbooks(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Sheets(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Sheets(
+        I_ApplicationExcel* iface,
         IDispatch **ppSheets)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     I_Workbook *pwb;
     HRESULT hres;
 
@@ -249,20 +249,20 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Sheets(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Worksheets(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Worksheets(
+        I_ApplicationExcel* iface,
         IDispatch **ppSheets)
 {
    /*Используем Sheets - они выполняют одинаковые функции*/
    TRACE("\n");
-   return MSO_TO_OO_I_ApplicationExcell_get_Sheets(iface, ppSheets);
+   return MSO_TO_OO_I_ApplicationExcel_get_Sheets(iface, ppSheets);
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Cells(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Cells(
+        I_ApplicationExcel* iface,
         IDispatch **ppRange)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     I_Workbook *pwb;
     I_Sheets *pSheets;
     I_Worksheet *pworksheet;
@@ -296,11 +296,11 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Cells(
     return hres;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(
+        I_ApplicationExcel* iface,
         IDispatch **RHS)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     I_Workbook *pwb;
     I_Sheets *pSheets;
     HRESULT hres;
@@ -330,12 +330,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet(
     return hres;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Version(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Version(
+        I_ApplicationExcel* iface,
         long Lcid,
         BSTR *pVersion)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
 
     TRACE("\n");
 
@@ -349,8 +349,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Version(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_ConvertFormula(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_ConvertFormula(
+        I_ApplicationExcel* iface,
         VARIANT Formula,
         XlReferenceStyle FromReferenceStyle,
         VARIANT ToReferenceStyle,
@@ -359,7 +359,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_ConvertFormula(
         long Lcid,
         VARIANT *pResult)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
 
     TRACE("\n");
 
@@ -514,10 +514,10 @@ RelativeTo и ToAbsolute - пока игнорируются
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Quit(
-        I_ApplicationExcell* iface)
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Quit(
+        I_ApplicationExcel* iface)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
 
     TRACE("\n");
 
@@ -531,11 +531,11 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Quit(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveCell(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveCell(
+        I_ApplicationExcel* iface,
         IDispatch **RHS)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
 
     HRESULT hres;
 
@@ -546,8 +546,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveCell(
     return hres;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Application(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Application(
+        I_ApplicationExcel* iface,
         IDispatch **value)
 {
 
@@ -555,15 +555,15 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Application(
 
     if (iface!=NULL) {
         *value = (IDispatch*)iface;
-        MSO_TO_OO_I_ApplicationExcell_AddRef(iface);
+        MSO_TO_OO_I_ApplicationExcel_AddRef(iface);
     } else {
         return E_FAIL;
     }
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_EnableEvents(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EnableEvents(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL *pvbee)
 {
     TRACE("\n");
@@ -573,8 +573,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_EnableEvents(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_EnableEvents(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EnableEvents(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL vbee)
 {
     TRACE(" \n");
@@ -582,16 +582,16 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_EnableEvents(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_ScreenUpdating(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ScreenUpdating(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL vbscup)
 {
     TRACE("\n");
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ScreenUpdating(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ScreenUpdating(
+        I_ApplicationExcel* iface,
         VARIANT_BOOL *vbscup)
 {
     TRACE("\n");
@@ -600,8 +600,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ScreenUpdating(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Caption(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Caption(
+        I_ApplicationExcel* iface,
         VARIANT *vName)
 {
     TRACE("\n");
@@ -610,19 +610,19 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Caption(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_put_Caption(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Caption(
+        I_ApplicationExcel* iface,
         VARIANT vName)
 {
     TRACE("\n");
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveWorkbook(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook(
+        I_ApplicationExcel* iface,
         IDispatch **result)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     I_Workbook *pwb;
     I_Sheets *pSheets;
     HRESULT hres;
@@ -644,34 +644,34 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_ActiveWorkbook(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Range(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Range(
+        I_ApplicationExcel* iface,
         VARIANT Cell1,
         VARIANT Cell2,
         IDispatch **ppRange)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     HRESULT hres; 
 
     TRACE("\n");
     I_Worksheet *wsh;
 
-    hres = MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet(iface,(IDispatch**) &wsh);
+    hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface,(IDispatch**) &wsh);
 
     hres = I_Worksheet_get_Range(wsh,Cell1, Cell2, ppRange);
 
     return hres;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Columns(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Columns(
+        I_ApplicationExcel* iface,
         VARIANT param,
         IDispatch **ppRange)
 {
     HRESULT hres;
     IDispatch *active_sheet;
 
-    hres = MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet(iface, &active_sheet);
+    hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &active_sheet);
 
     if (FAILED(hres)) {
         TRACE("No active sheet \n");
@@ -691,16 +691,16 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_get_Columns(
 /*
 IDispatch
 */
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetTypeInfoCount(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetTypeInfoCount(
+        I_ApplicationExcel* iface,
         UINT *pctinfo)
 {
     TRACE("\n");
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetTypeInfo(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetTypeInfo(
+        I_ApplicationExcel* iface,
         UINT iTInfo,
         LCID lcid,
         ITypeInfo **ppTInfo)
@@ -709,8 +709,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetTypeInfo(
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetIDsOfNames(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
+        I_ApplicationExcel* iface,
         REFIID riid,
         LPOLESTR *rgszNames,
         UINT cNames,
@@ -803,8 +803,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_GetIDsOfNames(
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
-        I_ApplicationExcell* iface,
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
+        I_ApplicationExcel* iface,
         DISPID dispIdMember,
         REFIID riid,
         LCID lcid,
@@ -814,7 +814,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    _ApplicationExcellImpl *This = (_ApplicationExcellImpl*)iface;
+    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
     HRESULT hr;
     BSTR pVersion;
     IDispatch *pdisp;
@@ -845,7 +845,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
-            return MSO_TO_OO_I_ApplicationExcell_put_UserControl(iface,vbin);
+            return MSO_TO_OO_I_ApplicationExcel_put_UserControl(iface,vbin);
         } else {
             return E_NOTIMPL;
         }
@@ -858,7 +858,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
-            return MSO_TO_OO_I_ApplicationExcell_put_DisplayAlerts(iface, vbin);
+            return MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts(iface, vbin);
         } else {
             return E_NOTIMPL;
         }
@@ -872,7 +872,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
               return E_FAIL;
             }
             tmp = V_I4(&vtmp);
-            MSO_TO_OO_I_ApplicationExcell_put_WindowState(iface, tmp);
+            MSO_TO_OO_I_ApplicationExcel_put_WindowState(iface, tmp);
             return S_OK;
         } else {
             return E_NOTIMPL;
@@ -886,7 +886,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
-            return MSO_TO_OO_I_ApplicationExcell_put_Visible(iface, vbin);
+            return MSO_TO_OO_I_ApplicationExcel_put_Visible(iface, vbin);
         } else {
             return E_NOTIMPL;
         }
@@ -894,7 +894,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_Workbooks(iface,&pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Workbooks(iface,&pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -909,7 +909,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_Sheets(iface,&pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Sheets(iface,&pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -934,7 +934,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_Sheets(iface,&pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Sheets(iface,&pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -959,7 +959,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             switch (pDispParams->cArgs) {
             case 3:
-                hr = MSO_TO_OO_I_ApplicationExcell_get_Cells(iface,&pdisp);
+                hr = MSO_TO_OO_I_ApplicationExcel_get_Cells(iface,&pdisp);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
                     return hr;
@@ -978,7 +978,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             return E_NOTIMPL;
         } else {
             TRACE(" (case 8 (cells))\n");
-            hr = MSO_TO_OO_I_ApplicationExcell_get_Cells(iface,&pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Cells(iface,&pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -1021,7 +1021,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet(iface, &pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -1038,7 +1038,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_Version(iface,0,&pVersion);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Version(iface,0,&pVersion);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -1050,7 +1050,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             return hr;
         }
     case 11:
-        /*MSO_TO_OO_I_ApplicationExcell_ConvertFormula*/
+        /*MSO_TO_OO_I_ApplicationExcel_ConvertFormula*/
         if (pDispParams->cArgs<3) return E_FAIL;
 
         /*преобразовываем любой тип к I4*/
@@ -1061,7 +1061,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         }
         tmp = V_I4(&vtmp);
 
-        hr = MSO_TO_OO_I_ApplicationExcell_ConvertFormula(iface, pDispParams->rgvarg[pDispParams->cArgs-1], tmp, pDispParams->rgvarg[pDispParams->cArgs-3], vNull, vNull, tmp, &vRet);
+        hr = MSO_TO_OO_I_ApplicationExcel_ConvertFormula(iface, pDispParams->rgvarg[pDispParams->cArgs-1], tmp, pDispParams->rgvarg[pDispParams->cArgs-3], vNull, vNull, tmp, &vRet);
         if (FAILED(hr)) {
             pExcepInfo->bstrDescription=SysAllocString(str_error);
             return hr;
@@ -1072,12 +1072,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         }
         return S_OK;
     case 12:
-        return MSO_TO_OO_I_ApplicationExcell_Quit(iface);
+        return MSO_TO_OO_I_ApplicationExcel_Quit(iface);
     case 13:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_ActiveCell(iface, &pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_ActiveCell(iface, &pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -1094,7 +1094,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_Application(iface,&pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Application(iface,&pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -1114,9 +1114,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
-           return MSO_TO_OO_I_ApplicationExcell_put_EnableEvents(iface, vbin);
+           return MSO_TO_OO_I_ApplicationExcel_put_EnableEvents(iface, vbin);
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_EnableEvents(iface,&vbin);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_EnableEvents(iface,&vbin);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -1136,9 +1136,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
-            return MSO_TO_OO_I_ApplicationExcell_put_ScreenUpdating(iface,vbin);
+            return MSO_TO_OO_I_ApplicationExcel_put_ScreenUpdating(iface,vbin);
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_ScreenUpdating(iface,&vbin);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_ScreenUpdating(iface,&vbin);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
@@ -1157,10 +1157,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
                 TRACE(" (case 17) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
-            hr = MSO_TO_OO_I_ApplicationExcell_put_Caption(iface, vtmp);
+            hr = MSO_TO_OO_I_ApplicationExcel_put_Caption(iface, vtmp);
             return hr;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_Caption(iface, pVarResult);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Caption(iface, pVarResult);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
             }
@@ -1171,7 +1171,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             TRACE(" (case 18) ERROR when (PUT)\n");
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcell_get_ActiveWorkbook(iface, &pdisp);
+            hr = MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook(iface, &pdisp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
             }
@@ -1190,7 +1190,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             case 1:
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2);
 
-                hr = MSO_TO_OO_I_ApplicationExcell_get_Range(iface, cell2, vNull, &pdisp);
+                hr = MSO_TO_OO_I_ApplicationExcel_get_Range(iface, cell2, vNull, &pdisp);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
                     return hr;
@@ -1204,7 +1204,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell1);
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2);
 
-                hr = MSO_TO_OO_I_ApplicationExcell_get_Range(iface, cell1, cell2, &pdisp);
+                hr = MSO_TO_OO_I_ApplicationExcel_get_Range(iface, cell1, cell2, &pdisp);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
                     return hr;
@@ -1227,7 +1227,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
             switch (pDispParams->cArgs) {
             case 0:
                 TRACE("(case 20) 0 Parameter\n");
-                hr = MSO_TO_OO_I_ApplicationExcell_get_Columns(iface, vNull, &pdisp);
+                hr = MSO_TO_OO_I_ApplicationExcel_get_Columns(iface, vNull, &pdisp);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
                     return hr;
@@ -1241,7 +1241,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
                 TRACE("(case 20) 1 Parameter\n");
                 /*Привести параметры к типу VARIANT если они переданы по ссылке*/
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
-                hr = MSO_TO_OO_I_ApplicationExcell_get_Columns(iface, cell1, &pdisp);
+                hr = MSO_TO_OO_I_ApplicationExcel_get_Columns(iface, cell1, &pdisp);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
                     return hr;
@@ -1260,47 +1260,47 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcell_Invoke(
 
 
 
-const I_ApplicationExcellVtbl MSO_TO_OO_I_ApplicationExcell_Vtbl =
+const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
 {
-    MSO_TO_OO_I_ApplicationExcell_QueryInterface,
-    MSO_TO_OO_I_ApplicationExcell_AddRef,
-    MSO_TO_OO_I_ApplicationExcell_Release,
-    MSO_TO_OO_I_ApplicationExcell_GetTypeInfoCount,
-    MSO_TO_OO_I_ApplicationExcell_GetTypeInfo,
-    MSO_TO_OO_I_ApplicationExcell_GetIDsOfNames,
-    MSO_TO_OO_I_ApplicationExcell_Invoke,
-    MSO_TO_OO_I_ApplicationExcell_put_UserControl,
-    MSO_TO_OO_I_ApplicationExcell_get_UserControl,
-    MSO_TO_OO_I_ApplicationExcell_put_DisplayAlerts,
-    MSO_TO_OO_I_ApplicationExcell_get_DisplayAlerts,
-    MSO_TO_OO_I_ApplicationExcell_put_WindowState,
-    MSO_TO_OO_I_ApplicationExcell_get_WindowState,
-    MSO_TO_OO_I_ApplicationExcell_put_Visible,
-    MSO_TO_OO_I_ApplicationExcell_get_Visible,
-    MSO_TO_OO_I_ApplicationExcell_get_Workbooks,
-    MSO_TO_OO_I_ApplicationExcell_get_Sheets,
-    MSO_TO_OO_I_ApplicationExcell_get_Worksheets,
-    MSO_TO_OO_I_ApplicationExcell_get_Cells,
-    MSO_TO_OO_I_ApplicationExcell_get_ActiveSheet,
-    MSO_TO_OO_I_ApplicationExcell_get_Version,
-    MSO_TO_OO_I_ApplicationExcell_ConvertFormula,
-    MSO_TO_OO_I_ApplicationExcell_Quit,
-    MSO_TO_OO_I_ApplicationExcell_get_ActiveCell,
-    MSO_TO_OO_I_ApplicationExcell_get_Application,
-    MSO_TO_OO_I_ApplicationExcell_get_EnableEvents,
-    MSO_TO_OO_I_ApplicationExcell_put_EnableEvents,
-    MSO_TO_OO_I_ApplicationExcell_get_ScreenUpdating,
-    MSO_TO_OO_I_ApplicationExcell_put_ScreenUpdating,
-    MSO_TO_OO_I_ApplicationExcell_get_Caption,
-    MSO_TO_OO_I_ApplicationExcell_put_Caption,
-    MSO_TO_OO_I_ApplicationExcell_get_ActiveWorkbook,
-    MSO_TO_OO_I_ApplicationExcell_get_Range,
-    MSO_TO_OO_I_ApplicationExcell_get_Columns
+    MSO_TO_OO_I_ApplicationExcel_QueryInterface,
+    MSO_TO_OO_I_ApplicationExcel_AddRef,
+    MSO_TO_OO_I_ApplicationExcel_Release,
+    MSO_TO_OO_I_ApplicationExcel_GetTypeInfoCount,
+    MSO_TO_OO_I_ApplicationExcel_GetTypeInfo,
+    MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames,
+    MSO_TO_OO_I_ApplicationExcel_Invoke,
+    MSO_TO_OO_I_ApplicationExcel_put_UserControl,
+    MSO_TO_OO_I_ApplicationExcel_get_UserControl,
+    MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts,
+    MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts,
+    MSO_TO_OO_I_ApplicationExcel_put_WindowState,
+    MSO_TO_OO_I_ApplicationExcel_get_WindowState,
+    MSO_TO_OO_I_ApplicationExcel_put_Visible,
+    MSO_TO_OO_I_ApplicationExcel_get_Visible,
+    MSO_TO_OO_I_ApplicationExcel_get_Workbooks,
+    MSO_TO_OO_I_ApplicationExcel_get_Sheets,
+    MSO_TO_OO_I_ApplicationExcel_get_Worksheets,
+    MSO_TO_OO_I_ApplicationExcel_get_Cells,
+    MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet,
+    MSO_TO_OO_I_ApplicationExcel_get_Version,
+    MSO_TO_OO_I_ApplicationExcel_ConvertFormula,
+    MSO_TO_OO_I_ApplicationExcel_Quit,
+    MSO_TO_OO_I_ApplicationExcel_get_ActiveCell,
+    MSO_TO_OO_I_ApplicationExcel_get_Application,
+    MSO_TO_OO_I_ApplicationExcel_get_EnableEvents,
+    MSO_TO_OO_I_ApplicationExcel_put_EnableEvents,
+    MSO_TO_OO_I_ApplicationExcel_get_ScreenUpdating,
+    MSO_TO_OO_I_ApplicationExcel_put_ScreenUpdating,
+    MSO_TO_OO_I_ApplicationExcel_get_Caption,
+    MSO_TO_OO_I_ApplicationExcel_put_Caption,
+    MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook,
+    MSO_TO_OO_I_ApplicationExcel_get_Range,
+    MSO_TO_OO_I_ApplicationExcel_get_Columns
 };
 
-_ApplicationExcellImpl MSO_TO_OO__ApplicationExcell =
+_ApplicationExcelImpl MSO_TO_OO__ApplicationExcel =
 {
-    &MSO_TO_OO_I_ApplicationExcell_Vtbl,
+    &MSO_TO_OO_I_ApplicationExcel_Vtbl,
     0,
     NULL,
     NULL,
@@ -1308,9 +1308,9 @@ _ApplicationExcellImpl MSO_TO_OO__ApplicationExcell =
 };
 
 
-HRESULT _ApplicationExcellConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
-    _ApplicationExcellImpl *_applicationexcell;
+    _ApplicationExcelImpl *_applicationexcell;
     CLSID clsid;
     HRESULT hres;
     VARIANT result;
@@ -1324,7 +1324,7 @@ HRESULT _ApplicationExcellConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    _applicationexcell->_applicationexcellVtbl = &MSO_TO_OO_I_ApplicationExcell_Vtbl;
+    _applicationexcell->_applicationexcellVtbl = &MSO_TO_OO_I_ApplicationExcel_Vtbl;
     _applicationexcell->ref = 0;
     _applicationexcell->pdOOApp = NULL;
     _applicationexcell->pdOODesktop = NULL;
@@ -1359,7 +1359,7 @@ HRESULT _ApplicationExcellConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
     if (FAILED(hres)) return E_NOINTERFACE;
 /*    I_Workbooks_Release(punk);*/
 
-    MSO_TO_OO_I_Workbooks_Initialize((I_Workbooks*)(_applicationexcell->pdWorkbooks), (I_ApplicationExcell*)_applicationexcell);
+    MSO_TO_OO_I_Workbooks_Initialize((I_Workbooks*)(_applicationexcell->pdWorkbooks), (I_ApplicationExcel*)_applicationexcell);
 
     *ppObj = &_applicationexcell->_applicationexcellVtbl;
 

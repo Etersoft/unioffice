@@ -130,12 +130,12 @@ typedef struct
 
 typedef struct
 {
-    const I_ApplicationExcellVtbl *_applicationexcellVtbl;
+    const I_ApplicationExcelVtbl *_applicationexcellVtbl;
     LONG ref;
     IDispatch *pdOOApp;
     IDispatch *pdOODesktop;
     IDispatch *pdWorkbooks;
-} _ApplicationExcellImpl;
+} _ApplicationExcelImpl;
 
 typedef struct
 {
@@ -147,7 +147,7 @@ typedef struct
 /*
  * Vtable interfaces and static instances
  */
-extern const I_ApplicationExcellVtbl MSO_TO_OO__I_ApplicationExcell_Vtbl;
+extern const I_ApplicationExcelVtbl MSO_TO_OO__I_ApplicationExcel_Vtbl;
 extern const I_FontVtbl MSO_TO_OO__I_Font_Vtbl;
 extern const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl;
 extern const I_WorkbookVtbl MSO_TO_OO_I_WorkbookVtbl;
@@ -162,7 +162,7 @@ extern const I_BorderVtbl MSO_TO_OO_I_BorderVtbl;
 extern ClassFactoryImpl OOFFICE_ClassFactory;
 
 
-extern _ApplicationExcellImpl MSO_TO_OO__ApplicationExcell;
+extern _ApplicationExcelImpl MSO_TO_OO__ApplicationExcel;
 extern _FontImpl MSO_TO_OO__Font;
 extern WorkbooksImpl MSO_TO_OO_Workbooks;
 extern WorkbookImpl MSO_TO_OO_Workbook;
@@ -175,7 +175,7 @@ extern BordersImpl MSO_TO_OO_Borders;
 extern BorderImpl MSO_TO_OO_Border;
 /*Constructors*/
 
-extern HRESULT _ApplicationExcellConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
+extern HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_FontConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_WorkbooksConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_WorkbookConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);

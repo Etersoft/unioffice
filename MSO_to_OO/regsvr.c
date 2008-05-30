@@ -338,7 +338,7 @@ static HRESULT register_classes()
     HRESULT hr;
     WCHAR str_clsid[39];
 
-    StringFromGUID2(&CLSID__ApplicationExcell, str_clsid, 39);
+    StringFromGUID2(&CLSID__ApplicationExcel, str_clsid, 39);
     hr = register_key_defvalueW(HKEY_CLASSES_ROOT, class_CLSID, str_clsid);
     if (SUCCEEDED(hr))
        hr = register_key_defvalueW(HKEY_CLASSES_ROOT, class_CurVer, str_curver);
@@ -506,7 +506,7 @@ static LONG recursive_delete_key(HKEY key, WCHAR *key_name)
  * Coclass list
  */
 static struct regsvr_coclass const coclass_list[] = {
-    {   &CLSID__ApplicationExcell,
+    {   &CLSID__ApplicationExcel,
         "Excel.Application",
         NULL,
         "mso_to_oo.dll",
@@ -519,8 +519,8 @@ static struct regsvr_coclass const coclass_list[] = {
  * Interface list
  */
 static struct regsvr_interface const interface_list[] = {
-    { &IID_I_ApplicationExcell,
-      "I_ApplicationExcell",
+    { &IID_I_ApplicationExcel,
+      "I_ApplicationExcel",
       NULL,
       13,                /*Number of methods*/
       NULL,

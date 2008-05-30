@@ -273,7 +273,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Application(
     if (This == NULL) return E_POINTER;
 
     *value = This->pApplication;
-    I_ApplicationExcell_AddRef(This->pApplication);
+    I_ApplicationExcel_AddRef(This->pApplication);
 
     if (value==NULL)
         return E_POINTER;
@@ -292,7 +292,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Parent(
     if (This == NULL) return E_POINTER;
 
     *value = This->pApplication;
-    I_ApplicationExcell_AddRef(This->pApplication);
+    I_ApplicationExcel_AddRef(This->pApplication);
 
     if (value==NULL)
         return E_POINTER;
