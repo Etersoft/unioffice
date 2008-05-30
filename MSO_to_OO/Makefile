@@ -13,7 +13,7 @@ OBJECTS = tools.o \
 	regsvr.o \
 	i_border.o \
 	i_borders.o \
-	i_interrior.o \
+	i_interior.o \
 	i_font.o  \
 	special_functions.o \
 	i_workbooks.o \
