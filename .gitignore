@@ -1,0 +1,5 @@
+*.[oa]
+*.so
+*.dll
+MSO_to_OO/mso_to_oo.h
+MSO_to_OO/mso_to_oo_i.c
