@@ -44,6 +44,8 @@ static WCHAR const str_centerhorizontally[] = {
     'C','e','n','t','e','r','H','o','r','i','z','o','n','t','a','l','l','y',0};
 static WCHAR const str_centervertically[] = {
     'C','e','n','t','e','r','V','e','r','t','i','c','a','l','l','y',0};
+static WCHAR const str_printtitlerows[] = {
+    'P','r','i','n','t','T','i','t','l','e','R','o','w','s',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_PageSetup_AddRef(
@@ -1757,12 +1759,29 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
 }
 
 
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintTitleRows(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("NEED to implement but return S_OK and empty string \n");
+    *value = SysAllocString(L"");
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintTitleRows(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("NEED to implement but return S_OK\n");
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetTypeInfoCount(
         I_PageSetup* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE("NEED to implement \n");
     return E_NOTIMPL;
 }
 
@@ -1832,6 +1851,10 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetIDsOfNames(
         *rgDispId = 12;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_printtitlerows)) {
+        *rgDispId = 13;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -1854,6 +1877,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
     long lval;
     VARIANT vval,vtmp;
     VARIANT_BOOL vbval;
+    BSTR bstr_val;
 
     VariantInit(&vval);
     VariantInit(&vtmp);
@@ -2216,6 +2240,37 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
+    case 13://PrintTitleRows
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) {
+                TRACE(" (13) ERROR Number of parameters \n");
+                return E_FAIL;
+            }
+            /*Привести параметры к типу VARIANT если они переданы по ссылке*/
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+
+            hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BSTR);
+            if (FAILED(hres)) {
+                TRACE(" (12) ERROR when VariantChangeType \n");
+                return hres;
+            }
+            hres = MSO_TO_OO_I_PageSetup_put_PrintTitleRows(iface, V_BSTR(&vtmp));
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+            }
+            return hres;
+        } else {
+            hres = MSO_TO_OO_I_PageSetup_get_PrintTitleRows(iface, &bstr_val);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_BSTR;
+                V_BSTR(pVarResult) = bstr_val;
+            }
+            return hres;
+        }
     }
     TRACE(" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -2254,7 +2309,9 @@ const I_PageSetupVtbl MSO_TO_OO_I_PageSetupVtbl =
     MSO_TO_OO_I_PageSetup_get_CenterHorizontally,
     MSO_TO_OO_I_PageSetup_put_CenterHorizontally,
     MSO_TO_OO_I_PageSetup_get_CenterVertically,
-    MSO_TO_OO_I_PageSetup_put_CenterVertically
+    MSO_TO_OO_I_PageSetup_put_CenterVertically,
+    MSO_TO_OO_I_PageSetup_get_PrintTitleRows,
+    MSO_TO_OO_I_PageSetup_put_PrintTitleRows
 };
 
 PageSetupImpl MSO_TO_OO_PageSetup =

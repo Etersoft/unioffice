@@ -428,6 +428,9 @@ import "wtypes.idl";
 //CenterVertically
 		[propget,id(12), helpstring("property CenterVertically")] HRESULT CenterVertically([out, retval] VARIANT_BOOL *value);
 		[propput,id(12), helpstring("property CenterVertically")] HRESULT CenterVertically([in] VARIANT_BOOL value);
+//PrintTitleRows
+		[propget,id(13), helpstring("property PrintTitleRows")] HRESULT PrintTitleRows([out, retval] BSTR *value);
+		[propput,id(13), helpstring("property PrintTitleRows")] HRESULT PrintTitleRows([in] BSTR value);
 	};
 
 	[
