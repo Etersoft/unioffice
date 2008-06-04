@@ -747,7 +747,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Weight(
         I_Border* iface,
         XlBorderWeight *pweight)
 {
-    TRACE("\n");
+    TRACE("NOT IMPL\n");
     return E_NOTIMPL;
 }
 
@@ -755,7 +755,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Weight(
         I_Border* iface,
         XlBorderWeight weight)
 {
-    TRACE(" \n");
+    TRACE("NOT IMPL \n");
     return E_NOTIMPL;
 }
 

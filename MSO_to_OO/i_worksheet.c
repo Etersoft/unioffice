@@ -181,6 +181,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
     IDispatch *pRange;
+    I_Range *pCell1;
+    I_Range *pCell2;
     IUnknown *punk = NULL;
     LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
@@ -205,8 +207,33 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
         return S_OK;
     }
 
-    I_Range *pCell1 = (I_Range*) V_DISPATCH(&Cell1);
-    I_Range *pCell2 = (I_Range*) V_DISPATCH(&Cell2);
+    if ((V_VT(&Cell1)==VT_BSTR)&&(V_VT(&Cell2)==VT_BSTR)) {
+            /*Два параметра и оба строковые переменные*/
+            WTRACE(L"2 Parametra BSTR - NEED TO REALIZE %s   %s", V_BSTR(&Cell1), V_BSTR(&Cell2));
+
+            hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &pRange);
+            if (FAILED(hres)) {
+                TRACE("ERROR when get_Cells\n");
+                return hres;
+            }
+
+            hres = I_Range_get__Default((I_Range*)pRange,Cell1,vNull, (IDispatch**)&pCell1);
+            if (FAILED(hres)) {
+                TRACE("ERROR when get__Default\n");
+                IDispatch_Release(pRange);
+                return hres;
+            }
+            hres = I_Range_get__Default((I_Range*)pRange,Cell2,vNull, (IDispatch**)&pCell2);
+            if (FAILED(hres)) {
+                TRACE("ERROR when get__Default\n");
+                IDispatch_Release(pRange);
+                return hres;
+            }
+        IDispatch_Release(pRange);
+        } else {
+            pCell1 = (I_Range*) V_DISPATCH(&Cell1);
+            pCell2 = (I_Range*) V_DISPATCH(&Cell2);
+        }
 
     if ((pCell1 == NULL) || (pCell2 == NULL)) {
         TRACE("Error - one of the pointers is NULL \n");
