@@ -575,6 +575,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
                     if ((tmp_str[i]>=L'0')&&(tmp_str[i]<=L'9')) {
                         itmp=itmp*10+(tmp_str[i]-L'0');
                     }
+                    if ((tmp_str[i]>=L'A')&&(tmp_str[i]<=L'Z')) {
+                        itmp=itmp*26+(tmp_str[i]-L'A')+1;
+                    }
                     if (tmp_str[i]==L':') {
                         col1 = itmp;
                         itmp = 0;
