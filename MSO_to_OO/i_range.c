@@ -94,6 +94,10 @@ static WCHAR const str_shrinktofit[] = {
     'S','h','r','i','n','k','T','o','F','i','t',0};
 static WCHAR const str_mergecells[] = {
     'M','e','r','g','e','C','e','l','l','s',0};
+static WCHAR const str_locked[] = {
+    'L','o','c','k','e','d',0};
+static WCHAR const str_hidden[] = {
+    'H','i','d','d','e','n',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -1894,6 +1898,152 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_MergeCells(
     return hres;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Locked(
+        I_Range* iface,
+        VARIANT *pparam)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT vRes,vtmp, vCellProt;
+    HRESULT hres;
+    VariantInit(&vRes);
+    VariantInit(&vCellProt);
+    VariantInit(&vtmp);
+
+    TRACE(" \n");
+
+    if (This == NULL) return E_POINTER;
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vCellProt, This->pOORange, L"CellProtection", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get CellProtection \n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, V_DISPATCH(&vCellProt), L"IsLocked", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get IsLocked \n");
+        return E_FAIL;
+    }
+
+    hres = VariantChangeTypeEx(&vtmp, &vRes,0,0,VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR when VariantChangeTypeEx\n");
+        return E_FAIL;
+    }
+    *pparam = vtmp;
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Locked(
+        I_Range* iface,
+        VARIANT param)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT vRes, vCellProt, vtmp;
+    HRESULT hres;
+    VariantInit(&vRes);
+    VariantInit(&vCellProt);
+    VariantInit(&vtmp);
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vCellProt, This->pOORange, L"CellProtection", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get CellProtection \n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, V_DISPATCH(&vCellProt), L"IsLocked", 1, param);
+    if (FAILED(hres))  {
+       TRACE("ERROR when IsLocked \n");
+       return hres;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, This->pOORange, L"CellProtection", 1, vCellProt);
+    if (FAILED(hres))  {
+       TRACE("ERROR when CellProtection \n");
+       return hres;
+    }
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Hidden(
+        I_Range* iface,
+        VARIANT *pparam)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT vRes,vtmp, vCellProt;
+    HRESULT hres;
+    VariantInit(&vRes);
+    VariantInit(&vCellProt);
+    VariantInit(&vtmp);
+
+    TRACE(" \n");
+
+    if (This == NULL) return E_POINTER;
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vCellProt, This->pOORange, L"CellProtection", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get CellProtection \n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, V_DISPATCH(&vCellProt), L"IsHidden", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get IsHidden \n");
+        return E_FAIL;
+    }
+
+    hres = VariantChangeTypeEx(&vtmp, &vRes,0,0,VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR when VariantChangeTypeEx\n");
+        return E_FAIL;
+    }
+    *pparam = vtmp;
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Hidden(
+        I_Range* iface,
+        VARIANT param)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT vRes, vCellProt, vtmp;
+    HRESULT hres;
+    VariantInit(&vRes);
+    VariantInit(&vCellProt);
+    VariantInit(&vtmp);
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vCellProt, This->pOORange, L"CellProtection", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get CellProtection \n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, V_DISPATCH(&vCellProt), L"IsHidden", 1, param);
+    if (FAILED(hres))  {
+       TRACE("ERROR when IsHidden \n");
+       return hres;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, This->pOORange, L"CellProtection", 1, vCellProt);
+    if (FAILED(hres))  {
+       TRACE("ERROR when CellProtection \n");
+       return hres;
+    }
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -2063,6 +2213,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_mergecells)) {
         *rgDispId = 36;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_locked)) {
+        *rgDispId = 37;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_hidden)) {
+        *rgDispId = 38;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -2756,6 +2914,56 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
+    case 37://Locked
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) {
+                TRACE("ERROR INVALID ARGUMENT \n");
+                return E_INVALIDARG;
+            }
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = MSO_TO_OO_I_Range_put_Locked(iface, var1);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
+        } else {
+            if (pVarResult!=NULL){
+                hres = MSO_TO_OO_I_Range_get_Locked(iface, pVarResult);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                return hres;
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
+    case 38://Hidden
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) {
+                TRACE("ERROR INVALID ARGUMENT \n");
+                return E_INVALIDARG;
+            }
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = MSO_TO_OO_I_Range_put_Hidden(iface, var1);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
+        } else {
+            if (pVarResult!=NULL){
+                hres = MSO_TO_OO_I_Range_get_Hidden(iface, pVarResult);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                return hres;
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -2815,7 +3023,11 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_get_ShrinkToFit,
     MSO_TO_OO_I_Range_put_ShrinkToFit,
     MSO_TO_OO_I_Range_get_MergeCells,
-    MSO_TO_OO_I_Range_put_MergeCells
+    MSO_TO_OO_I_Range_put_MergeCells,
+    MSO_TO_OO_I_Range_get_Locked,
+    MSO_TO_OO_I_Range_put_Locked,
+    MSO_TO_OO_I_Range_get_Hidden,
+    MSO_TO_OO_I_Range_put_Hidden
 };
 
 

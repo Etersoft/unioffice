@@ -385,6 +385,12 @@ import "wtypes.idl";
 //MergeCells
 		[propget,id(36), helpstring("property MergeCells")] HRESULT MergeCells([out, retval] VARIANT *pparam);
 		[propput,id(36), helpstring("property MergeCells")] HRESULT MergeCells([in] VARIANT param);
+//Locked
+		[propget,id(37), helpstring("property Locked")] HRESULT Locked([out, retval] VARIANT *pparam);
+		[propput,id(37), helpstring("property Locked")] HRESULT Locked([in] VARIANT param);
+//Hidden
+		[propget,id(38), helpstring("property Hidden")] HRESULT Hidden([out, retval] VARIANT *pparam);
+		[propput,id(38), helpstring("property Hidden")] HRESULT Hidden([in] VARIANT param);
 	};
 
 	[
