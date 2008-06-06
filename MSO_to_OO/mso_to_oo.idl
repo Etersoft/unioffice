@@ -475,7 +475,25 @@ import "wtypes.idl";
 		[id(9), helpstring("method Delete")] HRESULT Delete();
 //PageSetup
 		[propget,id(10), helpstring("property PageSetup")] HRESULT PageSetup([out, retval] IDispatch **ppValue);
-
+//Protect
+		[id(11), helpstring("property Protect")] HRESULT Protect([in, optional] VARIANT Password,
+			[in, optional] VARIANT DrawingObjects,
+			[in, optional] VARIANT Contents,
+			[in, optional] VARIANT Scenarios,
+			[in, optional] VARIANT UserInterfaceOnly,
+			[in, optional] VARIANT AllowFormattingCells,
+			[in, optional] VARIANT AllowFormattingColumns,
+			[in, optional] VARIANT AllowFormattingRows,
+			[in, optional] VARIANT AllowInsertingColumns,
+			[in, optional] VARIANT AllowInsertingRows,
+			[in, optional] VARIANT AllowInsertingHyperlinks,
+			[in, optional] VARIANT AllowDeletingColumns,
+			[in, optional] VARIANT AllowDeletingRows,
+			[in, optional] VARIANT AllowSorting,
+			[in, optional] VARIANT AllowFiltering,
+			[in, optional] VARIANT AllowUsingPivotTables);
+//Unprotect
+		[id(12), helpstring("property Unprotect")] HRESULT Unprotect([in, optional] VARIANT Password);
 	};
 
 	[
@@ -833,7 +851,6 @@ import "wtypes.idl";
 //OnRepeat 	Sets the Repeat menu item and the name of the procedure that will run if you choose the Repeat command (Edit menu) after running the procedure that sets this property. 
 //OnTime 	Schedules a procedure to be run at a specified time in the future (either at a specific time of day or after a specific amount of time has passed). 
 //OnUndo 	Sets the text of the Undo and the name of the procedure that?s run if you choose the Undo command (Edit menu) after running the procedure that sets this property. 
-//Quit 	Quits Microsoft Excel. 
 //RecordMacro 	Records code if the macro recorder is on. 
 //RegisterXLL 	Loads an XLL code resource and automatically registers the functions and commands contained in the resource. 
 //Repeat 	Repeats the last user interface action. 

@@ -41,6 +41,10 @@ static WCHAR const str_delete[] = {
     'D','e','l','e','t','e',0};
 static WCHAR const str_pagesetup[] = {
     'P','a','g','e','S','e','t','u','p',0};
+static WCHAR const str_protect[] = {
+    'P','r','o','t','e','c','t',0};
+static WCHAR const str_unprotect[] = {
+    'U','n','p','r','o','t','e','c','t',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
@@ -877,6 +881,88 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_PageSetup(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Protect(
+        I_Worksheet* iface,
+        VARIANT Password,
+        VARIANT DrawingObjects,
+        VARIANT Contents,
+        VARIANT Scenarios,
+        VARIANT UserInterfaceOnly,
+        VARIANT AllowFormattingCells,
+        VARIANT AllowFormattingColumns,
+        VARIANT AllowFormattingRows,
+        VARIANT AllowInsertingColumns,
+        VARIANT AllowInsertingRows,
+        VARIANT AllowInsertingHyperlinks,
+        VARIANT AllowDeletingColumns,
+        VARIANT AllowDeletingRows,
+        VARIANT AllowSorting,
+        VARIANT AllowFiltering,
+        VARIANT AllowUsingPivotTables)
+{
+    /*TODO Think about other parameters*/
+    WorksheetImpl *This = (WorksheetImpl*)iface;
+    VARIANT param, res;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    VariantInit(&res);
+    VariantInit(&param);
+    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+        V_VT(&param) = VT_BSTR;
+        V_BSTR(&param) = SysAllocString(L"");
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheet, L"protect", 1, param);
+        if (FAILED(hres)) {
+            TRACE("ERROR when protect\n");
+            return hres;
+        }
+    } else {
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheet, L"protect", 1, Password);
+        if (FAILED(hres)) {
+            TRACE("ERROR when protect\n");
+            return hres;
+        }
+    }
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Unprotect(
+        I_Worksheet* iface,
+        VARIANT Password)
+{
+    WorksheetImpl *This = (WorksheetImpl*)iface;
+    VARIANT param, res;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    VariantInit(&res);
+    VariantInit(&param);
+    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+        V_VT(&param) = VT_BSTR;
+        V_BSTR(&param) = SysAllocString(L"");
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheet, L"unprotect", 1, param);
+        if (FAILED(hres)) {
+            TRACE("ERROR when unprotect\n");
+            return hres;
+        }
+    } else {
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheet, L"unprotect", 1, Password);
+        if (FAILED(hres)) {
+            TRACE("ERROR when unprotect\n");
+            return hres;
+        }
+    }
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetTypeInfoCount(
         I_Worksheet* iface,
@@ -944,6 +1030,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetIDsOfNames(
         *rgDispId = 10;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_protect)) {
+        *rgDispId = 11;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_unprotect)) {
+        *rgDispId = 12;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE\n",*rgszNames);
@@ -968,6 +1062,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     IDispatch *pretdisp;
     VARIANT vNull;
     VARIANT cell1,cell2,tmpval;
+    VARIANT vmas[16];
+    int i;
 
     VariantInit(&vNull);
     VariantInit(&cell1);
@@ -1221,6 +1317,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             }
             return S_OK;
         }
+    case 11://Protect
+        for (i=0;i<16;i++) {
+            VariantInit(&vmas[i]);
+            V_VT(&vmas[i])=VT_EMPTY;
+        }
+        /*необходжимо перевернуть параметры*/
+        for (i=0;i<pDispParams->cArgs;i++) {
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
+        }
+        return MSO_TO_OO_I_Worksheet_Protect(iface, vmas[0], vmas[1], vmas[2], vmas[3], vmas[4], vmas[5], vmas[6], vmas[7], vmas[8], vmas[9], vmas[10], vmas[11], vmas[12], vmas[13], vmas[14], vmas[15]);
+    case 12://UnProtect
+        switch (pDispParams->cArgs) {
+        case 0:
+            VariantClear(&cell1);
+            V_VT(&cell1) = VT_EMPTY;
+            break;
+        case 1:
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1))) return E_FAIL;
+            break;
+        default:
+            TRACE("ERROR parameters \n");
+            return E_INVALIDARG;
+        }
+        return MSO_TO_OO_I_Worksheet_Unprotect(iface,cell1);
     }
 
     return E_NOTIMPL;
@@ -1245,7 +1365,9 @@ const I_WorksheetVtbl MSO_TO_OO_I_WorksheetVtbl =
     MSO_TO_OO_I_Worksheet_get_Columns,
     MSO_TO_OO_I_Worksheet_Copy,
     MSO_TO_OO_I_Worksheet_Delete,
-    MSO_TO_OO_I_Worksheet_get_PageSetup
+    MSO_TO_OO_I_Worksheet_get_PageSetup,
+    MSO_TO_OO_I_Worksheet_Protect,
+    MSO_TO_OO_I_Worksheet_Unprotect
 };
 
 WorksheetImpl MSO_TO_OO_Worksheet =
