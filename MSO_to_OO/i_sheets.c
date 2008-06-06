@@ -492,8 +492,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             return E_NOTIMPL;
         } else {
             if (pDispParams->cArgs!=1) return E_FAIL;
+            //если переданы по ссылке, исправляем.
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1);
 
-            hres = MSO_TO_OO_I_Sheets_get__Default(iface, pDispParams->rgvarg[0], &dret);
+            hres = MSO_TO_OO_I_Sheets_get__Default(iface, par1, &dret);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -554,8 +556,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             return E_NOTIMPL;
         } else {
             if (pDispParams->cArgs!=1) return E_FAIL;
+            //если переданы по ссылке, исправляем.
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1);
 
-            hres = MSO_TO_OO_I_Sheets_get_Item(iface, pDispParams->rgvarg[0], &dret);
+            hres = MSO_TO_OO_I_Sheets_get_Item(iface, par1, &dret);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
