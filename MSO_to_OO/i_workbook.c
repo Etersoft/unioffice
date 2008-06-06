@@ -30,6 +30,10 @@ static WCHAR const str_saveas[] = {
     'S','a','v','e','A','s',0};
 static WCHAR const str_save[] = {
     'S','a','v','e',0};
+static WCHAR const str_protect[] = {
+    'P','r','o','t','e','c','t',0};
+static WCHAR const str_unprotect[] = {
+    'U','n','p','r','o','t','e','c','t',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
@@ -254,6 +258,75 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Save(
     return E_NOTIMPL;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Workbook_Protect(
+        I_Workbook* iface,
+        VARIANT Password,
+        VARIANT Structure,
+        VARIANT Windows)
+{
+    /*TODO Think about other parameters*/
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    VARIANT param, res;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    VariantInit(&res);
+    VariantInit(&param);
+    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+        V_VT(&param) = VT_BSTR;
+        V_BSTR(&param) = SysAllocString(L"");
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"protect", 1, param);
+        if (FAILED(hres)) {
+            TRACE("ERROR when protect\n");
+            return hres;
+        }
+    } else {
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"protect", 1, Password);
+        if (FAILED(hres)) {
+            TRACE("ERROR when protect\n");
+            return hres;
+        }
+    }
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Workbook_Unprotect(
+        I_Workbook* iface,
+        VARIANT Password)
+{
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    VARIANT param, res;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    VariantInit(&res);
+    VariantInit(&param);
+    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+        V_VT(&param) = VT_BSTR;
+        V_BSTR(&param) = SysAllocString(L"");
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"unprotect", 1, param);
+        if (FAILED(hres)) {
+            TRACE("ERROR when unprotect\n");
+            return hres;
+        }
+    } else {
+        hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"unprotect", 1, Password);
+        if (FAILED(hres)) {
+            TRACE("ERROR when unprotect\n");
+            return hres;
+        }
+    }
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfoCount(
         I_Workbook* iface,
@@ -302,6 +375,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetIDsOfNames(
         *rgDispId = 5;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_protect)) {
+        *rgDispId = 6;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_unprotect)) {
+        *rgDispId = 7;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -323,6 +404,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     HRESULT hr;
     IDispatch *sheets;
     IDispatch *sheet;
+    VARIANT vmas[12];
+    int i;
+    VARIANT vtmp;
     VARIANT vNull,par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11,par12;
 
     VariantInit(&vNull);
@@ -594,6 +678,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     case 5:
         hr = MSO_TO_OO_I_Workbook_Save(iface);
         return hr;
+    case 6://Protect
+        for (i=0;i<12;i++) {
+            VariantInit(&vmas[i]);
+            V_VT(&vmas[i])=VT_EMPTY;
+        }
+        /*необходимо перевернуть параметры*/
+        for (i=0;i<pDispParams->cArgs;i++) {
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
+        }
+        return MSO_TO_OO_I_Workbook_Protect(iface, vmas[0], vmas[1], vmas[2]);
+    case 7://UnProtect
+        switch (pDispParams->cArgs) {
+        case 0:
+            VariantClear(&vtmp);
+            V_VT(&vtmp) = VT_EMPTY;
+            break;
+        case 1:
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp))) return E_FAIL;
+            break;
+        default:
+            TRACE("ERROR parameters \n");
+            return E_INVALIDARG;
+        }
+        return MSO_TO_OO_I_Workbook_Unprotect(iface,vtmp);
     }
 
     return E_NOTIMPL;
@@ -613,7 +721,9 @@ const I_WorkbookVtbl MSO_TO_OO_I_WorkbookVtbl =
     MSO_TO_OO_I_Workbook_get_WorkSheets,
     MSO_TO_OO_I_Workbook_Close,
     MSO_TO_OO_I_Workbook_SaveAs,
-    MSO_TO_OO_I_Workbook_Save
+    MSO_TO_OO_I_Workbook_Save,
+    MSO_TO_OO_I_Workbook_Protect,
+    MSO_TO_OO_I_Workbook_Unprotect
 };
 
 WorkbookImpl MSO_TO_OO_Workbook =

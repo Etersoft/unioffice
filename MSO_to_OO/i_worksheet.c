@@ -1322,7 +1322,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             VariantInit(&vmas[i]);
             V_VT(&vmas[i])=VT_EMPTY;
         }
-        /*необходжимо перевернуть параметры*/
+        /*необходимо перевернуть параметры*/
         for (i=0;i<pDispParams->cArgs;i++) {
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
         }

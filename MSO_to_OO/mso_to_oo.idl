@@ -558,7 +558,14 @@ import "wtypes.idl";
 			[in, optional] VARIANT Local);
 //Save
 		[id(5), helpstring("method Save")] HRESULT Save();
-
+//Protect
+		[id(6), helpstring("method Protect")] HRESULT Protect(
+			[in, optional] VARIANT Password,
+			[in, optional] VARIANT Structure,
+			[in, optional] VARIANT Windows);
+//Unprotect
+		[id(7), helpstring("method Unprotect")] HRESULT Unprotect(
+			[in, optional] VARIANT Password);
 	};
 
 	[
