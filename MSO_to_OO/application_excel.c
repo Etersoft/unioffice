@@ -60,9 +60,10 @@ static WCHAR const str_activeworkbook[] = {
     'A','c','t','i','v','e','W','o','r','k','b','o','o','k',0};
 static WCHAR const str_range[] = {
     'R','a','n','g','e',0};
-
 static WCHAR const str_columns[] = {
     'C','o','l','u','m','n','s',0};
+static WCHAR const str_rows[] = {
+    'R','o','w','s',0};
 
 /*
 IUnknown
@@ -688,6 +689,31 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Columns(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Rows(
+        I_ApplicationExcel* iface,
+        VARIANT param,
+        IDispatch **ppRange)
+{
+    HRESULT hres;
+    IDispatch *active_sheet;
+
+    hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &active_sheet);
+
+    if (FAILED(hres)) {
+        TRACE("No active sheet \n");
+        return E_FAIL;
+    }
+
+    hres = I_Worksheet_get_Rows((I_Worksheet*)active_sheet, param, ppRange);
+    if (FAILED(hres)) {
+        TRACE("FAILED I_Worksheet_get_Rows \n");
+        return hres;
+    }
+    IDispatch_Release(active_sheet);
+
+    return S_OK;
+}
+
 /*
 IDispatch
 */
@@ -795,6 +821,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_columns)) {
         *rgDispId = 20;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_rows)) {
+        *rgDispId = 21;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -1253,6 +1283,40 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
                 return S_OK;
             }
         }
+    case 21:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE(" (case 20) ERROR when (PUT)\n");
+            return E_NOTIMPL;
+        } else {
+            switch (pDispParams->cArgs) {
+            case 0:
+                TRACE("(case 20) 0 Parameter\n");
+                hr = MSO_TO_OO_I_ApplicationExcel_get_Rows(iface, vNull, &pdisp);
+                if (FAILED(hr)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hr;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_DISPATCH;
+                    V_DISPATCH(pVarResult) = pdisp;
+                }
+                return S_OK;
+            case 1:
+                TRACE("(case 21) 1 Parameter\n");
+                /*Привести параметры к типу VARIANT если они переданы по ссылке*/
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
+                hr = MSO_TO_OO_I_ApplicationExcel_get_Rows(iface, cell1, &pdisp);
+                if (FAILED(hr)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hr;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_DISPATCH;
+                    V_DISPATCH(pVarResult) = pdisp;
+                }
+                return S_OK;
+            }
+        }
     }
 
     return E_NOTIMPL;
@@ -1295,7 +1359,8 @@ const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
     MSO_TO_OO_I_ApplicationExcel_put_Caption,
     MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook,
     MSO_TO_OO_I_ApplicationExcel_get_Range,
-    MSO_TO_OO_I_ApplicationExcel_get_Columns
+    MSO_TO_OO_I_ApplicationExcel_get_Columns,
+    MSO_TO_OO_I_ApplicationExcel_get_Rows
 };
 
 _ApplicationExcelImpl MSO_TO_OO__ApplicationExcel =

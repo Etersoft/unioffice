@@ -764,6 +764,8 @@ import "wtypes.idl";
 		[propget,id(19), helpstring("property Range")] HRESULT Range   ([in] VARIANT Cell1, [in, optional] VARIANT Cell2, [out, retval] IDispatch **ppRange);
 //Columns 	Returns a Range object that represents all the columns on the active worksheet. If the active document isn't a worksheet, the Columns property fails.
 		[propget,id(20), helpstring("property Columns")] HRESULT Columns( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
+//Rows 	Returns a Range object that represents all the rows on the active worksheet. If the active document isn?t a worksheet, the Rows property fails.
+		[propget,id(21), helpstring("property Rows")] HRESULT Rows( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
 
 
 //Methods
@@ -982,7 +984,6 @@ import "wtypes.idl";
 //RegisteredFunctions 	Returns information about functions in either dynamic-link libraries (DLLs) or code resources that were registered with the REGISTER or REGISTER.ID macro functions.
 //ReplaceFormat 	Sets the replacement criteria to use in replacing cell formats. The replacement criteria is then used in a subsequent call to the Replace method of the Range object.
 //RollZoom 	True if the IntelliMouse zooms instead of scrolling.
-//Rows 	Returns a Range object that represents all the rows on the active worksheet. If the active document isn?t a worksheet, the Rows property fails.
 //RTD 	Returns an RTD object.
 //Selection 	Returns the selected object in the active window.
 //SheetsInNewWorkbook 	Returns or sets the number of sheets that Microsoft Excel automatically inserts into new workbooks.
