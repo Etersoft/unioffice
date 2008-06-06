@@ -407,21 +407,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     VARIANT vmas[12];
     int i;
     VARIANT vtmp;
-    VARIANT vNull,par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11,par12;
 
-    VariantInit(&vNull);
-    VariantInit(&par1);
-    VariantInit(&par2);
-    VariantInit(&par3);
-    VariantInit(&par4);
-    VariantInit(&par5);
-    VariantInit(&par6);
-    VariantInit(&par7);
-    VariantInit(&par8);
-    VariantInit(&par9);
-    VariantInit(&par10);
-    VariantInit(&par11);
-    VariantInit(&par12);
+    for (i=0;i<12;i++) {
+         VariantInit(&vmas[i]);
+         V_VT(&vmas[i])=VT_EMPTY;
+    }
 
     TRACE("\n");
 
@@ -488,191 +478,34 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             return hr;
         }
     case 3:
-        switch(pDispParams->cArgs) {
-        case 0:
-            TRACE(" (3) 0 parameter \n");
-            hr = MSO_TO_OO_I_Workbook_Close(iface, vNull, vNull, vNull);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            return hr;
-        case 1:
-            TRACE("(3) 1 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_Close(iface, par1, vNull, vNull);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            return hr;
-        case 2:
-            TRACE(" (3) 2 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par2))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_Close(iface, par1, par2, vNull);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            return hr;
-        case 3:
-            TRACE(" (3) 3 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par3))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_Close(iface, par1, par2, par3);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            return hr;
-        default:
+        if (pDispParams->cArgs>3) {
             TRACE(" (3) ERROR Parameters");
             return E_FAIL;
         }
+        /*необходимо перевернуть параметры*/
+        for (i=0;i<pDispParams->cArgs;i++) {
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
+        }
+        hr = MSO_TO_OO_I_Workbook_Close(iface, vmas[0], vmas[1], vmas[2]);
+        if (FAILED(hr)) {
+            pExcepInfo->bstrDescription=SysAllocString(str_error);
+            return hr;
+        }
+        return hr;
     case 4:
-        switch (pDispParams->cArgs) {
-        case 0:
-            TRACE("(4) 0 parameter \n");
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, vNull, vNull, vNull, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 1:
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1))) return E_FAIL;
-            TRACE("(4) 1 parameter \n");
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, vNull, vNull, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 2:
-            TRACE("(4) 2 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par2))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, vNull, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 3:
-            TRACE(" (4) 3 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par3))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, vNull, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 4:
-            TRACE(" (4) 4 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par4))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, vNull, vNull, 0, vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 5:
-            TRACE(" (4) 5 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par5))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, vNull, 0, vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 6:
-            TRACE(" (4) 6 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par5))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par6))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, 0, vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 7:
-            TRACE(" (4) 7 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par5))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par6))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par7))) return E_FAIL;
-            VariantChangeTypeEx(&par7, &par7, 0, 0, VT_I4);
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), vNull, vNull, vNull, vNull, vNull);
-            break;
-        case 8:
-            TRACE(" (4) 8 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par5))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par6))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par7))) return E_FAIL;
-            VariantChangeTypeEx(&par7, &par7, 0, 0, VT_I4);
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par8))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, vNull, vNull, vNull, vNull);
-            break;
-        case 9:
-            TRACE(" (4) 9 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[8], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par5))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par6))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par7))) return E_FAIL;
-            VariantChangeTypeEx(&par7, &par7, 0, 0, VT_I4);
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par8))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par9))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, vNull, vNull, vNull);
-            break;
-        case 10:
-            TRACE(" (4) 10 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[9], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[8], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par5))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par6))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par7))) return E_FAIL;
-            VariantChangeTypeEx(&par7, &par7, 0, 0, VT_I4);
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par8))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par9))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par10))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, par10, vNull, vNull);
-            break;
-        case 11:
-            TRACE(" (4) 11 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[10], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[9], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[8], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par5))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par6))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par7))) return E_FAIL;
-            VariantChangeTypeEx(&par7, &par7, 0, 0, VT_I4);
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par8))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par9))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par10))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par11))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, par10, par11, vNull);
-            break;
-        case 12:
-            TRACE(" (4) 12 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[11], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[10], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[9], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[8], &par4))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[7], &par5))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[6], &par6))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[5], &par7))) return E_FAIL;
-            VariantChangeTypeEx(&par7, &par7, 0, 0, VT_I4);
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[4], &par8))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par9))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par10))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par11))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par12))) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbook_SaveAs(iface, par1, par2, par3, par4, par5, par6, V_I4(&par7), par8, par9, par10, par11, par12);
-            break;
-        default:
+        if (pDispParams->cArgs>12) {
             TRACE(" (4) ERROR Parameters");
-            hr = E_FAIL;
-            break;
+            return E_FAIL;
+        }
+        /*необходимо перевернуть параметры*/
+        for (i=0;i<pDispParams->cArgs;i++) {
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
+        }
+        VariantChangeTypeEx(&vmas[6], &vmas[6], 0, 0, VT_I4);
+        hr = MSO_TO_OO_I_Workbook_SaveAs(iface, vmas[0], vmas[1], vmas[2], vmas[3], vmas[4], vmas[5], V_I4(&vmas[6]), vmas[7], vmas[8], vmas[9], vmas[10], vmas[11]);
+        if (FAILED(hr)) {
+            pExcepInfo->bstrDescription=SysAllocString(str_error);
+            return hr;
         }
         return hr;
     case 5:
