@@ -209,7 +209,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
 
     if ((V_VT(&Cell1)==VT_BSTR)&&(V_VT(&Cell2)==VT_BSTR)) {
             /*Два параметра и оба строковые переменные*/
-            WTRACE(L"2 Parametra BSTR - NEED TO REALIZE %s   %s", V_BSTR(&Cell1), V_BSTR(&Cell2));
+            WTRACE(L"2 Parametra BSTR %s   %s \n", V_BSTR(&Cell1), V_BSTR(&Cell2));
 
             hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &pRange);
             if (FAILED(hres)) {

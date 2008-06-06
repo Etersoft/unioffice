@@ -161,29 +161,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
+    int i;
 
     TRACE(" lcolor = %i\n",lcolor);
 
     if (This==NULL) return E_POINTER;
 
-    I_Borders_get_Item(iface, xlEdgeTop, &border_tmp);
-    I_Border_put_Color((I_Border*)border_tmp, lcolor);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeBottom, &border_tmp);
-    I_Border_put_Color((I_Border*)border_tmp, lcolor);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeLeft, &border_tmp);
-    I_Border_put_Color((I_Border*)border_tmp, lcolor);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeRight, &border_tmp);
-    I_Border_put_Color((I_Border*)border_tmp, lcolor);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlInsideHorizontal, &border_tmp);
-    I_Border_put_Color((I_Border*)border_tmp, lcolor);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlInsideVertical, &border_tmp);
-    I_Border_put_Color((I_Border*)border_tmp, lcolor);
-    IDispatch_Release(border_tmp);
+    for (i=1;i<=12;i++) {
+        I_Borders_get_Item(iface, i, &border_tmp);
+        I_Border_put_Color((I_Border*)border_tmp, lcolor);
+        IDispatch_Release(border_tmp);
+    }
 
     return S_OK;
 }
@@ -272,29 +260,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
+    int i;
 
     TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
-    I_Borders_get_Item(iface, xlEdgeTop, &border_tmp);
-    I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeBottom, &border_tmp);
-    I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeLeft, &border_tmp);
-    I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeRight, &border_tmp);
-    I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlInsideHorizontal, &border_tmp);
-    I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlInsideVertical, &border_tmp);
-    I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
-    IDispatch_Release(border_tmp);
+    for (i=1;i<=12;i++) {
+        I_Borders_get_Item(iface, i, &border_tmp);
+        I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
+        IDispatch_Release(border_tmp);
+    }
 
     return S_OK;
 }
@@ -326,29 +302,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
+    int i;
 
     TRACE("\n");
 
     if (This==NULL) return E_POINTER;
 
-    I_Borders_get_Item(iface, xlEdgeTop, &border_tmp);
-    I_Border_put_Weight((I_Border*)border_tmp, weight);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeBottom, &border_tmp);
-    I_Border_put_Weight((I_Border*)border_tmp, weight);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeLeft, &border_tmp);
-    I_Border_put_Weight((I_Border*)border_tmp, weight);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlEdgeRight, &border_tmp);
-    I_Border_put_Weight((I_Border*)border_tmp, weight);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlInsideHorizontal, &border_tmp);
-    I_Border_put_Weight((I_Border*)border_tmp, weight);
-    IDispatch_Release(border_tmp);
-    I_Borders_get_Item(iface, xlInsideVertical, &border_tmp);
-    I_Border_put_Weight((I_Border*)border_tmp, weight);
-    IDispatch_Release(border_tmp);
+    for (i=1;i<=12;i++) {
+        I_Borders_get_Item(iface, i, &border_tmp);
+        I_Border_put_Weight((I_Border*)border_tmp, weight);
+        IDispatch_Release(border_tmp);
+    }
 
     return S_OK;
 }
@@ -369,16 +333,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
     if (This==NULL) {
         TRACE("ERROR Object is NULL \n");
         return E_FAIL;
-    }
-    switch (key) {
-    case xlDiagonalUp:
-        TRACE("ERROR xlDiagonalUp\n");
-        return E_NOTIMPL;
-        break;
-    case xlDiagonalDown:
-        TRACE("ERROR xlDiagonalDown\n");
-        return E_NOTIMPL;
-        break;
     }
     /*Создаем объект Border*/
     *ppObject = NULL;

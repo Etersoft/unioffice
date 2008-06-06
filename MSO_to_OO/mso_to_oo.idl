@@ -86,6 +86,10 @@ import "wtypes.idl";
 
 	typedef enum
 	{
+		xlLeft 			= 0x00000001,
+		xlRight			= 0x00000002,
+		xlTop			= 0x00000003,
+		xlBottom		= 0x00000004,
 		xlDiagonalDown		= 0x00000005,
 		xlDiagonalUp		= 0x00000006,
 		xlEdgeLeft		= 0x00000007,
