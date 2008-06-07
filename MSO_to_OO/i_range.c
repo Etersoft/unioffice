@@ -2267,8 +2267,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var2);
             if (pDispParams->cArgs!=2) return E_FAIL;
-            hres = MSO_TO_OO_I_Range_get__Default(iface, pDispParams->rgvarg[1], pDispParams->rgvarg[0], &dret);
+            hres = MSO_TO_OO_I_Range_get__Default(iface, var2, var1, &dret);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -2283,8 +2285,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             lret=1;
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
             /*преобразовываем любой тип к I4*/
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE("(case 2) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
@@ -2412,7 +2415,8 @@ TRACE("VT = %i\n",V_VT(&var2));
     case 10:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE("(case 10) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
@@ -2439,7 +2443,8 @@ TRACE("VT = %i\n",V_VT(&var2));
     case 11:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE("(case 11) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
@@ -2465,7 +2470,8 @@ TRACE("VT = %i\n",V_VT(&var2));
         }
     case 12:
         if (pDispParams->cArgs==1) {
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_BOOL);
             if (FAILED(hres)) {
                 TRACE("(case 12) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
@@ -2489,7 +2495,8 @@ TRACE("VT = %i\n",V_VT(&var2));
     case 14:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_BOOL);
             if (FAILED(hres)) {
                 TRACE("(case 14) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
@@ -2709,7 +2716,8 @@ TRACE("VT = %i\n",V_VT(&var2));
             if (pDispParams->cArgs!=1) return E_FAIL;
             lret=1;
             /*преобразовываем любой тип к I4*/
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE("(case 27) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
@@ -2775,7 +2783,8 @@ TRACE("Parametr 1\n");
     case 29://NumberFormat
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hres = MSO_TO_OO_I_Range_put_NumberFormat(iface, pDispParams->rgvarg[0]);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = MSO_TO_OO_I_Range_put_NumberFormat(iface, var1);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -2799,7 +2808,8 @@ TRACE("Parametr 1\n");
     case 30://NumberFormatLocal
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hres = MSO_TO_OO_I_Range_put_NumberFormatLocal(iface, pDispParams->rgvarg[0]);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            hres = MSO_TO_OO_I_Range_put_NumberFormatLocal(iface, var1);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
