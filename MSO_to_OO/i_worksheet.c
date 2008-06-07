@@ -1082,7 +1082,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     case 1:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hres = MSO_TO_OO_I_Worksheet_put_Name(iface, V_BSTR(&(pDispParams->rgvarg[0])));
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &tmpval);
+            hres = MSO_TO_OO_I_Worksheet_put_Name(iface, V_BSTR(&tmpval));
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;

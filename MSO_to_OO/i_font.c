@@ -45,6 +45,8 @@ static WCHAR const str_parent[] = {
     'P','a','r','e','n','t',0};
 static WCHAR const str_creator[] = {
     'C','r','e','a','t','o','r',0};
+static WCHAR const str_shadow[] = {
+    'S','h','a','d','o','w',0};
 
 /*IUnknown*/
 static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
@@ -535,6 +537,50 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Creator(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_Shadow(
+        I_Font* iface,
+        VARIANT_BOOL *pvbshadow)
+{
+    _FontImpl *This = (_FontImpl*)iface;
+
+    TRACE("\n");
+
+    VARIANT vUnderlineState;
+    VariantInit (&vUnderlineState);
+
+    RangeImpl *range = (RangeImpl*)This->prange;
+
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vUnderlineState, range->pOORange, L"CharShadowed", 0);
+
+    if (hres != S_OK)
+        return hres;
+    *pvbshadow = V_BOOL(&vUnderlineState);
+
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_Shadow(
+        I_Font* iface,
+        VARIANT_BOOL vbshadow)
+{
+    _FontImpl *This = (_FontImpl*)iface;
+
+    TRACE(" \n");
+
+    VARIANT vUnderlineState;
+    VariantInit (&vUnderlineState);
+
+    V_VT(&vUnderlineState) = VT_BOOL;
+    V_BOOL(&vUnderlineState) = vbshadow;
+
+    VARIANT res;
+
+    RangeImpl *range = (RangeImpl*)This->prange;
+
+    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharShadowed", 1, vUnderlineState);
+
+    return S_OK;
+}
 
 /*IDispatch methods*/
 
@@ -606,6 +652,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_creator)) {
         *rgDispId = 11;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_shadow)) {
+        *rgDispId = 12;
         return S_OK;
     }
 
@@ -869,6 +919,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return hr;
         }
+    case 12:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) return E_FAIL;
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
+            if (FAILED(hr)) {
+                TRACE(" (case 5) ERROR VariantChangeTypeEx   %08x\n",hr);
+                return E_FAIL;
+            }
+            vbin = V_BOOL(&vtmp);
+            return MSO_TO_OO_I_Font_put_Shadow(iface, vbin);
+        } else {
+            hr = MSO_TO_OO_I_Font_get_Shadow(iface, &ret);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_BOOL;
+                V_BOOL(pVarResult) = ret;
+            }
+            return S_OK;
+        }
     }
     return E_NOTIMPL;
 }
@@ -901,7 +974,9 @@ const I_FontVtbl MSO_TO_OO_I_Font_Vtbl =
     MSO_TO_OO_I_Font_put_Color,
     MSO_TO_OO_I_Font_get_Application,
     MSO_TO_OO_I_Font_get_Parent,
-    MSO_TO_OO_I_Font_get_Creator
+    MSO_TO_OO_I_Font_get_Creator,
+    MSO_TO_OO_I_Font_get_Shadow,
+    MSO_TO_OO_I_Font_put_Shadow
 };
 
 
