@@ -168,6 +168,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
     if (This==NULL) return E_POINTER;
 
     for (i=1;i<=12;i++) {
+        if ((i==5)||(i==6)) continue;
         I_Borders_get_Item(iface, i, &border_tmp);
         I_Border_put_Color((I_Border*)border_tmp, lcolor);
         IDispatch_Release(border_tmp);
@@ -267,6 +268,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
     if (This==NULL) return E_POINTER;
 
     for (i=1;i<=12;i++) {
+        if ((i==5)||(i==6)) continue;
         I_Borders_get_Item(iface, i, &border_tmp);
         I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
         IDispatch_Release(border_tmp);
@@ -309,6 +311,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
     if (This==NULL) return E_POINTER;
 
     for (i=1;i<=12;i++) {
+        if ((i==5)||(i==6)) continue;
         I_Borders_get_Item(iface, i, &border_tmp);
         I_Border_put_Weight((I_Border*)border_tmp, weight);
         IDispatch_Release(border_tmp);
@@ -516,8 +519,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
     case 3:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
 
             if (FAILED(hres)) {
                 TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
@@ -545,8 +548,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
     case 4:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE(" (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
                 return E_FAIL;
