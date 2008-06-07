@@ -474,13 +474,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
     HRESULT hres;
     IDispatch *dret;
     int ret;
-    VARIANT vresult;
-    VARIANT vNull,par1,par2,par3,par4;
-    VariantInit(&vNull);
+    VARIANT vresult, par1;
+    VARIANT vmas[4];
+    int i;
+
     VariantInit(&par1);
-    VariantInit(&par2);
-    VariantInit(&par3);
-    VariantInit(&par4);
     VariantInit(&vresult);
 
     if (This == NULL) return E_POINTER;
@@ -579,61 +577,24 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             return hres;
         }
     case 7:
-        switch(pDispParams->cArgs) {
-        case 0:
-            TRACE(" (7) 0 parameter \n");
-            hres = MSO_TO_OO_I_Sheets_Add(iface, vNull, vNull, vNull, vNull, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            break;
-        case 1:
-            TRACE(" (7) 1 parameter \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1))) return E_FAIL;
-            hres = MSO_TO_OO_I_Sheets_Add(iface, par1, vNull, vNull, vNull, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            break;
-        case 2:
-            TRACE(" (7) 2 parameters \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par2))) return E_FAIL;
-            hres = MSO_TO_OO_I_Sheets_Add(iface, par1, par2, vNull, vNull, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            break;
-        case 3:
-            TRACE(" (7) 3 parameters \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par3))) return E_FAIL;
-            hres = MSO_TO_OO_I_Sheets_Add(iface, par1, par2, par3, vNull, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            break;
-        case 4:
-            TRACE(" (7) 4 parameters \n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par4))) return E_FAIL;
-            hres = MSO_TO_OO_I_Sheets_Add(iface, par1, par2, par3, par4, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            break;
-        default:
+        if (pDispParams->cArgs>4) {
             TRACE(" (7) Error number of parameters \n");
             return E_FAIL;
         }
+        for (i=0;i<4;i++) {
+            VariantInit(&vmas[i]);
+            V_VT(&vmas[i])=VT_EMPTY;
+        }
+        /*необходимо перевернуть параметры*/
+        for (i=0;i<pDispParams->cArgs;i++) {
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
+        }
+        hres = MSO_TO_OO_I_Sheets_Add(iface, vmas[0], vmas[1], vmas[2], vmas[3], &dret);
+        if (FAILED(hres)) {
+            pExcepInfo->bstrDescription=SysAllocString(str_error);
+            return hres;
+        }
+
         if (pVarResult!=NULL) {
             V_VT(pVarResult) = VT_DISPATCH;
             V_DISPATCH(pVarResult) = dret;
