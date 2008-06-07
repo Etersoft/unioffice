@@ -334,8 +334,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
     case 1:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE(" (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
                 return E_FAIL;
@@ -362,8 +362,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
     case 2:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE(" (case 1) ERROR VariantChangeTypeEx   %08x\n",hres);
                 return E_FAIL;
