@@ -1173,8 +1173,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
     case 3://Color
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vval, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
+            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
 
             if (FAILED(hres)) {
                 TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
@@ -1202,8 +1202,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
     case 4://ColorIndex
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vval, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
+            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE(" (case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
                 return E_FAIL;
@@ -1240,8 +1240,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
     case 6://linestyle
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vval, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
+            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
 
             if (FAILED(hres)) {
                 TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
@@ -1270,8 +1270,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
     case 7://weight
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hres = VariantChangeTypeEx(&vval, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
+            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
 
             if (FAILED(hres)) {
                 TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
