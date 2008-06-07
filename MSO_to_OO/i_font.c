@@ -648,7 +648,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 1:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
             if (FAILED(hr)) {
                 TRACE("ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
@@ -670,7 +671,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 2:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
             if (FAILED(hr)) {
                 TRACE("ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
@@ -692,7 +694,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 3:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
             if (FAILED(hr)) {
                 TRACE("(case 3) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
@@ -714,7 +717,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 4:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hr)) {
                 TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
@@ -736,7 +740,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 5:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
             if (FAILED(hr)) {
                 TRACE(" (case 5) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
@@ -758,7 +763,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 6:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            return MSO_TO_OO_I_Font_put_Name(iface, pDispParams->rgvarg[0]);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            return MSO_TO_OO_I_Font_put_Name(iface, vtmp);
         } else {
             hr = MSO_TO_OO_I_Font_get_Name(iface, pVarResult);
             if (FAILED(hr)) {
@@ -770,8 +776,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 7:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hr)) {
                 TRACE(" (case 7) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
@@ -798,8 +804,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     case 8:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hr)) {
                 TRACE("(case 8) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
