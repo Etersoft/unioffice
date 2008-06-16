@@ -284,12 +284,13 @@ import "wtypes.idl";
 //Shadow 	True if the font is a shadow font or if the object has a shadow.
 		[propget,id(12), helpstring("property Shadow")] HRESULT Shadow([out, retval] VARIANT_BOOL *pvbshadow);
 		[propput,id(12), helpstring("property Shadow")] HRESULT Shadow([in] VARIANT_BOOL vbshadow);
+//OutlineFont 	True if the font is an outline font.
+
 
 //Properties
 //Background 	Returns or sets the type of background for text used in charts. Can be one of the XlBackground constants.
 //XlBackground - 
 //FontStyle 	Returns or sets the font style.
-//OutlineFont 	True if the font is an outline font.
 //Subscript 	True if the font is formatted as subscript. False by default.
 //Superscript 	True if the font is formatted as superscript. False by default.
 	};
@@ -392,6 +393,8 @@ import "wtypes.idl";
 //Hidden
 		[propget,id(38), helpstring("property Hidden")] HRESULT Hidden([out, retval] VARIANT *pparam);
 		[propput,id(38), helpstring("property Hidden")] HRESULT Hidden([in] VARIANT param);
+//MergeArea
+		[propget,id(39), helpstring("property MergeArea")] HRESULT MergeArea([out, retval] IDispatch **value);
 	};
 
 	[

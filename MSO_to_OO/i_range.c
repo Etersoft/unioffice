@@ -98,6 +98,8 @@ static WCHAR const str_locked[] = {
     'L','o','c','k','e','d',0};
 static WCHAR const str_hidden[] = {
     'H','i','d','d','e','n',0};
+static WCHAR const str_mergearea[] = {
+    'M','e','r','g','e','A','r','e','a',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -2044,6 +2046,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Hidden(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeArea(
+        I_Range* iface,
+        IDispatch **value)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    HRESULT hres;
+    long left, right,top,bottom;
+
+    TRACE(" \n");
+
+    hres = MSO_TO_OO_GetRangeAddress(iface, &left, &top, &right, &bottom);
+    if (FAILED(hres)) {
+        TRACE("ERROR when GetRangeAddress\n");
+    }
+    /*Если не 1 ячейка, значит ошибка*/
+    if ((left!=right)||(top!=bottom)) return E_FAIL;
+    /*Получить объединенную область или ячейку*/
+
+    *value = (IDispatch*)This;
+    IDispatch_AddRef(*value);
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -2221,6 +2247,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_hidden)) {
         *rgDispId = 38;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_mergearea)) {
+        *rgDispId = 39;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -2974,6 +3004,24 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
+    case 39://MergeArea
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_I_Range_get_MergeArea(iface, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -3037,7 +3085,8 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_get_Locked,
     MSO_TO_OO_I_Range_put_Locked,
     MSO_TO_OO_I_Range_get_Hidden,
-    MSO_TO_OO_I_Range_put_Hidden
+    MSO_TO_OO_I_Range_put_Hidden,
+    MSO_TO_OO_I_Range_get_MergeArea
 };
 
 
