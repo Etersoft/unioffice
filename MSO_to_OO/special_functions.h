@@ -100,6 +100,12 @@ HRESULT MSO_TO_OO_I_Range_Initialize2(
         I_Range* iface,
         IDispatch *oosheet);
 
+HRESULT MSO_TO_OO_I_Range_Initialize3(
+        I_Range* iface,
+        IDispatch *oosheet,
+        IDispatch *psheet,
+        IDispatch *pApp);
+
 HRESULT MSO_TO_OO_GetRangeAddress(
         I_Range* iface,
         long *lLeft,

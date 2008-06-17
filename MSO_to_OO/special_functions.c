@@ -759,6 +759,39 @@ HRESULT MSO_TO_OO_I_Range_Initialize2(
     return E_POINTER;
 }
 
+HRESULT MSO_TO_OO_I_Range_Initialize3(
+        I_Range* iface,
+        IDispatch *oosheet,
+        IDispatch *psheet,
+        IDispatch *pApp)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+
+    TRACE("\n");
+
+    if (This == NULL) {
+        TRACE("ERROR THIS = NULL \n");
+        return E_POINTER;
+    }
+
+    if (This->pOORange != NULL) {
+        IDispatch_Release(This->pOORange);
+        This->pOORange = NULL;
+    }
+    This->pOORange = oosheet;
+    if (This->pOORange != NULL) {
+        IDispatch_AddRef(This->pOORange);
+        return S_OK;
+    }
+
+    This->pApplication = pApp;
+    IDispatch_AddRef(pApp);
+    This->pwsheet = psheet;
+    IDispatch_AddRef(psheet);
+
+    return E_POINTER;
+}
+
 HRESULT MSO_TO_OO_GetRangeAddress(
         I_Range* iface,
         long *lLeft,

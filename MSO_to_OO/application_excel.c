@@ -64,6 +64,8 @@ static WCHAR const str_columns[] = {
     'C','o','l','u','m','n','s',0};
 static WCHAR const str_rows[] = {
     'R','o','w','s',0};
+static WCHAR const str_selection[] = {
+    'S','e','l','e','c','t','i','o','n',0};
 
 /*
 IUnknown
@@ -714,6 +716,81 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Rows(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Selection(
+        I_ApplicationExcel* iface,
+        IDispatch **ppRange)
+{
+    WorkbookImpl *awb;
+    IDispatch *asheet;
+    IUnknown *pobj;
+    HRESULT hres;
+    VARIANT vRes, vRet;
+    RangeImpl *range;
+
+    TRACE("\n");
+
+    VariantInit(&vRes);
+    VariantInit(&vRet);
+
+    hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook(iface, (IDispatch**)&awb);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get_ActiveWorkbook\n");
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &asheet);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get_ActiveSheet\n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vRes, awb->pDoc, L"getCurrentController",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getCurrentController \n");
+        return hres;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vRes), L"getSelection",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getSelectionr \n");
+        return hres;
+    }
+
+    hres = _I_RangeConstructor(NULL, (void**)&pobj);
+    if (FAILED(hres)) {
+        TRACE("ERROR when _I_RangeConstructor\n");
+        VariantClear(&vRes);
+        VariantClear(&vRet);
+        I_Workbook_Release((I_Workbook*)awb);
+        return E_FAIL;
+    }
+
+    hres = I_Range_QueryInterface(pobj, &IID_I_Range, (void**)ppRange);
+    if (FAILED(hres)) {
+        TRACE("ERROR when _I_RangeConstructor\n");
+        VariantClear(&vRes);
+        VariantClear(&vRet);
+        I_Workbook_Release((I_Workbook*)awb);
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_I_Range_Initialize3((I_Range*)*ppRange, V_DISPATCH(&vRet), asheet, (IDispatch*)iface);
+    if (FAILED(hres)) {
+        TRACE("ERROR when MSO_TO_OO_I_Range_Initialize2\n");
+        VariantClear(&vRes);
+        VariantClear(&vRet);
+        I_Workbook_Release((I_Workbook*)awb);
+        return E_FAIL;
+    }
+
+    VariantClear(&vRes);
+    VariantClear(&vRet);
+    I_Worksheet_Release((I_Worksheet*)asheet);
+    I_Workbook_Release((I_Workbook*)awb);
+    return S_OK;
+}
+
+
 /*
 IDispatch
 */
@@ -825,6 +902,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_rows)) {
         *rgDispId = 21;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_selection)) {
+        *rgDispId = 22;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -1285,12 +1366,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         }
     case 21:
         if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE(" (case 20) ERROR when (PUT)\n");
+            TRACE(" (case 21) ERROR when (PUT)\n");
             return E_NOTIMPL;
         } else {
             switch (pDispParams->cArgs) {
             case 0:
-                TRACE("(case 20) 0 Parameter\n");
+                TRACE("(case 21) 0 Parameter\n");
                 hr = MSO_TO_OO_I_ApplicationExcel_get_Rows(iface, vNull, &pdisp);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -1316,6 +1397,23 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
                 }
                 return S_OK;
             }
+        }
+    case 22://Selection
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            TRACE("(case 22) 0 Parameter\n");
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Selection(iface, &pdisp);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_DISPATCH;
+                V_DISPATCH(pVarResult) = pdisp;
+            }
+            return S_OK;
         }
     }
 
@@ -1360,7 +1458,8 @@ const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
     MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook,
     MSO_TO_OO_I_ApplicationExcel_get_Range,
     MSO_TO_OO_I_ApplicationExcel_get_Columns,
-    MSO_TO_OO_I_ApplicationExcel_get_Rows
+    MSO_TO_OO_I_ApplicationExcel_get_Rows,
+    MSO_TO_OO_I_ApplicationExcel_get_Selection
 };
 
 _ApplicationExcelImpl MSO_TO_OO__ApplicationExcel =

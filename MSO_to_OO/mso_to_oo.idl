@@ -801,6 +801,8 @@ import "wtypes.idl";
 		[propget,id(20), helpstring("property Columns")] HRESULT Columns( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
 //Rows 	Returns a Range object that represents all the rows on the active worksheet. If the active document isn?t a worksheet, the Rows property fails.
 		[propget,id(21), helpstring("property Rows")] HRESULT Rows( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
+//Selection 	Returns the selected object in the active window.
+		[propget,id(22), helpstring("property Selection")] HRESULT Selection([out, retval] IDispatch **ppRange);
 
 
 //Methods
