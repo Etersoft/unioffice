@@ -144,6 +144,10 @@ long MSO_TO_OO_GlobalFindIndexWorksheetByName(
         BSTR name,
         IDispatch **retval);
 
+HRESULT MSO_TO_OO_I_Shapes_Initialize(
+        I_Shapes* iface,
+        I_Worksheet *iwsh);
+
 
 
 

@@ -969,7 +969,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Shapes(
         I_Worksheet* iface,
         IDispatch **ppValue)
 {
-
     HRESULT hres;
     IUnknown *pObj;
 
@@ -984,6 +983,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Shapes(
     hres = I_Shapes_QueryInterface(pObj, &IID_I_Shapes, (void**)ppValue);
     if (FAILED(hres)) {
         TRACE(" ERROR when call IShape->QueryInterface\n");
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_I_Shapes_Initialize((I_Shapes*)*ppValue, iface);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call Shape initialize\n");
         return E_FAIL;
     }
 

@@ -1218,3 +1218,48 @@ long MSO_TO_OO_GlobalFindIndexWorksheetByName(
     }
 return -1;
 }
+
+HRESULT MSO_TO_OO_I_Shapes_Initialize(
+        I_Shapes* iface,
+        I_Worksheet *iwsh)
+{
+    ShapesImpl *This = (ShapesImpl*)iface;
+    WorksheetImpl *wsh = (WorksheetImpl*)iwsh;
+    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    HRESULT hres;
+    VARIANT vframe, param1;
+
+    TRACE("\n");
+
+    VariantInit(&vframe);
+    VariantInit(&param1);
+
+    if (This->pwsheet!=NULL) {
+        I_Worksheet_Release((I_Worksheet*)This->pwsheet);
+    }
+    This->pwsheet = (IDispatch*)wsh;
+    I_Worksheet_AddRef((I_Worksheet*)This->pwsheet);
+
+    if (This->pApplication!=NULL) {
+        I_ApplicationExcel_Release((I_ApplicationExcel*)This->pApplication);
+    }
+    This->pApplication = (IDispatch*)wb->pApplication;
+    I_ApplicationExcel_AddRef((I_ApplicationExcel*)This->pApplication);
+
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = 0;
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vframe, wb->pDoc, L"DrawPages",1,param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get DrawPages \n");
+        return E_FAIL;
+    }
+    if (This->pOOPage!=NULL) {
+        IDispatch_Release(This->pOOPage);
+    }
+    This->pOOPage = V_DISPATCH(&vframe);
+    IDispatch_AddRef(This->pOOPage);
+
+    VariantClear(&vframe);
+    VariantClear(&param1);
+    return S_OK;
+}
