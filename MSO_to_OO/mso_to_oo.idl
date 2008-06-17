@@ -449,6 +449,19 @@ import "wtypes.idl";
 
 	[
 		object,
+		uuid(8BEDE852-1F35-4aeb-8FEA-12A40C8934B1),
+		dual,
+		helpstring("I_Shapes Interface"),
+		pointer_default(unique)
+	]
+	interface I_Shapes : IDispatch
+	{
+
+
+	}
+
+	[
+		object,
 		uuid(2FE99C80-A00C-44a0-BC77-8DB916FDFD41),
 		dual,
 		helpstring("I_Worksheet Interface"),

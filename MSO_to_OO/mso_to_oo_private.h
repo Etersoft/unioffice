@@ -102,6 +102,15 @@ typedef struct
 
 typedef struct
 {
+    const I_ShapesVtbl *_shapesVtbl;
+    LONG ref;
+    IDispatch *pOOPage;     /*Указатель на Range openoffice*/
+    IDispatch *pwsheet;      /*Указатель на worksheet*/
+    IDispatch *pApplication;  /*Указатель на Application*/
+} ShapesImpl;
+
+typedef struct
+{
     const I_PageSetupVtbl *_pagesetupVtbl;
     LONG ref;
     IDispatch *pwsheet;      /*Указатель на worksheet*/
@@ -158,6 +167,7 @@ extern const I_WorksheetVtbl MSO_TO_OO_I_WorksheetVtbl;
 extern const I_InteriorVtbl MSO_TO_OO_I_InteriorVtbl;
 extern const I_BordersVtbl MSO_TO_OO_I_BordersVtbl;
 extern const I_BorderVtbl MSO_TO_OO_I_BorderVtbl;
+extern const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl;
 
 extern ClassFactoryImpl OOFFICE_ClassFactory;
 
@@ -173,6 +183,7 @@ extern WorksheetImpl MSO_TO_OO_Worksheet;
 extern InteriorImpl MSO_TO_OO_Interior;
 extern BordersImpl MSO_TO_OO_Borders;
 extern BorderImpl MSO_TO_OO_Border;
+extern ShapesImpl MSO_TO_OO_Shapes;
 /*Constructors*/
 
 extern HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
@@ -185,5 +196,6 @@ extern HRESULT _I_WorksheetConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_InteriorConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_BordersConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_BorderConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
+extern HRESULT _I_ShapesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 #endif /* __OOFFICE_PRIVATE_H__ */
 
