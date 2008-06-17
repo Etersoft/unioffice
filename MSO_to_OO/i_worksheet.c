@@ -969,8 +969,25 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Shapes(
         I_Worksheet* iface,
         IDispatch **ppValue)
 {
+
+    HRESULT hres;
+    IUnknown *pObj;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    hres = _I_ShapesConstructor(NULL, (void**)&pObj);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call constructor IShape\n");
+        return E_FAIL;
+    }
+
+    hres = I_Shapes_QueryInterface(pObj, &IID_I_Shapes, (void**)ppValue);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call IShape->QueryInterface\n");
+        return E_FAIL;
+    }
+
+    return S_OK;
 }
 
 /*** IDispatch methods ***/
