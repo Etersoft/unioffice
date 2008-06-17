@@ -45,6 +45,8 @@ static WCHAR const str_protect[] = {
     'P','r','o','t','e','c','t',0};
 static WCHAR const str_unprotect[] = {
     'U','n','p','r','o','t','e','c','t',0};
+static WCHAR const str_shapes[] = {
+    'S','h','a','p','e','s',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
@@ -963,6 +965,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Unprotect(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Shapes(
+        I_Worksheet* iface,
+        IDispatch **ppValue)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetTypeInfoCount(
         I_Worksheet* iface,
@@ -1036,6 +1046,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_unprotect)) {
         *rgDispId = 12;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_shapes)) {
+        *rgDispId = 13;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -1342,6 +1356,46 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             return E_INVALIDARG;
         }
         return MSO_TO_OO_I_Worksheet_Unprotect(iface,cell1);
+    case 13:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            switch (pDispParams->cArgs) {
+            case 0:
+                TRACE("(case 13) 0 Parameter\n");
+                hres = MSO_TO_OO_I_Worksheet_get_Shapes(iface, &dret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_DISPATCH;
+                    V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                return S_OK;
+            case 1:
+                TRACE("(case 13) 1 Parameter\n");
+                if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2))) return E_FAIL;
+
+                hres = MSO_TO_OO_I_Worksheet_get_Shapes(iface, &dret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                /*TODO use parameters*/
+
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_DISPATCH;
+                    V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                return S_OK;
+            }
+        }
+
     }
 
     return E_NOTIMPL;
@@ -1368,7 +1422,8 @@ const I_WorksheetVtbl MSO_TO_OO_I_WorksheetVtbl =
     MSO_TO_OO_I_Worksheet_Delete,
     MSO_TO_OO_I_Worksheet_get_PageSetup,
     MSO_TO_OO_I_Worksheet_Protect,
-    MSO_TO_OO_I_Worksheet_Unprotect
+    MSO_TO_OO_I_Worksheet_Unprotect,
+    MSO_TO_OO_I_Worksheet_get_Shapes
 };
 
 WorksheetImpl MSO_TO_OO_Worksheet =

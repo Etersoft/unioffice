@@ -498,6 +498,8 @@ import "wtypes.idl";
 			[in, optional] VARIANT AllowUsingPivotTables);
 //Unprotect
 		[id(12), helpstring("property Unprotect")] HRESULT Unprotect([in, optional] VARIANT Password);
+//Shapes
+		[propget, id(13), helpstring("property Shapes")] HRESULT Shapes([out, retval] IDispatch **ppValue);
 	};
 
 	[

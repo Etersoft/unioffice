@@ -608,6 +608,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Caption(
         VARIANT *vName)
 {
     TRACE("\n");
+    if (vName==NULL) {
+        TRACE("ERROR object is NULL\n");
+    }
     V_VT(vName) = VT_BSTR;
     V_BSTR(vName) = SysAllocString(L"Microsoft Excel");
     return S_OK;
