@@ -20,6 +20,8 @@
 
 #include "mso_to_oo_private.h"
 
+static WCHAR const str_addline[] = {
+    'A','d','d','L','i','n','e',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Shapes_AddRef(
@@ -93,7 +95,16 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_Release(
 
 /*** I_Shapes methods ***/
 
-
+static HRESULT WINAPI MSO_TO_OO_I_Shapes_AddLine(
+        I_Shapes* iface,
+        float beginX,
+        float beginY,
+        float endX,
+        float endY)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
 
 
 
@@ -124,6 +135,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
+    if (!lstrcmpiW(*rgszNames, str_addline)) {
+        *rgDispId = 1;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE\n",*rgszNames);
@@ -141,7 +156,74 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
+    HRESULT hres;
+    VARIANT par1,par2,par3,par4;
+
     TRACE("\n");
+
+    VariantInit(&par1);
+    VariantInit(&par2);
+    VariantInit(&par3);
+    VariantInit(&par4);
+
+    if (iface == NULL) return E_POINTER;
+
+    switch(dispIdMember) 
+    {
+    case 1://AddLine
+        if (pDispParams->cArgs!=4) {
+            TRACE("ERROR parameters\n");
+            return E_FAIL;
+        }
+        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1);
+        if (FAILED(hres)) {
+            TRACE("ERROR when CorrectArg par1 \n");
+            return E_FAIL;
+        }
+        hres = VariantChangeTypeEx(&par1, &par1, 0, 0, VT_R4);
+        if (FAILED(hres)) {
+            TRACE("ERROR when VariantChangeTypeEx par1 \n");
+            return E_FAIL;
+        }
+        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2);
+        if (FAILED(hres)) {
+            TRACE("ERROR when CorrectArg par1 \n");
+            return E_FAIL;
+        }
+        hres = VariantChangeTypeEx(&par2, &par2, 0, 0, VT_R4);
+        if (FAILED(hres)) {
+            TRACE("ERROR when VariantChangeTypeEx par1 \n");
+            return E_FAIL;
+        }
+        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3);
+        if (FAILED(hres)) {
+            TRACE("ERROR when CorrectArg par1 \n");
+            return E_FAIL;
+        }
+        hres = VariantChangeTypeEx(&par3, &par3, 0, 0, VT_R4);
+        if (FAILED(hres)) {
+            TRACE("ERROR when VariantChangeTypeEx par1 \n");
+            return E_FAIL;
+        }
+        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par4);
+        if (FAILED(hres)) {
+            TRACE("ERROR when CorrectArg par1 \n");
+            return E_FAIL;
+        }
+        hres = VariantChangeTypeEx(&par4, &par4, 0, 0, VT_R4);
+        if (FAILED(hres)) {
+            TRACE("ERROR when VariantChangeTypeEx par1 \n");
+            return E_FAIL;
+        }
+
+        hres = MSO_TO_OO_I_Shapes_AddLine(iface, V_R4(&par1), V_R4(&par2), V_R4(&par3), V_R4(&par4));
+        if (FAILED(hres)) {
+            pExcepInfo->bstrDescription=SysAllocString(str_error);
+        }
+        return hres;
+    }
+
+    TRACE("%i not supported\n");
     return E_NOTIMPL;
 }
 
@@ -153,7 +235,8 @@ const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl =
     MSO_TO_OO_I_Shapes_GetTypeInfoCount,
     MSO_TO_OO_I_Shapes_GetTypeInfo,
     MSO_TO_OO_I_Shapes_GetIDsOfNames,
-    MSO_TO_OO_I_Shapes_Invoke
+    MSO_TO_OO_I_Shapes_Invoke,
+    MSO_TO_OO_I_Shapes_AddLine
 };
 
 ShapesImpl MSO_TO_OO_Shapes =

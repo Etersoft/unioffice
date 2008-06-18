@@ -456,9 +456,13 @@ import "wtypes.idl";
 	]
 	interface I_Shapes : IDispatch
 	{
-
-
-	}
+//AddLine Returns a Shape object that represents the new line in a worksheet.
+		[id(1), helpstring("method AddLine")] HRESULT AddLine(
+			[in] float beginX,
+			[in] float beginY,
+			[in] float endX,
+			[in] float endY);
+	};
 
 	[
 		object,
