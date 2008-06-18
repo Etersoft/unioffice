@@ -20,6 +20,7 @@ OBJECTS = tools.o \
 	i_workbook.o \
 	i_range.o \
 	i_pagesetup.o\
+	i_shape.o \
 	i_shapes.o \
 	i_sheets.o \
 	i_worksheet.o \

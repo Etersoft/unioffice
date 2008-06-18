@@ -449,6 +449,18 @@ import "wtypes.idl";
 
 	[
 		object,
+		uuid(89D530BA-8D4B-48b7-99A3-3AD84E2DDC87),
+		dual,
+		helpstring("I_Shape Interface"),
+		pointer_default(unique)
+	]
+	interface I_Shape : IDispatch
+	{
+
+	};
+
+	[
+		object,
 		uuid(8BEDE852-1F35-4aeb-8FEA-12A40C8934B1),
 		dual,
 		helpstring("I_Shapes Interface"),
@@ -461,7 +473,8 @@ import "wtypes.idl";
 			[in] float beginX,
 			[in] float beginY,
 			[in] float endX,
-			[in] float endY);
+			[in] float endY,
+			[out, retval] IDispatch **ppValue);
 	};
 
 	[

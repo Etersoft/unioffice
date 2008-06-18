@@ -3018,6 +3018,8 @@ TRACE("Parametr 1\n");
                 V_VT(pVarResult)=VT_DISPATCH;
                 V_DISPATCH(pVarResult)=dret;
                 return hres;
+            } else {
+                IDispatch_Release(dret);
             }
             TRACE("pVarResult = NULL \n");
             return E_FAIL;

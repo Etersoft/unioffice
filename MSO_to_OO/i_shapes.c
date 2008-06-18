@@ -100,9 +100,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_AddLine(
         float beginX,
         float beginY,
         float endX,
-        float endY)
+        float endY,
+        IDispatch **ppValue)
 {
-    TRACE("\n");
+    TRACE("%f;%f;%f;%f\n",beginX, beginY, endX, endY);
+
+
+
+
     return E_NOTIMPL;
 }
 
@@ -158,6 +163,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_Invoke(
 {
     HRESULT hres;
     VARIANT par1,par2,par3,par4;
+    IDispatch *dret;
 
     TRACE("\n");
 
@@ -216,11 +222,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_Invoke(
             return E_FAIL;
         }
 
-        hres = MSO_TO_OO_I_Shapes_AddLine(iface, V_R4(&par1), V_R4(&par2), V_R4(&par3), V_R4(&par4));
+        hres = MSO_TO_OO_I_Shapes_AddLine(iface, V_R4(&par1), V_R4(&par2), V_R4(&par3), V_R4(&par4), &dret);
         if (FAILED(hres)) {
             pExcepInfo->bstrDescription=SysAllocString(str_error);
         }
-        return hres;
+        if (pVarResult!=NULL){
+            V_VT(pVarResult)=VT_DISPATCH;
+            V_DISPATCH(pVarResult)=dret;
+            return hres;
+        }
+        IDispatch_Release(dret);
+        return E_FAIL;
     }
 
     TRACE("%i not supported\n");
@@ -242,7 +254,10 @@ const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl =
 ShapesImpl MSO_TO_OO_Shapes =
 {
     &MSO_TO_OO_I_ShapesVtbl,
-    0
+    0,
+    NULL,
+    NULL,
+    NULL
 };
 
 
