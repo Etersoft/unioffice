@@ -2078,7 +2078,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
     RangeImpl *This = (RangeImpl*)iface;
     VARIANT result;
     VARIANT res;
-    VARIANT columns;
+    VARIANT range;
     VARIANT param;
     HRESULT hres;
 
@@ -2086,14 +2086,14 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
 
     VariantInit(&result);
     VariantInit(&res);
-    VariantInit(&columns);
+    VariantInit(&range);
     VariantInit(&param);
 
     V_VT(&result) = VT_NULL;
 
     if (This == NULL) return result;
 
-    hres = AutoWrap(DISPATCH_METHOD, &columns, This->pOORange, L"getColumns", 0);
+    hres = AutoWrap(DISPATCH_METHOD, &range, This->pOORange, L"getColumns", 0);
     if (hres != S_OK) {
         TRACE("Error when getColumns\n");
         return result;
@@ -2102,9 +2102,21 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
     V_VT(&param) = VT_BOOL;
     V_BOOL(&param) = VARIANT_TRUE;
 
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, V_DISPATCH(&columns), L"OptimalWidth", 1, param);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, V_DISPATCH(&range), L"OptimalWidth", 1, param);
     if (FAILED(hres)) TRACE("ERROR when OptimalWidth\n");
-    IDispatch_Release(V_DISPATCH(&columns));
+    IDispatch_Release(V_DISPATCH(&range));
+
+    VariantClear(&res);
+
+    hres = AutoWrap(DISPATCH_METHOD, &range, This->pOORange, L"getRows", 0);
+    if (hres != S_OK) {
+        TRACE("Error when getRows\n");
+        return result;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, V_DISPATCH(&range), L"OptimalHeight", 1, param);
+    if (FAILED(hres)) TRACE("ERROR when OptimalHeight\n");
+    IDispatch_Release(V_DISPATCH(&range));
 
     VariantClear(&res);
     VariantClear(&param);
