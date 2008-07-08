@@ -395,6 +395,8 @@ import "wtypes.idl";
 		[propput,id(38), helpstring("property Hidden")] HRESULT Hidden([in] VARIANT param);
 //MergeArea
 		[propget,id(39), helpstring("property MergeArea")] HRESULT MergeArea([out, retval] IDispatch **value);
+//AutoFit
+		[id(40), helpstring("method AutoFit")] VARIANT AutoFit();
 	};
 
 	[
@@ -1104,7 +1106,7 @@ library MSO_TO_OOLib
 	importlib("stdole2.tlb");
 	
 	[
-		uuid(AC49A062-65CE-42f1-9E14-89E8605677ED),
+		uuid(00024500-0000-0000-C000-000000000046),
 		helpstring("_Application Class for Excel")
 	]
 	coclass _ApplicationExcel

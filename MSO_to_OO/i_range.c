@@ -100,6 +100,8 @@ static WCHAR const str_hidden[] = {
     'H','i','d','d','e','n',0};
 static WCHAR const str_mergearea[] = {
     'M','e','r','g','e','A','r','e','a',0};
+static WCHAR const str_autofit[] = {
+    'A','u','t','o','F','i','t',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -2070,6 +2072,46 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeArea(
     return S_OK;
 }
 
+static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
+        I_Range* iface)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT result;
+    VARIANT res;
+    VARIANT columns;
+    VARIANT param;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    VariantInit(&result);
+    VariantInit(&res);
+    VariantInit(&columns);
+    VariantInit(&param);
+
+    V_VT(&result) = VT_NULL;
+
+    if (This == NULL) return result;
+
+    hres = AutoWrap(DISPATCH_METHOD, &columns, This->pOORange, L"getColumns", 0);
+    if (hres != S_OK) {
+        TRACE("Error when getColumns\n");
+        return result;
+    }
+
+    V_VT(&param) = VT_BOOL;
+    V_BOOL(&param) = VARIANT_TRUE;
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, V_DISPATCH(&columns), L"OptimalWidth", 1, param);
+    if (FAILED(hres)) TRACE("ERROR when OptimalWidth\n");
+    IDispatch_Release(V_DISPATCH(&columns));
+
+    VariantClear(&res);
+    VariantClear(&param);
+
+    return result;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -2251,6 +2293,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_mergearea)) {
         *rgDispId = 39;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_autofit)) {
+        *rgDispId = 40;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -3024,6 +3070,12 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
+    case 40:
+        vRet = MSO_TO_OO_I_Range_AutoFit(iface);
+        if (pVarResult!=NULL)
+            *pVarResult = vRet;
+
+        return S_OK;
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -3088,7 +3140,8 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_put_Locked,
     MSO_TO_OO_I_Range_get_Hidden,
     MSO_TO_OO_I_Range_put_Hidden,
-    MSO_TO_OO_I_Range_get_MergeArea
+    MSO_TO_OO_I_Range_get_MergeArea,
+    MSO_TO_OO_I_Range_AutoFit
 };
 
 
