@@ -1326,11 +1326,11 @@ const I_BorderVtbl MSO_TO_OO_I_Border_Vtbl =
     MSO_TO_OO_I_Border_put_Weight
 };
 
-extern HRESULT _I_BorderConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_BorderConstructor(LPVOID *ppObj)
 {
     BorderImpl *border;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     border = HeapAlloc(GetProcessHeap(), 0, sizeof(*border));
     if (!border)

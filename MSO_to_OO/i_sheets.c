@@ -122,7 +122,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
     I_Worksheet *pSheet = NULL;
     HRESULT hres;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
 
     /*преобразовываем любой тип к I4*/
     hres = VariantChangeTypeEx(&varIndex, &varIndex, 0, 0, VT_I4);
@@ -134,7 +133,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
         if (hres!=S_OK)
             return hres;
 
-        hres = _I_WorksheetConstructor(pUnkOuter, (LPVOID*) &punk);
+        hres = _I_WorksheetConstructor((LPVOID*) &punk);
         if (FAILED(hres)) return E_NOINTERFACE;
 
         hres = I_Worksheet_QueryInterface(punk, &IID_I_Worksheet, (void**) &(pSheet));
@@ -155,7 +154,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
             if (hres!=S_OK)
                 return hres;
 
-            hres = _I_WorksheetConstructor(pUnkOuter, (LPVOID*) &punk);
+            hres = _I_WorksheetConstructor((LPVOID*) &punk);
             if (FAILED(hres)) return E_NOINTERFACE;
 
             hres = I_Worksheet_QueryInterface(punk, &IID_I_Worksheet, (void**) &(pSheet));
@@ -623,11 +622,11 @@ const I_SheetsVtbl MSO_TO_OO_I_SheetsVtbl =
     MSO_TO_OO_I_Sheets_Add
 };
 
-extern HRESULT _I_SheetsConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_SheetsConstructor(LPVOID *ppObj)
 {
     SheetsImpl *sheets;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     sheets = HeapAlloc(GetProcessHeap(), 0, sizeof(*sheets));
     if (!sheets)

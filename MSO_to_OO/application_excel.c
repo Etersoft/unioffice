@@ -762,7 +762,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Selection(
         return hres;
     }
 
-    hres = _I_RangeConstructor(NULL, (void**)&pobj);
+    hres = _I_RangeConstructor((void**)&pobj);
     if (FAILED(hres)) {
         TRACE("ERROR when _I_RangeConstructor\n");
         VariantClear(&vRes);
@@ -1468,7 +1468,7 @@ const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
     MSO_TO_OO_I_ApplicationExcel_get_Selection
 };
 
-HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
 {
     _ApplicationExcelImpl *_applicationexcell;
     CLSID clsid;
@@ -1477,7 +1477,7 @@ HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
     VARIANT param1;
     IUnknown *punk = NULL;
 
-    TRACE("\n");
+    TRACE("(%p) \n", ppObj);
 
     _applicationexcell = HeapAlloc(GetProcessHeap(), 0, sizeof(*_applicationexcell));
     if (!_applicationexcell) {
@@ -1512,7 +1512,7 @@ HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
     _applicationexcell->pdOODesktop = result.pdispVal;
     hres = IDispatch_AddRef(_applicationexcell->pdOODesktop);
 
-    hres = _I_WorkbooksConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_WorkbooksConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Workbooks_QueryInterface(punk, &IID_I_Workbooks, (void**) &(_applicationexcell->pdWorkbooks));

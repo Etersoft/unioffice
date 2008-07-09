@@ -197,7 +197,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
     RangeImpl *This = (RangeImpl*)iface;
     I_Range *pCell;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
 
     TRACE("\n");
@@ -208,7 +207,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
 
     if (V_VT(&varRowIndex)==VT_BSTR) {
 
-        hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+        hres = _I_RangeConstructor((LPVOID*) &punk);
         if (FAILED(hres)) return E_NOINTERFACE;
 
         hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
@@ -240,7 +239,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         /*Создаем новый объект I_Range that occupy one cell*/
         struct CELL_COORD cellCoord;
 
-        hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+        hres = _I_RangeConstructor((LPVOID*) &punk);
 
         if (FAILED(hres)) return E_NOINTERFACE;
 
@@ -342,7 +341,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
 
     HRESULT hr;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     IDispatch *pFont;
 
     TRACE("\n");
@@ -351,7 +349,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
 
     *ppFont = NULL;
 
-    hr = _I_FontConstructor(pUnkOuter, (LPVOID*) &punk);
+    hr = _I_FontConstructor((LPVOID*) &punk);
 
     if (FAILED(hr)) return E_NOINTERFACE;
 
@@ -1297,7 +1295,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Interior(
 
     HRESULT hr;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     IDispatch *pInterior;
 
     TRACE("\n");
@@ -1306,7 +1303,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Interior(
 
     *value = NULL;
 
-    hr = _I_InteriorConstructor(pUnkOuter, (LPVOID*) &punk);
+    hr = _I_InteriorConstructor((LPVOID*) &punk);
 
     if (FAILED(hr)) return E_NOINTERFACE;
 
@@ -1335,7 +1332,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Borders(
 
     HRESULT hr;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     IDispatch *pBorders;
 
     TRACE(" \n");
@@ -1344,7 +1340,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Borders(
 
     *value = NULL;
 
-    hr = _I_BordersConstructor(pUnkOuter, (LPVOID*) &punk);
+    hr = _I_BordersConstructor((LPVOID*) &punk);
 
     if (FAILED(hr)) return E_NOINTERFACE;
 
@@ -3156,11 +3152,11 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_AutoFit
 };
 
-extern HRESULT _I_RangeConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
 {
     RangeImpl *range;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     range = HeapAlloc(GetProcessHeap(), 0, sizeof(*range));
     if (!range)

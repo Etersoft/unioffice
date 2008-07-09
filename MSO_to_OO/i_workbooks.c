@@ -143,14 +143,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
 
     TRACE(" \n");
 
     if (This == NULL) return E_POINTER;
 
-    hres = _I_WorkbookConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_WorkbookConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
     if (This->count_workbooks==0){
@@ -326,14 +325,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
 
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
 
     TRACE(" \n");
 
     if (This == NULL) return E_POINTER;
 
-    hres = _I_WorkbookConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_WorkbookConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
     if (This->count_workbooks==0){
@@ -886,11 +884,11 @@ const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl =
     MSO_TO_OO_I_Workbooks___OpenText
 };
 
-extern HRESULT _I_WorkbooksConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj)
 {
     WorkbooksImpl *workbooks;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     workbooks = HeapAlloc(GetProcessHeap(), 0, sizeof(*workbooks));
     if (!workbooks) {

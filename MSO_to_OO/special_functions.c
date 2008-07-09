@@ -164,7 +164,6 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     IDispatch *dpv = NULL;
     HRESULT hres;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
 
     TRACE("\n");
 
@@ -196,7 +195,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     IDispatch_AddRef(This->pDoc);
 
     /*надо создать pSheets*/
-    hres = _I_SheetsConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_SheetsConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Sheets_QueryInterface(punk, &IID_I_Sheets, (void**) &(This->pSheets));
@@ -252,7 +251,6 @@ HRESULT MSO_TO_OO_GetActiveSheet(
     VARIANT resultSheet;
     I_Worksheet *pworksheet = NULL;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     WorkbookImpl *wb = (WorkbookImpl*)This->pwb;
     TRACE("\n");
     VARIANT res;
@@ -273,7 +271,7 @@ HRESULT MSO_TO_OO_GetActiveSheet(
     }
 
     /*надо создать WorkSheet*/
-    hres = _I_WorksheetConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_WorksheetConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Worksheet_QueryInterface(punk, &IID_I_Worksheet, (void**) &(pworksheet));
@@ -299,7 +297,6 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
 
     TRACE("\n");
@@ -311,7 +308,7 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
 
     /*если This->pAllRange = NULL его надо создать*/
     if (This->pAllRange == NULL) {
-        hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+        hres = _I_RangeConstructor((LPVOID*) &punk);
         if (FAILED(hres)) return E_NOINTERFACE;
 
         hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &(This->pAllRange));
@@ -604,7 +601,6 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     IDispatch *dpv = NULL;
     HRESULT hres;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
 
     TRACE("\n");
 
@@ -668,7 +664,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     IDispatch_AddRef(This->pDoc);
 
     /*надо создать pSheets*/
-    hres = _I_SheetsConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_SheetsConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
     hres = I_Sheets_QueryInterface(punk, &IID_I_Sheets, (void**) &(This->pSheets));
@@ -904,9 +900,8 @@ HRESULT MSO_TO_OO_GetActiveCells(
     /*Создаем новый объект I_Range*/
     IDispatch *pRange;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
 
-    hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_RangeConstructor((LPVOID*) &punk);
 
     if (FAILED(hres)) return E_NOINTERFACE;
 

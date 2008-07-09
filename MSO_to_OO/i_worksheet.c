@@ -190,7 +190,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     I_Range *pCell1;
     I_Range *pCell2;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
     VARIANT vNull;
     VariantInit(&vNull);
@@ -261,7 +260,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     }
 
     /*Создаем новый объект I_Range*/
-    hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_RangeConstructor((LPVOID*) &punk);
 
     if (FAILED(hres)) return E_NOINTERFACE;
 
@@ -416,7 +415,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
     WorksheetImpl *This = (WorksheetImpl*)iface;
     IDispatch *pRange;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
     IDispatch *tmp_range;
 
@@ -442,7 +440,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
                 return hres;
             }
             /*Создаем новый объект I_Range*/
-            hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+            hres = _I_RangeConstructor((LPVOID*) &punk);
 
             if (FAILED(hres)) return E_NOINTERFACE;
 
@@ -495,7 +493,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
                 }
 
                 /*Создаем новый объект I_Range*/
-                hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+                hres = _I_RangeConstructor((LPVOID*) &punk);
 
                 if (FAILED(hres)) return E_NOINTERFACE;
 
@@ -541,7 +539,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
     WorksheetImpl *This = (WorksheetImpl*)iface;
     IDispatch *pRange;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     HRESULT hres;
     IDispatch *tmp_range;
 
@@ -567,7 +564,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
                 return hres;
             }
             /*Создаем новый объект I_Range*/
-            hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+            hres = _I_RangeConstructor((LPVOID*) &punk);
 
             if (FAILED(hres)) return E_NOINTERFACE;
 
@@ -626,7 +623,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
                 }
 
                 /*Создаем новый объект I_Range*/
-                hres = _I_RangeConstructor(pUnkOuter, (LPVOID*) &punk);
+                hres = _I_RangeConstructor((LPVOID*) &punk);
 
                 if (FAILED(hres)) return E_NOINTERFACE;
 
@@ -974,7 +971,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Shapes(
 
     TRACE("\n");
 
-    hres = _I_ShapesConstructor(NULL, (void**)&pObj);
+    hres = _I_ShapesConstructor((void**)&pObj);
     if (FAILED(hres)) {
         TRACE(" ERROR when call constructor IShapes\n");
         return E_FAIL;
@@ -1448,11 +1445,11 @@ const I_WorksheetVtbl MSO_TO_OO_I_WorksheetVtbl =
     MSO_TO_OO_I_Worksheet_get_Shapes
 };
 
-extern HRESULT _I_WorksheetConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_WorksheetConstructor(LPVOID *ppObj)
 {
     WorksheetImpl *worksheet;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     worksheet = HeapAlloc(GetProcessHeap(), 0, sizeof(*worksheet));
     if (!worksheet)

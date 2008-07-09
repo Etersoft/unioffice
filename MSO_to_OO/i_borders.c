@@ -327,7 +327,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
 {
     BordersImpl *This = (BordersImpl*)iface;
     IUnknown *punk = NULL;
-    LPUNKNOWN pUnkOuter = NULL;
     IDispatch *pborder;
     HRESULT hres;
 
@@ -340,7 +339,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
     /*Создаем объект Border*/
     *ppObject = NULL;
 
-    hres = _I_BorderConstructor(pUnkOuter, (LPVOID*) &punk);
+    hres = _I_BorderConstructor((LPVOID*) &punk);
 
     if (FAILED(hres)) return E_NOINTERFACE;
 
@@ -771,11 +770,11 @@ const I_BordersVtbl MSO_TO_OO_I_Borders_Vtbl =
     MSO_TO_OO_I_Borders_put_Value
 };
 
-extern HRESULT _I_BordersConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_BordersConstructor(LPVOID *ppObj)
 {
     BordersImpl *borders;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
     
     borders = HeapAlloc(GetProcessHeap(), 0, sizeof(*borders));
     if (!borders)

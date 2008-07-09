@@ -149,11 +149,11 @@ const I_ShapeVtbl MSO_TO_OO_I_ShapeVtbl =
     MSO_TO_OO_I_Shape_Invoke
 };
 
-extern HRESULT _I_ShapeConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_ShapeConstructor(LPVOID *ppObj)
 {
     ShapeImpl *shape;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     shape = HeapAlloc(GetProcessHeap(), 0, sizeof(*shape));
     if (!shape)

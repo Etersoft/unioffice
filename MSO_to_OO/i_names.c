@@ -224,11 +224,11 @@ const NamesVtbl MSO_TO_OO_NamesVtbl =
     MSO_TO_OO_Names_Item
 };
 
-extern HRESULT _NamesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _NamesConstructor(LPVOID *ppObj)
 {
     NamesImpl *names;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     names = HeapAlloc(GetProcessHeap(), 0, sizeof(*names));
     if (!names)

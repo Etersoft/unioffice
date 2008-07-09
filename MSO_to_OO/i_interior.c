@@ -455,11 +455,11 @@ const I_InteriorVtbl MSO_TO_OO_I_Interior_Vtbl =
     MSO_TO_OO_I_Interior_get_Creator
 };
 
-extern HRESULT _I_InteriorConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_InteriorConstructor(LPVOID *ppObj)
 {
     InteriorImpl *interior;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
     
     interior = HeapAlloc(GetProcessHeap(), 0, sizeof(*interior));
     if (!interior)

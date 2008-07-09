@@ -622,11 +622,11 @@ const I_WorkbookVtbl MSO_TO_OO_I_WorkbookVtbl =
     MSO_TO_OO_I_Workbook_get_Name
 };
 
-extern HRESULT _I_WorkbookConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj)
 {
     WorkbookImpl *workbook;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     workbook = HeapAlloc(GetProcessHeap(), 0, sizeof(*workbook));
     if (!workbook)

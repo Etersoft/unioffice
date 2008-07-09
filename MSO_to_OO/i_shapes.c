@@ -109,7 +109,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_AddLine(
 
     TRACE("%f;%f;%f;%f\n",beginX, beginY, endX, endY);
 
-    hres = _I_ShapeConstructor(NULL, (void**)&pObj);
+    hres = _I_ShapeConstructor((void**)&pObj);
     if (FAILED(hres)) {
         TRACE(" ERROR when call constructor IShape\n");
         return E_FAIL;
@@ -274,11 +274,11 @@ const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl =
     MSO_TO_OO_I_Shapes_AddLine
 };
 
-extern HRESULT _I_ShapesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+extern HRESULT _I_ShapesConstructor(LPVOID *ppObj)
 {
     ShapesImpl *shapes;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
 
     shapes = HeapAlloc(GetProcessHeap(), 0, sizeof(*shapes));
     if (!shapes)

@@ -178,19 +178,19 @@ extern ClassFactoryImpl OOFFICE_ClassFactory;
 
 /*Constructors*/
 
-extern HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_FontConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_WorkbooksConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_WorkbookConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_RangeConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_SheetsConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_WorksheetConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_InteriorConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_BordersConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_BorderConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_ShapesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _I_ShapeConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
-extern HRESULT _NamesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
+extern HRESULT _ApplicationExcelConstructor(LPVOID *ppObj);
+extern HRESULT _I_FontConstructor(LPVOID *ppObj);
+extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj);
+extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj);
+extern HRESULT _I_RangeConstructor(LPVOID *ppObj);
+extern HRESULT _I_SheetsConstructor(LPVOID *ppObj);
+extern HRESULT _I_WorksheetConstructor(LPVOID *ppObj);
+extern HRESULT _I_InteriorConstructor(LPVOID *ppObj);
+extern HRESULT _I_BordersConstructor(LPVOID *ppObj);
+extern HRESULT _I_BorderConstructor(LPVOID *ppObj);
+extern HRESULT _I_ShapesConstructor(LPVOID *ppObj);
+extern HRESULT _I_ShapeConstructor(LPVOID *ppObj);
+extern HRESULT _NamesConstructor(LPVOID *ppObj);
 
 #endif /* __OOFFICE_PRIVATE_H__ */
 

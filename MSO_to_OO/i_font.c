@@ -979,11 +979,11 @@ const I_FontVtbl MSO_TO_OO_I_Font_Vtbl =
     MSO_TO_OO_I_Font_put_Shadow
 };
 
-HRESULT _I_FontConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
+HRESULT _I_FontConstructor(LPVOID *ppObj)
 {
     _FontImpl *_font;
 
-    TRACE("(%p,%p)\n", pUnkOuter, ppObj);
+    TRACE("(%p)\n", ppObj);
     
     _font = HeapAlloc(GetProcessHeap(), 0, sizeof(*_font));
     if (!_font)

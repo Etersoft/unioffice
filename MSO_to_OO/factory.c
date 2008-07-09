@@ -92,7 +92,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
 
     if (pUnkOuter != NULL) return CLASS_E_NOAGGREGATION;
 
-    res = _ApplicationExcelConstructor(pUnkOuter, (LPVOID*) &punk);
+    res = _ApplicationExcelConstructor((LPVOID*) &punk);
     if (FAILED(res)) return res;
 
     res = I_ApplicationExcel_QueryInterface(punk, riid, ppvObj);
