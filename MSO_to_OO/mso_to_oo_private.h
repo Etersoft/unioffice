@@ -127,6 +127,14 @@ typedef struct
 
 typedef struct
 {
+    const NamesVtbl *namesVtbl;
+    LONG ref;
+    IDispatch *pwb;
+    IDispatch *pApplication;
+} NamesImpl;
+
+typedef struct
+{
     const I_WorkbookVtbl *_workbookVtbl;
     LONG ref;
     IDispatch *pApplication;  /*Указатель на Application*/
@@ -177,6 +185,7 @@ extern const I_BordersVtbl MSO_TO_OO_I_BordersVtbl;
 extern const I_BorderVtbl MSO_TO_OO_I_BorderVtbl;
 extern const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl;
 extern const I_ShapeVtbl MSO_TO_OO_I_ShapeVtbl;
+extern const NamesVtbl MSO_TO_OO_NamesVtbl;
 
 extern ClassFactoryImpl OOFFICE_ClassFactory;
 
@@ -194,6 +203,7 @@ extern BordersImpl MSO_TO_OO_Borders;
 extern BorderImpl MSO_TO_OO_Border;
 extern ShapesImpl MSO_TO_OO_Shapes;
 extern ShapeImpl MSO_TO_OO_Shape;
+extern NamesImpl MSO_TO_OO_Names;
 /*Constructors*/
 
 extern HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
@@ -208,5 +218,7 @@ extern HRESULT _I_BordersConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_BorderConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_ShapesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
 extern HRESULT _I_ShapeConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
+extern HRESULT _NamesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);
+
 #endif /* __OOFFICE_PRIVATE_H__ */
 

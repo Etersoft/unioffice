@@ -17,6 +17,7 @@ OBJECTS = tools.o \
 	i_font.o  \
 	special_functions.o \
 	i_workbooks.o \
+	i_names.o \
 	i_workbook.o \
 	i_range.o \
 	i_pagesetup.o\
