@@ -103,12 +103,31 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_AddLine(
         float endY,
         IDispatch **ppValue)
 {
+    ShapesImpl *This = (ShapesImpl*)iface;
+    HRESULT hres;
+    IUnknown *pObj;
+
     TRACE("%f;%f;%f;%f\n",beginX, beginY, endX, endY);
 
+    hres = _I_ShapeConstructor(NULL, (void**)&pObj);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call constructor IShape\n");
+        return E_FAIL;
+    }
 
+    hres = I_Shape_QueryInterface(pObj, &IID_I_Shape, (void**)ppValue);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call IShape->QueryInterface\n");
+        return E_FAIL;
+    }
 
+    hres = MSO_TO_OO_I_Shape_Line_Initialize((I_Shape*)*ppValue, iface, beginX*10, beginY*10, endX*10, endY*10);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call Shape_Line initialize\n");
+        return E_FAIL;
+    }
 
-    return E_NOTIMPL;
+    return S_OK;
 }
 
 
@@ -177,62 +196,67 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_Invoke(
     switch(dispIdMember) 
     {
     case 1://AddLine
-        if (pDispParams->cArgs!=4) {
-            TRACE("ERROR parameters\n");
-            return E_FAIL;
-        }
-        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1);
-        if (FAILED(hres)) {
-            TRACE("ERROR when CorrectArg par1 \n");
-            return E_FAIL;
-        }
-        hres = VariantChangeTypeEx(&par1, &par1, 0, 0, VT_R4);
-        if (FAILED(hres)) {
-            TRACE("ERROR when VariantChangeTypeEx par1 \n");
-            return E_FAIL;
-        }
-        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2);
-        if (FAILED(hres)) {
-            TRACE("ERROR when CorrectArg par1 \n");
-            return E_FAIL;
-        }
-        hres = VariantChangeTypeEx(&par2, &par2, 0, 0, VT_R4);
-        if (FAILED(hres)) {
-            TRACE("ERROR when VariantChangeTypeEx par1 \n");
-            return E_FAIL;
-        }
-        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3);
-        if (FAILED(hres)) {
-            TRACE("ERROR when CorrectArg par1 \n");
-            return E_FAIL;
-        }
-        hres = VariantChangeTypeEx(&par3, &par3, 0, 0, VT_R4);
-        if (FAILED(hres)) {
-            TRACE("ERROR when VariantChangeTypeEx par1 \n");
-            return E_FAIL;
-        }
-        hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par4);
-        if (FAILED(hres)) {
-            TRACE("ERROR when CorrectArg par1 \n");
-            return E_FAIL;
-        }
-        hres = VariantChangeTypeEx(&par4, &par4, 0, 0, VT_R4);
-        if (FAILED(hres)) {
-            TRACE("ERROR when VariantChangeTypeEx par1 \n");
-            return E_FAIL;
-        }
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("NOTIMPL\n");
+            return E_NOTIMPL;
+        } else {
+            if (pDispParams->cArgs!=4) {
+                TRACE("ERROR parameters\n");
+                return E_FAIL;
+            }
+            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1);
+            if (FAILED(hres)) {
+                TRACE("ERROR when CorrectArg par1 \n");
+                return E_FAIL;
+            }
+            hres = VariantChangeTypeEx(&par1, &par1, 0, 0, VT_R4);
+            if (FAILED(hres)) {
+                TRACE("ERROR when VariantChangeTypeEx par1 \n");
+                return E_FAIL;
+            }
+            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2);
+            if (FAILED(hres)) {
+                TRACE("ERROR when CorrectArg par1 \n");
+                return E_FAIL;
+            }
+            hres = VariantChangeTypeEx(&par2, &par2, 0, 0, VT_R4);
+            if (FAILED(hres)) {
+                TRACE("ERROR when VariantChangeTypeEx par1 \n");
+                return E_FAIL;
+            }
+            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3);
+            if (FAILED(hres)) {
+                TRACE("ERROR when CorrectArg par1 \n");
+                return E_FAIL;
+            }
+            hres = VariantChangeTypeEx(&par3, &par3, 0, 0, VT_R4);
+            if (FAILED(hres)) {
+                TRACE("ERROR when VariantChangeTypeEx par1 \n");
+                return E_FAIL;
+            }
+            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par4);
+            if (FAILED(hres)) {
+                TRACE("ERROR when CorrectArg par1 \n");
+                return E_FAIL;
+            }
+            hres = VariantChangeTypeEx(&par4, &par4, 0, 0, VT_R4);
+            if (FAILED(hres)) {
+                TRACE("ERROR when VariantChangeTypeEx par1 \n");
+                return E_FAIL;
+            }
 
-        hres = MSO_TO_OO_I_Shapes_AddLine(iface, V_R4(&par1), V_R4(&par2), V_R4(&par3), V_R4(&par4), &dret);
-        if (FAILED(hres)) {
-            pExcepInfo->bstrDescription=SysAllocString(str_error);
+            hres = MSO_TO_OO_I_Shapes_AddLine(iface, V_R4(&par1), V_R4(&par2), V_R4(&par3), V_R4(&par4), &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            }
+            IDispatch_Release(dret);
+            return E_FAIL;
         }
-        if (pVarResult!=NULL){
-            V_VT(pVarResult)=VT_DISPATCH;
-            V_DISPATCH(pVarResult)=dret;
-            return hres;
-        }
-        IDispatch_Release(dret);
-        return E_FAIL;
     }
 
     TRACE("%i not supported\n");

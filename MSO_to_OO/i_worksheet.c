@@ -976,13 +976,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Shapes(
 
     hres = _I_ShapesConstructor(NULL, (void**)&pObj);
     if (FAILED(hres)) {
-        TRACE(" ERROR when call constructor IShape\n");
+        TRACE(" ERROR when call constructor IShapes\n");
         return E_FAIL;
     }
 
     hres = I_Shapes_QueryInterface(pObj, &IID_I_Shapes, (void**)ppValue);
     if (FAILED(hres)) {
-        TRACE(" ERROR when call IShape->QueryInterface\n");
+        TRACE(" ERROR when call IShapes->QueryInterface\n");
         return E_FAIL;
     }
 

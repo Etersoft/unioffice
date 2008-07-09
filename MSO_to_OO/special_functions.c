@@ -1227,11 +1227,12 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
     WorksheetImpl *wsh = (WorksheetImpl*)iwsh;
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     HRESULT hres;
-    VARIANT vframe, param1;
+    VARIANT vframe, param1, vRet;
 
     TRACE("\n");
 
     VariantInit(&vframe);
+    VariantInit(&vRet);
     VariantInit(&param1);
 
     if (This->pwsheet!=NULL) {
@@ -1246,20 +1247,162 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
     This->pApplication = (IDispatch*)wb->pApplication;
     I_ApplicationExcel_AddRef((I_ApplicationExcel*)This->pApplication);
 
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = 0;
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vframe, wb->pDoc, L"DrawPages",1,param1);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vframe, wb->pDoc, L"DrawPages",0);
     if (FAILED(hres)) {
         TRACE("ERROR when get DrawPages \n");
         return E_FAIL;
     }
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = 1;
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vframe), L"insertNewByIndex",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when insertNewByIndex \n");
+        return E_FAIL;
+    }
+
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = 0;
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vframe), L"getByIndex",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get getByIndex \n");
+        return E_FAIL;
+    }
+
     if (This->pOOPage!=NULL) {
         IDispatch_Release(This->pOOPage);
     }
-    This->pOOPage = V_DISPATCH(&vframe);
+    This->pOOPage = V_DISPATCH(&vRet);
     IDispatch_AddRef(This->pOOPage);
 
     VariantClear(&vframe);
+    VariantClear(&vRet);
     VariantClear(&param1);
     return S_OK;
 }
+
+HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
+        I_Shape* iface,
+        I_Shapes *ishapes,
+        float x1, float y1, float x2, float y2)
+{
+    ShapeImpl *This = (ShapeImpl*)iface;
+    ShapesImpl *shapes = (ShapesImpl*)ishapes;
+    WorksheetImpl *wsh = (WorksheetImpl*)(shapes->pwsheet);
+    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    VARIANT vline, param1, size, position, vRet;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    VariantInit(&vline);
+    VariantInit(&param1);
+    VariantInit(&position);
+    VariantInit(&size);
+    VariantInit(&vRet);
+
+    if (This->pShapes!=NULL) {
+        I_Shapes_Release((I_Shapes*)This->pShapes);
+    }
+    This->pShapes = (IDispatch*)ishapes;
+    I_Shapes_AddRef((I_Shapes*)This->pShapes);
+
+    V_VT(&param1) = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(L"com.sun.star.drawing.LineShape");
+    hres = AutoWrap(DISPATCH_METHOD, &vline, wb->pDoc, L"createInstance",1,param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get createInstance \n");
+        return E_FAIL;
+    }
+    if (This->pOOShape!=NULL) {
+        IDispatch_Release(This->pOOShape);
+    }
+    This->pOOShape = V_DISPATCH(&vline);
+    IDispatch_AddRef(This->pOOShape);
+
+    hres = AutoWrap(DISPATCH_METHOD, &position, V_DISPATCH(&vline), L"getPosition",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getPosition \n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &size, V_DISPATCH(&vline), L"getSize",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getSize\n");
+        return E_FAIL;
+    }
+
+    VariantClear(&param1);
+    V_VT(&param1) = VT_R4;
+    V_R4(&param1) = x1;
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&position), L"X",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when set X\n");
+        return E_FAIL;
+    }
+    VariantClear(&vRet);
+    VariantClear(&param1);
+    V_VT(&param1) = VT_R4;
+    V_R4(&param1) = y1;
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&position), L"Y",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when set Y\n");
+        return E_FAIL;
+    }
+    VariantClear(&vRet);
+    VariantClear(&param1);
+    V_VT(&param1) = VT_R4;
+    V_R4(&param1) = x2-x1;
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&size), L"Width",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when set Width\n");
+        return E_FAIL;
+    }
+    VariantClear(&vRet);
+    VariantClear(&param1);
+    V_VT(&param1) = VT_R4;
+    V_R4(&param1) = y2-y1;
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&size), L"Height",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when set Height\n");
+        return E_FAIL;
+    }
+    VariantClear(&vRet);
+    VariantClear(&param1);
+    V_VT(&param1) = VT_DISPATCH;
+    V_DISPATCH(&param1) = V_DISPATCH(&position);
+    IDispatch_AddRef(V_DISPATCH(&param1));
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vline), L"setPosition",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when setPosition \n");
+        return E_FAIL;
+    }
+    VariantClear(&vRet);
+    VariantClear(&param1);
+    V_VT(&param1) = VT_DISPATCH;
+    V_DISPATCH(&param1) = V_DISPATCH(&size);
+    IDispatch_AddRef(V_DISPATCH(&param1));
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vline), L"setSize",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when setSize\n");
+        return E_FAIL;
+    }
+
+    /*add shape to page*/
+    VariantClear(&vRet);
+    V_VT(&param1) = VT_DISPATCH;
+    V_DISPATCH(&param1) = This->pOOShape;
+    IDispatch_AddRef(This->pOOShape);
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, shapes->pOOPage, L"add",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when add\n");
+        return E_FAIL;
+    }
+
+    VariantClear(&vline);
+    VariantClear(&param1);
+    VariantClear(&position);
+    VariantClear(&size);
+    VariantClear(&vRet);
+    return S_OK;
+}
+
