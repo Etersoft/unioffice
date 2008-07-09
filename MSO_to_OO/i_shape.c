@@ -149,15 +149,6 @@ const I_ShapeVtbl MSO_TO_OO_I_ShapeVtbl =
     MSO_TO_OO_I_Shape_Invoke
 };
 
-ShapeImpl MSO_TO_OO_Shape =
-{
-    &MSO_TO_OO_I_ShapeVtbl,
-    0,
-    NULL,
-    NULL
-};
-
-
 extern HRESULT _I_ShapeConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     ShapeImpl *shape;

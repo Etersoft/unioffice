@@ -131,7 +131,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_AddLine(
 }
 
 
-
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Shapes_GetTypeInfoCount(
         I_Shapes* iface,
@@ -274,16 +273,6 @@ const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl =
     MSO_TO_OO_I_Shapes_Invoke,
     MSO_TO_OO_I_Shapes_AddLine
 };
-
-ShapesImpl MSO_TO_OO_Shapes =
-{
-    &MSO_TO_OO_I_ShapesVtbl,
-    0,
-    NULL,
-    NULL,
-    NULL
-};
-
 
 extern HRESULT _I_ShapesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {

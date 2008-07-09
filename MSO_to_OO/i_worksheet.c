@@ -1448,16 +1448,6 @@ const I_WorksheetVtbl MSO_TO_OO_I_WorksheetVtbl =
     MSO_TO_OO_I_Worksheet_get_Shapes
 };
 
-WorksheetImpl MSO_TO_OO_Worksheet =
-{
-    &MSO_TO_OO_I_WorksheetVtbl,
-    0,
-    NULL,
-    NULL,
-    NULL
-};
-
-
 extern HRESULT _I_WorksheetConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     WorksheetImpl *worksheet;
