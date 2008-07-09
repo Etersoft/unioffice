@@ -2314,14 +2314,6 @@ const I_PageSetupVtbl MSO_TO_OO_I_PageSetupVtbl =
     MSO_TO_OO_I_PageSetup_put_PrintTitleRows
 };
 
-PageSetupImpl MSO_TO_OO_PageSetup =
-{
-    &MSO_TO_OO_I_PageSetupVtbl,
-    0,
-    NULL,
-    NULL
-};
-
 extern HRESULT _I_PageSetupConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     PageSetupImpl *pagesetup;

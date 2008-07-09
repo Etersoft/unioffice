@@ -1326,14 +1326,6 @@ const I_BorderVtbl MSO_TO_OO_I_Border_Vtbl =
     MSO_TO_OO_I_Border_put_Weight
 };
 
-BorderImpl MSO_TO_OO_Border =
-{
-    &MSO_TO_OO_I_Border_Vtbl,
-    0,
-    NULL,
-    0
-};
-
 extern HRESULT _I_BorderConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     BorderImpl *border;

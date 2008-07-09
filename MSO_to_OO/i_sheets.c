@@ -623,14 +623,6 @@ const I_SheetsVtbl MSO_TO_OO_I_SheetsVtbl =
     MSO_TO_OO_I_Sheets_Add
 };
 
-SheetsImpl MSO_TO_OO_Sheets =
-{
-    &MSO_TO_OO_I_SheetsVtbl,
-    0,
-    NULL,
-    NULL
-};
-
 extern HRESULT _I_SheetsConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     SheetsImpl *sheets;

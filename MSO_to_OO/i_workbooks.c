@@ -886,16 +886,6 @@ const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl =
     MSO_TO_OO_I_Workbooks___OpenText
 };
 
-WorkbooksImpl MSO_TO_OO_Workbooks =
-{
-    &MSO_TO_OO_I_WorkbooksVtbl,
-    0,
-    NULL,
-    0,
-    NULL,
-    -1
-};
-
 extern HRESULT _I_WorkbooksConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     WorkbooksImpl *workbooks;
@@ -909,6 +899,10 @@ extern HRESULT _I_WorkbooksConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 
     workbooks->_workbooksVtbl = &MSO_TO_OO_I_WorkbooksVtbl;
     workbooks->ref = 0;
+    workbooks->pApplication = NULL;
+    workbooks->count_workbooks = 0;
+    workbooks->pworkbook = NULL;
+    workbooks->current_workbook = -1;
 
     *ppObj = &workbooks->_workbooksVtbl;
 

@@ -3156,16 +3156,6 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_AutoFit
 };
 
-
-RangeImpl MSO_TO_OO_Range =
-{
-    &MSO_TO_OO_I_RangeVtbl,
-    0,
-    NULL,
-    NULL,
-    NULL
-};
-
 extern HRESULT _I_RangeConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     RangeImpl *range;

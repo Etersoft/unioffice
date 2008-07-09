@@ -169,41 +169,13 @@ typedef struct
     IDispatch *prange;        /*указатель на range*/
 } _FontImpl;
 
+
 /*
  * Vtable interfaces and static instances
  */
-extern const I_ApplicationExcelVtbl MSO_TO_OO__I_ApplicationExcel_Vtbl;
-extern const I_FontVtbl MSO_TO_OO__I_Font_Vtbl;
-extern const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl;
-extern const I_WorkbookVtbl MSO_TO_OO_I_WorkbookVtbl;
-extern const I_RangeVtbl MSO_TO_OO_I_RangeVtbl;
-extern const I_PageSetupVtbl MSO_TO_OO_I_PageSetupVtbl;
-extern const I_SheetsVtbl MSO_TO_OO_I_SheetsVtbl;
-extern const I_WorksheetVtbl MSO_TO_OO_I_WorksheetVtbl;
-extern const I_InteriorVtbl MSO_TO_OO_I_InteriorVtbl;
-extern const I_BordersVtbl MSO_TO_OO_I_BordersVtbl;
-extern const I_BorderVtbl MSO_TO_OO_I_BorderVtbl;
-extern const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl;
-extern const I_ShapeVtbl MSO_TO_OO_I_ShapeVtbl;
-extern const NamesVtbl MSO_TO_OO_NamesVtbl;
 
 extern ClassFactoryImpl OOFFICE_ClassFactory;
 
-
-extern _ApplicationExcelImpl MSO_TO_OO__ApplicationExcel;
-extern _FontImpl MSO_TO_OO__Font;
-extern WorkbooksImpl MSO_TO_OO_Workbooks;
-extern WorkbookImpl MSO_TO_OO_Workbook;
-extern RangeImpl MSO_TO_OO_Range;
-extern PageSetupImpl MSO_TO_OO_PageSetup;
-extern SheetsImpl MSO_TO_OO_Sheets;
-extern WorksheetImpl MSO_TO_OO_Worksheet;
-extern InteriorImpl MSO_TO_OO_Interior;
-extern BordersImpl MSO_TO_OO_Borders;
-extern BorderImpl MSO_TO_OO_Border;
-extern ShapesImpl MSO_TO_OO_Shapes;
-extern ShapeImpl MSO_TO_OO_Shape;
-extern NamesImpl MSO_TO_OO_Names;
 /*Constructors*/
 
 extern HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj);

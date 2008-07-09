@@ -771,13 +771,6 @@ const I_BordersVtbl MSO_TO_OO_I_Borders_Vtbl =
     MSO_TO_OO_I_Borders_put_Value
 };
 
-BordersImpl MSO_TO_OO_Borders =
-{
-    &MSO_TO_OO_I_Borders_Vtbl,
-    0,
-    NULL
-};
-
 extern HRESULT _I_BordersConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     BordersImpl *borders;

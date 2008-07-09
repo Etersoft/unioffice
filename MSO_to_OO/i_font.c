@@ -979,15 +979,6 @@ const I_FontVtbl MSO_TO_OO_I_Font_Vtbl =
     MSO_TO_OO_I_Font_put_Shadow
 };
 
-
-_FontImpl MSO_TO_OO_Font =
-{
-    &MSO_TO_OO_I_Font_Vtbl,
-    0,
-    NULL
-};
-
-
 HRESULT _I_FontConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     _FontImpl *_font;

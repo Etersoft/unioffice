@@ -224,14 +224,6 @@ const NamesVtbl MSO_TO_OO_NamesVtbl =
     MSO_TO_OO_Names_Item
 };
 
-NamesImpl MSO_TO_OO_Names =
-{
-    &MSO_TO_OO_NamesVtbl,
-    0,
-    NULL,
-    NULL
-};
-
 extern HRESULT _NamesConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     NamesImpl *names;

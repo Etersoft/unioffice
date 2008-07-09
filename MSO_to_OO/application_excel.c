@@ -94,6 +94,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_QueryInterface(
         void **ppvObject)
 {
     _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    WCHAR str_clsid[39];
 
     TRACE("\n");
 
@@ -106,7 +107,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_QueryInterface(
         MSO_TO_OO_I_ApplicationExcel_AddRef(iface);
         return S_OK;
     }
-
+    StringFromGUID2(riid, str_clsid, 39);
+    TRACE("Interface not supported\n");
+    WTRACE(L" (%s) \n", str_clsid);
     return E_NOINTERFACE;
 }
 
@@ -1464,16 +1467,6 @@ const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
     MSO_TO_OO_I_ApplicationExcel_get_Rows,
     MSO_TO_OO_I_ApplicationExcel_get_Selection
 };
-
-_ApplicationExcelImpl MSO_TO_OO__ApplicationExcel =
-{
-    &MSO_TO_OO_I_ApplicationExcel_Vtbl,
-    0,
-    NULL,
-    NULL,
-    NULL
-};
-
 
 HRESULT _ApplicationExcelConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {

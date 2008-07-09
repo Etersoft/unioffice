@@ -455,13 +455,6 @@ const I_InteriorVtbl MSO_TO_OO_I_Interior_Vtbl =
     MSO_TO_OO_I_Interior_get_Creator
 };
 
-InteriorImpl MSO_TO_OO_Interior =
-{
-    &MSO_TO_OO_I_Interior_Vtbl,
-    0,
-    NULL
-};
-
 extern HRESULT _I_InteriorConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     InteriorImpl *interior;
