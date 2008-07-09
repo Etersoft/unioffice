@@ -610,6 +610,53 @@ import "wtypes.idl";
 
 	[
 		object,
+		uuid(9D055220-D153-4a09-B680-6AAC88BD06F1),
+		dual,
+		helpstring("Names Interface"),
+		pointer_default(unique)
+	]
+	interface Names : IDispatch
+	{
+//Application
+		[propget,id(1), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+//Count
+		[propget,id(2), helpstring("property Count")] HRESULT Count([out, retval] int *count);
+//Creator
+		[propget,id(3), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent
+		[propget,id(4), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+//_Default
+		[id(5), helpstring("property _Default")] HRESULT _Default(
+			[in, optional] VARIANT Index,
+			[in, optional] VARIANT IndexLocal,
+			[in, optional] VARIANT RefersTo,
+			[out, retval] IDispatch **ppvalue);
+//Add
+		[id(6), helpstring("property Add")] HRESULT Add(
+			[in, optional] VARIANT Name,
+			[in, optional] VARIANT RefersTo,
+			[in, optional] VARIANT Visible,
+			[in, optional] VARIANT MacroType,
+			[in, optional] VARIANT ShortcutKey,
+			[in, optional] VARIANT Category,
+			[in, optional] VARIANT NameLocal,
+			[in, optional] VARIANT RefersToLocal,
+			[in, optional] VARIANT CategoryLocal,
+			[in, optional] VARIANT RefersToR1C1,
+			[in, optional] VARIANT RefersToR1C1Local,
+			[out, retval] IDispatch **ppvalue);
+//GetEnumerator
+		[id(7), helpstring("property GetEnumerator")] HRESULT GetEnumerator([out, retval] IDispatch **value);
+//Item
+		[id(8), helpstring("property Item")] HRESULT Item(
+			[in, optional] VARIANT Index,
+			[in, optional] VARIANT IndexLocal,
+			[in, optional] VARIANT RefersTo,
+			[out, retval] IDispatch **ppvalue);
+	}
+
+	[
+		object,
 		uuid(421F8294-6598-4470-A6F7-60D4C31115B8),
 		dual,
 		helpstring("I_Workbooks Interface"),
