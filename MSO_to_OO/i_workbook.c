@@ -34,6 +34,8 @@ static WCHAR const str_protect[] = {
     'P','r','o','t','e','c','t',0};
 static WCHAR const str_unprotect[] = {
     'U','n','p','r','o','t','e','c','t',0};
+static WCHAR const str_name[] = {
+    'N','a','m','e',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
@@ -327,6 +329,46 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Unprotect(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Name(
+        I_Workbook* iface,
+        BSTR *retval)
+{
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    VARIANT vRes, ooframe, oocontr;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    VariantInit(&vRes);
+    VariantInit(&oocontr);
+    VariantInit(&ooframe);
+
+    hres = AutoWrap(DISPATCH_METHOD, &oocontr,This->pDoc, L"getCurrentController",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getCurrentController \n");
+        return hres;
+    }
+    hres = AutoWrap(DISPATCH_METHOD, &ooframe, V_DISPATCH(&oocontr), L"getFrame",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getFrame \n");
+        return hres;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, V_DISPATCH(&ooframe), L"Title",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when Title \n");
+        return hres;
+    }
+
+    *retval = SysAllocString(V_BSTR(&vRes));
+
+    VariantClear(&vRes);
+    VariantClear(&oocontr);
+    VariantClear(&ooframe);
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfoCount(
         I_Workbook* iface,
@@ -383,6 +425,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetIDsOfNames(
         *rgDispId = 7;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_name)) {
+        *rgDispId = 8;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -407,6 +453,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     VARIANT vmas[12];
     int i;
     VARIANT vtmp;
+    BSTR bret;
 
     for (i=0;i<12;i++) {
          VariantInit(&vmas[i]);
@@ -535,6 +582,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             return E_INVALIDARG;
         }
         return MSO_TO_OO_I_Workbook_Unprotect(iface,vtmp);
+    case 8:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            hr = MSO_TO_OO_I_Workbook_get_Name(iface, &bret);
+            if (FAILED(hr)) {
+                TRACE("Error get Name \n");
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                    V_VT(pVarResult)=VT_BSTR;
+                    V_BSTR(pVarResult)=bret;
+            }
+            return S_OK;
+        }
     }
 
     return E_NOTIMPL;
@@ -556,7 +618,8 @@ const I_WorkbookVtbl MSO_TO_OO_I_WorkbookVtbl =
     MSO_TO_OO_I_Workbook_SaveAs,
     MSO_TO_OO_I_Workbook_Save,
     MSO_TO_OO_I_Workbook_Protect,
-    MSO_TO_OO_I_Workbook_Unprotect
+    MSO_TO_OO_I_Workbook_Unprotect,
+    MSO_TO_OO_I_Workbook_get_Name
 };
 
 WorkbookImpl MSO_TO_OO_Workbook =

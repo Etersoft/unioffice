@@ -604,6 +604,8 @@ import "wtypes.idl";
 //Unprotect
 		[id(7), helpstring("method Unprotect")] HRESULT Unprotect(
 			[in, optional] VARIANT Password);
+//Name
+		[propget,id(8), helpstring("property Name")] HRESULT Name([out, retval] BSTR *retval);
 	};
 
 	[
