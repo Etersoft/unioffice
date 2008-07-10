@@ -397,6 +397,11 @@ import "wtypes.idl";
 		[propget,id(39), helpstring("property MergeArea")] HRESULT MergeArea([out, retval] IDispatch **value);
 //AutoFit
 		[id(40), helpstring("method AutoFit")] VARIANT AutoFit();
+//Insert
+		[id(41), helpstring("method Insert")] VARIANT Insert(
+			[in, optional] VARIANT Shift,
+			[in, optional] VARIANT CopyOrigin);
+
 	};
 
 	[

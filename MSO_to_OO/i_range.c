@@ -102,6 +102,8 @@ static WCHAR const str_mergearea[] = {
     'M','e','r','g','e','A','r','e','a',0};
 static WCHAR const str_autofit[] = {
     'A','u','t','o','F','i','t',0};
+static WCHAR const str_insert[] = {
+    'I','n','s','e','r','t',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -2120,6 +2122,22 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
     return result;
 }
 
+static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
+        I_Range* iface,
+        VARIANT Shift,
+        VARIANT CopyOrigin)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT result;
+
+    TRACE("\n");
+
+    VariantInit(&result);
+    V_VT(&result) = VT_NULL;
+
+    return result;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -2305,6 +2323,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_autofit)) {
         *rgDispId = 40;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_insert)) {
+        *rgDispId = 41;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -3084,6 +3106,28 @@ TRACE("Parametr 1\n");
             *pVarResult = vRet;
 
         return S_OK;
+    case 41:
+        V_VT(&var1) = VT_NULL;
+        V_VT(&var2) = VT_NULL;
+        switch (pDispParams->cArgs) {
+        case 0:
+            break;
+        case 1:
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+            break;
+        case 2:
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
+            break;
+        default:
+            TRACE("Error invalide number of parameters\n");
+            break;
+        }
+        vRet = MSO_TO_OO_I_Range_Insert(iface, var1, var2);
+        if (pVarResult!=NULL)
+            *pVarResult = vRet;
+
+        return S_OK;
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -3149,7 +3193,8 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_get_Hidden,
     MSO_TO_OO_I_Range_put_Hidden,
     MSO_TO_OO_I_Range_get_MergeArea,
-    MSO_TO_OO_I_Range_AutoFit
+    MSO_TO_OO_I_Range_AutoFit,
+    MSO_TO_OO_I_Range_Insert
 };
 
 extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
