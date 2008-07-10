@@ -117,7 +117,13 @@ const long OBJECTS 	= 128;
 const long EDITATTR 	= 256;
 const long FORMATTED 	= 512;
 
-
+typedef enum {
+    NONE,
+    DOWN,
+    RIGHT,
+    ROWS,
+    COLUMNS
+} CellInsertMode;
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Range_AddRef(
@@ -2128,13 +2134,69 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
         VARIANT CopyOrigin)
 {
     RangeImpl *This = (RangeImpl*)iface;
-    VARIANT result;
+    VARIANT result, shift, param1, param2, res;
+    HRESULT hres;
+    CellInsertMode insert_mode;
+    WorksheetImpl* wsh = (WorksheetImpl*)(This->pwsheet);
+    long startrow=0, startcolumn=0, endrow=0, endcolumn=0;
 
     TRACE("\n");
 
     VariantInit(&result);
+    VariantInit(&shift);
+    VariantInit(&param1);
+    VariantInit(&param2);
+    VariantInit(&res);
     V_VT(&result) = VT_NULL;
 
+    //CopyOrigin is ignore now
+
+    if ((V_VT(&Shift)==VT_NULL)||(V_VT(&Shift)==VT_EMPTY)) {
+        hres = MSO_TO_OO_GetRangeAddress(iface, &startrow, &startcolumn, &endrow, &endcolumn);
+        if (FAILED(hres)) {
+            TRACE("ERROR when GetRangeAddress\n");
+        }
+        if ((endcolumn - startcolumn)>(endrow - startrow)) insert_mode = RIGHT; else insert_mode = DOWN;
+    } else {
+        hres = VariantChangeTypeEx(&shift, &Shift, 0, 0, VT_I4);
+        if (FAILED(hres)) {
+           TRACE("ERROR when VariantChangeTypeEx\n");
+            VariantClear(&shift);
+            return result;
+        }
+
+        switch (V_I4(&shift)) {
+        case -4121:
+            insert_mode = DOWN;
+            break;
+        case -4161:
+            insert_mode = RIGHT;
+            break;
+        default:
+            TRACE("ERROR invalid argument Shift = %i", V_I4(&shift));
+            VariantClear(&shift);
+            return result;
+        }
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &param2, This->pOORange, L"getRangeAddress", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getRangeAddress \n");
+        VariantClear(&shift);
+        return result;
+    }
+
+    V_VT(&param2) = VT_I4;
+    V_I4(&param2) = insert_mode;
+    hres = AutoWrap(DISPATCH_METHOD, &res, wsh->pOOSheet, L"insertCells", 2,param2, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when insertCells \n");
+    }
+
+    VariantClear(&shift);
+    VariantClear(&param1);
+    VariantClear(&param2);
+    VariantClear(&res);
     return result;
 }
 
