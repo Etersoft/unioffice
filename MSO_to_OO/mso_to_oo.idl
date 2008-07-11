@@ -401,7 +401,8 @@ import "wtypes.idl";
 		[id(41), helpstring("method Insert")] VARIANT Insert(
 			[in, optional] VARIANT Shift,
 			[in, optional] VARIANT CopyOrigin);
-
+//EntireColumn
+		[propget,id(42), helpstring("property EntireColumn")] HRESULT EntireColumn([out, retval] IDispatch **value);
 	};
 
 	[

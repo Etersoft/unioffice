@@ -104,6 +104,8 @@ static WCHAR const str_autofit[] = {
     'A','u','t','o','F','i','t',0};
 static WCHAR const str_insert[] = {
     'I','n','s','e','r','t',0};
+static WCHAR const str_entirecolumn[] = {
+    'E','n','t','i','r','e','C','o','l','u','m','n',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -2200,6 +2202,100 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
     return result;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireColumn(
+        I_Range* iface,
+        IDispatch **value)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    IUnknown *punk;
+    VARIANT range, vcount, vstr, param1, vcolumn, vname1, vname2;
+    HRESULT hres;
+    WCHAR str[10];
+    long start,end;
+
+    TRACE("\n");
+
+    VariantInit(&range);
+    VariantInit(&vcount);
+    VariantInit(&vstr);
+    VariantInit(&param1);
+    VariantInit(&vcolumn);
+    VariantInit(&vname1);
+    VariantInit(&vname2);
+
+    if (This == NULL) {
+        TRACE("ERROR object is NULL\n");
+        return E_POINTER;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &range, This->pOORange, L"getColumns", 0);
+    if (hres != S_OK) {
+        TRACE("Error when getColumns\n");
+        return hres;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vcount, V_DISPATCH(&range), L"getCount", 0);
+    if (hres != S_OK) {
+        TRACE("Error when getColumns\n");
+        return hres;
+    }
+    start = 0;
+    end = V_I4(&vcount) - 1;
+    TRACE("start=%l end=%l \n", start, end);
+
+    /*получаем имена столбцов*/
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = start;
+    hres = AutoWrap(DISPATCH_METHOD, &vcolumn, V_DISPATCH(&range), L"getByIndex", 1, param1);
+    if (hres != S_OK) {
+        TRACE("Error when getByIndex\n");
+        return hres;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vname1, V_DISPATCH(&vcolumn), L"getName", 0);
+    if (hres != S_OK) {
+        TRACE("Error when getName\n");
+        return hres;
+    }
+
+    VariantClear(&vcolumn);
+    VariantClear(&param1);
+
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = end;
+    hres = AutoWrap(DISPATCH_METHOD, &vcolumn, V_DISPATCH(&range), L"getByIndex", 1, param1);
+    if (hres != S_OK) {
+        TRACE("Error when getByIndex\n");
+        return hres;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vname2, V_DISPATCH(&vcolumn), L"getName", 0);
+    if (hres != S_OK) {
+        TRACE("Error when getName\n");
+        return hres;
+    }
+    /*соединяем в одну строку*/
+    wsprintfW(str, L"%s:%s", V_BSTR(&vname1), V_BSTR(&vname2));
+
+    V_VT(&vstr) = VT_BSTR;
+    V_BSTR(&vstr) = SysAllocString(str);
+    hres = I_Worksheet_get_Columns((I_Worksheet*)(This->pwsheet), vstr, value);
+    if (FAILED(hres)) {
+        TRACE("ERROR when initialize Range\n");
+        return hres;
+    }
+
+    VariantClear(&range);
+    VariantClear(&vcount);
+    VariantClear(&vstr);
+    VariantClear(&param1);
+    VariantClear(&vcolumn);
+    VariantClear(&vname1);
+    VariantClear(&vname2);
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -2389,6 +2485,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_insert)) {
         *rgDispId = 41;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_entirecolumn)) {
+        *rgDispId = 42;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -3190,6 +3290,27 @@ TRACE("Parametr 1\n");
             *pVarResult = vRet;
 
         return S_OK;
+    case 42://EntireColumn
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_I_Range_get_EntireColumn(iface, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            } else {
+                IDispatch_Release(dret);
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
+
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
@@ -3256,7 +3377,8 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_put_Hidden,
     MSO_TO_OO_I_Range_get_MergeArea,
     MSO_TO_OO_I_Range_AutoFit,
-    MSO_TO_OO_I_Range_Insert
+    MSO_TO_OO_I_Range_Insert,
+    MSO_TO_OO_I_Range_get_EntireColumn
 };
 
 extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
