@@ -403,6 +403,8 @@ import "wtypes.idl";
 			[in, optional] VARIANT CopyOrigin);
 //EntireColumn
 		[propget,id(42), helpstring("property EntireColumn")] HRESULT EntireColumn([out, retval] IDispatch **value);
+//EntireRow
+		[propget,id(43), helpstring("property EntireRow")] HRESULT EntireRow([out, retval] IDispatch **value);
 	};
 
 	[
