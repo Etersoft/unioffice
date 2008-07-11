@@ -1242,7 +1242,7 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
     This->pApplication = (IDispatch*)wb->pApplication;
     I_ApplicationExcel_AddRef((I_ApplicationExcel*)This->pApplication);
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vframe, wb->pDoc, L"DrawPages",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vframe, wb->pDoc, L"DrawPages",1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when get DrawPages \n");
         return E_FAIL;
@@ -1384,6 +1384,7 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
 
     /*add shape to page*/
     VariantClear(&vRet);
+    VariantClear(&param1);
     V_VT(&param1) = VT_DISPATCH;
     V_DISPATCH(&param1) = This->pOOShape;
     IDispatch_AddRef(This->pOOShape);
@@ -1400,4 +1401,51 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     VariantClear(&vRet);
     return S_OK;
 }
+
+HRESULT MSO_TO_OO_Names_Initialize(
+        Names* iface,
+        I_Workbook *wb)
+{
+    NamesImpl *This = (NamesImpl*)iface;
+    WorkbookImpl *wbi = (WorkbookImpl*)wb;
+    VARIANT vRet;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    VariantInit(&vRet);
+
+    if (This == NULL) {
+        TRACE("ERROR THIS = NULL \n");
+        return E_POINTER;
+    }
+
+    if (This->pwb!=NULL) {
+         I_Workbook_Release((I_Workbook*)(This->pwb));
+    }
+    This->pwb = (IDispatch*)wb;
+    if (This->pwb != NULL) I_Workbook_AddRef((I_Workbook*)(This->pwb));
+
+    if (This->pApplication!=NULL) {
+         I_ApplicationExcel_Release((I_ApplicationExcel*)(This->pApplication));
+    }
+    This->pApplication = (IDispatch*)(wbi->pApplication);
+    if (This->pApplication != NULL) I_ApplicationExcel_AddRef((I_ApplicationExcel*)(This->pApplication));
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRet, wbi->pDoc, L"NamedRanges",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when NamedRanges \n");
+        return E_FAIL;
+    }
+    if (This->pOONames!=NULL) {
+         IDispatch_Release(This->pOONames);
+    }
+    This->pOONames = V_DISPATCH(&vRet);
+    if (This->pOONames != NULL) IDispatch_AddRef(This->pOONames);
+
+    VariantClear(&vRet);
+
+    return S_OK;
+}
+
 

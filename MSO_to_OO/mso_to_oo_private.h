@@ -129,8 +129,9 @@ typedef struct
 {
     const NamesVtbl *namesVtbl;
     LONG ref;
-    IDispatch *pwb;
-    IDispatch *pApplication;
+    IDispatch *pwb;              /*указатель на Workbook*/
+    IDispatch *pApplication;     /*указатель на Application*/
+    IDispatch *pOONames;         /*указатель на OpenOffice Names*/
 } NamesImpl;
 
 typedef struct

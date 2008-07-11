@@ -153,6 +153,10 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
         I_Shapes *ishapes,
         float x1, float y1, float x2, float y2);
 
+HRESULT MSO_TO_OO_Names_Initialize(
+        Names* iface,
+        I_Workbook *wb);
+
 
 
 

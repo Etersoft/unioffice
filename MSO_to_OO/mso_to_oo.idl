@@ -611,6 +611,9 @@ import "wtypes.idl";
 			[in, optional] VARIANT Password);
 //Name
 		[propget,id(8), helpstring("property Name")] HRESULT Name([out, retval] BSTR *retval);
+//Names
+		[propget,id(9), helpstring("property Names")] HRESULT Names([out, retval] IDispatch **retval);
+
 	};
 
 	[

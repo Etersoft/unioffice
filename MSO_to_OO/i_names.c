@@ -82,6 +82,10 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
             IDispatch_Release(This->pwb);
             This->pwb = NULL;
         }
+        if (This->pOONames != NULL) {
+            IDispatch_Release(This->pOONames);
+            This->pOONames = NULL;
+        }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
@@ -240,6 +244,7 @@ extern HRESULT _NamesConstructor(LPVOID *ppObj)
     names->ref = 0;
     names->pApplication = NULL;
     names->pwb = NULL;
+    names->pOONames = NULL;
 
     *ppObj = &names->namesVtbl;
 

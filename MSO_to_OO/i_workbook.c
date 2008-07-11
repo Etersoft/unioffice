@@ -36,6 +36,8 @@ static WCHAR const str_unprotect[] = {
     'U','n','p','r','o','t','e','c','t',0};
 static WCHAR const str_name[] = {
     'N','a','m','e',0};
+static WCHAR const str_names[] = {
+    'N','a','m','e','s',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
@@ -369,6 +371,43 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Name(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Names(
+        I_Workbook* iface,
+        IDispatch **retval)
+{
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+
+    HRESULT hres;
+    IUnknown *punk = NULL;
+    IDispatch *pNames;
+
+    TRACE("\n");
+
+    if (This == NULL) return E_POINTER;
+
+    *retval = NULL;
+
+    hres = _NamesConstructor((LPVOID*) &punk);
+
+    if (FAILED(hres)) return E_NOINTERFACE;
+
+    hres = Names_QueryInterface(punk, &IID_Names, (void**) &pNames);
+    if (pNames == NULL) {
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_Names_Initialize((Names*)pNames, iface);
+
+    if (FAILED(hres)) {
+        IDispatch_Release(pNames);
+        return hres;
+    }
+
+    *retval = pNames;
+
+    return S_OK;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfoCount(
         I_Workbook* iface,
@@ -429,6 +468,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetIDsOfNames(
         *rgDispId = 8;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_names)) {
+        *rgDispId = 9;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -448,8 +491,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
     HRESULT hr;
-    IDispatch *sheets;
-    IDispatch *sheet;
+    IDispatch *drets;
+    IDispatch *dret;
     VARIANT vmas[12];
     int i;
     VARIANT vtmp;
@@ -470,27 +513,27 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_Workbook_get_Sheets(iface,&sheets);
+            hr = MSO_TO_OO_I_Workbook_get_Sheets(iface,&drets);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
             }
             if (pDispParams->cArgs==1) {
-                hr = I_Sheets_get__Default((I_Sheets*)sheets, pDispParams->rgvarg[0], &sheet);
+                hr = I_Sheets_get__Default((I_Sheets*)drets, pDispParams->rgvarg[0], &dret);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    I_Sheets_Release((I_Sheets*)sheets);
+                    I_Sheets_Release((I_Sheets*)drets);
                     return hr;
                 }
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)sheet;
-                    I_Sheets_Release((I_Sheets*)sheets);
+                    V_DISPATCH(pVarResult)=(IDispatch *)dret;
+                    I_Sheets_Release((I_Sheets*)drets);
                 }
             } else {
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)sheets;
+                    V_DISPATCH(pVarResult)=(IDispatch *)drets;
                 }
             }
             return hr;
@@ -499,27 +542,27 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_Workbook_get_WorkSheets(iface,&sheets);
+            hr = MSO_TO_OO_I_Workbook_get_WorkSheets(iface,&drets);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
             }
             if (pDispParams->cArgs==1) {
-                hr = I_Sheets_get__Default((I_Sheets*)sheets, pDispParams->rgvarg[0], &sheet);
+                hr = I_Sheets_get__Default((I_Sheets*)drets, pDispParams->rgvarg[0], &dret);
                 if (FAILED(hr)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    I_Sheets_Release((I_Sheets*)sheets);
+                    I_Sheets_Release((I_Sheets*)drets);
                     return hr;
                 }
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)sheet;
-                    I_Sheets_Release((I_Sheets*)sheets);
+                    V_DISPATCH(pVarResult)=(IDispatch *)dret;
+                    I_Sheets_Release((I_Sheets*)drets);
                 }
             } else {
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)sheets;
+                    V_DISPATCH(pVarResult)=(IDispatch *)drets;
                 }
             }
             return hr;
@@ -597,6 +640,31 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             }
             return S_OK;
         }
+    case 9:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            hr = MSO_TO_OO_I_Workbook_get_Names(iface, &drets);
+            if (FAILED(hr)) {
+                TRACE("Error get Name \n");
+                return hr;
+            }
+            switch (pDispParams->cArgs) {
+            case 0:
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult)=VT_DISPATCH;
+                    V_DISPATCH(pVarResult)=(IDispatch *)drets;
+                }
+                break;
+            case 1:
+                //необходимо запросить Names->Item
+                break;
+            default:
+                TRACE("ERROR invalid parameters\n");
+                break;
+            }
+            return S_OK;
+        }
     }
 
     return E_NOTIMPL;
@@ -619,7 +687,8 @@ const I_WorkbookVtbl MSO_TO_OO_I_WorkbookVtbl =
     MSO_TO_OO_I_Workbook_Save,
     MSO_TO_OO_I_Workbook_Protect,
     MSO_TO_OO_I_Workbook_Unprotect,
-    MSO_TO_OO_I_Workbook_get_Name
+    MSO_TO_OO_I_Workbook_get_Name,
+    MSO_TO_OO_I_Workbook_get_Names
 };
 
 extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj)
