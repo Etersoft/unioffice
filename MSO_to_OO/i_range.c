@@ -2179,7 +2179,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
         }
     }
 
-    hres = AutoWrap(DISPATCH_METHOD, &param2, This->pOORange, L"getRangeAddress", 0);
+    hres = AutoWrap(DISPATCH_METHOD, &param1, This->pOORange, L"getRangeAddress", 0);
     if (FAILED(hres)) {
         TRACE("ERROR when getRangeAddress \n");
         VariantClear(&shift);
