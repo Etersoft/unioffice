@@ -111,8 +111,15 @@ static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_GetConnectionPointContainer(
         IConnectionPoint* iface,
         IConnectionPointContainer **ppCPC)
 {
-    TRACE("Not implemented \n");
-    return E_NOTIMPL;
+    _ApplicationExcelImpl *This = CONPOINT_THIS(iface);
+
+    *ppCPC = (IConnectionPointContainer*)CONPOINTCONT(This);
+    if (*ppCPC) {
+        IConnectionPointContainer_AddRef(*ppCPC);
+        return S_OK;
+    }
+    TRACE("ERROR \n");
+    return E_FAIL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_Advise(
@@ -120,8 +127,9 @@ static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_Advise(
         IUnknown *pUnkSink,
         DWORD *pdwCookie)
 {
-    TRACE("Not implemented \n");
-    return E_NOTIMPL;
+    TRACE("Not implemented but return S_OK\n");
+    *pdwCookie = 0;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_Unadvise(
@@ -197,12 +205,13 @@ static HRESULT WINAPI MSO_TO_OO_ConnectionPointContainer_FindConnectionPoint(
         IConnectionPoint **ppCP)
 {
     _ApplicationExcelImpl *This = CONPOINTCONT_THIS(iface);
-
-    TRACE("\n");
+    WCHAR str_clsid[39];
+    StringFromGUID2(riid, str_clsid, 39);
+    WTRACE(L"riid = (%s) \n", str_clsid);
 
     *ppCP = (IConnectionPoint*)CONPOINT(This);
     if (*ppCP) {
-        I_ApplicationExcel_AddRef(APPEXCEL(This));
+        IConnectionPoint_AddRef(*ppCP);
         return S_OK;
     }
     TRACE("ERROR \n");
@@ -233,7 +242,12 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_AddRef(
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     ULONG ref;
 
-    if (This == NULL) return E_POINTER;
+    TRACE("----------------------\n");
+
+    if (This == NULL) {
+        TRACE("Object is NULL \n");
+        return E_POINTER;
+    }
 
     ref = InterlockedIncrement(&This->ref);
     if (ref == 1) {
