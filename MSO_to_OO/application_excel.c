@@ -69,6 +69,91 @@ static WCHAR const str_selection[] = {
 
 #define DEFINE_THIS(class,ifild,iface) ((class*)((BYTE*)(iface)-offsetof(class,p ## ifild ## Vtbl)))
 
+
+/*IConnectionPoint interface*/
+
+#define CONPOINT_THIS(iface) DEFINE_THIS(_ApplicationExcelImpl,ConnectionPoint,iface);
+
+    /*** IUnknown methods ***/
+static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_QueryInterface(
+        IConnectionPoint* iface,
+        REFIID riid,
+        void **ppvObject)
+{
+    _ApplicationExcelImpl *This = CONPOINT_THIS(iface);
+    return I_ApplicationExcel_QueryInterface(APPEXCEL(This), riid, ppvObject);
+}
+
+static ULONG WINAPI MSO_TO_OO_ConnectionPoint_AddRef(
+        IConnectionPoint* iface)
+{
+    _ApplicationExcelImpl *This = CONPOINT_THIS(iface);
+    return I_ApplicationExcel_AddRef(APPEXCEL(This));
+}
+
+static ULONG WINAPI MSO_TO_OO_ConnectionPoint_Release(
+        IConnectionPoint* iface)
+{
+    _ApplicationExcelImpl *This = CONPOINT_THIS(iface);
+    return I_ApplicationExcel_Release(APPEXCEL(This));
+}
+
+    /*** IConnectionPoint methods ***/
+static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_GetConnectionInterface(
+        IConnectionPoint* iface,
+        IID *pIID)
+{
+    TRACE("Not implemented \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_GetConnectionPointContainer(
+        IConnectionPoint* iface,
+        IConnectionPointContainer **ppCPC)
+{
+    TRACE("Not implemented \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_Advise(
+        IConnectionPoint* iface,
+        IUnknown *pUnkSink,
+        DWORD *pdwCookie)
+{
+    TRACE("Not implemented \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_Unadvise(
+        IConnectionPoint* iface,
+        DWORD dwCookie)
+{
+    TRACE("Not implemented \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_ConnectionPoint_EnumConnections(
+        IConnectionPoint* iface,
+        IEnumConnections **ppEnum)
+{
+    TRACE("Not implemented \n");
+    return E_NOTIMPL;
+}
+
+const IConnectionPointVtbl MSO_TO_OO_ConnectionPointVtbl = 
+{
+    MSO_TO_OO_ConnectionPoint_QueryInterface,
+    MSO_TO_OO_ConnectionPoint_AddRef,
+    MSO_TO_OO_ConnectionPoint_Release,
+    MSO_TO_OO_ConnectionPoint_GetConnectionInterface,
+    MSO_TO_OO_ConnectionPoint_GetConnectionPointContainer,
+    MSO_TO_OO_ConnectionPoint_Advise,
+    MSO_TO_OO_ConnectionPoint_Unadvise,
+    MSO_TO_OO_ConnectionPoint_EnumConnections
+};
+
+#undef CONPOINT_THIS
+
 /*IConnectionPointContainer interface*/
 
 #define CONPOINTCONT_THIS(iface) DEFINE_THIS(_ApplicationExcelImpl,ConnectionPointContainer,iface);
@@ -111,8 +196,17 @@ static HRESULT WINAPI MSO_TO_OO_ConnectionPointContainer_FindConnectionPoint(
         REFIID riid,
         IConnectionPoint **ppCP)
 {
-    TRACE("Not implemented \n");
-    return E_NOTIMPL;
+    _ApplicationExcelImpl *This = CONPOINTCONT_THIS(iface);
+
+    TRACE("\n");
+
+    *ppCP = (IConnectionPoint*)CONPOINT(This);
+    if (*ppCP) {
+        I_ApplicationExcel_AddRef(APPEXCEL(This));
+        return S_OK;
+    }
+    TRACE("ERROR \n");
+    return E_FAIL;
 }
 
 const IConnectionPointContainerVtbl MSO_TO_OO_ConnectionPointContainerVtbl = 
@@ -1556,6 +1650,7 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
 
     _applicationexcell->pApplicationExcelVtbl = &MSO_TO_OO_I_ApplicationExcel_Vtbl;
     _applicationexcell->pConnectionPointContainerVtbl = &MSO_TO_OO_ConnectionPointContainerVtbl;
+    _applicationexcell->pConnectionPointVtbl = &MSO_TO_OO_ConnectionPointVtbl;
     _applicationexcell->ref = 0;
     _applicationexcell->pdOOApp = NULL;
     _applicationexcell->pdOODesktop = NULL;

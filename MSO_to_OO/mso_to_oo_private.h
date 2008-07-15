@@ -160,6 +160,8 @@ typedef struct
 {
     const I_ApplicationExcelVtbl *pApplicationExcelVtbl;
     const IConnectionPointContainerVtbl *pConnectionPointContainerVtbl;
+    const IConnectionPointVtbl *pConnectionPointVtbl;
+
 
     LONG ref;
     IDispatch *pdOOApp;
@@ -179,7 +181,7 @@ typedef struct
 
 #define APPEXCEL(x) ((I_ApplicationExcel*) &(x)->pApplicationExcelVtbl)
 #define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)
-
+#define CONPOINT(x) ((IConnectionPoint*) &(x)->pConnectionPointVtbl)
 
 
 /*
