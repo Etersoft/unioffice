@@ -215,7 +215,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(FBB10054-3191-49da-8F75-0ED6E4C8E03A),
+		uuid(00020870-0001-0000-C000-000000000046),
 		dual,
 		helpstring("I_Interior Interface"),
 		pointer_default(unique)
@@ -244,7 +244,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(121646A0-69B9-4942-B92A-339EF5766936),
+		uuid(0002084D-0001-0000-C000-000000000046),
 		dual,
 		helpstring("I_Font Interface"),
 		pointer_default(unique)
@@ -297,7 +297,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(AE05AACA-AED3-4edd-A4DF-9FD2F24B3877),
+		uuid(00020846-0001-0000-C000-000000000046),
 		dual,
 		helpstring("I_Range Interface"),
 		pointer_default(unique)
@@ -489,7 +489,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(2FE99C80-A00C-44a0-BC77-8DB916FDFD41),
+		uuid(000208D8-0000-0000-C000-000000000046),
 		dual,
 		helpstring("I_Worksheet Interface"),
 		pointer_default(unique)
@@ -544,7 +544,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(6D8038C2-BD65-4ef1-A118-45C36D2CB628),
+		uuid(000208D7-0000-0000-C000-000000000046),
 		dual,
 		helpstring("I_Sheets Interface"),
 		pointer_default(unique)
@@ -573,7 +573,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(A27356B3-5060-408b-93B2-905649904999),
+		uuid(000208DA-0000-0000-C000-000000000046),
 		dual,
 		helpstring("I_Workbook Interface"),
 		pointer_default(unique)
@@ -668,7 +668,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(421F8294-6598-4470-A6F7-60D4C31115B8),
+		uuid(000208DB-0000-0000-C000-000000000046),
 		dual,
 		helpstring("I_Workbooks Interface"),
 		pointer_default(unique)
@@ -820,7 +820,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(8BF85212-E62F-4dd9-8A4A-A6BFA5BD0D5B),
+		uuid(000208D5-0000-0000-C000-000000000046),
 		dual,
 		helpstring("I_Application Interface"),
 		pointer_default(unique)
