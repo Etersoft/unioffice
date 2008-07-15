@@ -33,6 +33,8 @@
 #include <winuser.h>
 #include <winreg.h>
 #include <ole2.h>
+#include <ocidl.h>
+#include <stddef.h>
 #include "mso_to_oo.h"
 #include "main_constants.h"
 #include "debug.h"
@@ -156,11 +158,15 @@ typedef struct
 
 typedef struct
 {
-    const I_ApplicationExcelVtbl *_applicationexcellVtbl;
+    const I_ApplicationExcelVtbl *pApplicationExcelVtbl;
+    const IConnectionPointContainerVtbl *pConnectionPointContainerVtbl;
+
     LONG ref;
     IDispatch *pdOOApp;
     IDispatch *pdOODesktop;
     IDispatch *pdWorkbooks;
+
+
 } _ApplicationExcelImpl;
 
 typedef struct
@@ -169,6 +175,11 @@ typedef struct
     LONG ref;
     IDispatch *prange;        /*указатель на range*/
 } _FontImpl;
+
+
+#define APPEXCEL(x) ((I_ApplicationExcel*) &(x)->pApplicationExcelVtbl)
+#define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)
+
 
 
 /*

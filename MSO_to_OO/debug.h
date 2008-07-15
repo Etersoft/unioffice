@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 #define DEBUG 1
+
 #ifdef DEBUG
 #define TRACE(args...) \
 do { fprintf(stderr,"%s:%s:",__FILE__,__FUNCTION__);fprintf(stderr, args); } while(0)

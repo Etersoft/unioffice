@@ -67,13 +67,76 @@ static WCHAR const str_rows[] = {
 static WCHAR const str_selection[] = {
     'S','e','l','e','c','t','i','o','n',0};
 
+#define DEFINE_THIS(class,ifild,iface) ((class*)((BYTE*)(iface)-offsetof(class,p ## ifild ## Vtbl)))
+
+/*IConnectionPointContainer interface*/
+
+#define CONPOINTCONT_THIS(iface) DEFINE_THIS(_ApplicationExcelImpl,ConnectionPointContainer,iface);
+
+    /*** IUnknown methods ***/
+static HRESULT WINAPI MSO_TO_OO_ConnectionPointContainer_QueryInterface(
+        IConnectionPointContainer* iface,
+        REFIID riid,
+        void **ppvObject)
+{
+    _ApplicationExcelImpl *This = CONPOINTCONT_THIS(iface);
+    return I_ApplicationExcel_QueryInterface(APPEXCEL(This), riid, ppvObject);
+}
+
+static ULONG WINAPI MSO_TO_OO_ConnectionPointContainer_AddRef(
+        IConnectionPointContainer* iface)
+{
+    _ApplicationExcelImpl *This = CONPOINTCONT_THIS(iface);
+    return I_ApplicationExcel_AddRef(APPEXCEL(This));
+}
+
+static ULONG WINAPI MSO_TO_OO_ConnectionPointContainer_Release(
+        IConnectionPointContainer* iface)
+{
+    _ApplicationExcelImpl *This = CONPOINTCONT_THIS(iface);
+    return I_ApplicationExcel_Release(APPEXCEL(This));
+}
+
+    /*** IConnectionPointContainer methods ***/
+static HRESULT WINAPI MSO_TO_OO_ConnectionPointContainer_EnumConnectionPoints(
+        IConnectionPointContainer* iface,
+        IEnumConnectionPoints **ppEnum)
+{
+    TRACE("Not implemented \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_ConnectionPointContainer_FindConnectionPoint(
+        IConnectionPointContainer* iface,
+        REFIID riid,
+        IConnectionPoint **ppCP)
+{
+    TRACE("Not implemented \n");
+    return E_NOTIMPL;
+}
+
+const IConnectionPointContainerVtbl MSO_TO_OO_ConnectionPointContainerVtbl = 
+{
+    MSO_TO_OO_ConnectionPointContainer_QueryInterface,
+    MSO_TO_OO_ConnectionPointContainer_AddRef,
+    MSO_TO_OO_ConnectionPointContainer_Release,
+    MSO_TO_OO_ConnectionPointContainer_EnumConnectionPoints,
+    MSO_TO_OO_ConnectionPointContainer_FindConnectionPoint
+};
+
+#undef CONPOINTCONT_THIS
+
+/*IApplicationExcel interface*/
 /*
 IUnknown
 */
+
+#define APPEXCEL_THIS(iface) DEFINE_THIS(_ApplicationExcelImpl, ApplicationExcel, iface);
+
 static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_AddRef(
         I_ApplicationExcel* iface)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     ULONG ref;
 
     if (This == NULL) return E_POINTER;
@@ -93,30 +156,36 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     WCHAR str_clsid[39];
-
-    TRACE("\n");
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_ApplicationExcel)) {
-        *ppvObject = &This->_applicationexcellVtbl;
-        MSO_TO_OO_I_ApplicationExcel_AddRef(iface);
+        TRACE("IApplicationExcel \n");
+        *ppvObject = APPEXCEL(This);
+    }
+    if (IsEqualGUID(riid, &IID_IConnectionPointContainer)) {
+        TRACE("IConnectionPointContainer \n");
+        *ppvObject = CONPOINTCONT(This);
+    }
+
+    if (*ppvObject) {
+        I_ApplicationExcel_AddRef(iface);
         return S_OK;
     }
+
     StringFromGUID2(riid, str_clsid, 39);
-    TRACE("Interface not supported\n");
-    WTRACE(L" (%s) \n", str_clsid);
+    WTRACE(L"(%s) not supported \n", str_clsid);
     return E_NOINTERFACE;
 }
 
 static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_Release(
         I_ApplicationExcel* iface)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     ULONG ref;
 
     if (This == NULL) return E_POINTER;
@@ -219,7 +288,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Workbooks(
         I_ApplicationExcel* iface,
         IDispatch **ppWorkbooks)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
 
     TRACE("\n");
 
@@ -240,7 +309,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Sheets(
         I_ApplicationExcel* iface,
         IDispatch **ppSheets)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     I_Workbook *pwb;
     HRESULT hres;
 
@@ -268,7 +337,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Cells(
         I_ApplicationExcel* iface,
         IDispatch **ppRange)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     I_Workbook *pwb;
     I_Sheets *pSheets;
     I_Worksheet *pworksheet;
@@ -306,7 +375,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(
         I_ApplicationExcel* iface,
         IDispatch **RHS)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     I_Workbook *pwb;
     I_Sheets *pSheets;
     HRESULT hres;
@@ -341,7 +410,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Version(
         long Lcid,
         BSTR *pVersion)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
 
     TRACE("\n");
 
@@ -365,7 +434,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_ConvertFormula(
         long Lcid,
         VARIANT *pResult)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
 
     TRACE("\n");
 
@@ -523,7 +592,7 @@ RelativeTo и ToAbsolute - пока игнорируются
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Quit(
         I_ApplicationExcel* iface)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
 
     TRACE("\n");
 
@@ -541,7 +610,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveCell(
         I_ApplicationExcel* iface,
         IDispatch **RHS)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
 
     HRESULT hres;
 
@@ -631,7 +700,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook(
         I_ApplicationExcel* iface,
         IDispatch **result)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     I_Workbook *pwb;
     I_Sheets *pSheets;
     HRESULT hres;
@@ -659,7 +728,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Range(
         VARIANT Cell2,
         IDispatch **ppRange)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     HRESULT hres; 
 
     TRACE("\n");
@@ -931,7 +1000,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)iface;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     HRESULT hr;
     BSTR pVersion;
     IDispatch *pdisp;
@@ -1426,6 +1495,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
     return E_NOTIMPL;
 }
 
+#undef APPEXCEL_THIS
 
 
 const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
@@ -1484,7 +1554,8 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    _applicationexcell->_applicationexcellVtbl = &MSO_TO_OO_I_ApplicationExcel_Vtbl;
+    _applicationexcell->pApplicationExcelVtbl = &MSO_TO_OO_I_ApplicationExcel_Vtbl;
+    _applicationexcell->pConnectionPointContainerVtbl = &MSO_TO_OO_ConnectionPointContainerVtbl;
     _applicationexcell->ref = 0;
     _applicationexcell->pdOOApp = NULL;
     _applicationexcell->pdOODesktop = NULL;
@@ -1521,7 +1592,7 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
 
     MSO_TO_OO_I_Workbooks_Initialize((I_Workbooks*)(_applicationexcell->pdWorkbooks), (I_ApplicationExcel*)_applicationexcell);
 
-    *ppObj = &_applicationexcell->_applicationexcellVtbl;
+    *ppObj = APPEXCEL(_applicationexcell);
 
     /*освобождаем память выделенную под строку*/
     SysFreeString(V_BSTR(&param1));
