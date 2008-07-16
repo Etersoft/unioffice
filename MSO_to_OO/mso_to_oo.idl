@@ -17,6 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
+#include "dispid_const.h"
 
 import "oaidl.idl";
 import "ocidl.idl";
@@ -828,41 +829,41 @@ import "wtypes.idl";
 	interface I_ApplicationExcel : IDispatch
 	{
 //UserControl 	True if the application is visible or if it was created or started by the user. False if you created or started the application programmatically by using the CreateObject or GetObject functions and the application is hidden.
-		[propput,id(1)] HRESULT UserControl([in] VARIANT_BOOL vbUserControl);
-		[propget,id(1)] HRESULT UserControl([out, retval] VARIANT_BOOL *vbUserControl);
+		[propput,id(dispid_application_usercontrol)] HRESULT UserControl([in] VARIANT_BOOL vbUserControl);
+		[propget,id(dispid_application_usercontrol)] HRESULT UserControl([out, retval] VARIANT_BOOL *vbUserControl);
 
 //DisplayAlerts 	True if Microsoft Excel displays certain alerts and messages while a macro is running.
-		[propput,id(2)] HRESULT DisplayAlerts([in] VARIANT_BOOL vbDisplayAlerts);
-		[propget,id(2)] HRESULT DisplayAlerts([out, retval] VARIANT_BOOL *vbDisplayAlerts);
+		[propput,id(dispid_application_displayalerts)] HRESULT DisplayAlerts([in] VARIANT_BOOL vbDisplayAlerts);
+		[propget,id(dispid_application_displayalerts)] HRESULT DisplayAlerts([out, retval] VARIANT_BOOL *vbDisplayAlerts);
 		//[propget, id(0x157)] HRESULT DisplayAlerts([in, lcid] long lcid, [out, retval] VARIANT_BOOL* RHS);
 
 //WindowState 	Returns or sets the state of the window. Read/write XlWindowState.
-		[propput,id(3)] HRESULT WindowState([in] XlWindowState State);
-		[propget,id(3)] HRESULT WindowState([out, retval] XlWindowState *State);
+		[propput,id(dispid_application_windowstate)] HRESULT WindowState([in] XlWindowState State);
+		[propget,id(dispid_application_windowstate)] HRESULT WindowState([out, retval] XlWindowState *State);
 
 //Visible 	Determines whether the object is visible.
-		[propput,id(4)] HRESULT Visible([in] VARIANT_BOOL vbVisible);
-		[propget,id(4)] HRESULT Visible([out, retval] VARIANT_BOOL *vbVisible);
+		[propput,id(dispid_application_visible)] HRESULT Visible([in] VARIANT_BOOL vbVisible);
+		[propget,id(dispid_application_visible)] HRESULT Visible([out, retval] VARIANT_BOOL *vbVisible);
 
 //Workbooks 	Returns a Workbooks collection that represents all the open workbooks.
-		[propget,id(5)] HRESULT Workbooks([out, retval] IDispatch **ppWorkbooks);
+		[propget,id(dispid_application_workbooks)] HRESULT Workbooks([out, retval] IDispatch **ppWorkbooks);
 
 //Sheets 	Returns a Sheets collection that represents all the worksheets in the active workbook.
-		[propget,id(6)] HRESULT Sheets([out, retval] IDispatch **ppSheets);
+		[propget,id(dispid_application_sheets)] HRESULT Sheets([out, retval] IDispatch **ppSheets);
 //Worksheets 	Returns a Sheets collection that represents all the worksheets in the active workbook.
-		[propget,id(7)] HRESULT Worksheets([out, retval] IDispatch **ppSheets);
+		[propget,id(dispid_application_worksheets)] HRESULT Worksheets([out, retval] IDispatch **ppSheets);
 
 //Cells 	Returns a Range object that represents all the cells on the active worksheet. If the active document isn?t a worksheet, this property fails.
-		[propget,id(8)] HRESULT Cells([out, retval] IDispatch **ppRange);
+		[propget,id(dispid_application_cells)] HRESULT Cells([out, retval] IDispatch **ppRange);
 
 //ActiveSheet 	Returns an object that represents the active sheet (the sheet on top) in the active workbook or in the specified window or workbook. Returns Nothing if no sheet is active.
-		[propget,id(9)] HRESULT ActiveSheet([out, retval] IDispatch** RHS);
+		[propget,id(dispid_application_activesheet)] HRESULT ActiveSheet([out, retval] IDispatch** RHS);
 
 //Version 	Returns the Microsoft Excel version number.
-		[propget,id(10)] HRESULT Version([in] long Lcid, [out, retval] BSTR *pVersion);
+		[propget,id(dispid_application_version)] HRESULT Version([in] long Lcid, [out, retval] BSTR *pVersion);
 
 //ConvertFormula 	Converts cell references in a formula between the A1 and R1C1 reference styles, between relative and absolute references, or both.
-		[id(11)] HRESULT ConvertFormula(
+		[id(dispid_application_convertformula)] HRESULT ConvertFormula(
 			[in]           VARIANT          Formula,
 			[in]           XlReferenceStyle FromReferenceStyle,
 			[in, optional] VARIANT          ToReferenceStyle,
@@ -872,31 +873,31 @@ import "wtypes.idl";
 			[out, retval]  VARIANT         *pResult);
 
 //Quit 	Quits Microsoft Excel.
-		[id(12)] HRESULT Quit();
+		[id(dispid_application_quit)] HRESULT Quit();
 
 //ActiveCell 	Returns a Range object that represents the active cell in the active window (the window on top) or in the specified window. If the window isn't displaying a worksheet, this property fails.
-		[propget,id(13)] HRESULT ActiveCell([out, retval] IDispatch** RHS);
+		[propget,id(dispid_application_activecell)] HRESULT ActiveCell([out, retval] IDispatch** RHS);
 //Application 	Returns an Application object that represents the creator of the specified object (you can use this property with an OLE Automation object to return the application of that object).
-		[propget,id(14), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+		[propget,id(dispid_application_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //EnableEvents 	True if events are enabled for the specified object.
-		[propget,id(15), helpstring("property EnableEvents")] HRESULT EnableEvents([out, retval] VARIANT_BOOL *pvbee);
-		[propput,id(15), helpstring("property EnableEvents")] HRESULT EnableEvents([in] VARIANT_BOOL vbee);
+		[propget,id(dispid_application_enableevents), helpstring("property EnableEvents")] HRESULT EnableEvents([out, retval] VARIANT_BOOL *pvbee);
+		[propput,id(dispid_application_enableevents), helpstring("property EnableEvents")] HRESULT EnableEvents([in] VARIANT_BOOL vbee);
 //ScreenUpdating 	True if screen updating is turned on.
-		[propget,id(16), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([out, retval] VARIANT_BOOL *vbscup);
-		[propput,id(16), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([in] VARIANT_BOOL vbscup);
+		[propget,id(dispid_application_screenupdating), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([out, retval] VARIANT_BOOL *vbscup);
+		[propput,id(dispid_application_screenupdating), helpstring("property ScreenUpdating")] HRESULT ScreenUpdating([in] VARIANT_BOOL vbscup);
 //Caption 	The name that appears in the title bar of the main Microsoft Excel window. If you don't set a name, or if you set the name to Empty, this property returns "Microsoft Excel".
-		[propget,id(17), helpstring("property Caption")] HRESULT Caption([out, retval] VARIANT *vName);
-		[propput,id(17), helpstring("property Caption")] HRESULT Caption([in] VARIANT vName);
+		[propget,id(dispid_application_caption), helpstring("property Caption")] HRESULT Caption([out, retval] VARIANT *vName);
+		[propput,id(dispid_application_caption), helpstring("property Caption")] HRESULT Caption([in] VARIANT vName);
 //ActiveWorkbook 	Returns a Workbook object that represents the workbook in the active window (the window on top). Returns Nothing if there are no windows open or if either the Info window or the Clipboard window is the active window.
-		[propget,id(18), helpstring("property ActiveWorkbook")] HRESULT ActiveWorkbook([out, retval] IDispatch **result);
+		[propget,id(dispid_application_activeworkbook), helpstring("property ActiveWorkbook")] HRESULT ActiveWorkbook([out, retval] IDispatch **result);
 //Range 	Returns a Range object that represents a cell or a range of cells.
-		[propget,id(19), helpstring("property Range")] HRESULT Range   ([in] VARIANT Cell1, [in, optional] VARIANT Cell2, [out, retval] IDispatch **ppRange);
+		[propget,id(dispid_application_range), helpstring("property Range")] HRESULT Range   ([in] VARIANT Cell1, [in, optional] VARIANT Cell2, [out, retval] IDispatch **ppRange);
 //Columns 	Returns a Range object that represents all the columns on the active worksheet. If the active document isn't a worksheet, the Columns property fails.
-		[propget,id(20), helpstring("property Columns")] HRESULT Columns( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
+		[propget,id(dispid_application_columns), helpstring("property Columns")] HRESULT Columns( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
 //Rows 	Returns a Range object that represents all the rows on the active worksheet. If the active document isn?t a worksheet, the Rows property fails.
-		[propget,id(21), helpstring("property Rows")] HRESULT Rows( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
+		[propget,id(dispid_application_rows), helpstring("property Rows")] HRESULT Rows( [in, optional] VARIANT param, [out, retval] IDispatch **ppRange);
 //Selection 	Returns the selected object in the active window.
-		[propget,id(22), helpstring("property Selection")] HRESULT Selection([out, retval] IDispatch **ppRange);
+		[propget,id(dispid_application_selection), helpstring("property Selection")] HRESULT Selection([out, retval] IDispatch **ppRange);
 
 
 //Methods

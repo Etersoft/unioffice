@@ -242,8 +242,6 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_AddRef(
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     ULONG ref;
 
-    TRACE("----------------------\n");
-
     if (This == NULL) {
         TRACE("Object is NULL \n");
         return E_POINTER;
@@ -1004,91 +1002,91 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_usercontrol)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_application_usercontrol;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_displayalerts)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_application_displayalerts;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_windowstate)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_application_windowstate;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_visible)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_application_visible;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_workbooks)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_application_workbooks;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_sheets)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_application_sheets;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_worksheets)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_application_worksheets;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_cells)) {
-        *rgDispId = 8;
+        *rgDispId = dispid_application_cells;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_activesheet)) {
-        *rgDispId = 9;
+        *rgDispId = dispid_application_activesheet;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_version)) {
-        *rgDispId = 10;
+        *rgDispId = dispid_application_version;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_convertformula)) {
-        *rgDispId = 11;
+        *rgDispId = dispid_application_convertformula;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_quit)) {
-        *rgDispId = 12;
+        *rgDispId = dispid_application_quit;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_activecell)) {
-        *rgDispId = 13;
+        *rgDispId = dispid_application_activecell;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 14;
+        *rgDispId = dispid_application_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_enableevents)) {
-        *rgDispId = 15;
+        *rgDispId = dispid_application_enableevents;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_screenupdating)) {
-        *rgDispId = 16;
+        *rgDispId = dispid_application_screenupdating;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_caption)) {
-        *rgDispId = 17;
+        *rgDispId = dispid_application_caption;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_activeworkbook)) {
-        *rgDispId = 18;
+        *rgDispId = dispid_application_activeworkbook;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_range)) {
-        *rgDispId = 19;
+        *rgDispId = dispid_application_range;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_columns)) {
-        *rgDispId = 20;
+        *rgDispId = dispid_application_columns;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_rows)) {
-        *rgDispId = 21;
+        *rgDispId = dispid_application_rows;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_selection)) {
-        *rgDispId = 22;
+        *rgDispId = dispid_application_selection;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -1130,7 +1128,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
 
     switch (dispIdMember)
     {
-    case 1:
+    case dispid_application_usercontrol:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
@@ -1143,7 +1141,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         } else {
             return E_NOTIMPL;
         }
-    case 2:
+    case dispid_application_displayalerts:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
@@ -1156,7 +1154,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         } else {
             return E_NOTIMPL;
         }
-    case 3:
+    case dispid_application_windowstate:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             /*преобразовываем любой тип к I4*/
@@ -1171,7 +1169,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         } else {
             return E_NOTIMPL;
         }
-    case 4:
+    case dispid_application_visible:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
@@ -1184,7 +1182,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         } else {
             return E_NOTIMPL;
         }
-    case 5:
+    case dispid_application_workbooks:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1199,7 +1197,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return hr;
         }
-    case 6:
+    case dispid_application_sheets:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1224,7 +1222,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case 7:
+    case dispid_application_worksheets:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1249,7 +1247,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case 8:
+    case dispid_application_cells:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             switch (pDispParams->cArgs) {
             case 3:
@@ -1311,7 +1309,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return hr;
         }
-    case 9:
+    case dispid_application_activesheet:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1328,7 +1326,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case 10:
+    case dispid_application_version:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1343,7 +1341,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return hr;
         }
-    case 11:
+    case dispid_application_convertformula:
         /*MSO_TO_OO_I_ApplicationExcel_ConvertFormula*/
         if (pDispParams->cArgs<3) return E_FAIL;
 
@@ -1365,9 +1363,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             V_BSTR(pVarResult)=V_BSTR(&vRet);
         }
         return S_OK;
-    case 12:
+    case dispid_application_quit:
         return MSO_TO_OO_I_ApplicationExcel_Quit(iface);
-    case 13:
+    case dispid_application_activecell:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1384,7 +1382,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return hr;
         }
-    case 14:
+    case dispid_application_application:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1399,7 +1397,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case 15:
+    case dispid_application_enableevents:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
@@ -1421,7 +1419,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case 16:
+    case dispid_application_screenupdating:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
@@ -1443,7 +1441,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case 17:
+    case dispid_application_caption:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BSTR);
@@ -1460,7 +1458,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return hr;
         }
-    case 18:
+    case dispid_application_activeworkbook:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE(" (case 18) ERROR when (PUT)\n");
             return E_NOTIMPL;
@@ -1475,7 +1473,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return hr;
         }
-    case 19:
+    case dispid_application_range:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE(" (case 19) ERROR when (PUT)\n");
             return E_NOTIMPL;
@@ -1513,7 +1511,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
                 return E_FAIL;
             }
         }
-    case 20:
+    case dispid_application_columns:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE(" (case 20) ERROR when (PUT)\n");
             return E_NOTIMPL;
@@ -1547,7 +1545,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
                 return S_OK;
             }
         }
-    case 21:
+    case dispid_application_rows:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE(" (case 21) ERROR when (PUT)\n");
             return E_NOTIMPL;
@@ -1581,7 +1579,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
                 return S_OK;
             }
         }
-    case 22://Selection
+    case dispid_application_selection://Selection
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE("\n");
             return E_NOTIMPL;

@@ -38,6 +38,7 @@
 #include "mso_to_oo.h"
 #include "main_constants.h"
 #include "debug.h"
+#include "dispid_const.h"
 
 
 extern LONG dll_ref;
