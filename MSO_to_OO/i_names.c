@@ -219,13 +219,13 @@ const NamesVtbl MSO_TO_OO_NamesVtbl =
     MSO_TO_OO_Names_GetIDsOfNames,
     MSO_TO_OO_Names_Invoke,
     MSO_TO_OO_Names_get_Application,
-    MSO_TO_OO_Names_get_Count,
     MSO_TO_OO_Names_get_Creator,
     MSO_TO_OO_Names_get_Parent,
-    MSO_TO_OO_Names__Default,
     MSO_TO_OO_Names_Add,
-    MSO_TO_OO_Names_GetEnumerator,
-    MSO_TO_OO_Names_Item
+    MSO_TO_OO_Names_Item,
+    MSO_TO_OO_Names__Default,
+    MSO_TO_OO_Names_get_Count,
+    MSO_TO_OO_Names_GetEnumerator
 };
 
 extern HRESULT _NamesConstructor(LPVOID *ppObj)

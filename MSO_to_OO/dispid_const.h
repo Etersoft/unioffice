@@ -390,3 +390,13 @@
 #define dispid_pagesetup_rightheaderpicture                      41
 #define dispid_pagesetup_rightfooterpicture                      42
 
+/*Names*/
+#define dispid_names_application                                 1
+#define dispid_names_creator                                     2
+#define dispid_names_parent                                      3
+#define dispid_names_add                                         4
+#define dispid_names_item                                        5
+#define dispid_names__default                                    6
+#define dispid_names_count                                       7
+#define dispid_names_getenumerator                               8
+

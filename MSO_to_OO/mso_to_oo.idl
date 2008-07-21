@@ -923,7 +923,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(9D055220-D153-4a09-B680-6AAC88BD06F1),
+		uuid(000208B8-0001-0000-C000-000000000046),
 		dual,
 		helpstring("Names Interface"),
 		pointer_default(unique)
@@ -931,21 +931,13 @@ import "wtypes.idl";
 	interface Names : IDispatch
 	{
 //Application
-		[propget,id(1), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
-//Count
-		[propget,id(2), helpstring("property Count")] HRESULT Count([out, retval] int *count);
+		[propget,id(dispid_names_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //Creator
-		[propget,id(3), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+		[propget,id(dispid_names_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
 //Parent
-		[propget,id(4), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
-//_Default
-		[id(5), helpstring("property _Default")] HRESULT _Default(
-			[in, optional] VARIANT Index,
-			[in, optional] VARIANT IndexLocal,
-			[in, optional] VARIANT RefersTo,
-			[out, retval] IDispatch **ppvalue);
+		[propget,id(dispid_names_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
 //Add
-		[id(6), helpstring("property Add")] HRESULT Add(
+		[id(dispid_names_add), helpstring("property Add")] HRESULT Add(
 			[in, optional] VARIANT Name,
 			[in, optional] VARIANT RefersTo,
 			[in, optional] VARIANT Visible,
@@ -958,14 +950,22 @@ import "wtypes.idl";
 			[in, optional] VARIANT RefersToR1C1,
 			[in, optional] VARIANT RefersToR1C1Local,
 			[out, retval] IDispatch **ppvalue);
-//GetEnumerator
-		[id(7), helpstring("property GetEnumerator")] HRESULT GetEnumerator([out, retval] IDispatch **value);
 //Item
-		[id(8), helpstring("property Item")] HRESULT Item(
+		[id(dispid_names_item), helpstring("property Item")] HRESULT Item(
 			[in, optional] VARIANT Index,
 			[in, optional] VARIANT IndexLocal,
 			[in, optional] VARIANT RefersTo,
 			[out, retval] IDispatch **ppvalue);
+//_Default
+		[id(dispid_names__default), helpstring("property _Default")] HRESULT _Default(
+			[in, optional] VARIANT Index,
+			[in, optional] VARIANT IndexLocal,
+			[in, optional] VARIANT RefersTo,
+			[out, retval] IDispatch **ppvalue);
+//Count
+		[propget,id(dispid_names_count), helpstring("property Count")] HRESULT Count([out, retval] int *count);
+//GetEnumerator
+		[id(dispid_names_getenumerator), helpstring("property GetEnumerator")] HRESULT GetEnumerator([out, retval] IDispatch **value);
 	}
 
 	[
