@@ -1077,31 +1077,31 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_border_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_border_parent;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_color)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_border_color;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_colorindex)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_border_colorindex;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_border_creator;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_linestyle)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_border_linestyle;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_weight)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_border_weight;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -1136,7 +1136,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
 
     switch(dispIdMember)
     {
-    case 1://Application
+    case dispid_border_application://Application
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1153,7 +1153,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
             }
             return S_OK;
         }
-    case 2://Parent
+    case dispid_border_parent://Parent
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1170,7 +1170,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
             }
             return S_OK;
         }
-    case 3://Color
+    case dispid_border_color://Color
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
@@ -1199,7 +1199,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
             }
             return S_OK;
         }
-    case 4://ColorIndex
+    case dispid_border_colorindex://ColorIndex
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
@@ -1227,7 +1227,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
             }
             return S_OK;
         }
-    case 5://creator
+    case dispid_border_creator://creator
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -1237,7 +1237,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
             }
             return hres;
         }
-    case 6://linestyle
+    case dispid_border_linestyle://linestyle
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
@@ -1267,7 +1267,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
             return S_OK;
         }
 
-    case 7://weight
+    case dispid_border_weight://weight
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
@@ -1314,12 +1314,12 @@ const I_BorderVtbl MSO_TO_OO_I_Border_Vtbl =
     MSO_TO_OO_I_Border_GetIDsOfNames,
     MSO_TO_OO_I_Border_Invoke,
     MSO_TO_OO_I_Border_get_Application,
+    MSO_TO_OO_I_Border_get_Creator,
     MSO_TO_OO_I_Border_get_Parent,
     MSO_TO_OO_I_Border_get_Color,
     MSO_TO_OO_I_Border_put_Color,
     MSO_TO_OO_I_Border_get_ColorIndex,
     MSO_TO_OO_I_Border_put_ColorIndex,
-    MSO_TO_OO_I_Border_get_Creator,
     MSO_TO_OO_I_Border_get_LineStyle,
     MSO_TO_OO_I_Border_put_LineStyle,
     MSO_TO_OO_I_Border_get_Weight,

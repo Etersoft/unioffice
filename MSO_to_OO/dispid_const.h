@@ -336,3 +336,12 @@
 #define dispid_borders_value                                    10
 #define dispid_borders_weight                                   11
 #define dispid_borders__default                                 12
+
+/*IBorder*/
+#define dispid_border_application                              1
+#define dispid_border_creator                                  2
+#define dispid_border_parent                                   3
+#define dispid_border_color                                    4
+#define dispid_border_colorindex                               5
+#define dispid_border_linestyle                                6
+#define dispid_border_weight                                   7

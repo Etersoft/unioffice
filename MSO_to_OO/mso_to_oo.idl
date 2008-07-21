@@ -285,7 +285,7 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(0AA5C884-A88C-4f79-AE9F-89864F3D35CD),
+		uuid(00020854-0001-0000-C000-000000000046),
 		dual,
 		helpstring("I_Border Interface"),
 		pointer_default(unique)
@@ -293,23 +293,23 @@ import "wtypes.idl";
 	interface I_Border : IDispatch
 	{
 //Application 	Returns an Application object that represents the Microsoft Excel application.
-		[propget,id(1), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
-//Parent 	Returns the parent object for the specified object.
-		[propget,id(2), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
-//Color 	Returns or sets the primary color of the border.
-		[propget,id(3), helpstring("property Color")] HRESULT Color([out, retval] long *plcolor);
-		[propput,id(3), helpstring("property Color")] HRESULT Color([in] long lcolor);
-//ColorIndex 	Returns or sets the color of the border.
-		[propget,id(4), helpstring("property ColorIndex")] HRESULT ColorIndex([out, retval] long *plcolorindex);
-		[propput,id(4), helpstring("property ColorIndex")] HRESULT ColorIndex([in] long lcolorindex);
+		[propget,id(dispid_border_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //Creator 	Returns a 32-bit integer that indicates the application in which this object was created.
-		[propget,id(5), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+		[propget,id(dispid_border_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent 	Returns the parent object for the specified object.
+		[propget,id(dispid_border_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+//Color 	Returns or sets the primary color of the border.
+		[propget,id(dispid_border_color), helpstring("property Color")] HRESULT Color([out, retval] long *plcolor);
+		[propput,id(dispid_border_color), helpstring("property Color")] HRESULT Color([in] long lcolor);
+//ColorIndex 	Returns or sets the color of the border.
+		[propget,id(dispid_border_colorindex), helpstring("property ColorIndex")] HRESULT ColorIndex([out, retval] long *plcolorindex);
+		[propput,id(dispid_border_colorindex), helpstring("property ColorIndex")] HRESULT ColorIndex([in] long lcolorindex);
 //LineStyle 	Returns or sets the line style for the border.
-		[propget,id(6), helpstring("property LineStyle")] HRESULT LineStyle([out, retval] XlLineStyle *plinestyle);
-		[propput,id(6), helpstring("property LineStyle")] HRESULT LineStyle([in] XlLineStyle linestyle);
+		[propget,id(dispid_border_linestyle), helpstring("property LineStyle")] HRESULT LineStyle([out, retval] XlLineStyle *plinestyle);
+		[propput,id(dispid_border_linestyle), helpstring("property LineStyle")] HRESULT LineStyle([in] XlLineStyle linestyle);
 //Weight 	Returns or sets the weight of the border.
-		[propget,id(7), helpstring("property Weight")] HRESULT Weight([out, retval] XlBorderWeight *pweight);
-		[propput,id(7), helpstring("property Weight")] HRESULT Weight([in] XlBorderWeight weight);
+		[propget,id(dispid_border_weight), helpstring("property Weight")] HRESULT Weight([out, retval] XlBorderWeight *pweight);
+		[propput,id(dispid_border_weight), helpstring("property Weight")] HRESULT Weight([in] XlBorderWeight weight);
 	};
 
 	[
