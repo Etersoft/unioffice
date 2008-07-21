@@ -301,7 +301,6 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_Release(
     TRACE("REF = %i \n", This->ref);
 
     if (ref == 0) {
-        InterlockedDecrement(&dll_ref);
         if (This->pdOOApp != NULL) {
            IDispatch_Release(This->pdOOApp);
            This->pdOOApp = NULL;
@@ -431,8 +430,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Sheets(
     if (FAILED(hres)) return E_FAIL;
 
     hres = I_Workbook_get_Sheets(pwb, ppSheets);
-    if (FAILED(hres)) return E_FAIL;
+    if (FAILED(hres)) {
+        I_Workbook_Release(pwb);
+        return E_FAIL;
+    }
 
+    I_Workbook_Release(pwb);
     return S_OK;
 }
 
@@ -462,12 +465,14 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Cells(
 
     hres = I_Workbook_get_Sheets(pwb, (IDispatch**) &pSheets);
     if (FAILED(hres)) {
+        I_Workbook_Release(pwb);
         *ppRange = NULL;
         return E_FAIL;
     }
 
     hres = MSO_TO_OO_GetActiveSheet(pSheets, &pworksheet);
     if (FAILED(hres)) {
+        I_Workbook_Release(pwb);
         I_Sheets_Release(pSheets);
         *ppRange = NULL;
         return hres;
@@ -478,6 +483,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Cells(
         *ppRange = NULL;
     }
 
+    I_Workbook_Release(pwb);
     I_Sheets_Release(pSheets);
     I_Worksheet_Release(pworksheet);
     return hres;
@@ -844,14 +850,15 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Range(
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     HRESULT hres; 
-
-    TRACE("\n");
     I_Worksheet *wsh;
 
-    hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface,(IDispatch**) &wsh);
+    TRACE("\n");
+
+    hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, (IDispatch**) &wsh);
 
     hres = I_Worksheet_get_Range(wsh,Cell1, Cell2, ppRange);
 
+    I_Worksheet_Release(wsh);
     return hres;
 }
 
@@ -872,6 +879,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Columns(
 
     hres = I_Worksheet_get_Columns((I_Worksheet*)active_sheet, param, ppRange);
     if (FAILED(hres)) {
+        IDispatch_Release(active_sheet);
         TRACE("FAILED I_Worksheet_get_Columns \n");
         return hres;
     }
@@ -897,6 +905,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Rows(
 
     hres = I_Worksheet_get_Rows((I_Worksheet*)active_sheet, param, ppRange);
     if (FAILED(hres)) {
+        IDispatch_Release(active_sheet);
         TRACE("FAILED I_Worksheet_get_Rows \n");
         return hres;
     }
@@ -929,18 +938,23 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Selection(
 
     hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &asheet);
     if (FAILED(hres)) {
+        I_Workbook_Release((I_Workbook*)awb);
         TRACE("ERROR when get_ActiveSheet\n");
         return E_FAIL;
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &vRes, awb->pDoc, L"getCurrentController",0);
     if (FAILED(hres)) {
+        I_Workbook_Release((I_Workbook*)awb);
+        I_Worksheet_Release((I_Worksheet*)asheet);
         TRACE("ERROR when getCurrentController \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vRes), L"getSelection",0);
     if (FAILED(hres)) {
+        I_Workbook_Release((I_Workbook*)awb);
+        I_Worksheet_Release((I_Worksheet*)asheet);
         TRACE("ERROR when getSelectionr \n");
         return hres;
     }
@@ -951,6 +965,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Selection(
         VariantClear(&vRes);
         VariantClear(&vRet);
         I_Workbook_Release((I_Workbook*)awb);
+        I_Worksheet_Release((I_Worksheet*)asheet);
         return E_FAIL;
     }
 
@@ -960,6 +975,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Selection(
         VariantClear(&vRes);
         VariantClear(&vRet);
         I_Workbook_Release((I_Workbook*)awb);
+        I_Worksheet_Release((I_Worksheet*)asheet);
         return E_FAIL;
     }
 
@@ -969,6 +985,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Selection(
         VariantClear(&vRes);
         VariantClear(&vRet);
         I_Workbook_Release((I_Workbook*)awb);
+        I_Worksheet_Release((I_Worksheet*)asheet);
         return E_FAIL;
     }
 
