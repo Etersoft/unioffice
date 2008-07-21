@@ -582,6 +582,86 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Shadow(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_Background(
+        I_Font* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_Background(
+        I_Font* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_FontStyle(
+        I_Font* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_FontStyle(
+        I_Font* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_OutlineFont(
+        I_Font* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_OutlineFont(
+        I_Font* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_Subscript(
+        I_Font* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
+        I_Font* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_Superscript(
+        I_Font* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
+        I_Font* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
 /*IDispatch methods*/
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_GetTypeInfoCount(
@@ -611,51 +691,51 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_bold)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_font_bold;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_italic)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_font_italic;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_underline)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_font_underline;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_size)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_font_size;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_strikethrought)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_font_strikethrough;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_name)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_font_name;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_colorindex)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_font_colorindex;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_color)) {
-        *rgDispId = 8;
+        *rgDispId = dispid_font_color;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 9;
+        *rgDispId = dispid_font_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = 10;
+        *rgDispId = dispid_font_parent;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = 11;
+        *rgDispId = dispid_font_creator;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_shadow)) {
-        *rgDispId = 12;
+        *rgDispId = dispid_font_shadow;
         return S_OK;
     }
 
@@ -695,7 +775,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
 
     switch(dispIdMember) 
     {
-    case 1:
+    case dispid_font_bold:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -718,7 +798,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 2:
+    case dispid_font_italic:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -741,7 +821,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 3:
+    case dispid_font_underline:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -764,7 +844,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 4:
+    case dispid_font_size:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -787,7 +867,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 5:
+    case dispid_font_strikethrough:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -810,7 +890,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 6:
+    case dispid_font_name:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -823,7 +903,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 7:
+    case dispid_font_colorindex:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -851,7 +931,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 8:
+    case dispid_font_color:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -879,7 +959,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 9:
+    case dispid_font_application:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -894,7 +974,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 10:
+    case dispid_font_parent:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -909,7 +989,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-    case 11:
+    case dispid_font_creator:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -919,7 +999,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return hr;
         }
-    case 12:
+    case dispid_font_shadow:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -956,27 +1036,37 @@ const I_FontVtbl MSO_TO_OO_I_Font_Vtbl =
     MSO_TO_OO_I_Font_GetTypeInfo,
     MSO_TO_OO_I_Font_GetIDsOfNames,
     MSO_TO_OO_I_Font_Invoke,
+    MSO_TO_OO_I_Font_get_Application,
+    MSO_TO_OO_I_Font_get_Creator,
+    MSO_TO_OO_I_Font_get_Parent,
+    MSO_TO_OO_I_Font_get_Background,
+    MSO_TO_OO_I_Font_put_Background,
     MSO_TO_OO_I_Font_get_Bold,
     MSO_TO_OO_I_Font_put_Bold,
+    MSO_TO_OO_I_Font_get_Color,
+    MSO_TO_OO_I_Font_put_Color,
+    MSO_TO_OO_I_Font_get_ColorIndex,
+    MSO_TO_OO_I_Font_put_ColorIndex,
+    MSO_TO_OO_I_Font_get_FontStyle,
+    MSO_TO_OO_I_Font_put_FontStyle,
     MSO_TO_OO_I_Font_get_Italic,
     MSO_TO_OO_I_Font_put_Italic,
-    MSO_TO_OO_I_Font_get_Underline,
-    MSO_TO_OO_I_Font_put_Underline,
+    MSO_TO_OO_I_Font_get_Name,
+    MSO_TO_OO_I_Font_put_Name,
+    MSO_TO_OO_I_Font_get_OutlineFont,
+    MSO_TO_OO_I_Font_put_OutlineFont,
+    MSO_TO_OO_I_Font_get_Shadow,
+    MSO_TO_OO_I_Font_put_Shadow,
     MSO_TO_OO_I_Font_get_Size,
     MSO_TO_OO_I_Font_put_Size,
     MSO_TO_OO_I_Font_get_Strikethrough,
     MSO_TO_OO_I_Font_put_Strikethrough,
-    MSO_TO_OO_I_Font_get_Name,
-    MSO_TO_OO_I_Font_put_Name,
-    MSO_TO_OO_I_Font_get_ColorIndex,
-    MSO_TO_OO_I_Font_put_ColorIndex,
-    MSO_TO_OO_I_Font_get_Color,
-    MSO_TO_OO_I_Font_put_Color,
-    MSO_TO_OO_I_Font_get_Application,
-    MSO_TO_OO_I_Font_get_Parent,
-    MSO_TO_OO_I_Font_get_Creator,
-    MSO_TO_OO_I_Font_get_Shadow,
-    MSO_TO_OO_I_Font_put_Shadow
+    MSO_TO_OO_I_Font_get_Subscript,
+    MSO_TO_OO_I_Font_put_Subscript,
+    MSO_TO_OO_I_Font_get_Superscript,
+    MSO_TO_OO_I_Font_put_Superscript,
+    MSO_TO_OO_I_Font_get_Underline,
+    MSO_TO_OO_I_Font_put_Underline
 };
 
 HRESULT _I_FontConstructor(LPVOID *ppObj)

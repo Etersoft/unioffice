@@ -293,6 +293,21 @@
 #define dispid_application_arbitraryxmlsupportavailable          0x000008ce
 #define dispid_application_support                               0x000008cf
 
-
-
-
+/*IFont*/
+#define dispid_font_application                                  1
+#define dispid_font_creator                                      2
+#define dispid_font_parent                                       3
+#define dispid_font_background                                   3
+#define dispid_font_bold                                         4
+#define dispid_font_color                                        5
+#define dispid_font_colorindex                                   6
+#define dispid_font_fontstyle                                    7
+#define dispid_font_italic                                       8
+#define dispid_font_name                                         9
+#define dispid_font_outlinefont                                  10
+#define dispid_font_shadow                                       11
+#define dispid_font_size                                         12
+#define dispid_font_strikethrough                                13
+#define dispid_font_subscript                                    14
+#define dispid_font_superscript                                  15
+#define dispid_font_underline                                    16

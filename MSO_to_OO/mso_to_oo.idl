@@ -392,48 +392,54 @@ import "wtypes.idl";
 	]
 	interface I_Font : IDispatch
 	{
-// Bold 	True if the font is bold.
-		[propget,id(1), helpstring("property Bold")] HRESULT Bold([out, retval] VARIANT_BOOL *pvbBold);
-		[propput,id(1), helpstring("property Bold")] HRESULT Bold([in] VARIANT_BOOL vbBold);
-// Italic 	True if the font style is italic.
-		[propget,id(2), helpstring("property Italic")] HRESULT Italic([out, retval] VARIANT_BOOL *pvbItalic);
-		[propput,id(2), helpstring("property Italic")] HRESULT Italic([in] VARIANT_BOOL vbItalic);
-// Underline 	Returns or sets the type of underline applied to the font.
-		[propget,id(3), helpstring("property Underline")] HRESULT Underline([out, retval] VARIANT_BOOL *pvbUnderline);
-		[propput,id(3), helpstring("property Underline")] HRESULT Underline([in] VARIANT_BOOL vbUnderline);
-//Size 	Returns or sets the size of the font.
-		[propget,id(4), helpstring("property Size")] HRESULT Size([out, retval] long *plsize);
-		[propput,id(4), helpstring("property Size")] HRESULT Size([in] long lsize);
-//Strikethrough 	True if the font is struck through with a horizontal line.
-		[propget,id(5), helpstring("property Strikethrough")] HRESULT Strikethrough([out, retval] VARIANT_BOOL *pvbUnderline);
-		[propput,id(5), helpstring("property Strikethrough")] HRESULT Strikethrough([in] VARIANT_BOOL vbUnderline);
-//Name 	Returns or sets the name of the object.
-		[propget,id(6), helpstring("property Name")] HRESULT Name([out, retval] VARIANT *vName);
-		[propput,id(6), helpstring("property Name")] HRESULT Name([in] VARIANT vName);
-//ColorIndex 	Returns or sets the color of the interior.
-		[propget,id(7), helpstring("property ColorIndex")] HRESULT ColorIndex([out, retval] long *plcolorindex);
-		[propput,id(7), helpstring("property ColorIndex")] HRESULT ColorIndex([in] long lcolorindex);
-//Color 	Returns or sets the primary cell shading color or drawing object fill color.
-		[propget,id(8), helpstring("property Color")] HRESULT Color([out, retval] long *plcolor);
-		[propput,id(8), helpstring("property Color")] HRESULT Color([in] long lcolor);
 //Application 	Returns an Application object that represents the Microsoft Excel application.
-		[propget,id(9), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
-//Parent 	Returns the parent object for the specified object.
-		[propget,id(10), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+		[propget,id(dispid_font_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //Creator 	Returns a 32-bit integer that indicates the application in which this object was created.
-		[propget,id(11), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
-//Shadow 	True if the font is a shadow font or if the object has a shadow.
-		[propget,id(12), helpstring("property Shadow")] HRESULT Shadow([out, retval] VARIANT_BOOL *pvbshadow);
-		[propput,id(12), helpstring("property Shadow")] HRESULT Shadow([in] VARIANT_BOOL vbshadow);
-//OutlineFont 	True if the font is an outline font.
-
-
-//Properties
+		[propget,id(dispid_font_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent 	Returns the parent object for the specified object.
+		[propget,id(dispid_font_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
 //Background 	Returns or sets the type of background for text used in charts. Can be one of the XlBackground constants.
-//XlBackground - 
+		[propget, id(dispid_font_background), helpstring("property Background")] HRESULT  Background([out, retval] VARIANT* RHS);
+		[propput, id(dispid_font_background), helpstring("property Background")] HRESULT  Background([in] VARIANT RHS);
+// Bold 	True if the font is bold.
+		[propget,id(dispid_font_bold), helpstring("property Bold")] HRESULT Bold([out, retval] VARIANT_BOOL *pvbBold);
+		[propput,id(dispid_font_bold), helpstring("property Bold")] HRESULT Bold([in] VARIANT_BOOL vbBold);
+//Color 	Returns or sets the primary cell shading color or drawing object fill color.
+		[propget,id(dispid_font_color), helpstring("property Color")] HRESULT Color([out, retval] long *plcolor);
+		[propput,id(dispid_font_color), helpstring("property Color")] HRESULT Color([in] long lcolor);
+//ColorIndex 	Returns or sets the color of the interior.
+		[propget,id(dispid_font_colorindex), helpstring("property ColorIndex")] HRESULT ColorIndex([out, retval] long *plcolorindex);
+		[propput,id(dispid_font_colorindex), helpstring("property ColorIndex")] HRESULT ColorIndex([in] long lcolorindex);
 //FontStyle 	Returns or sets the font style.
+		[propget, id(dispid_font_fontstyle), helpstring("property Fontstyle")] HRESULT  FontStyle([out, retval] VARIANT* RHS);
+		[propput, id(dispid_font_fontstyle), helpstring("property Fontstyle")] HRESULT  FontStyle([in] VARIANT RHS);
+// Italic 	True if the font style is italic.
+		[propget,id(dispid_font_italic), helpstring("property Italic")] HRESULT Italic([out, retval] VARIANT_BOOL *pvbItalic);
+		[propput,id(dispid_font_italic), helpstring("property Italic")] HRESULT Italic([in] VARIANT_BOOL vbItalic);
+//Name 	Returns or sets the name of the object.
+		[propget,id(dispid_font_name), helpstring("property Name")] HRESULT Name([out, retval] VARIANT *vName);
+		[propput,id(dispid_font_name), helpstring("property Name")] HRESULT Name([in] VARIANT vName);
+//OutlineFont 	True if the font is an outline font.
+		[propget, id(dispid_font_outlinefont), helpstring("property OutlineFont")] HRESULT OutlineFont([out, retval] VARIANT* RHS);
+		[propput, id(dispid_font_outlinefont), helpstring("property OutlineFont")]	HRESULT OutlineFont([in] VARIANT RHS);
+//Shadow 	True if the font is a shadow font or if the object has a shadow.
+		[propget,id(dispid_font_shadow), helpstring("property Shadow")] HRESULT Shadow([out, retval] VARIANT_BOOL *pvbshadow);
+		[propput,id(dispid_font_shadow), helpstring("property Shadow")] HRESULT Shadow([in] VARIANT_BOOL vbshadow);
+//Size 	Returns or sets the size of the font.
+		[propget,id(dispid_font_size), helpstring("property Size")] HRESULT Size([out, retval] long *plsize);
+		[propput,id(dispid_font_size), helpstring("property Size")] HRESULT Size([in] long lsize);
+//Strikethrough 	True if the font is struck through with a horizontal line.
+		[propget,id(dispid_font_strikethrough), helpstring("property Strikethrough")] HRESULT Strikethrough([out, retval] VARIANT_BOOL *pvbUnderline);
+		[propput,id(dispid_font_strikethrough), helpstring("property Strikethrough")] HRESULT Strikethrough([in] VARIANT_BOOL vbUnderline);
 //Subscript 	True if the font is formatted as subscript. False by default.
+		[propget, id(dispid_font_subscript), helpstring("property Subscript")] HRESULT  Subscript([out, retval] VARIANT* RHS);
+		[propput, id(dispid_font_subscript), helpstring("property Subscript")] HRESULT  Subscript([in] VARIANT RHS);
 //Superscript 	True if the font is formatted as superscript. False by default.
+		[propget, id(dispid_font_superscript), helpstring("property Superscript")] HRESULT  Superscript([out, retval] VARIANT* RHS);
+		[propput, id(dispid_font_superscript), helpstring("property Superscript")] HRESULT  Superscript([in] VARIANT RHS);
+// Underline 	Returns or sets the type of underline applied to the font.
+		[propget,id(dispid_font_underline), helpstring("property Underline")] HRESULT Underline([out, retval] VARIANT_BOOL *pvbUnderline);
+		[propput,id(dispid_font_underline), helpstring("property Underline")] HRESULT Underline([in] VARIANT_BOOL vbUnderline);
 	};
 
 	[
