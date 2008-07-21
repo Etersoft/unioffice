@@ -363,24 +363,30 @@ import "wtypes.idl";
 	]
 	interface I_Interior : IDispatch
 	{
-//ColorIndex 	Returns or sets the color of the interior.
-		[propget,id(1), helpstring("property ColorIndex")] HRESULT ColorIndex([out, retval] long *plcolorindex);
-		[propput,id(1), helpstring("property ColorIndex")] HRESULT ColorIndex([in] long lcolorindex);
-//Color 	Returns or sets the primary cell shading color or drawing object fill color.
-		[propget,id(2), helpstring("property Color")] HRESULT Color([out, retval] long *plcolor);
-		[propput,id(2), helpstring("property Color")] HRESULT Color([in] long lcolor);
 //Application 	Returns an Application object that represents the Microsoft Excel application.
-		[propget,id(3), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
-//Parent 	Returns the parent object for the specified object.
-		[propget,id(4), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+		[propget,id(dispid_interior_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //Creator 	Returns a 32-bit integer that indicates the application in which this object was created.
-		[propget,id(5), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
-
-
+		[propget,id(dispid_interior_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent 	Returns the parent object for the specified object.
+		[propget,id(dispid_interior_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+//Color 	Returns or sets the primary cell shading color or drawing object fill color.
+		[propget,id(dispid_interior_color), helpstring("property Color")] HRESULT Color([out, retval] long *plcolor);
+		[propput,id(dispid_interior_color), helpstring("property Color")] HRESULT Color([in] long lcolor);
+//ColorIndex 	Returns or sets the color of the interior.
+		[propget,id(dispid_interior_colorindex), helpstring("property ColorIndex")] HRESULT ColorIndex([out, retval] long *plcolorindex);
+		[propput,id(dispid_interior_colorindex), helpstring("property ColorIndex")] HRESULT ColorIndex([in] long lcolorindex);
 //InvertIfNegative 	True if Microsoft Excel inverts the pattern in the item when it corresponds to a negative number.
+		[propget, id(dispid_interior_invertifnegative), helpstring("property InvertIfNegative")] HRESULT InvertIfNegative([out, retval] VARIANT* RHS);
+		[propput, id(dispid_interior_invertifnegative), helpstring("property InvertIfNegative")] HRESULT InvertIfNegative([in] VARIANT RHS);
 //Pattern 	Returns or sets the interior pattern.
+		[propget, id(dispid_interior_pattern), helpstring("property Pattern")] HRESULT Pattern([out, retval] VARIANT* RHS);
+		[propput, id(dispid_interior_pattern), helpstring("property Pattern")] HRESULT Pattern([in] VARIANT RHS);
 //PatternColor 	Returns or sets the color of the interior pattern as an RGB value.
+		[propget, id(dispid_interior_patterncolor), helpstring("PatternColor")] HRESULT PatternColor([out, retval] VARIANT* RHS);
+		[propput, id(dispid_interior_patterncolor), helpstring("PatternColor")] HRESULT PatternColor([in] VARIANT RHS);
 //PatternColorIndex 	Returns or sets the color of the interior pattern as an index into the current color palette, or as one of the following XlColorIndex constants: xlColorIndexAutomatic or xlColorIndexNone.
+		[propget, id(dispid_interior_patterncolorindex), helpstring("PatternColorIndex")] HRESULT PatternColorIndex([out, retval] VARIANT* RHS);
+		[propput, id(dispid_interior_patterncolorindex), helpstring("PatternColorIndex")] HRESULT PatternColorIndex([in] VARIANT RHS);
 	};
 
 	[

@@ -311,3 +311,16 @@
 #define dispid_font_subscript                                    14
 #define dispid_font_superscript                                  15
 #define dispid_font_underline                                    16
+
+/*IInterior*/
+#define dispid_interior_application                              1
+#define dispid_interior_creator                                  2
+#define dispid_interior_parent                                   3
+#define dispid_interior_color                                    4
+#define dispid_interior_colorindex                               5
+#define dispid_interior_invertifnegative                         6
+#define dispid_interior_pattern                                  7
+#define dispid_interior_patterncolor                             8
+#define dispid_interior_patterncolorindex                        9
+
+

@@ -254,6 +254,69 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Creator(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Interior_get_InvertIfNegative(
+        I_Interior* iface,
+        VARIANT *RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Interior_put_InvertIfNegative(
+        I_Interior* iface,
+        VARIANT RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Pattern(
+        I_Interior* iface,
+        VARIANT *RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Pattern(
+        I_Interior* iface,
+        VARIANT RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Interior_get_PatternColor(
+        I_Interior* iface,
+        VARIANT *RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Interior_put_PatternColor(
+        I_Interior* iface,
+        VARIANT RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Interior_get_PatternColorIndex(
+        I_Interior* iface,
+        VARIANT *RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Interior_put_PatternColorIndex(
+        I_Interior* iface,
+        VARIANT RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
 
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfoCount(
@@ -283,23 +346,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_colorindex)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_interior_colorindex;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_color)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_interior_color;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_interior_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_interior_parent;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_interior_creator;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -331,7 +394,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
 
     switch(dispIdMember)
     {
-    case 1:
+    case dispid_interior_colorindex:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -359,7 +422,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
             }
             return S_OK;
         }
-    case 2:
+    case dispid_interior_color:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -387,7 +450,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
             }
             return S_OK;
         }
-    case 3:
+    case dispid_interior_application:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -404,7 +467,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
             }
             return S_OK;
         }
-    case 4:
+    case dispid_interior_parent:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -421,7 +484,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
             }
             return S_OK;
         }
-    case 5:
+    case dispid_interior_creator:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -446,13 +509,21 @@ const I_InteriorVtbl MSO_TO_OO_I_Interior_Vtbl =
     MSO_TO_OO_I_Interior_GetTypeInfo,
     MSO_TO_OO_I_Interior_GetIDsOfNames,
     MSO_TO_OO_I_Interior_Invoke,
-    MSO_TO_OO_I_Interior_get_ColorIndex,
-    MSO_TO_OO_I_Interior_put_ColorIndex,
+    MSO_TO_OO_I_Interior_get_Application,
+    MSO_TO_OO_I_Interior_get_Creator,
+    MSO_TO_OO_I_Interior_get_Parent,
     MSO_TO_OO_I_Interior_get_Color,
     MSO_TO_OO_I_Interior_put_Color,
-    MSO_TO_OO_I_Interior_get_Application,
-    MSO_TO_OO_I_Interior_get_Parent,
-    MSO_TO_OO_I_Interior_get_Creator
+    MSO_TO_OO_I_Interior_get_ColorIndex,
+    MSO_TO_OO_I_Interior_put_ColorIndex,
+    MSO_TO_OO_I_Interior_get_InvertIfNegative,
+    MSO_TO_OO_I_Interior_put_InvertIfNegative,
+    MSO_TO_OO_I_Interior_get_Pattern,
+    MSO_TO_OO_I_Interior_put_Pattern,
+    MSO_TO_OO_I_Interior_get_PatternColor,
+    MSO_TO_OO_I_Interior_put_PatternColor,
+    MSO_TO_OO_I_Interior_get_PatternColorIndex,
+    MSO_TO_OO_I_Interior_put_PatternColorIndex
 };
 
 extern HRESULT _I_InteriorConstructor(LPVOID *ppObj)
