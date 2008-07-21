@@ -1776,6 +1776,402 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintTitleRows(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Application(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Creator(
+        I_PageSetup* iface,
+        VARIANT *result)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Parent(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BlackAndWhite(
+        I_PageSetup* iface,
+        VARIANT_BOOL *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BlackAndWhite(
+        I_PageSetup* iface,
+        VARIANT_BOOL value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterFooter(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterFooter(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHeader(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHeader(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_ChartSize(
+        I_PageSetup* iface,
+        XlObjectSize *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_ChartSize(
+        I_PageSetup* iface,
+        XlObjectSize value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Draft(
+        I_PageSetup* iface,
+        VARIANT_BOOL *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Draft(
+        I_PageSetup* iface,
+        VARIANT_BOOL value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FirstPageNumber(
+        I_PageSetup* iface,
+        long *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FirstPageNumber(
+        I_PageSetup* iface,
+        long value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftFooter(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftFooter(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftHeader(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftHeader(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Order(
+        I_PageSetup* iface,
+        XlOrder *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Order(
+        I_PageSetup* iface,
+        XlOrder value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PaperSize(
+        I_PageSetup* iface,
+        XlPaperSize *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PaperSize(
+        I_PageSetup* iface,
+        XlPaperSize value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintArea(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintArea(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintGridlines(
+        I_PageSetup* iface,
+        VARIANT_BOOL *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintGridlines(
+        I_PageSetup* iface,
+        VARIANT_BOOL value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintHeadings(
+        I_PageSetup* iface,
+        VARIANT_BOOL *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintHeadings(
+        I_PageSetup* iface,
+        VARIANT_BOOL value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintNotes(
+        I_PageSetup* iface,
+        VARIANT_BOOL *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintNotes(
+        I_PageSetup* iface,
+        VARIANT_BOOL value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintQuality(
+        I_PageSetup* iface,
+        VARIANT index,
+        VARIANT *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintQuality(
+        I_PageSetup* iface,
+        VARIANT index,
+        VARIANT *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintTitleColumns(
+        I_PageSetup* iface,
+        VARIANT_BOOL *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintTitleColumns(
+        I_PageSetup* iface,
+        VARIANT_BOOL value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightFooter(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightFooter(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightHeader(
+        I_PageSetup* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightHeader(
+        I_PageSetup* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintComments(
+        I_PageSetup* iface,
+        XlPrintLocation *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintComments(
+        I_PageSetup* iface,
+        XlPrintLocation value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintErrors(
+        I_PageSetup* iface,
+        XlPrintErrors *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintErrors(
+        I_PageSetup* iface,
+        XlPrintErrors value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHeaderPicture(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterFooterPicture(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftHeaderPicture(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftFooterPicture(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightHeaderPicture(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightFooterPicture(
+        I_PageSetup* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetTypeInfoCount(
         I_PageSetup* iface,
@@ -1804,55 +2200,55 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_leftmargin)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_pagesetup_leftmargin;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_rightmargin)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_pagesetup_rightmargin;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_topmargin)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_pagesetup_topmargin;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_bottommargin)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_pagesetup_bottommargin;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_orientation)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_pagesetup_orientation;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_zoom)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_pagesetup_zoom;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_fittopagestall)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_pagesetup_fittopagestall;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_fittopageswide)) {
-        *rgDispId = 8;
+        *rgDispId = dispid_pagesetup_fittopageswide;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_headermargin)) {
-        *rgDispId = 9;
+        *rgDispId = dispid_pagesetup_headermargin;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_footermargin)) {
-        *rgDispId = 10;
+        *rgDispId = dispid_pagesetup_footermargin;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_centerhorizontally)) {
-        *rgDispId = 11;
+        *rgDispId = dispid_pagesetup_centerhorizontall;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_centervertically)) {
-        *rgDispId = 12;
+        *rgDispId = dispid_pagesetup_centervertically;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_printtitlerows)) {
-        *rgDispId = 13;
+        *rgDispId = dispid_pagesetup_printtitlerows;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -1886,7 +2282,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
 
     switch(dispIdMember)
     {
-    case 1://leftmargin
+    case dispid_pagesetup_leftmargin://leftmargin
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (1) ERROR Number of parameters \n");
@@ -1918,7 +2314,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 2://rightmargin
+    case dispid_pagesetup_rightmargin://rightmargin
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (2) ERROR Number of parameters \n");
@@ -1950,7 +2346,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 3://topmargin
+    case dispid_pagesetup_topmargin://topmargin
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (3) ERROR Number of parameters \n");
@@ -1982,7 +2378,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 4://bottommargin
+    case dispid_pagesetup_bottommargin://bottommargin
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (4) ERROR Number of parameters \n");
@@ -2014,7 +2410,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 5://orientation
+    case dispid_pagesetup_orientation://orientation
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (5) ERROR Number of parameters \n");
@@ -2046,7 +2442,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 6://zoom
+    case dispid_pagesetup_zoom://zoom
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (6) ERROR Number of parameters \n");
@@ -2068,7 +2464,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 7://FitToPagesTall
+    case dispid_pagesetup_fittopagestall://FitToPagesTall
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (7) ERROR Number of parameters \n");
@@ -2090,7 +2486,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 8://FitToPagesWide
+    case dispid_pagesetup_fittopageswide://FitToPagesWide
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (8) ERROR Number of parameters \n");
@@ -2112,7 +2508,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 9://HeaderMargin
+    case dispid_pagesetup_headermargin://HeaderMargin
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (9) ERROR Number of parameters \n");
@@ -2144,7 +2540,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 10://FooterMargin
+    case dispid_pagesetup_footermargin://FooterMargin
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (10) ERROR Number of parameters \n");
@@ -2176,7 +2572,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 11://CenterHorizontally
+    case dispid_pagesetup_centerhorizontall://CenterHorizontally
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (11) ERROR Number of parameters \n");
@@ -2208,7 +2604,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 12://CenterVertically
+    case dispid_pagesetup_centervertically://CenterVertically
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (12) ERROR Number of parameters \n");
@@ -2216,6 +2612,307 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+    HRESULT (STDMETHODCALLTYPE *get_Application)(
+        I_PageSetup* This,
+        IDispatch **value);
+
+    HRESULT (STDMETHODCALLTYPE *get_Creator)(
+        I_PageSetup* This,
+        VARIANT *result);
+
+    HRESULT (STDMETHODCALLTYPE *get_Parent)(
+        I_PageSetup* This,
+        IDispatch **value);
+
+    HRESULT (STDMETHODCALLTYPE *get_BlackAndWhite)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_BlackAndWhite)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_BottomMargin)(
+        I_PageSetup* This,
+        double *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_BottomMargin)(
+        I_PageSetup* This,
+        double value);
+
+    HRESULT (STDMETHODCALLTYPE *get_CenterFooter)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_CenterFooter)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_CenterHeader)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_CenterHeader)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_CenterHorizontally)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_CenterHorizontally)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_CenterVertically)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_CenterVertically)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_ChartSize)(
+        I_PageSetup* This,
+        XlObjectSize *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_ChartSize)(
+        I_PageSetup* This,
+        XlObjectSize value);
+
+    HRESULT (STDMETHODCALLTYPE *get_Draft)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_Draft)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_FirstPageNumber)(
+        I_PageSetup* This,
+        long *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_FirstPageNumber)(
+        I_PageSetup* This,
+        long value);
+
+    HRESULT (STDMETHODCALLTYPE *get_FitToPagesTall)(
+        I_PageSetup* This,
+        VARIANT *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_FitToPagesTall)(
+        I_PageSetup* This,
+        VARIANT value);
+
+    HRESULT (STDMETHODCALLTYPE *get_FitToPagesWide)(
+        I_PageSetup* This,
+        VARIANT *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_FitToPagesWide)(
+        I_PageSetup* This,
+        VARIANT value);
+
+    HRESULT (STDMETHODCALLTYPE *get_FooterMargin)(
+        I_PageSetup* This,
+        double *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_FooterMargin)(
+        I_PageSetup* This,
+        double value);
+
+    HRESULT (STDMETHODCALLTYPE *get_HeaderMargin)(
+        I_PageSetup* This,
+        double *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_HeaderMargin)(
+        I_PageSetup* This,
+        double value);
+
+    HRESULT (STDMETHODCALLTYPE *get_LeftFooter)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_LeftFooter)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_LeftHeader)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_LeftHeader)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_LeftMargin)(
+        I_PageSetup* This,
+        double *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_LeftMargin)(
+        I_PageSetup* This,
+        double value);
+
+    HRESULT (STDMETHODCALLTYPE *get_Order)(
+        I_PageSetup* This,
+        XlOrder *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_Order)(
+        I_PageSetup* This,
+        XlOrder value);
+
+    HRESULT (STDMETHODCALLTYPE *get_Orientation)(
+        I_PageSetup* This,
+        long *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_Orientation)(
+        I_PageSetup* This,
+        long value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PaperSize)(
+        I_PageSetup* This,
+        XlPaperSize *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PaperSize)(
+        I_PageSetup* This,
+        XlPaperSize value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintArea)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintArea)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintGridlines)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintGridlines)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintHeadings)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintHeadings)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintNotes)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintNotes)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintQuality)(
+        I_PageSetup* This,
+        VARIANT index,
+        VARIANT *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintQuality)(
+        I_PageSetup* This,
+        VARIANT index,
+        VARIANT *value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintTitleColumns)(
+        I_PageSetup* This,
+        VARIANT_BOOL *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintTitleColumns)(
+        I_PageSetup* This,
+        VARIANT_BOOL value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintTitleRows)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintTitleRows)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_RightFooter)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_RightFooter)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_RightHeader)(
+        I_PageSetup* This,
+        BSTR *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_RightHeader)(
+        I_PageSetup* This,
+        BSTR value);
+
+    HRESULT (STDMETHODCALLTYPE *get_RightMargin)(
+        I_PageSetup* This,
+        double *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_RightMargin)(
+        I_PageSetup* This,
+        double value);
+
+    HRESULT (STDMETHODCALLTYPE *get_TopMargin)(
+        I_PageSetup* This,
+        double *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_TopMargin)(
+        I_PageSetup* This,
+        double value);
+
+    HRESULT (STDMETHODCALLTYPE *get_Zoom)(
+        I_PageSetup* This,
+        VARIANT *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_Zoom)(
+        I_PageSetup* This,
+        VARIANT value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintComments)(
+        I_PageSetup* This,
+        XlPrintLocation *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintComments)(
+        I_PageSetup* This,
+        XlPrintLocation value);
+
+    HRESULT (STDMETHODCALLTYPE *get_PrintErrors)(
+        I_PageSetup* This,
+        XlPrintErrors *value);
+
+    HRESULT (STDMETHODCALLTYPE *put_PrintErrors)(
+        I_PageSetup* This,
+        XlPrintErrors value);
+
+    HRESULT (STDMETHODCALLTYPE *get_CenterHeaderPicture)(
+        I_PageSetup* This,
+        IDispatch **value);
+
+    HRESULT (STDMETHODCALLTYPE *get_CenterFooterPicture)(
+        I_PageSetup* This,
+        IDispatch **value);
+
+    HRESULT (STDMETHODCALLTYPE *get_LeftHeaderPicture)(
+        I_PageSetup* This,
+        IDispatch **value);
+
+    HRESULT (STDMETHODCALLTYPE *get_LeftFooterPicture)(
+        I_PageSetup* This,
+        IDispatch **value);
+
+    HRESULT (STDMETHODCALLTYPE *get_RightHeaderPicture)(
+        I_PageSetup* This,
+        IDispatch **value);
+
+    HRESULT (STDMETHODCALLTYPE *get_RightFooterPicture)(
+        I_PageSetup* This,
+        IDispatch **value);
 
             hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
             if (FAILED(hres)) {
@@ -2240,7 +2937,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
             }
             return hres;
         }
-    case 13://PrintTitleRows
+    case dispid_pagesetup_printtitlerows://PrintTitleRows
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (13) ERROR Number of parameters \n");
@@ -2286,32 +2983,81 @@ const I_PageSetupVtbl MSO_TO_OO_I_PageSetupVtbl =
     MSO_TO_OO_I_PageSetup_GetTypeInfo,
     MSO_TO_OO_I_PageSetup_GetIDsOfNames,
     MSO_TO_OO_I_PageSetup_Invoke,
-    MSO_TO_OO_I_PageSetup_get_LeftMargin,
-    MSO_TO_OO_I_PageSetup_put_LeftMargin,
-    MSO_TO_OO_I_PageSetup_get_RightMargin,
-    MSO_TO_OO_I_PageSetup_put_RightMargin,
-    MSO_TO_OO_I_PageSetup_get_TopMargin,
-    MSO_TO_OO_I_PageSetup_put_TopMargin,
+    MSO_TO_OO_I_PageSetup_get_Application,
+    MSO_TO_OO_I_PageSetup_get_Creator,
+    MSO_TO_OO_I_PageSetup_get_Parent,
+    MSO_TO_OO_I_PageSetup_get_BlackAndWhite,
+    MSO_TO_OO_I_PageSetup_put_BlackAndWhite,
     MSO_TO_OO_I_PageSetup_get_BottomMargin,
     MSO_TO_OO_I_PageSetup_put_BottomMargin,
-    MSO_TO_OO_I_PageSetup_get_Orientation,
-    MSO_TO_OO_I_PageSetup_put_Orientation,
-    MSO_TO_OO_I_PageSetup_get_Zoom,
-    MSO_TO_OO_I_PageSetup_put_Zoom,
-    MSO_TO_OO_I_PageSetup_get_FitToPagesTall,
-    MSO_TO_OO_I_PageSetup_put_FitToPagesTall,
-    MSO_TO_OO_I_PageSetup_get_FitToPagesWide,
-    MSO_TO_OO_I_PageSetup_put_FitToPagesWide,
-    MSO_TO_OO_I_PageSetup_get_HeaderMargin,
-    MSO_TO_OO_I_PageSetup_put_HeaderMargin,
-    MSO_TO_OO_I_PageSetup_get_FooterMargin,
-    MSO_TO_OO_I_PageSetup_put_FooterMargin,
+    MSO_TO_OO_I_PageSetup_get_CenterFooter,
+    MSO_TO_OO_I_PageSetup_put_CenterFooter,
+    MSO_TO_OO_I_PageSetup_get_CenterHeader,
+    MSO_TO_OO_I_PageSetup_put_CenterHeader,
     MSO_TO_OO_I_PageSetup_get_CenterHorizontally,
     MSO_TO_OO_I_PageSetup_put_CenterHorizontally,
     MSO_TO_OO_I_PageSetup_get_CenterVertically,
     MSO_TO_OO_I_PageSetup_put_CenterVertically,
+    MSO_TO_OO_I_PageSetup_get_ChartSize,
+    MSO_TO_OO_I_PageSetup_put_ChartSize,
+    MSO_TO_OO_I_PageSetup_get_Draft,
+    MSO_TO_OO_I_PageSetup_put_Draft,
+    MSO_TO_OO_I_PageSetup_get_FirstPageNumber,
+    MSO_TO_OO_I_PageSetup_put_FirstPageNumber,
+    MSO_TO_OO_I_PageSetup_get_FitToPagesTall,
+    MSO_TO_OO_I_PageSetup_put_FitToPagesTall,
+    MSO_TO_OO_I_PageSetup_get_FitToPagesWide,
+    MSO_TO_OO_I_PageSetup_put_FitToPagesWide,
+    MSO_TO_OO_I_PageSetup_get_FooterMargin,
+    MSO_TO_OO_I_PageSetup_put_FooterMargin,
+    MSO_TO_OO_I_PageSetup_get_HeaderMargin,
+    MSO_TO_OO_I_PageSetup_put_HeaderMargin,
+    MSO_TO_OO_I_PageSetup_get_LeftFooter,
+    MSO_TO_OO_I_PageSetup_put_LeftFooter,
+    MSO_TO_OO_I_PageSetup_get_LeftHeader,
+    MSO_TO_OO_I_PageSetup_put_LeftHeader,
+    MSO_TO_OO_I_PageSetup_get_LeftMargin,
+    MSO_TO_OO_I_PageSetup_put_LeftMargin,
+    MSO_TO_OO_I_PageSetup_get_Order,
+    MSO_TO_OO_I_PageSetup_put_Order,
+    MSO_TO_OO_I_PageSetup_get_Orientation,
+    MSO_TO_OO_I_PageSetup_put_Orientation,
+    MSO_TO_OO_I_PageSetup_get_PaperSize,
+    MSO_TO_OO_I_PageSetup_put_PaperSize,
+    MSO_TO_OO_I_PageSetup_get_PrintArea,
+    MSO_TO_OO_I_PageSetup_put_PrintArea,
+    MSO_TO_OO_I_PageSetup_get_PrintGridlines,
+    MSO_TO_OO_I_PageSetup_put_PrintGridlines,
+    MSO_TO_OO_I_PageSetup_get_PrintHeadings,
+    MSO_TO_OO_I_PageSetup_put_PrintHeadings,
+    MSO_TO_OO_I_PageSetup_get_PrintNotes,
+    MSO_TO_OO_I_PageSetup_put_PrintNotes,
+    MSO_TO_OO_I_PageSetup_get_PrintQuality,
+    MSO_TO_OO_I_PageSetup_put_PrintQuality,
+    MSO_TO_OO_I_PageSetup_get_PrintTitleColumns,
+    MSO_TO_OO_I_PageSetup_put_PrintTitleColumns,
     MSO_TO_OO_I_PageSetup_get_PrintTitleRows,
-    MSO_TO_OO_I_PageSetup_put_PrintTitleRows
+    MSO_TO_OO_I_PageSetup_put_PrintTitleRows,
+    MSO_TO_OO_I_PageSetup_get_RightFooter,
+    MSO_TO_OO_I_PageSetup_put_RightFooter,
+    MSO_TO_OO_I_PageSetup_get_RightHeader,
+    MSO_TO_OO_I_PageSetup_put_RightHeader,
+    MSO_TO_OO_I_PageSetup_get_RightMargin,
+    MSO_TO_OO_I_PageSetup_put_RightMargin,
+    MSO_TO_OO_I_PageSetup_get_TopMargin,
+    MSO_TO_OO_I_PageSetup_put_TopMargin,
+    MSO_TO_OO_I_PageSetup_get_Zoom,
+    MSO_TO_OO_I_PageSetup_put_Zoom,
+    MSO_TO_OO_I_PageSetup_get_PrintComments,
+    MSO_TO_OO_I_PageSetup_put_PrintComments,
+    MSO_TO_OO_I_PageSetup_get_PrintErrors,
+    MSO_TO_OO_I_PageSetup_put_PrintErrors,
+    MSO_TO_OO_I_PageSetup_get_CenterHeaderPicture,
+    MSO_TO_OO_I_PageSetup_get_CenterFooterPicture,
+    MSO_TO_OO_I_PageSetup_get_LeftHeaderPicture,
+    MSO_TO_OO_I_PageSetup_get_LeftFooterPicture,
+    MSO_TO_OO_I_PageSetup_get_RightHeaderPicture,
+    MSO_TO_OO_I_PageSetup_get_RightFooterPicture
 };
 
 extern HRESULT _I_PageSetupConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)

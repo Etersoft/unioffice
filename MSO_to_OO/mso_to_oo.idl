@@ -276,6 +276,75 @@ import "wtypes.idl";
 		msoFileDialogFolderPicker 	= 4
 	} MsoFileDialogType;
 
+	typedef enum {
+		xlScreenSize 			= 1,
+		xlFitToPage 			= 2,
+		xlFullPage 			= 3
+	} XlObjectSize;
+
+	typedef enum {
+		xlDownThenOver 			= 1,
+		xlOverThenDown 			= 2
+	} XlOrder;
+
+	typedef enum {
+		xlPaper10x14 			= 0x00000010,
+		xlPaper11x17 			= 0x00000011,
+		xlPaperA3 			= 0x00000008,
+		xlPaperA4 			= 0x00000009,
+		xlPaperA4Small 			= 0x0000000A,
+		xlPaperA5 			= 0x0000000B,
+		xlPaperB4 			= 0x0000000C,
+		xlPaperB5 			= 0x0000000D,
+		xlPaperCsheet 			= 0x00000018,
+		xlPaperDsheet 			= 0x00000019,
+		xlPaperEnvelope10 		= 0x00000014,
+		xlPaperEnvelope11 		= 0x00000015,
+		xlPaperEnvelope12 		= 0x00000016,
+		xlPaperEnvelope14 		= 0x00000017,
+		xlPaperEnvelope9 		= 0x00000013,
+		xlPaperEnvelopeB4 		= 0x00000021,
+		xlPaperEnvelopeB5 		= 0x00000022,
+		xlPaperEnvelopeB6 		= 0x00000023,
+		xlPaperEnvelopeC3 		= 0x0000001D,
+		xlPaperEnvelopeC4 		= 0x0000001E,
+		xlPaperEnvelopeC5 		= 0x0000001C,
+		xlPaperEnvelopeC6 		= 0x0000001F,
+		xlPaperEnvelopeC65 		= 0x00000020,
+		xlPaperEnvelopeDL 		= 0x0000001B,
+		xlPaperEnvelopeItaly 		= 0x00000024,
+		xlPaperEnvelopeMonarch 		= 0x00000025,
+		xlPaperEnvelopePersonal 	= 0x00000026,
+		xlPaperEsheet 			= 0x0000001A,
+		xlPaperExecutive 		= 0x00000007,
+		xlPaperFanfoldLegalGerman 	= 0x00000029,
+		xlPaperFanfoldStdGerman 	= 0x00000028,
+		xlPaperFanfoldUS 		= 0x00000027,
+		xlPaperFolio 			= 0x0000000E,
+		xlPaperLedger 			= 0x00000004,
+		xlPaperLegal 			= 0x00000005,
+		xlPaperLetter 			= 0x00000001,
+		xlPaperLetterSmall 		= 0x00000002,
+		xlPaperNote 			= 0x00000012,
+		xlPaperQuarto 			= 0x0000000F,
+		xlPaperStatement 		= 0x00000006,
+		xlPaperTabloid 			= 0x00000003,
+		xlPaperUser 			= 0x00000100
+	} XlPaperSize;
+
+	typedef enum {
+		xlPrintSheetEnd 		= 0x00000001,
+		xlPrintInPlace 			= 0x00000010,
+		xlPrintNoComments 		= 0xFFFFEFD2
+	} XlPrintLocation;
+
+	typedef enum {
+		xlPrintErrorsDisplayed 		= 0x00000000,
+		xlPrintErrorsBlank 		= 0x00000001,
+		xlPrintErrorsDash 		= 0x00000002,
+		xlPrintErrorsNA 		= 0x00000003
+	} XlPrintErrors;
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
@@ -561,52 +630,133 @@ import "wtypes.idl";
 
 	[
 		object,
-		uuid(64E6FD03-19B4-4149-A1CE-E9517DC05B34),
+		uuid(000208B4-0001-0000-C000-000000000046),
 		dual,
 		helpstring("I_PageSetup Interface"),
 		pointer_default(unique)
 	]
 	interface I_PageSetup : IDispatch
 	{
-//LeftMargin
-		[propget,id(1), helpstring("property LeftMargin")] HRESULT LeftMargin([out, retval] double *value);
-		[propput,id(1), helpstring("property LeftMargin")] HRESULT LeftMargin([in] double value);
-//RightMargin
-		[propget,id(2), helpstring("property RightMargin")] HRESULT RightMargin([out, retval] double *value);
-		[propput,id(2), helpstring("property RightMargin")] HRESULT RightMargin([in] double value);
-//TopMargin
-		[propget,id(3), helpstring("property TopMargin")] HRESULT TopMargin([out, retval] double *value);
-		[propput,id(3), helpstring("property TopMargin")] HRESULT TopMargin([in] double value);
+//Application 	Returns an Application object that represents the Microsoft Excel application.
+		[propget,id(dispid_pagesetup_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+//Creator 	Returns a 32-bit integer that indicates the application in which this object was created.
+		[propget,id(dispid_pagesetup_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent 	Returns the parent object for the specified object.
+		[propget,id(dispid_pagesetup_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+//BlackAndWhite
+		[propget,id(dispid_pagesetup_blackandwhite), helpstring("property BlackAndWhite")] HRESULT BlackAndWhite([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_blackandwhite), helpstring("property BlackAndWhite")] HRESULT BlackAndWhite([in] VARIANT_BOOL value);
 //BottomMargin
-		[propget,id(4), helpstring("property BottomMargin")] HRESULT BottomMargin([out, retval] double *value);
-		[propput,id(4), helpstring("property BottomMargin")] HRESULT BottomMargin([in] double value);
-//Orientation
-		[propget,id(5), helpstring("property Orientation")] HRESULT Orientation([out, retval] long *value);
-		[propput,id(5), helpstring("property Orientation")] HRESULT Orientation([in] long value);
-//Zoom
-		[propget,id(6), helpstring("property Zoom")] HRESULT Zoom([out, retval] VARIANT *value);
-		[propput,id(6), helpstring("property Zoom")] HRESULT Zoom([in] VARIANT value);
-//FitToPagesTall
-		[propget,id(7), helpstring("property FitToPagesTall")] HRESULT FitToPagesTall([out, retval] VARIANT *value);
-		[propput,id(7), helpstring("property FitToPagesTall")] HRESULT FitToPagesTall([in] VARIANT value);
-//FitToPagesWide
-		[propget,id(8), helpstring("property FitToPagesWide")] HRESULT FitToPagesWide([out, retval] VARIANT *value);
-		[propput,id(8), helpstring("property FitToPagesWide")] HRESULT FitToPagesWide([in] VARIANT value);
-//HeaderMargin
-		[propget,id(9), helpstring("property HeaderMargin")] HRESULT HeaderMargin([out, retval] double *value);
-		[propput,id(9), helpstring("property HeaderMargin")] HRESULT HeaderMargin([in] double value);
-//FooterMargin
-		[propget,id(10), helpstring("property FooterMargin")] HRESULT FooterMargin([out, retval] double *value);
-		[propput,id(10), helpstring("property FooterMargin")] HRESULT FooterMargin([in] double value);
+		[propget,id(dispid_pagesetup_bottommargin), helpstring("property BottomMargin")] HRESULT BottomMargin([out, retval] double *value);
+		[propput,id(dispid_pagesetup_bottommargin), helpstring("property BottomMargin")] HRESULT BottomMargin([in] double value);
+//CenterFooter
+		[propget,id(dispid_pagesetup_centerfooter), helpstring("property CenterFooter")] HRESULT CenterFooter([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_centerfooter), helpstring("property CenterFooter")] HRESULT CenterFooter([in] BSTR value);
+//CenterHeader
+		[propget,id(dispid_pagesetup_centerheader), helpstring("property CenterHeader")] HRESULT CenterHeader([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_centerheader), helpstring("property CenterHeader")] HRESULT CenterHeader([in] BSTR value);
 //CenterHorizontally
-		[propget,id(11), helpstring("property CenterHorizontally")] HRESULT CenterHorizontally([out, retval] VARIANT_BOOL *value);
-		[propput,id(11), helpstring("property CenterHorizontally")] HRESULT CenterHorizontally([in] VARIANT_BOOL value);
+		[propget,id(dispid_pagesetup_centerhorizontall), helpstring("property CenterHorizontally")] HRESULT CenterHorizontally([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_centerhorizontall), helpstring("property CenterHorizontally")] HRESULT CenterHorizontally([in] VARIANT_BOOL value);
 //CenterVertically
-		[propget,id(12), helpstring("property CenterVertically")] HRESULT CenterVertically([out, retval] VARIANT_BOOL *value);
-		[propput,id(12), helpstring("property CenterVertically")] HRESULT CenterVertically([in] VARIANT_BOOL value);
+		[propget,id(dispid_pagesetup_centervertically), helpstring("property CenterVertically")] HRESULT CenterVertically([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_centervertically), helpstring("property CenterVertically")] HRESULT CenterVertically([in] VARIANT_BOOL value);
+//ChartSize
+		[propget,id(dispid_pagesetup_chartsize), helpstring("property ChartSize")] HRESULT ChartSize([out, retval] XlObjectSize *value);
+		[propput,id(dispid_pagesetup_chartsize), helpstring("property ChartSize")] HRESULT ChartSize([in] XlObjectSize value);
+//Draft
+		[propget,id(dispid_pagesetup_draft), helpstring("property Draft")] HRESULT Draft([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_draft), helpstring("property Draft")] HRESULT Draft([in] VARIANT_BOOL value);
+//FirstPageNumber
+		[propget,id(dispid_pagesetup_firstpagenumber), helpstring("property FirstPageNumber")] HRESULT FirstPageNumber([out, retval] long *value);
+		[propput,id(dispid_pagesetup_firstpagenumber), helpstring("property FirstPageNumber")] HRESULT FirstPageNumber([in] long value);
+//FitToPagesTall
+		[propget,id(dispid_pagesetup_fittopagestall), helpstring("property FitToPagesTall")] HRESULT FitToPagesTall([out, retval] VARIANT *value);
+		[propput,id(dispid_pagesetup_fittopagestall), helpstring("property FitToPagesTall")] HRESULT FitToPagesTall([in] VARIANT value);
+//FitToPagesWide
+		[propget,id(dispid_pagesetup_fittopageswide), helpstring("property FitToPagesWide")] HRESULT FitToPagesWide([out, retval] VARIANT *value);
+		[propput,id(dispid_pagesetup_fittopageswide), helpstring("property FitToPagesWide")] HRESULT FitToPagesWide([in] VARIANT value);
+//FooterMargin
+		[propget,id(dispid_pagesetup_footermargin), helpstring("property FooterMargin")] HRESULT FooterMargin([out, retval] double *value);
+		[propput,id(dispid_pagesetup_footermargin), helpstring("property FooterMargin")] HRESULT FooterMargin([in] double value);
+//HeaderMargin
+		[propget,id(dispid_pagesetup_headermargin), helpstring("property HeaderMargin")] HRESULT HeaderMargin([out, retval] double *value);
+		[propput,id(dispid_pagesetup_headermargin), helpstring("property HeaderMargin")] HRESULT HeaderMargin([in] double value);
+//LeftFooter
+		[propget,id(dispid_pagesetup_leftfooter), helpstring("property LeftFooter")] HRESULT LeftFooter([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_leftfooter), helpstring("property LeftFooter")] HRESULT LeftFooter([in] BSTR value);
+//LeftHeader
+		[propget,id(dispid_pagesetup_leftheader), helpstring("property LeftHeader")] HRESULT LeftHeader([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_leftheader), helpstring("property LeftHeader")] HRESULT LeftHeader([in] BSTR value);
+//LeftMargin
+		[propget,id(dispid_pagesetup_leftmargin), helpstring("property LeftMargin")] HRESULT LeftMargin([out, retval] double *value);
+		[propput,id(dispid_pagesetup_leftmargin), helpstring("property LeftMargin")] HRESULT LeftMargin([in] double value);
+//Order
+		[propget,id(dispid_pagesetup_order), helpstring("property Order")] HRESULT Order([out, retval] XlOrder *value);
+		[propput,id(dispid_pagesetup_order), helpstring("property Order")] HRESULT Order([in] XlOrder value);
+//Orientation
+		[propget,id(dispid_pagesetup_orientation), helpstring("property Orientation")] HRESULT Orientation([out, retval] long *value);
+		[propput,id(dispid_pagesetup_orientation), helpstring("property Orientation")] HRESULT Orientation([in] long value);
+//PaperSize
+		[propget,id(dispid_pagesetup_papersize), helpstring("property PaperSize")] HRESULT PaperSize([out, retval] XlPaperSize *value);
+		[propput,id(dispid_pagesetup_papersize), helpstring("property PaperSize")] HRESULT PaperSize([in] XlPaperSize value);
+//PrintArea
+		[propget,id(dispid_pagesetup_printarea), helpstring("property PrintArea")] HRESULT PrintArea([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_printarea), helpstring("property PrintArea")] HRESULT PrintArea([in] BSTR value);
+//PrintGridlines
+		[propget,id(dispid_pagesetup_printgridlines), helpstring("property PrintGridlines")] HRESULT PrintGridlines([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_printgridlines), helpstring("property PrintGridlines")] HRESULT PrintGridlines([in] VARIANT_BOOL value);
+//PrintHeadings
+		[propget,id(dispid_pagesetup_printheadings), helpstring("property PrintHeadings")] HRESULT PrintHeadings([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_printheadings), helpstring("property PrintHeadings")] HRESULT PrintHeadings([in] VARIANT_BOOL value);
+//PrintNotes
+		[propget,id(dispid_pagesetup_printnotes), helpstring("property PrintNotes")] HRESULT PrintNotes([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_printnotes), helpstring("property PrintNotes")] HRESULT PrintNotes([in] VARIANT_BOOL value);
+//PrintQuality
+		[propget,id(dispid_pagesetup_printquality), helpstring("property PrintQuality")] HRESULT PrintQuality(
+			[in] VARIANT index,
+			[out, retval] VARIANT *value);
+		[propput,id(dispid_pagesetup_printquality), helpstring("property PrintQuality")] HRESULT PrintQuality(		[in] VARIANT index,
+			[in] VARIANT *value);
+//PrintTitleColumns
+		[propget,id(dispid_pagesetup_printtitlecolumns), helpstring("property PrintTitleColumns")] HRESULT PrintTitleColumns([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_pagesetup_printtitlecolumns), helpstring("property PrintTitleColumns")] HRESULT PrintTitleColumns([in] VARIANT_BOOL value);
 //PrintTitleRows
-		[propget,id(13), helpstring("property PrintTitleRows")] HRESULT PrintTitleRows([out, retval] BSTR *value);
-		[propput,id(13), helpstring("property PrintTitleRows")] HRESULT PrintTitleRows([in] BSTR value);
+		[propget,id(dispid_pagesetup_printtitlerows), helpstring("property PrintTitleRows")] HRESULT PrintTitleRows([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_printtitlerows), helpstring("property PrintTitleRows")] HRESULT PrintTitleRows([in] BSTR value);
+//RightFooter
+		[propget,id(dispid_pagesetup_rightfooter), helpstring("property RightFooter")] HRESULT RightFooter([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_rightfooter), helpstring("property RightFooter")] HRESULT RightFooter([in] BSTR value);
+//RightHeader
+		[propget,id(dispid_pagesetup_rightheader), helpstring("property RightHeader")] HRESULT RightHeader([out, retval] BSTR *value);
+		[propput,id(dispid_pagesetup_rightheader), helpstring("property RightHeader")] HRESULT RightHeader([in] BSTR value);
+//RightMargin
+		[propget,id(dispid_pagesetup_rightmargin), helpstring("property RightMargin")] HRESULT RightMargin([out, retval] double *value);
+		[propput,id(dispid_pagesetup_rightmargin), helpstring("property RightMargin")] HRESULT RightMargin([in] double value);
+//TopMargin
+		[propget,id(dispid_pagesetup_topmargin), helpstring("property TopMargin")] HRESULT TopMargin([out, retval] double *value);
+		[propput,id(dispid_pagesetup_topmargin), helpstring("property TopMargin")] HRESULT TopMargin([in] double value);
+//Zoom
+		[propget,id(dispid_pagesetup_zoom), helpstring("property Zoom")] HRESULT Zoom([out, retval] VARIANT *value);
+		[propput,id(dispid_pagesetup_zoom), helpstring("property Zoom")] HRESULT Zoom([in] VARIANT value);
+//PrintComments
+		[propget,id(dispid_pagesetup_printcomments), helpstring("property PrintComments")] HRESULT PrintComments([out, retval] XlPrintLocation *value);
+		[propput,id(dispid_pagesetup_printcomments), helpstring("property PrintComments")] HRESULT PrintComments([in] XlPrintLocation value);
+//PrintErrors
+		[propget,id(dispid_pagesetup_printerrors), helpstring("property PrintErrors")] HRESULT PrintErrors([out, retval] XlPrintErrors *value);
+		[propput,id(dispid_pagesetup_printerrors), helpstring("property PrintErrors")] HRESULT PrintErrors([in] XlPrintErrors value);
+//CenterHeaderPicture
+		[propget,id(dispid_pagesetup_centerheaderpicture), helpstring("property CenterHeaderPicture")] HRESULT CenterHeaderPicture([out, retval] IDispatch*/*Graphic*/ *value);
+//CenterFooterPicture
+		[propget,id(dispid_pagesetup_centerfooterpicture), helpstring("property CenterFooterPicture")] HRESULT CenterFooterPicture([out, retval] IDispatch*/*Graphic*/ *value);
+//LeftHeaderPicture
+		[propget,id(dispid_pagesetup_leftheaderpicture), helpstring("property LeftHeaderPicture")] HRESULT LeftHeaderPicture([out, retval] IDispatch*/*Graphic*/ *value);
+//LeftFooterPicture
+		[propget,id(dispid_pagesetup_leftfooterpicture), helpstring("property LeftFooterPicture")] HRESULT LeftFooterPicture([out, retval] IDispatch*/*Graphic*/ *value);
+//RightHeaderPicture
+		[propget,id(dispid_pagesetup_rightheaderpicture), helpstring("property RightHeaderPicture")] HRESULT RightHeaderPicture([out, retval] IDispatch*/*Graphic*/ *value);
+//RightFooterPicture
+		[propget,id(dispid_pagesetup_rightfooterpicture), helpstring("property RightFooterPicture")] HRESULT RightFooterPicture([out, retval] IDispatch*/*Graphic*/ *value);
 	};
 
 	[
