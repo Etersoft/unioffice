@@ -323,4 +323,16 @@
 #define dispid_interior_patterncolor                             8
 #define dispid_interior_patterncolorindex                        9
 
-
+/*IBorders*/
+#define dispid_borders_application                              1
+#define dispid_borders_creator                                  2
+#define dispid_borders_parent                                   3
+#define dispid_borders_color                                    4
+#define dispid_borders_colorindex                               5
+#define dispid_borders_count                                    6
+#define dispid_borders_item                                     7
+#define dispid_borders_linestyle                                8
+#define dispid_borders_getenumerator                            9
+#define dispid_borders_value                                    10
+#define dispid_borders_weight                                   11
+#define dispid_borders__default                                 12

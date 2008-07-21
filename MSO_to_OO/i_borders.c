@@ -385,6 +385,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Value(
     return MSO_TO_OO_I_Borders_put_LineStyle(iface, linestyle);
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Count(
+        I_Borders* iface,
+        long *pretval)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Borders_GetEnumerator(
+        I_Borders* iface,
+        IDispatch **pdretval)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Borders_GetTypeInfoCount(
         I_Borders* iface,
@@ -413,43 +429,43 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_borders_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_borders_parent;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_color)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_borders_color;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_colorindex)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_borders_colorindex;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_borders_creator;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_linestyle)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_borders_linestyle;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_weight)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_borders_weight;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str__default)) {
-        *rgDispId = 8;
+        *rgDispId = dispid_borders__default;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_item)) {
-        *rgDispId = 9;
+        *rgDispId = dispid_borders_item;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_value)) {
-        *rgDispId = 10;
+        *rgDispId = dispid_borders_value;
         return S_OK;
     }
 
@@ -481,7 +497,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 
     switch(dispIdMember)
     {
-    case 1:
+    case dispid_borders_application:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -498,7 +514,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return S_OK;
         }
-    case 2:
+    case dispid_borders_parent:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -515,7 +531,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return S_OK;
         }
-    case 3:
+    case dispid_borders_color:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -544,7 +560,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return S_OK;
         }
-    case 4:
+    case dispid_borders_colorindex:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
@@ -572,7 +588,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return S_OK;
         }
-    case 5:
+    case dispid_borders_creator:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -582,7 +598,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return hres;
         }
-    case 6:
+    case dispid_borders_linestyle:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (6) ERROR Number of parameters \n");
@@ -614,7 +630,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return hres;
         }
-    case 7://Weight
+    case dispid_borders_weight://Weight
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE(" (7) ERROR Number of parameters \n");
@@ -646,7 +662,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return hres;
         }
-    case 8://Default
+    case dispid_borders__default://Default
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -676,7 +692,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return hres;
         }
-    case 9:
+    case dispid_borders_item:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -706,7 +722,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
             }
             return hres;
         }
-    case 10:
+    case dispid_borders_value:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE("(10) ERROR Number of parameters \n");
@@ -754,20 +770,22 @@ const I_BordersVtbl MSO_TO_OO_I_Borders_Vtbl =
     MSO_TO_OO_I_Borders_GetIDsOfNames,
     MSO_TO_OO_I_Borders_Invoke,
     MSO_TO_OO_I_Borders_get_Application,
+    MSO_TO_OO_I_Borders_get_Creator,
     MSO_TO_OO_I_Borders_get_Parent,
     MSO_TO_OO_I_Borders_get_Color,
     MSO_TO_OO_I_Borders_put_Color,
     MSO_TO_OO_I_Borders_get_ColorIndex,
     MSO_TO_OO_I_Borders_put_ColorIndex,
-    MSO_TO_OO_I_Borders_get_Creator,
+    MSO_TO_OO_I_Borders_get_Count,
+    MSO_TO_OO_I_Borders_get_Item,
     MSO_TO_OO_I_Borders_get_LineStyle,
     MSO_TO_OO_I_Borders_put_LineStyle,
+    MSO_TO_OO_I_Borders_GetEnumerator,
+    MSO_TO_OO_I_Borders_get_Value,
+    MSO_TO_OO_I_Borders_put_Value,
     MSO_TO_OO_I_Borders_get_Weight,
     MSO_TO_OO_I_Borders_put_Weight,
-    MSO_TO_OO_I_Borders_get__Default,
-    MSO_TO_OO_I_Borders_get_Item,
-    MSO_TO_OO_I_Borders_get_Value,
-    MSO_TO_OO_I_Borders_put_Value
+    MSO_TO_OO_I_Borders_get__Default
 };
 
 extern HRESULT _I_BordersConstructor(LPVOID *ppObj)
