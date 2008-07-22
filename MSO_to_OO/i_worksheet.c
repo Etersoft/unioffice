@@ -1151,7 +1151,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell2);
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &tmpval);
                 I_Range_get__Default((I_Range*)dret,cell1, cell2,&pretdisp);
-                I_Range_put_Value((I_Range*)pretdisp, vNull, tmpval);
+                I_Range_put_Value((I_Range*)pretdisp, vNull, 0, tmpval);
                 IDispatch_Release(dret);
                 IDispatch_Release(pretdisp);
                 return S_OK;

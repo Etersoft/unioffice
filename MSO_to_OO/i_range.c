@@ -385,6 +385,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
         I_Range* iface,
         VARIANT varRangeValueDataType,
+        long lcid,
         VARIANT *pvarValue)
 {
     RangeImpl *This = (RangeImpl*)iface;
@@ -416,6 +417,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
         I_Range* iface,
         VARIANT varRangeValueDataType,
+        long lcid,
         VARIANT varValue)
 {
     RangeImpl *This = (RangeImpl*)iface;
@@ -481,7 +483,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
                         return hres;
                     }
 
-                    hres = MSO_TO_OO_I_Range_put_Value(temp_range, vNull, pvar[j*maxi+i]);
+                    hres = MSO_TO_OO_I_Range_put_Value(temp_range, vNull, 0, pvar[j*maxi+i]);
                     if (FAILED(hres)) {
                         TRACE("Error when Range_put_Value \n");
                         hres = SafeArrayUnaccessData(V_ARRAY(&varValue));
@@ -2132,10 +2134,11 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
     return result;
 }
 
-static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
+static HRESULT WINAPI MSO_TO_OO_I_Range_Insert(
         I_Range* iface,
         VARIANT Shift,
-        VARIANT CopyOrigin)
+        VARIANT CopyOrigin,
+        VARIANT* RHS)
 {
     RangeImpl *This = (RangeImpl*)iface;
     VARIANT result, shift, param1, param2, res;
@@ -2166,7 +2169,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
         if (FAILED(hres)) {
            TRACE("ERROR when VariantChangeTypeEx\n");
             VariantClear(&shift);
-            return result;
+            return E_FAIL;
         }
 
         switch (V_I4(&shift)) {
@@ -2179,7 +2182,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
         default:
             TRACE("ERROR invalid argument Shift = %i", V_I4(&shift));
             VariantClear(&shift);
-            return result;
+            return E_INVALIDARG;
         }
     }
 
@@ -2187,7 +2190,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
     if (FAILED(hres)) {
         TRACE("ERROR when getRangeAddress \n");
         VariantClear(&shift);
-        return result;
+        return E_FAIL;
     }
 
     V_VT(&param2) = VT_I4;
@@ -2201,7 +2204,8 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Insert(
     VariantClear(&param1);
     VariantClear(&param2);
     VariantClear(&res);
-    return result;
+    *RHS = result;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireColumn(
@@ -2366,6 +2370,1446 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireRow(
     return S_OK;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Creator(
+        I_Range* iface,
+        VARIANT *result)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Activate(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_AddIndent(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_AddIndent(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Address(
+        I_Range* iface,
+        VARIANT RowAbsolute,
+        VARIANT ColumnAbsolute,
+        XlReferenceStyle ReferenceStyle,
+        VARIANT External,
+        VARIANT RelativeTo,
+        long lcid,
+        BSTR *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_AddressLocal(
+        I_Range* iface,
+        VARIANT RowAbsolute,
+        VARIANT ColumnAbsolute,
+        XlReferenceStyle ReferenceStyle,
+        VARIANT External,
+        VARIANT RelativeTo,
+        BSTR *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_AdvancedFilter(
+        I_Range* iface,
+        XlFilterAction Action,
+        VARIANT CriteriaRange,
+        VARIANT CopyToRange,
+        VARIANT Unique,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_ApplyNames(
+        I_Range* iface,
+        VARIANT Names,
+        VARIANT IgnoreRelativeAbsolute,
+        VARIANT UseRowColumnNames,
+        VARIANT OmitColumn,
+        VARIANT OmitRow,
+        XlApplyNamesOrder Order,
+        VARIANT AppendLast,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_ApplyOutlineStyles(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Areas(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_AutoComplete(
+        I_Range* iface,
+        BSTR String,
+        BSTR *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_AutoFill(
+        I_Range* iface,
+        IDispatch *Destination,
+        XlAutoFillType Type,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_AutoFilter(
+        I_Range* iface,
+        VARIANT Field,
+        VARIANT Criteria1,
+        XlAutoFilterOperator Operator,
+        VARIANT Criteria2,
+        VARIANT VisibleDropDown,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_AutoFormat(
+        I_Range* iface,
+        XlRangeAutoFormat Format,
+        VARIANT Number,
+        VARIANT IXLFont,
+        VARIANT Alignment,
+        VARIANT Border,
+        VARIANT Pattern,
+        VARIANT Width,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_AutoOutline(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_BorderAround(
+        I_Range* iface,
+        VARIANT LineStyle,
+        XlBorderWeight Weight,
+        XlColorIndex ColorIndex,
+        VARIANT Color,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Calculate(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Cells(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Characters(
+        I_Range* iface,
+        VARIANT Start,
+        VARIANT Length,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_CheckSpelling(
+        I_Range* iface,
+        VARIANT CustomDictionary,
+        VARIANT IgnoreUppercase,
+        VARIANT AlwaysSuggest,
+        VARIANT SpellLang,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_ColumnDifferences(
+        I_Range* iface,
+        VARIANT Comparison,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Columns(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Consolidate(
+        I_Range* iface,
+        VARIANT Sources,
+        VARIANT Function,
+        VARIANT TopRow,
+        VARIANT LeftColumn,
+        VARIANT CreateLinks,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_CopyFromRecordset(
+        I_Range* iface,
+        IUnknown *Data,
+        VARIANT MaxRows,
+        VARIANT MaxColumns,
+        long *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_CopyPicture(
+        I_Range* iface,
+        XlPictureAppearance Appearance,
+        XlCopyPictureFormat Format,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_CreateNames(
+        I_Range* iface,
+        VARIANT Top,
+        VARIANT Left,
+        VARIANT Bottom,
+        VARIANT Right,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_CreatePublisher(
+        I_Range* iface,
+        VARIANT Edition,
+        XlPictureAppearance Appearance,
+        VARIANT ContainsPICT,
+        VARIANT ContainsBIFF,
+        VARIANT ContainsRTF,
+        VARIANT ContainsVALU,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_CurrentArray(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_CurrentRegion(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Cut(
+        I_Range* iface,
+        VARIANT Destination,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_DataSeries(
+        I_Range* iface,
+        VARIANT Rowcol,
+        XlDataSeriesType Type,
+        XlDataSeriesDate Date,
+        VARIANT Step,
+        VARIANT Stop,
+        VARIANT Trend,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put__Default(
+        I_Range* iface,
+        VARIANT varRowIndex,
+        VARIANT varColumnIndex,
+        long lcid,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Dependents(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_DialogBox1(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_DirectDependents(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_EditionOptions(
+        I_Range* iface,
+        XlEditionType Type,
+        XlEditionOptionsOption Option,
+        VARIANT Name,
+        VARIANT Reference,
+        XlPictureAppearance Appearance,
+        XlPictureAppearance ChartSize,
+        VARIANT Format,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_End(
+        I_Range* iface,
+        XlDirection Direction,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_FillDown(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_FillLeft(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_FillRight(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_FillUp(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Find(
+        I_Range* iface,
+        VARIANT What,
+        VARIANT After,
+        VARIANT LookIn,
+        VARIANT LookAt,
+        VARIANT SearchOrder,
+        XlSearchDirection SearchDirection,
+        VARIANT MatchCase,
+        VARIANT MatchByte,
+        VARIANT SearchFormat,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_FindNext(
+        I_Range* iface,
+        VARIANT After,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_FindPrevious(
+        I_Range* iface,
+        VARIANT After,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Formula(
+        I_Range* iface,
+        long lcid,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Formula(
+        I_Range* iface,
+        long lcid,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaArray(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaArray(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaLabel(
+        I_Range* iface,
+        XlFormulaLabel *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaLabel(
+        I_Range* iface,
+        XlFormulaLabel RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaHidden(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaHidden(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaLocal(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaLocal(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1(
+        I_Range* iface,
+        long lcid,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1(
+        I_Range* iface,
+        long lcid,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1Local(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1Local(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_FunctionWizard(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_GoalSeek(
+        I_Range* iface,
+        VARIANT Goal,
+        IDispatch *ChangingCell,
+        VARIANT_BOOL *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Group(
+        I_Range* iface,
+        VARIANT Start,
+        VARIANT End,
+        VARIANT By,
+        VARIANT Periods,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_HasArray(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_HasFormula(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_IndentLevel(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_IndentLevel(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_InsertIndent(
+        I_Range* iface,
+        long InsertAmount)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Item(
+        I_Range* iface,
+        VARIANT RowIndex,
+        VARIANT ColumnIndex,
+        long lcid,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Item(
+        I_Range* iface,
+        VARIANT RowIndex,
+        VARIANT ColumnIndex,
+        long lcid,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Justify(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_ListHeaderRows(
+        I_Range* iface,
+        long *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_ListNames(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_LocationInTable(
+        I_Range* iface,
+        XlLocationInTable *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Name(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Name(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_NavigateArrow(
+        I_Range* iface,
+        VARIANT TowardPrecedent,
+        VARIANT ArrowNumber,
+        VARIANT LinkNumber,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get__NewEnum(
+        I_Range* iface,
+        IUnknown **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Next(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
+        I_Range* iface,
+        VARIANT RowOffset,
+        VARIANT ColumnOffset,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Orientation(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Orientation(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_OutlineLevel(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_OutlineLevel(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_PageBreak(
+        I_Range* iface,
+        long *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_PageBreak(
+        I_Range* iface,
+        long RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Parse(
+        I_Range* iface,
+        VARIANT ParseLine,
+        VARIANT Destination,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range__PasteSpecial(
+        I_Range* iface,
+        XlPasteType Paste,
+        XlPasteSpecialOperation Operation,
+        VARIANT SkipBlanks,
+        VARIANT Transpose,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_PivotField(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_PivotItem(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_PivotTable(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Precedents(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_PrefixCharacter(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Previous(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range__PrintOut(
+        I_Range* iface,
+        VARIANT From,
+        VARIANT To,
+        VARIANT Copies,
+        VARIANT Preview,
+        VARIANT ActivePrinter,
+        VARIANT PrintToFile,
+        VARIANT Collate,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_PrintPreview(
+        I_Range* iface,
+        VARIANT EnableChanges,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_QueryTable(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Range(
+        I_Range* iface,
+        VARIANT Cell1,
+        VARIANT Cell2,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_RemoveSubtotal(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Replace(
+        I_Range* iface,
+        VARIANT What,
+        VARIANT Replacement,
+        VARIANT LookAt,
+        VARIANT SearchOrder,
+        VARIANT MatchCase,
+        VARIANT MatchByte,
+        VARIANT SearchFormat,
+        VARIANT ReplaceFormat,
+        VARIANT_BOOL *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Resize(
+        I_Range* iface,
+        VARIANT RowSize,
+        VARIANT ColumnSize,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_RowDifferences(
+        I_Range* iface,
+        VARIANT Comparison,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Rows(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Run(
+        I_Range* iface,
+        VARIANT Arg1,
+        VARIANT Arg2,
+        VARIANT Arg3,
+        VARIANT Arg4,
+        VARIANT Arg5,
+        VARIANT Arg6,
+        VARIANT Arg7,
+        VARIANT Arg8,
+        VARIANT Arg9,
+        VARIANT Arg10,
+        VARIANT Arg11,
+        VARIANT Arg12,
+        VARIANT Arg13,
+        VARIANT Arg14,
+        VARIANT Arg15,
+        VARIANT Arg16,
+        VARIANT Arg17,
+        VARIANT Arg18,
+        VARIANT Arg19,
+        VARIANT Arg20,
+        VARIANT Arg21,
+        VARIANT Arg22,
+        VARIANT Arg23,
+        VARIANT Arg24,
+        VARIANT Arg25,
+        VARIANT Arg26,
+        VARIANT Arg27,
+        VARIANT Arg28,
+        VARIANT Arg29,
+        VARIANT Arg30,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Show(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_ShowDependents(
+        I_Range* iface,
+        VARIANT Remove,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_ShowDetail(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_ShowDetail(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_ShowErrors(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_ShowPrecedents(
+        I_Range* iface,
+        VARIANT Remove,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Sort(
+        I_Range* iface,
+        VARIANT Key1,
+        XlSortOrder Order1,
+        VARIANT Key2,
+        VARIANT Type,
+        XlSortOrder Order2,
+        VARIANT Key3,
+        XlSortOrder Order3,
+        XlYesNoGuess Header,
+        VARIANT OrderCustom,
+        VARIANT MatchCase,
+        XlSortOrientation Orientation,
+        XlSortMethod SortMethod,
+        XlSortDataOption DataOption1,
+        XlSortDataOption DataOption2,
+        XlSortDataOption DataOption3,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_SortSpecial(
+        I_Range* iface,
+        XlSortMethod SortMethod,
+        VARIANT Key1,
+        XlSortOrder Order1,
+        VARIANT Type,
+        VARIANT Key2,
+        XlSortOrder Order2,
+        VARIANT Key3,
+        XlSortOrder Order3,
+        XlYesNoGuess Header,
+        VARIANT OrderCustom,
+        VARIANT MatchCase,
+        XlSortOrientation Orientation,
+        XlSortDataOption DataOption1,
+        XlSortDataOption DataOption2,
+        XlSortDataOption DataOption3,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_SoundNote(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_SpecialCells(
+        I_Range* iface,
+        XlCellType Type,
+        VARIANT Value,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Style(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Style(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_SubscribeTo(
+        I_Range* iface,
+        BSTR Edition,
+        XlSubscribeToFormat Format,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Subtotal(
+        I_Range* iface,
+        long GroupBy,
+        XlConsolidationFunction Function,
+        VARIANT TotalList,
+        VARIANT Replace,
+        VARIANT PageBreaks,
+        XlSummaryRow SummaryBelowData,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Summary(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Table(
+        I_Range* iface,
+        VARIANT RowInput,
+        VARIANT ColumnInput,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Text(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_TextToColumns(
+        I_Range* iface,
+        VARIANT Destination,
+        XlTextParsingType DataType,
+        XlTextQualifier TextQualifier,
+        VARIANT ConsecutiveDelimiter,
+        VARIANT Tab,
+        VARIANT Semicolon,
+        VARIANT Comma,
+        VARIANT Space,
+        VARIANT Other,
+        VARIANT OtherChar,
+        VARIANT FieldInfo,
+        VARIANT DecimalSeparator,
+        VARIANT ThousandsSeparator,
+        VARIANT TrailingMinusNumbers,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Ungroup(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_UseStandardHeight(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_UseStandardHeight(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_UseStandardWidth(
+        I_Range* iface,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_UseStandardWidth(
+        I_Range* iface,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Validation(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value2(
+        I_Range* iface,
+        long lcid,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value2(
+        I_Range* iface,
+        long lcid,
+        VARIANT RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_AddComment(
+        I_Range* iface,
+        VARIANT Text,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Comment(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Phonetic(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormatConditions(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_ReadingOrder(
+        I_Range* iface,
+        long *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_ReadingOrder(
+        I_Range* iface,
+        long RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Hyperlinks(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Phonetics(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_SetPhonetic(
+        I_Range* iface)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_ID(
+        I_Range* iface,
+        BSTR *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_put_ID(
+        I_Range* iface,
+        BSTR RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_PrintOut(
+        I_Range* iface,
+        VARIANT From,
+        VARIANT To,
+        VARIANT Copies,
+        VARIANT Preview,
+        VARIANT ActivePrinter,
+        VARIANT PrintToFile,
+        VARIANT Collate,
+        VARIANT PrToFileName,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_PivotCell(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Dirty(
+        I_Range* iface)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_Errors(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_SmartTags(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_Speak(
+        I_Range* iface,
+        VARIANT SpeakDirection,
+        VARIANT SpeakFormulas)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_PasteSpecial(
+        I_Range* iface,
+        XlPasteType Paste,
+        XlPasteSpecialOperation Operation,
+        VARIANT SkipBlanks,
+        VARIANT Transpose,
+        VARIANT *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_AllowEdit(
+        I_Range* iface,
+        VARIANT_BOOL *RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_ListObject(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Range_get_XPath(
+        I_Range* iface,
+        IDispatch **RHS)
+{
+    TRACE(" \n");
+    return E_NOTIMPL;
+}
+
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Range_GetTypeInfoCount(
         I_Range* iface,
@@ -2394,175 +3838,175 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str__Default)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_range__default;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_ColumnWidth)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_range_columnwidth;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_font)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_range_font;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_value)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_range_value;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_select)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_range_select;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_notetext)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_range_notetext;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_clearcontents)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_range_clearcontents;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_column)) {
-        *rgDispId = 8;
+        *rgDispId = dispid_range_column;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_row)) {
-        *rgDispId = 9;
+        *rgDispId = dispid_range_row;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_horisontalalign)) {
-        *rgDispId = 10;
+        *rgDispId = dispid_range_horizontalalignment;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_verticalalign)) {
-        *rgDispId = 11;
+        *rgDispId = dispid_range_verticalalignment;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_merge)) {
-        *rgDispId = 12;
+        *rgDispId = dispid_range_merge;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_unmerge)) {
-        *rgDispId = 13;
+        *rgDispId = dispid_range_unmerge;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_wraptext)) {
-        *rgDispId = 14;
+        *rgDispId = dispid_range_wraptext;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 15;
+        *rgDispId = dispid_range_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = 16;
+        *rgDispId = dispid_range_parent;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_worksheet)) {
-        *rgDispId = 17;
+        *rgDispId = dispid_range_worksheet;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_clear)) {
-        *rgDispId = 18;
+        *rgDispId = dispid_range_clear;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_clearcomments)) {
-        *rgDispId = 19;
+        *rgDispId = dispid_range_clearcomments;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_clearformats)) {
-        *rgDispId = 20;
+        *rgDispId = dispid_range_clearformats;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_clearnotes)) {
-        *rgDispId = 21;
+        *rgDispId = dispid_range_clearnotes;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_clearoutline)) {
-        *rgDispId = 22;
+        *rgDispId = dispid_range_clearoutline;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_interior)) {
-        *rgDispId = 23;
+        *rgDispId = dispid_range_interior;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_borders)) {
-        *rgDispId = 24;
+        *rgDispId = dispid_range_borders;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_count)) {
-        *rgDispId = 25;
+        *rgDispId = dispid_range_count;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_delete)) {
-        *rgDispId = 26;
+        *rgDispId = dispid_range_delete;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_rowheight)) {
-        *rgDispId = 27;
+        *rgDispId = dispid_range_rowheight;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_copy)) {
-        *rgDispId = 28;
+        *rgDispId = dispid_range_copy;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_numberformat)) {
-        *rgDispId = 29;
+        *rgDispId = dispid_range_numberformat;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_numberformatlocal)) {
-        *rgDispId = 30;
+        *rgDispId = dispid_range_numberformatlocal;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_height)) {
-        *rgDispId = 31;
+        *rgDispId = dispid_range_height;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_width)) {
-        *rgDispId = 32;
+        *rgDispId = dispid_range_width;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_left)) {
-        *rgDispId = 33;
+        *rgDispId = dispid_range_left;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_top)) {
-        *rgDispId = 34;
+        *rgDispId = dispid_range_top;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_shrinktofit)) {
-        *rgDispId = 35;
+        *rgDispId = dispid_range_shrinktofit;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_mergecells)) {
-        *rgDispId = 36;
+        *rgDispId = dispid_range_mergecells;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_locked)) {
-        *rgDispId = 37;
+        *rgDispId = dispid_range_locked;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_hidden)) {
-        *rgDispId = 38;
+        *rgDispId = dispid_range_hidden;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_mergearea)) {
-        *rgDispId = 39;
+        *rgDispId = dispid_range_mergearea;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_autofit)) {
-        *rgDispId = 40;
+        *rgDispId = dispid_range_autofit;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_insert)) {
-        *rgDispId = 41;
+        *rgDispId = dispid_range_insert;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_entirecolumn)) {
-        *rgDispId = 42;
+        *rgDispId = dispid_range_entirecolumn;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_entirerow)) {
-        *rgDispId = 43;
+        *rgDispId = dispid_range_entirerow;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -2605,7 +4049,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
 
     switch(dispIdMember)
     {
-    case 1:
+    case dispid_range__default:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2623,7 +4067,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             }
             return S_OK;
         }
-    case 2:
+    case dispid_range_columnwidth:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             lret=1;
@@ -2653,7 +4097,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             }
             return S_OK;
         }
-    case 3:
+    case dispid_range_font:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2672,21 +4116,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             }
             return S_OK;
         }
-    case 4:
+    case dispid_range_value:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if ((pDispParams->cArgs>2)||(pDispParams->cArgs==0)) return E_FAIL;
             if (pDispParams->cArgs==1) {
 TRACE("VT = %i\n",V_VT(&(pDispParams->rgvarg[0])));
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
 TRACE("VT = %i\n",V_VT(&var2));
-                hres = MSO_TO_OO_I_Range_put_Value(iface, vNull, var2);
+                hres = MSO_TO_OO_I_Range_put_Value(iface, vNull, 0,  var2);
             }
             if (pDispParams->cArgs==2) {
                 /*Привести параметры к типу VARIANT если они переданы по ссылке*/
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
 
-                hres = MSO_TO_OO_I_Range_put_Value(iface, var1, var2);
+                hres = MSO_TO_OO_I_Range_put_Value(iface, var1, 0, var2);
             }
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -2696,16 +4140,16 @@ TRACE("VT = %i\n",V_VT(&var2));
         } else {
             if (pDispParams->cArgs>1) return E_FAIL;
             if (pDispParams->cArgs==0) 
-                hres = MSO_TO_OO_I_Range_get_Value(iface, vNull, pVarResult);
+                hres = MSO_TO_OO_I_Range_get_Value(iface, vNull, 0,  pVarResult);
             if (pDispParams->cArgs==1) 
-                hres = MSO_TO_OO_I_Range_get_Value(iface, pDispParams->rgvarg[0],  pVarResult);
+                hres = MSO_TO_OO_I_Range_get_Value(iface, pDispParams->rgvarg[0], 0, pVarResult);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
             }
             return S_OK;
         }
-    case 5:
+    case dispid_range_select:
         hres = MSO_TO_OO_I_Range_Select(iface, &vRet);
         if (FAILED(hres)) {
             pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -2715,16 +4159,17 @@ TRACE("VT = %i\n",V_VT(&var2));
             *pVarResult = vRet;
 
         return S_OK;
-    case 6:
+    case dispid_range_notetext:
         /*MSO_TO_OO_I_Range_NoteText*/
+        TRACE("NoteText not implement \n");
         return E_NOTIMPL;
-    case 7:
+    case dispid_range_clearcontents:
         vRet = MSO_TO_OO_I_Range_ClearContents(iface);
         if (pVarResult!=NULL)
             *pVarResult = vRet;
 
         return S_OK;
-    case 8:
+    case dispid_range_column:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2739,7 +4184,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 9:
+    case dispid_range_row:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2754,7 +4199,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 10:
+    case dispid_range_horizontalalignment:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
@@ -2782,7 +4227,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 11:
+    case dispid_range_verticalalignment:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
@@ -2810,7 +4255,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 12:
+    case dispid_range_merge:
         if (pDispParams->cArgs==1) {
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
             hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_BOOL);
@@ -2827,14 +4272,14 @@ TRACE("VT = %i\n",V_VT(&var2));
             return hres;
         }
         return S_OK;
-    case 13:
+    case dispid_range_unmerge:
         hres = MSO_TO_OO_I_Range_UnMerge(iface);
         if (FAILED(hres)) {
             pExcepInfo->bstrDescription=SysAllocString(str_error);
             return hres;
         }
         return S_OK;
-    case 14:
+    case dispid_range_wraptext:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
@@ -2862,7 +4307,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 15:
+    case dispid_range_application:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2879,7 +4324,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 16:
+    case dispid_range_parent:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2896,7 +4341,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 17:
+    case dispid_range_worksheet:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2913,33 +4358,33 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 18:
+    case dispid_range_clear:
         vRet = MSO_TO_OO_I_Range_Clear(iface);
         if (pVarResult!=NULL)
             *pVarResult = vRet;
 
         return S_OK;
-    case 19:
+    case dispid_range_clearcomments:
         return MSO_TO_OO_I_Range_ClearComments(iface);
-    case 20:
+    case dispid_range_clearformats:
         vRet = MSO_TO_OO_I_Range_ClearFormats(iface);
         if (pVarResult!=NULL)
             *pVarResult = vRet;
 
         return S_OK;
-    case 21:
+    case dispid_range_clearnotes:
         vRet = MSO_TO_OO_I_Range_ClearNotes(iface);
         if (pVarResult!=NULL)
             *pVarResult = vRet;
 
         return S_OK;
-    case 22:
+    case dispid_range_clearoutline:
         vRet = MSO_TO_OO_I_Range_ClearOutline(iface);
         if (pVarResult!=NULL)
             *pVarResult = vRet;
 
         return S_OK;
-    case 23:
+    case dispid_range_interior:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2956,7 +4401,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 24:
+    case dispid_range_borders:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -2998,7 +4443,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 25:
+    case dispid_range_count:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -3013,7 +4458,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 26://Delete
+    case dispid_range_delete://Delete
         switch (pDispParams->cArgs) {
         case 0:
             TRACE("DELETE - NUMBER OF PARAMETERS 0\n");
@@ -3053,7 +4498,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             return E_FAIL;
         }
         return S_OK;
-    case 27:
+    case dispid_range_rowheight:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             lret=1;
@@ -3083,7 +4528,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case 28:
+    case dispid_range_copy:
         switch (pDispParams->cArgs) {
         case 0:
 TRACE("Parametr 0\n");
@@ -3122,7 +4567,7 @@ TRACE("Parametr 1\n");
             return E_FAIL;
         }
         return S_OK;
-    case 29://NumberFormat
+    case dispid_range_numberformat://NumberFormat
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
@@ -3147,7 +4592,7 @@ TRACE("Parametr 1\n");
             VariantClear(&vRet);
             return S_OK;
         }
-    case 30://NumberFormatLocal
+    case dispid_range_numberformatlocal://NumberFormatLocal
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
@@ -3172,7 +4617,7 @@ TRACE("Parametr 1\n");
             VariantClear(&vRet);
             return S_OK;
         }
-    case 31://height
+    case dispid_range_height://height
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -3183,7 +4628,7 @@ TRACE("Parametr 1\n");
             }
             return hres;
         }
-    case 32://width
+    case dispid_range_width://width
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -3194,7 +4639,7 @@ TRACE("Parametr 1\n");
             }
             return hres;
         }
-    case 33://left
+    case dispid_range_left://left
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -3205,7 +4650,7 @@ TRACE("Parametr 1\n");
             }
             return hres;
         }
-    case 34://top
+    case dispid_range_top://top
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -3216,7 +4661,7 @@ TRACE("Parametr 1\n");
             }
             return hres;
         }
-    case 35://ShrinkToFit
+    case dispid_range_shrinktofit://ShrinkToFit
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE("ERROR INVALID ARGUMENT \n");
@@ -3241,7 +4686,7 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
-    case 36://MergeCells
+    case dispid_range_mergecells://MergeCells
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE("ERROR INVALID ARGUMENT \n");
@@ -3266,7 +4711,7 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
-    case 37://Locked
+    case dispid_range_locked://Locked
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE("ERROR INVALID ARGUMENT \n");
@@ -3291,7 +4736,7 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
-    case 38://Hidden
+    case dispid_range_hidden://Hidden
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) {
                 TRACE("ERROR INVALID ARGUMENT \n");
@@ -3316,7 +4761,7 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
-    case 39://MergeArea
+    case dispid_range_mergearea://MergeArea
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE("\n");
             return E_NOTIMPL;
@@ -3336,13 +4781,13 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
-    case 40:
+    case dispid_range_autofit:
         vRet = MSO_TO_OO_I_Range_AutoFit(iface);
         if (pVarResult!=NULL)
             *pVarResult = vRet;
 
         return S_OK;
-    case 41:
+    case dispid_range_insert:
         V_VT(&var1) = VT_NULL;
         V_VT(&var2) = VT_NULL;
         switch (pDispParams->cArgs) {
@@ -3359,12 +4804,12 @@ TRACE("Parametr 1\n");
             TRACE("Error invalide number of parameters\n");
             break;
         }
-        vRet = MSO_TO_OO_I_Range_Insert(iface, var1, var2);
+        hres = MSO_TO_OO_I_Range_Insert(iface, var1, var2, &vRet);
         if (pVarResult!=NULL)
             *pVarResult = vRet;
 
         return S_OK;
-    case 42://EntireColumn
+    case dispid_range_entirecolumn://EntireColumn
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE("\n");
             return E_NOTIMPL;
@@ -3384,7 +4829,7 @@ TRACE("Parametr 1\n");
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
-    case 43://EntireColumn
+    case dispid_range_entirerow://EntireColumn
         if (wFlags==DISPATCH_PROPERTYPUT) {
             TRACE("\n");
             return E_NOTIMPL;
@@ -3418,61 +4863,210 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_GetTypeInfo,
     MSO_TO_OO_I_Range_GetIDsOfNames,
     MSO_TO_OO_I_Range_Invoke,
-    MSO_TO_OO_I_Range_get__Default,
-    MSO_TO_OO_I_Range_get_ColumnWidth,
-    MSO_TO_OO_I_Range_put_ColumnWidth,
-    MSO_TO_OO_I_Range_get_Font,
-    MSO_TO_OO_I_Range_get_Value,
-    MSO_TO_OO_I_Range_put_Value,
-    MSO_TO_OO_I_Range_Select,
-    MSO_TO_OO_I_Range_NoteText,
-    MSO_TO_OO_I_Range_ClearContents,
-    MSO_TO_OO_I_Range_get_Column,
-    MSO_TO_OO_I_Range_get_Row,
-    MSO_TO_OO_I_Range_get_HorizontalAlignment,
-    MSO_TO_OO_I_Range_put_HorizontalAlignment,
-    MSO_TO_OO_I_Range_get_VerticalAlignment,
-    MSO_TO_OO_I_Range_put_VerticalAlignment,
-    MSO_TO_OO_I_Range_Merge,
-    MSO_TO_OO_I_Range_UnMerge,
-    MSO_TO_OO_I_Range_get_WrapText,
-    MSO_TO_OO_I_Range_put_WrapText,
     MSO_TO_OO_I_Range_get_Application,
+    MSO_TO_OO_I_Range_get_Creator,
     MSO_TO_OO_I_Range_get_Parent,
-    MSO_TO_OO_I_Range_get_Worksheet,
+    MSO_TO_OO_I_Range_Activate,
+    MSO_TO_OO_I_Range_get_AddIndent,
+    MSO_TO_OO_I_Range_put_AddIndent,
+    MSO_TO_OO_I_Range_get_Address,
+    MSO_TO_OO_I_Range_get_AddressLocal,
+    MSO_TO_OO_I_Range_AdvancedFilter,
+    MSO_TO_OO_I_Range_ApplyNames,
+    MSO_TO_OO_I_Range_ApplyOutlineStyles,
+    MSO_TO_OO_I_Range_get_Areas,
+    MSO_TO_OO_I_Range_AutoComplete,
+    MSO_TO_OO_I_Range_AutoFill,
+    MSO_TO_OO_I_Range_AutoFilter,
+    MSO_TO_OO_I_Range_AutoFit,
+    MSO_TO_OO_I_Range_AutoFormat,
+    MSO_TO_OO_I_Range_AutoOutline,
+    MSO_TO_OO_I_Range_BorderAround,
+    MSO_TO_OO_I_Range_get_Borders,
+    MSO_TO_OO_I_Range_Calculate,
+    MSO_TO_OO_I_Range_get_Cells,
+    MSO_TO_OO_I_Range_get_Characters,
+    MSO_TO_OO_I_Range_CheckSpelling,
     MSO_TO_OO_I_Range_Clear,
-    MSO_TO_OO_I_Range_ClearComments,
+    MSO_TO_OO_I_Range_ClearContents,
     MSO_TO_OO_I_Range_ClearFormats,
     MSO_TO_OO_I_Range_ClearNotes,
     MSO_TO_OO_I_Range_ClearOutline,
-    MSO_TO_OO_I_Range_get_Interior,
-    MSO_TO_OO_I_Range_get_Borders,
-    MSO_TO_OO_I_Range_get_Count,
-    MSO_TO_OO_I_Range_Delete,
-    MSO_TO_OO_I_Range_get_RowHeight,
-    MSO_TO_OO_I_Range_put_RowHeight,
+    MSO_TO_OO_I_Range_get_Column,
+    MSO_TO_OO_I_Range_ColumnDifferences,
+    MSO_TO_OO_I_Range_get_Columns,
+    MSO_TO_OO_I_Range_get_ColumnWidth,
+    MSO_TO_OO_I_Range_put_ColumnWidth,
+    MSO_TO_OO_I_Range_Consolidate,
     MSO_TO_OO_I_Range_Copy,
+    MSO_TO_OO_I_Range_CopyFromRecordset,
+    MSO_TO_OO_I_Range_CopyPicture,
+    MSO_TO_OO_I_Range_get_Count,
+    MSO_TO_OO_I_Range_CreateNames,
+    MSO_TO_OO_I_Range_CreatePublisher,
+    MSO_TO_OO_I_Range_get_CurrentArray,
+    MSO_TO_OO_I_Range_get_CurrentRegion,
+    MSO_TO_OO_I_Range_Cut,
+    MSO_TO_OO_I_Range_DataSeries,
+    MSO_TO_OO_I_Range_get__Default,
+    MSO_TO_OO_I_Range_put__Default,
+    MSO_TO_OO_I_Range_Delete,
+    MSO_TO_OO_I_Range_get_Dependents,
+    MSO_TO_OO_I_Range_DialogBox1,
+    MSO_TO_OO_I_Range_get_DirectDependents,
+    MSO_TO_OO_I_Range_EditionOptions,
+    MSO_TO_OO_I_Range_get_End,
+    MSO_TO_OO_I_Range_get_EntireColumn,
+    MSO_TO_OO_I_Range_get_EntireRow,
+    MSO_TO_OO_I_Range_FillDown,
+    MSO_TO_OO_I_Range_FillLeft,
+    MSO_TO_OO_I_Range_FillRight,
+    MSO_TO_OO_I_Range_FillUp,
+    MSO_TO_OO_I_Range_Find,
+    MSO_TO_OO_I_Range_FindNext,
+    MSO_TO_OO_I_Range_FindPrevious,
+    MSO_TO_OO_I_Range_get_Font,
+    MSO_TO_OO_I_Range_get_Formula,
+    MSO_TO_OO_I_Range_put_Formula,
+    MSO_TO_OO_I_Range_get_FormulaArray,
+    MSO_TO_OO_I_Range_put_FormulaArray,
+    MSO_TO_OO_I_Range_get_FormulaLabel,
+    MSO_TO_OO_I_Range_put_FormulaLabel,
+    MSO_TO_OO_I_Range_get_FormulaHidden,
+    MSO_TO_OO_I_Range_put_FormulaHidden,
+    MSO_TO_OO_I_Range_get_FormulaLocal,
+    MSO_TO_OO_I_Range_put_FormulaLocal,
+    MSO_TO_OO_I_Range_get_FormulaR1C1,
+    MSO_TO_OO_I_Range_put_FormulaR1C1,
+    MSO_TO_OO_I_Range_get_FormulaR1C1Local,
+    MSO_TO_OO_I_Range_put_FormulaR1C1Local,
+    MSO_TO_OO_I_Range_FunctionWizard,
+    MSO_TO_OO_I_Range_GoalSeek,
+    MSO_TO_OO_I_Range_Group,
+    MSO_TO_OO_I_Range_get_HasArray,
+    MSO_TO_OO_I_Range_get_HasFormula,
+    MSO_TO_OO_I_Range_get_Height,
+    MSO_TO_OO_I_Range_get_Hidden,
+    MSO_TO_OO_I_Range_put_Hidden,
+    MSO_TO_OO_I_Range_get_HorizontalAlignment,
+    MSO_TO_OO_I_Range_put_HorizontalAlignment,
+    MSO_TO_OO_I_Range_get_IndentLevel,
+    MSO_TO_OO_I_Range_put_IndentLevel,
+    MSO_TO_OO_I_Range_InsertIndent,
+    MSO_TO_OO_I_Range_Insert,
+    MSO_TO_OO_I_Range_get_Interior,
+    MSO_TO_OO_I_Range_get_Item,
+    MSO_TO_OO_I_Range_put_Item,
+    MSO_TO_OO_I_Range_Justify,
+    MSO_TO_OO_I_Range_get_Left,
+    MSO_TO_OO_I_Range_get_ListHeaderRows,
+    MSO_TO_OO_I_Range_ListNames,
+    MSO_TO_OO_I_Range_get_LocationInTable,
+    MSO_TO_OO_I_Range_get_Locked,
+    MSO_TO_OO_I_Range_put_Locked,
+    MSO_TO_OO_I_Range_Merge,
+    MSO_TO_OO_I_Range_UnMerge,
+    MSO_TO_OO_I_Range_get_MergeArea,
+    MSO_TO_OO_I_Range_get_MergeCells,
+    MSO_TO_OO_I_Range_put_MergeCells,
+    MSO_TO_OO_I_Range_get_Name,
+    MSO_TO_OO_I_Range_put_Name,
+    MSO_TO_OO_I_Range_NavigateArrow,
+    MSO_TO_OO_I_Range_get__NewEnum,
+    MSO_TO_OO_I_Range_get_Next,
+    MSO_TO_OO_I_Range_NoteText,
     MSO_TO_OO_I_Range_get_NumberFormat,
     MSO_TO_OO_I_Range_put_NumberFormat,
     MSO_TO_OO_I_Range_get_NumberFormatLocal,
     MSO_TO_OO_I_Range_put_NumberFormatLocal,
-    MSO_TO_OO_I_Range_get_Height,
-    MSO_TO_OO_I_Range_get_Width,
-    MSO_TO_OO_I_Range_get_Left,
-    MSO_TO_OO_I_Range_get_Top,
+    MSO_TO_OO_I_Range_get_Offset,
+    MSO_TO_OO_I_Range_get_Orientation,
+    MSO_TO_OO_I_Range_put_Orientation,
+    MSO_TO_OO_I_Range_get_OutlineLevel,
+    MSO_TO_OO_I_Range_put_OutlineLevel,
+    MSO_TO_OO_I_Range_get_PageBreak,
+    MSO_TO_OO_I_Range_put_PageBreak,
+    MSO_TO_OO_I_Range_Parse,
+    MSO_TO_OO_I_Range__PasteSpecial,
+    MSO_TO_OO_I_Range_get_PivotField,
+    MSO_TO_OO_I_Range_get_PivotItem,
+    MSO_TO_OO_I_Range_get_PivotTable,
+    MSO_TO_OO_I_Range_get_Precedents,
+    MSO_TO_OO_I_Range_get_PrefixCharacter,
+    MSO_TO_OO_I_Range_get_Previous,
+    MSO_TO_OO_I_Range__PrintOut,
+    MSO_TO_OO_I_Range_PrintPreview,
+    MSO_TO_OO_I_Range_get_QueryTable,
+    MSO_TO_OO_I_Range_get_Range,
+    MSO_TO_OO_I_Range_RemoveSubtotal,
+    MSO_TO_OO_I_Range_Replace,
+    MSO_TO_OO_I_Range_get_Resize,
+    MSO_TO_OO_I_Range_get_Row,
+    MSO_TO_OO_I_Range_RowDifferences,
+    MSO_TO_OO_I_Range_get_RowHeight,
+    MSO_TO_OO_I_Range_put_RowHeight,
+    MSO_TO_OO_I_Range_get_Rows,
+    MSO_TO_OO_I_Range_Run,
+    MSO_TO_OO_I_Range_Select,
+    MSO_TO_OO_I_Range_Show,
+    MSO_TO_OO_I_Range_ShowDependents,
+    MSO_TO_OO_I_Range_get_ShowDetail,
+    MSO_TO_OO_I_Range_put_ShowDetail,
+    MSO_TO_OO_I_Range_ShowErrors,
+    MSO_TO_OO_I_Range_ShowPrecedents,
     MSO_TO_OO_I_Range_get_ShrinkToFit,
     MSO_TO_OO_I_Range_put_ShrinkToFit,
-    MSO_TO_OO_I_Range_get_MergeCells,
-    MSO_TO_OO_I_Range_put_MergeCells,
-    MSO_TO_OO_I_Range_get_Locked,
-    MSO_TO_OO_I_Range_put_Locked,
-    MSO_TO_OO_I_Range_get_Hidden,
-    MSO_TO_OO_I_Range_put_Hidden,
-    MSO_TO_OO_I_Range_get_MergeArea,
-    MSO_TO_OO_I_Range_AutoFit,
-    MSO_TO_OO_I_Range_Insert,
-    MSO_TO_OO_I_Range_get_EntireColumn,
-    MSO_TO_OO_I_Range_get_EntireRow
+    MSO_TO_OO_I_Range_Sort,
+    MSO_TO_OO_I_Range_SortSpecial,
+    MSO_TO_OO_I_Range_get_SoundNote,
+    MSO_TO_OO_I_Range_SpecialCells,
+    MSO_TO_OO_I_Range_get_Style,
+    MSO_TO_OO_I_Range_put_Style,
+    MSO_TO_OO_I_Range_SubscribeTo,
+    MSO_TO_OO_I_Range_Subtotal,
+    MSO_TO_OO_I_Range_get_Summary,
+    MSO_TO_OO_I_Range_Table,
+    MSO_TO_OO_I_Range_get_Text,
+    MSO_TO_OO_I_Range_TextToColumns,
+    MSO_TO_OO_I_Range_get_Top,
+    MSO_TO_OO_I_Range_Ungroup,
+    MSO_TO_OO_I_Range_get_UseStandardHeight,
+    MSO_TO_OO_I_Range_put_UseStandardHeight,
+    MSO_TO_OO_I_Range_get_UseStandardWidth,
+    MSO_TO_OO_I_Range_put_UseStandardWidth,
+    MSO_TO_OO_I_Range_get_Validation,
+    MSO_TO_OO_I_Range_get_Value,
+    MSO_TO_OO_I_Range_put_Value,
+    MSO_TO_OO_I_Range_get_Value2,
+    MSO_TO_OO_I_Range_put_Value2,
+    MSO_TO_OO_I_Range_get_VerticalAlignment,
+    MSO_TO_OO_I_Range_put_VerticalAlignment,
+    MSO_TO_OO_I_Range_get_Width,
+    MSO_TO_OO_I_Range_get_Worksheet,
+    MSO_TO_OO_I_Range_get_WrapText,
+    MSO_TO_OO_I_Range_put_WrapText,
+    MSO_TO_OO_I_Range_AddComment,
+    MSO_TO_OO_I_Range_get_Comment,
+    MSO_TO_OO_I_Range_ClearComments,
+    MSO_TO_OO_I_Range_get_Phonetic,
+    MSO_TO_OO_I_Range_get_FormatConditions,
+    MSO_TO_OO_I_Range_get_ReadingOrder,
+    MSO_TO_OO_I_Range_put_ReadingOrder,
+    MSO_TO_OO_I_Range_get_Hyperlinks,
+    MSO_TO_OO_I_Range_get_Phonetics,
+    MSO_TO_OO_I_Range_SetPhonetic,
+    MSO_TO_OO_I_Range_get_ID,
+    MSO_TO_OO_I_Range_put_ID,
+    MSO_TO_OO_I_Range_PrintOut,
+    MSO_TO_OO_I_Range_get_PivotCell,
+    MSO_TO_OO_I_Range_Dirty,
+    MSO_TO_OO_I_Range_get_Errors,
+    MSO_TO_OO_I_Range_get_SmartTags,
+    MSO_TO_OO_I_Range_Speak,
+    MSO_TO_OO_I_Range_PasteSpecial,
+    MSO_TO_OO_I_Range_get_AllowEdit,
+    MSO_TO_OO_I_Range_get_ListObject,
+    MSO_TO_OO_I_Range_get_XPath
 };
 
 extern HRESULT _I_RangeConstructor(LPVOID *ppObj)

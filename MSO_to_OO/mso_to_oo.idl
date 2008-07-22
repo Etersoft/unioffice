@@ -345,6 +345,245 @@ import "wtypes.idl";
 		xlPrintErrorsNA 		= 0x00000003
 	} XlPrintErrors;
 
+	typedef enum {
+		xlFilterCopy 		= 0x00000002,
+		xlFilterInPlace 		= 0x00000001
+	} XlFilterAction;
+
+	typedef enum {
+		xlColumnThenRow 		= 0x00000002,
+		xlRowThenColumn 		= 0x00000001
+	} XlApplyNamesOrder;
+
+	typedef enum {
+		xlFillCopy 			= 0x00000001,
+		xlFillDays 			= 0x00000005,
+		xlFillDefault 			= 0x00000000,
+		xlFillFormats 			= 0x00000003,
+		xlFillMonths 			= 0x00000007,
+		xlFillSeries 			= 0x00000002,
+		xlFillValues 			= 0x00000004,
+		xlFillWeekdays 			= 0x00000006,
+		xlFillYears 			= 0x00000008,
+		xlGrowthTrend 			= 0x0000000A,
+		xlLinearTrend 			= 0x00000009
+	} XlAutoFillType;
+
+	typedef enum {
+		xlAnd 				= 0x00000001,
+		xlBottom10Items 		= 0x00000004,
+		xlBottom10Percent 		= 0x00000006,
+		xlOr 				= 0x00000002,
+		xlTop10Items 			= 0x00000003,
+		xlTop10Percent 			= 0x00000005
+	} XlAutoFilterOperator;
+
+	typedef enum {
+		xlRangeAutoFormat3DEffects1 	= 0x0000000D,
+		xlRangeAutoFormat3DEffects2 	= 0x0000000E,
+		xlRangeAutoFormatAccounting1 	= 0x00000004,
+		xlRangeAutoFormatAccounting2 	= 0x00000005,
+		xlRangeAutoFormatAccounting3 	= 0x00000006,
+		xlRangeAutoFormatAccounting4 	= 0x00000011,
+		xlRangeAutoFormatClassic1 	= 0x00000001,
+		xlRangeAutoFormatClassic2 	= 0x00000002,
+		xlRangeAutoFormatClassic3 	= 0x00000003,
+		xlRangeAutoFormatColor1 	= 0x00000007,
+		xlRangeAutoFormatColor2 	= 0x00000008,
+		xlRangeAutoFormatColor3 	= 0x00000009,
+		xlRangeAutoFormatList1 		= 0x0000000A,
+		xlRangeAutoFormatList2 		= 0x0000000B,
+		xlRangeAutoFormatList3 		= 0x0000000C,
+		xlRangeAutoFormatLocalFormat1 	= 0x0000000F,
+		xlRangeAutoFormatLocalFormat2 	= 0x00000010,
+		xlRangeAutoFormatLocalFormat3 	= 0x00000013,
+		xlRangeAutoFormatLocalFormat4 	= 0x00000014,
+		xlRangeAutoFormatReport1 	= 0x00000015,
+		xlRangeAutoFormatReport2 	= 0x00000016,
+		xlRangeAutoFormatReport3 	= 0x00000017,
+		xlRangeAutoFormatReport4 	= 0x00000018,
+		xlRangeAutoFormatReport5 	= 0x00000019,
+		xlRangeAutoFormatReport6 	= 0x0000001A,
+		xlRangeAutoFormatReport7 	= 0x0000001B,
+		xlRangeAutoFormatReport8 	= 0x0000001C,
+		xlRangeAutoFormatReport9 	= 0x0000001D,
+		xlRangeAutoFormatReport10 	= 0x0000001E,
+		xlRangeAutoFormatClassicPivotTable = 0x0000001F,
+		xlRangeAutoFormatTable1	 	= 0x00000020,
+		xlRangeAutoFormatTable2 	= 0x00000021,
+		xlRangeAutoFormatTable3 	= 0x00000022,
+		xlRangeAutoFormatTable4 	= 0x00000023,
+		xlRangeAutoFormatTable5 	= 0x00000024,
+		xlRangeAutoFormatTable6 	= 0x00000025,
+		xlRangeAutoFormatTable7 	= 0x00000026,
+		xlRangeAutoFormatTable8 	= 0x00000027,
+		xlRangeAutoFormatTable9 	= 0x00000028,
+		xlRangeAutoFormatTable10 	= 0x00000029,
+		xlRangeAutoFormatPTNone 	= 0x0000002A,
+		xlRangeAutoFormatNone 		= 0xFFFFEFD2,
+		xlRangeAutoFormatSimple 	= 0xFFFFEFC6
+	} XlRangeAutoFormat;
+
+	typedef enum {
+		xlPrinter 			= 0x00000002,
+		xlScreen 			= 0x00000001
+	} XlPictureAppearance;
+
+	typedef enum {
+		xlBitmap 			= 0x00000002,
+		xlPicture 			= 0xFFFFEFCD
+	} XlCopyPictureFormat;
+
+	typedef enum {
+		xlDay 				= 0x00000001,
+		xlMonth 			= 0x00000003,
+		xlWeekday 			= 0x00000002,
+		xlYear 				= 0x00000004
+	} XlDataSeriesDate;
+
+	typedef enum {
+		xlAutoFill 			= 0x00000004,
+		xlChronological 		= 0x00000003,
+		xlGrowth 			= 0x00000002,
+		xlDataSeriesLinear 		= 0xFFFFEFDC
+	} XlDataSeriesType;
+
+	typedef enum {
+		xlPublisher 			= 1,
+		xlSubscriber 			= 2
+	} XlEditionType;
+
+	typedef enum {
+		xlAutomaticUpdate 		= 4,
+		xlCancel 			= 1,
+		xlChangeAttributes 		= 6,
+		xlManualUpdate 			= 5,
+		xlOpenSource 			= 3,
+		xlSelect 			= 3,
+		xlSendPublisher 		= 2,
+		xlUpdateSubscriber 		= 2
+	} XlEditionOptionsOption;
+
+	typedef enum {
+		xlNext 				= 0x00000001,
+		xlPrevious 			= 0x00000002
+	} XlSearchDirection;
+
+	typedef enum {
+		xlNoLabels 			= 0xFFFFEFD2,
+		xlRowLabels 			= 0x00000001,
+		xlColumnLabels 			= 0x00000002,
+		xlMixedLabels 			= 0x00000003
+	} XlFormulaLabel;
+
+	typedef enum {
+		xlColumnHeader 			= 0xFFFFEFF2,
+		xlColumnItem 			= 0x00000005,
+		xlDataHeader 			= 0x00000003,
+		xlDataItem 			= 0x00000007,
+		xlPageHeader 			= 0x00000002,
+		xlPageItem 			= 0x00000006,
+		xlRowHeader 			= 0xFFFFEFC7,
+		xlRowItem 			= 0x00000004,
+		xlTableBody 			= 0x00000008
+	} XlLocationInTable;
+
+	typedef enum {
+		xlPasteAll 			= 0xFFFFEFF8,
+		xlPasteAllExceptBorders 	= 0x00000007,
+		xlPasteFormats 			= 0xFFFFEFE6,
+		xlPasteFormulas 		= 0xFFFFEFE5,
+		xlPasteComments 		= 0xFFFFEFD0,
+		xlPasteValues 			= 0xFFFFEFBD,
+		xlPasteColumnWidths 		= 0x00000008,
+		xlPasteValidation 		= 0x00000006,
+		xlPasteFormulasAndNumberFormats = 0x0000000B,
+		xlPasteValuesAndNumberFormats 	= 0x0000000C
+	} XlPasteType;
+
+	typedef enum {
+		xlPasteSpecialOperationAdd 	= 0x00000002,
+		xlPasteSpecialOperationDivide 	= 0x00000005,
+		xlPasteSpecialOperationMultiply = 0x00000004,
+		xlPasteSpecialOperationNone 	= 0xFFFFEFD2,
+		xlPasteSpecialOperationSubtract = 0x00000003
+	} XlPasteSpecialOperation;
+
+	typedef enum {
+		xlAscending 			= 0x00000001,
+		xlDescending 			= 0x00000002
+	} XlSortOrder;
+
+	typedef enum {
+		xlGuess 			= 0x00000000,
+		xlNo 				= 0x00000002,
+		xlYes 				= 0x00000001
+	} XlYesNoGuess;
+
+	typedef enum {
+		xlSortRows 			= 0x00000002,
+		xlSortColumns 			= 0x00000001
+	} XlSortOrientation;
+
+	typedef enum {
+		xlPinYin 			= 0x00000001,
+		xlStroke 			= 0x00000002
+	} XlSortMethod;
+
+	typedef enum {
+		xlSortNormal 			= 0x00000000,
+		xlSortTextAsNumbers		= 0x00000001
+	} XlSortDataOption;
+
+	typedef enum {
+		xlCellTypeBlanks 		= 0x00000004,
+		xlCellTypeConstants 		= 0x00000002,
+		xlCellTypeFormulas 		= 0xFFFFEFE5,
+		xlCellTypeLastCell 		= 0x0000000B,
+		xlCellTypeComments 		= 0xFFFFEFD0,
+		xlCellTypeVisible 		= 0x0000000C,
+		xlCellTypeAllFormatConditions 	= 0xFFFFEFB4,
+		xlCellTypeSameFormatConditions 	= 0xFFFFEFB3,
+		xlCellTypeAllValidation 	= 0xFFFFEFB2,
+		xlCellTypeSameValidation 	= 0xFFFFEFB1
+	} XlCellType;
+
+	typedef enum {
+		xlSubscribeToPicture 		= 0xFFFFEFCD,
+		xlSubscribeToText		= 0xFFFFEFC2
+	} XlSubscribeToFormat;
+
+	typedef enum {
+		xlAverage 			= 0xFFFFEFF6,
+		xlCount 			= 0xFFFFEFF0,
+		xlCountNums 			= 0xFFFFEFEF,
+		xlMax 				= 0xFFFFEFD8,
+		xlMin 				= 0xFFFFEFD5,
+		xlProduct 			= 0xFFFFEFCB,
+		xlStDev 			= 0xFFFFEFC5,
+		xlStDevP 			= 0xFFFFEFC4,
+		xlSum 				= 0xFFFFEFC3,
+		xlVar 				= 0xFFFFEFBC,
+		xlVarP 				= 0xFFFFEFBB,
+		xlUnknown 			= 0x000003E8
+	} XlConsolidationFunction;
+
+	typedef enum {
+		xlSummaryAbove 			= 0x00000000,
+		xlSummaryBelow			= 0x00000001
+	} XlSummaryRow;
+
+	typedef enum {
+		xlDelimited 			= 0x00000001,
+		xlFixedWidth			= 0x00000002
+	} XlTextParsingType;
+
+	typedef enum {
+		xlTextQualifierDoubleQuote 	= 0x00000001,
+		xlTextQualifierNone		= 0xFFFFEFD2,
+		xlTextQualifierSingleQuote	= 0x00000002
+	} XlTextQualifier;
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
@@ -525,107 +764,703 @@ import "wtypes.idl";
 	]
 	interface I_Range : IDispatch
 	{
-		[propget,id(1), helpstring("property _Default")] HRESULT _Default([in] VARIANT varRowIndex, [in] VARIANT varColumnIndex, [out, retval] IDispatch **ppObject);
-
-		[propget,id(2), helpstring("property ColumnWidth")] HRESULT ColumnWidth([out, retval] long *pnColumnWidth);
-		[propput,id(2), helpstring("property ColumnWidth")] HRESULT ColumnWidth([in] long nColumnWidth);
-
-		[propget,id(3), helpstring("property Font")] HRESULT Font([out, retval] IDispatch **ppFont);
-
-		[propget,id(4), helpstring("property Value")] HRESULT Value([in, optional] VARIANT varRangeValueDataType, [out, retval] VARIANT *pvarValue);
-		[propput,id(4), helpstring("property Value")] HRESULT Value([in, optional] VARIANT varRangeValueDataType, [in] VARIANT varValue);
-
-		[id(5), helpstring("method Select")] HRESULT Select([out, retval] VARIANT *pvarResult);
-
-		[id(6), helpstring("method NoteText")] HRESULT NoteText([in, optional] VARIANT  Text, [in, optional] VARIANT  Start, [in, optional] VARIANT  Length, [out, retval]  BSTR    *pText);
-
-		[id(7), helpstring("method ClearContents")] VARIANT ClearContents();
-
-		[propget,id(8), helpstring("property Column")] long Column();
-
-		[propget,id(9), helpstring("property Row")] long Row();
-
-		[propget,id(10), helpstring("property HorizontalAlignment")] HRESULT HorizontalAlignment([out, retval] XlHAlign *halign);
-		[propput,id(10), helpstring("property HorizontalAlignment")] HRESULT HorizontalAlignment([in] XlHAlign halign);
-
-		[propget,id(11), helpstring("property VerticalAlignment")] HRESULT VerticalAlignment([out, retval] XlVAlign *valign);
-		[propput,id(11), helpstring("property VerticalAlignment")] HRESULT VerticalAlignment([in] XlVAlign valign);
-
-		[id(12), helpstring("method Merge")] HRESULT Merge([in, optional] VARIANT_BOOL flag);
-
-		[id(13), helpstring("method UnMerge")] HRESULT UnMerge();
-
-		[propget,id(14), helpstring("property WrapText")] HRESULT WrapText([out, retval] VARIANT_BOOL *pvbwraptext);
-		[propput,id(14), helpstring("property WrapText")] HRESULT WrapText([in] VARIANT_BOOL pvbwraptext);
 //Application
-		[propget,id(15), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+		[propget,id(dispid_range_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+//Creator 	Returns a 32-bit integer that indicates the application in which this object was created.
+		[propget,id(dispid_range_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
 //Parent
-		[propget,id(16), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
-//Worksheet
-		[propget,id(17), helpstring("property Worksheet")] HRESULT Worksheet([out, retval] IDispatch **value);
-
-		[id(18), helpstring("method Clear")] VARIANT Clear();
-
-		[id(19), helpstring("method ClearComments")] HRESULT ClearComments();
-
-		[id(20), helpstring("method ClearFormats")] VARIANT ClearFormats();
-
-		[id(21), helpstring("method ClearNotes")] VARIANT ClearNotes();
-
-		[id(22), helpstring("method ClearOutline")] VARIANT ClearOutline();
-//Interior
-		[propget,id(23), helpstring("property Interior")] HRESULT Interior([out, retval] IDispatch **value);
+		[propget,id(dispid_range_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+//Activate
+		[id(dispid_range_activate),  helpstring("method Activate")] HRESULT Activate([out,retval] VARIANT* RHS);
+//AddIndent
+		[id(dispid_range_addindent),  propget,helpstring("property AddIndent")] HRESULT AddIndent([out,retval] VARIANT* RHS);
+		[id(dispid_range_addindent),  propput,helpstring("property AddIndent")] HRESULT AddIndent([in] VARIANT RHS);
+//Address
+		[id(dispid_range_address),  propget,helpstring("property Address")] HRESULT Address(
+			[in,optional] VARIANT RowAbsolute,
+			[in,optional] VARIANT ColumnAbsolute,
+			[in,defaultvalue(1)] XlReferenceStyle ReferenceStyle,
+			[in,optional] VARIANT External,
+			[in,optional] VARIANT RelativeTo,
+			[in] long lcid,
+			[out,retval] BSTR* RHS); 
+//AddressLocal
+		[id(dispid_range_addresslocal),  propget,helpstring("property AddressLocal")] HRESULT AddressLocal(
+			[in,optional] VARIANT RowAbsolute,
+			[in,optional] VARIANT ColumnAbsolute,
+			[in,defaultvalue(1)] XlReferenceStyle ReferenceStyle,
+			[in,optional] VARIANT External,
+			[in,optional] VARIANT RelativeTo,
+			[out,retval] BSTR* RHS);
+//AdvancedFilter
+		[id(dispid_range_advancedfilter),  helpstring("method AdvancedFilter")] HRESULT AdvancedFilter(
+			[in] XlFilterAction Action,
+			[in,optional] VARIANT CriteriaRange,
+			[in,optional] VARIANT CopyToRange,
+			[in,optional] VARIANT Unique,
+			[out,retval] VARIANT* RHS);
+//ApplyNames
+		[id(dispid_range_applynames),  helpstring("method ApplyNames")] HRESULT ApplyNames(
+			[in,optional] VARIANT Names,
+			[in,optional] VARIANT IgnoreRelativeAbsolute,
+			[in,optional] VARIANT UseRowColumnNames,
+			[in,optional] VARIANT OmitColumn,
+			[in,optional] VARIANT OmitRow,
+			[in] XlApplyNamesOrder Order,
+			[in,optional] VARIANT AppendLast,
+			[out,retval] VARIANT* RHS);
+//ApplyOutlineStyles
+		[id(dispid_range_applyoutlinestyles),  helpstring("method ApplyOutlineStyles")] HRESULT ApplyOutlineStyles([out,retval] VARIANT* RHS);
+//Areas
+		[id(dispid_range_areas),  propget,helpstring("property Areas")] HRESULT Areas([out,retval] IDispatch** RHS);
+//AutoComplete
+		[id(dispid_range_autocomplete),  helpstring("method AutoComplete")] HRESULT AutoComplete(
+			[in] BSTR String,
+			[out,retval] BSTR* RHS);
+//AutoFill
+		[id(dispid_range_autofill),  helpstring("method AutoFill")] HRESULT AutoFill(
+			[in] IDispatch*/*IRange**/ Destination,
+			[in] XlAutoFillType Type,
+			[out,retval] VARIANT* RHS);
+//AutoFilter
+		[id(dispid_range_autofilter),  helpstring("method AutoFilter")] HRESULT AutoFilter(
+			[in,optional] VARIANT Field,
+			[in,optional] VARIANT Criteria1,
+			[in] XlAutoFilterOperator Operator,
+			[in,optional] VARIANT Criteria2,
+			[in,optional] VARIANT VisibleDropDown,
+			[out,retval] VARIANT* RHS);
+//AutoFit
+		[id(dispid_range_autofit), helpstring("method AutoFit")] VARIANT AutoFit();
+//AutoFormat
+		[id(dispid_range_autoformat),  helpstring("method AutoFormat")] HRESULT AutoFormat(
+			[in] XlRangeAutoFormat Format,
+			[in,optional] VARIANT Number,
+			[in,optional] VARIANT IXLFont,
+			[in,optional] VARIANT Alignment,
+			[in,optional] VARIANT Border,
+			[in,optional] VARIANT Pattern,
+			[in,optional] VARIANT Width,
+			[out,retval] VARIANT* RHS);
+//AutoOutline
+		[id(dispid_range_autooutline),  helpstring("method AutoOutline")] HRESULT AutoOutline([out,retval] VARIANT* RHS);
+//BorderAround
+		[id(dispid_range_borderaround),  helpstring("method BorderAround")] HRESULT BorderAround(
+			[in,optional] VARIANT LineStyle,
+			[in,defaultvalue(2)] XlBorderWeight Weight,
+			[in,defaultvalue(-4105)] XlColorIndex ColorIndex,
+			[in,optional] VARIANT Color,
+			[out,retval] VARIANT* RHS);
 //Borders
-		[propget,id(24), helpstring("property Borders")] HRESULT Borders([out, retval] IDispatch **value);
-//Count
-		[propget,id(25), helpstring("property Count")] HRESULT Count([out, retval] long *lcount);
-//delete
-		[id(26), helpstring("method Delete")] HRESULT Delete([in, optional] VARIANT param, [out, retval] IDispatch **value);
-//RowHeight
-		[propget,id(27), helpstring("property RowHeight")] HRESULT RowHeight([out, retval] long *pnrowheight);
-		[propput,id(27), helpstring("property RowHeight")] HRESULT RowHeight([in] long nrowheight);
+		[propget,id(dispid_range_borders), helpstring("property Borders")] HRESULT Borders([out, retval] IDispatch **value);
+//Calculate
+		[id(dispid_range_calculate),  helpstring("method Calculate")] HRESULT Calculate([out,retval] VARIANT* RHS);
+//Cells
+		[id(dispid_range_cells),  propget,helpstring("property Cells")] HRESULT Cells([out,retval] IDispatch**/*IRange***/ RHS);
+//Characters
+		[id(dispid_range_characters),  propget,helpstring("property Characters")] HRESULT Characters(
+			[in,optional] VARIANT Start,
+			[in,optional] VARIANT Length,
+			[out,retval] IDispatch** RHS);
+//CheckSpelling
+		[id(dispid_range_checkspelling),  helpstring("method CheckSpelling")] HRESULT CheckSpelling(
+			[in,optional] VARIANT CustomDictionary,
+			[in,optional] VARIANT IgnoreUppercase,
+			[in,optional] VARIANT AlwaysSuggest,
+			[in,optional] VARIANT SpellLang,
+			[out,retval] VARIANT* RHS);
+//Clear
+		[id(dispid_range_clear), helpstring("method Clear")] VARIANT Clear();
+//ClearContents
+		[id(dispid_range_clearcontents), helpstring("method ClearContents")] VARIANT ClearContents();
+//ClearFormats
+		[id(dispid_range_clearformats), helpstring("method ClearFormats")] VARIANT ClearFormats();
+//ClearNotes
+		[id(dispid_range_clearnotes), helpstring("method ClearNotes")] VARIANT ClearNotes();
+//ClearOutline
+		[id(dispid_range_clearoutline), helpstring("method ClearOutline")] VARIANT ClearOutline();
+//Column
+		[propget,id(dispid_range_column), helpstring("property Column")] long Column();
+//ColumnDifferences
+		[id(dispid_range_columndifferences),  helpstring("method ColumnDifferences")] HRESULT ColumnDifferences(
+			[in] VARIANT Comparison,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//Columns
+		[id(dispid_range_columns),  propget,helpstring("property Columns")] HRESULT Columns([out,retval] IDispatch**/*IRange***/ RHS);
+//ColumnWidth
+		[propget,id(dispid_range_columnwidth), helpstring("property ColumnWidth")] HRESULT ColumnWidth([out, retval] long *pnColumnWidth);
+		[propput,id(dispid_range_columnwidth), helpstring("property ColumnWidth")] HRESULT ColumnWidth([in] long nColumnWidth);
+//Consolidate
+		[id(dispid_range_consolidate),  helpstring("method Consolidate")] HRESULT Consolidate(
+			[in,optional] VARIANT Sources,
+			[in,optional] VARIANT Function,
+			[in,optional] VARIANT TopRow,
+			[in,optional] VARIANT LeftColumn,
+			[in,optional] VARIANT CreateLinks,
+			[out,retval] VARIANT* RHS);
 //Copy
-		[id(28), helpstring("method Copy")] HRESULT Copy(
+		[id(dispid_range_copy), helpstring("method Copy")] HRESULT Copy(
 			[in, optional] VARIANT RangeTo,
 			[out, retval] IDispatch **value);
-//NumberFormat
-		[propget,id(29), helpstring("property NumberFormat")] HRESULT NumberFormat([out, retval] VARIANT *pnumbformat);
-		[propput,id(29), helpstring("property NumberFormat")] HRESULT NumberFormat([in] VARIANT numbformat);
-//NumberFormatLocal
-		[propget,id(30), helpstring("property NumberFormatLocal")] HRESULT NumberFormatLocal([out, retval] VARIANT *pnumbformat);
-		[propput,id(30), helpstring("property NumberFormatLocal")] HRESULT NumberFormatLocal([in] VARIANT numbformat);
-//Height
-		[propget,id(31), helpstring("property Height")] HRESULT Height([out, retval] VARIANT *value);
-//Width
-		[propget,id(32), helpstring("property Width")] HRESULT Width([out, retval] VARIANT *value);
-//Left
-		[propget,id(33), helpstring("property Left")] HRESULT Left([out, retval] VARIANT *value);
-//Top
-		[propget,id(34), helpstring("property Top")] HRESULT Top([out, retval] VARIANT *value);
-//ShrinkToFit
-		[propget,id(35), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([out, retval] VARIANT *pparam);
-		[propput,id(35), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([in] VARIANT param);
-//MergeCells
-		[propget,id(36), helpstring("property MergeCells")] HRESULT MergeCells([out, retval] VARIANT *pparam);
-		[propput,id(36), helpstring("property MergeCells")] HRESULT MergeCells([in] VARIANT param);
-//Locked
-		[propget,id(37), helpstring("property Locked")] HRESULT Locked([out, retval] VARIANT *pparam);
-		[propput,id(37), helpstring("property Locked")] HRESULT Locked([in] VARIANT param);
-//Hidden
-		[propget,id(38), helpstring("property Hidden")] HRESULT Hidden([out, retval] VARIANT *pparam);
-		[propput,id(38), helpstring("property Hidden")] HRESULT Hidden([in] VARIANT param);
-//MergeArea
-		[propget,id(39), helpstring("property MergeArea")] HRESULT MergeArea([out, retval] IDispatch **value);
-//AutoFit
-		[id(40), helpstring("method AutoFit")] VARIANT AutoFit();
-//Insert
-		[id(41), helpstring("method Insert")] VARIANT Insert(
-			[in, optional] VARIANT Shift,
-			[in, optional] VARIANT CopyOrigin);
+//CopyFromRecordset
+		[id(dispid_range_copyfromrecordset),  helpstring("method CopyFromRecordset")] HRESULT CopyFromRecordset(
+			[in] IUnknown* Data,
+			[in,optional] VARIANT MaxRows,
+			[in,optional] VARIANT MaxColumns,
+			[out,retval] long* RHS);
+//CopyPicture
+		[id(dispid_range_copypicture),  helpstring("method CopyPicture")] HRESULT CopyPicture(
+			[in] XlPictureAppearance Appearance,
+			[in] XlCopyPictureFormat Format,
+			[out,retval] VARIANT* RHS);
+//Count
+		[propget,id(dispid_range_count), helpstring("property Count")] HRESULT Count([out, retval] long *lcount);
+//CreateNames
+		[id(dispid_range_createnames),  helpstring("method CreateNames")] HRESULT CreateNames(
+			[in,optional] VARIANT Top,
+			[in,optional] VARIANT Left,
+			[in,optional] VARIANT Bottom,
+			[in,optional] VARIANT Right,
+			[out,retval] VARIANT* RHS);
+//CreatePublisher
+		[id(dispid_range_createpublisher),  helpstring("method CreatePublisher")] HRESULT CreatePublisher(
+			[in,optional] VARIANT Edition,
+			[in,defaultvalue(1)] XlPictureAppearance Appearance,
+			[in,optional] VARIANT ContainsPICT,
+			[in,optional] VARIANT ContainsBIFF,
+			[in,optional] VARIANT ContainsRTF,
+			[in,optional] VARIANT ContainsVALU,
+			[out,retval] VARIANT* RHS);
+//CurrentArray
+		[id(dispid_range_currentarray),  propget,helpstring("property CurrentArray")] HRESULT CurrentArray([out,retval] IDispatch**/*IRange***/ RHS);
+//CurrentRegion
+		[id(dispid_range_currentregion),  propget,helpstring("property CurrentRegion")] HRESULT CurrentRegion([out,retval] IDispatch**/*IRange***/ RHS);
+//Cut
+		[id(dispid_range_cut),  helpstring("method Cut")] HRESULT Cut(
+			[in,optional] VARIANT Destination,
+			[out,retval] VARIANT* RHS);
+//DataSeries
+		[id(dispid_range_dataseries),  helpstring("method DataSeries")] HRESULT DataSeries(
+			[in,optional] VARIANT Rowcol,
+			[in] XlDataSeriesType Type,
+			[in,defaultvalue(1)] XlDataSeriesDate Date,
+			[in,optional] VARIANT Step,
+			[in,optional] VARIANT Stop,
+			[in,optional] VARIANT Trend,
+			[out,retval] VARIANT* RHS);
+//_Default
+		[propget,id(dispid_range__default), helpstring("property _Default")] HRESULT _Default(
+			[in] VARIANT varRowIndex, 
+			[in] VARIANT varColumnIndex, 
+			[out, retval] IDispatch **ppObject);
+		[propput,id(dispid_range__default), helpstring("property _Default")] HRESULT _Default(
+			[in] VARIANT varRowIndex, 
+			[in] VARIANT varColumnIndex, 
+			[in] long lcid,
+			[in] VARIANT RHS);
+//delete
+		[id(dispid_range_delete), helpstring("method Delete")] HRESULT Delete([in, optional] VARIANT param, [out, retval] IDispatch **value);
+//Dependents
+		[id(dispid_range_dependents),  propget,helpstring("property Dependents")] HRESULT Dependents([out,retval] IDispatch**/*IRange***/ RHS);
+//DialogBox1
+		[id(dispid_range_dialogbox1),  helpstring("method DialogBox1")] HRESULT DialogBox1([out,retval] VARIANT* RHS);
+//DirectDependents
+		[id(dispid_range_directdependents),  propget,helpstring("property DirectDependents")] HRESULT DirectDependents([out,retval] IDispatch**/*IRange***/ RHS);
+//EditionOptions
+		[id(dispid_range_editionoptions),  helpstring("method EditionOptions")] HRESULT EditionOptions(
+			[in] XlEditionType Type,
+			[in] XlEditionOptionsOption Option,
+			[in,optional] VARIANT Name,
+			[in,optional] VARIANT Reference,
+			[in] XlPictureAppearance Appearance,
+			[in] XlPictureAppearance ChartSize,
+			[in,optional] VARIANT Format,
+			[out,retval] VARIANT* RHS);
+//End
+		[id(dispid_range_end),  propget,helpstring("property End")] HRESULT End(
+			[in] XlDirection Direction,
+			[out,retval] IDispatch**/*IRange***/ RHS);
 //EntireColumn
-		[propget,id(42), helpstring("property EntireColumn")] HRESULT EntireColumn([out, retval] IDispatch **value);
+		[propget,id(dispid_range_entirecolumn), helpstring("property EntireColumn")] HRESULT EntireColumn([out, retval] IDispatch **value);
 //EntireRow
-		[propget,id(43), helpstring("property EntireRow")] HRESULT EntireRow([out, retval] IDispatch **value);
+		[propget,id(dispid_range_entirerow), helpstring("property EntireRow")] HRESULT EntireRow([out, retval] IDispatch **value);
+//FillDown
+		[id(dispid_range_filldown),  helpstring("method FillDown")] HRESULT FillDown([out,retval] VARIANT* RHS);
+//FillLeft
+		[id(dispid_range_fillleft),  helpstring("method FillLeft")] HRESULT FillLeft([out,retval] VARIANT* RHS);
+//FillRight
+		[id(dispid_range_fillright),  helpstring("method FillRight")] HRESULT FillRight([out,retval] VARIANT* RHS);
+//FillUp
+		[id(dispid_range_fillup),  helpstring("method FillUp")] HRESULT FillUp([out,retval] VARIANT* RHS);
+//Find
+		[id(dispid_range_find),  helpstring("method Find")] HRESULT Find(
+			[in] VARIANT What,
+			[in,optional] VARIANT After,
+			[in,optional] VARIANT LookIn,
+			[in,optional] VARIANT LookAt,
+			[in,optional] VARIANT SearchOrder,
+			[in,] XlSearchDirection SearchDirection,
+			[in,optional] VARIANT MatchCase,
+			[in,optional] VARIANT MatchByte,
+			[in,optional] VARIANT SearchFormat,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//FindNext
+		[id(dispid_range_findnext),  helpstring("method FindNext")] HRESULT FindNext(
+			[in,optional] VARIANT After,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//FindPrevious
+		[id(dispid_range_findprevious),  helpstring("FindPrevious")] HRESULT FindPrevious(
+			[in,optional] VARIANT After,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//Font
+		[propget,id(dispid_range_font), helpstring("property Font")] HRESULT Font([out, retval] IDispatch **ppFont);
+//Formula
+		[id(dispid_range_formula),  propget,helpstring("property Formula")] HRESULT Formula(
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+		[id(dispid_range_formula),  propput,helpstring("property Formula")] HRESULT Formula(
+			[in] long lcid,
+			[in] VARIANT RHS);
+//FormulaArray
+		[id(dispid_range_formulaarray),  propget,helpstring("property FormulaArray")] HRESULT FormulaArray([out,retval] VARIANT* RHS);
+		[id(dispid_range_formulaarray),  propput,helpstring("property FormulaArray")] HRESULT FormulaArray([in] VARIANT RHS);
+//FormulaLabel
+		[id(dispid_range_formulalabel),  propget,helpstring("property FormulaLabel")] HRESULT FormulaLabel([out,retval] XlFormulaLabel* RHS);
+		[id(dispid_range_formulalabel),  propput,helpstring("property FormulaLabel")] HRESULT FormulaLabel([in] XlFormulaLabel RHS);
+//FormulaHidden
+		[id(dispid_range_formulahidden),  propget,helpstring("property FormulaHidden")] HRESULT FormulaHidden([out,retval] VARIANT* RHS);
+		[id(dispid_range_formulahidden),  propput,helpstring("property FormulaHidden")] HRESULT FormulaHidden([in] VARIANT RHS);
+//FormulaLocal
+		[id(dispid_range_formulalocal),  propget,helpstring("property FormulaLocal")] HRESULT FormulaLocal([out,retval] VARIANT* RHS);
+		[id(dispid_range_formulalocal),  propput,helpstring("property FormulaLocal")] HRESULT FormulaLocal([in] VARIANT RHS);
+//FormulaR1C1
+		[id(dispid_range_formular1c1),  propget,helpstring("property FormulaR1C1")] HRESULT FormulaR1C1(
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+		[id(dispid_range_formular1c1),  propput,helpstring("property FormulaR1C1")] HRESULT FormulaR1C1(
+			[in] long lcid,
+			[in] VARIANT RHS);
+//FormulaR1C1Local
+		[id(dispid_range_formular1c1local),  propget,helpstring("property FormulaR1C1Local")] HRESULT FormulaR1C1Local([out,retval] VARIANT* RHS);
+		[id(dispid_range_formular1c1local),  propput,helpstring("property FormulaR1C1Local")] HRESULT FormulaR1C1Local([in] VARIANT RHS);
+//FunctionWizard
+		[id(dispid_range_functionwizard),  helpstring("method FunctionWizard")] HRESULT FunctionWizard([out,retval] VARIANT* RHS);
+//GoalSeek
+		[id(dispid_range_goalSeek),  helpstring("method GoalSeek")] HRESULT GoalSeek(
+			[in] VARIANT Goal,
+			[in] IDispatch*/*IRange**/ ChangingCell,
+			[out,retval] VARIANT_BOOL* RHS);
+//Group
+		[id(dispid_range_group),  helpstring("method Group")] HRESULT Group(
+			[in,optional] VARIANT Start,
+			[in,optional] VARIANT End,
+			[in,optional] VARIANT By,
+			[in,optional] VARIANT Periods,
+			[out,retval] VARIANT* RHS);
+//HasArray
+		[id(dispid_range_hasarray),  propget,helpstring("property HasArray")] HRESULT HasArray([out,retval] VARIANT* RHS);
+//HasFormula
+		[id(dispid_range_hasformula),  propget,helpstring("property HasFormula")] HRESULT HasFormula([out,retval] VARIANT* RHS);
+//Height
+		[propget,id(dispid_range_height), helpstring("property Height")] HRESULT Height([out, retval] VARIANT *value);
+//Hidden
+		[propget,id(dispid_range_hidden), helpstring("property Hidden")] HRESULT Hidden([out, retval] VARIANT *pparam);
+		[propput,id(dispid_range_hidden), helpstring("property Hidden")] HRESULT Hidden([in] VARIANT param);
+//HorizontalAlignment
+		[propget,id(dispid_range_horizontalalignment), helpstring("property HorizontalAlignment")] HRESULT HorizontalAlignment([out, retval] XlHAlign *halign);
+		[propput,id(dispid_range_horizontalalignment), helpstring("property HorizontalAlignment")] HRESULT HorizontalAlignment([in] XlHAlign halign);
+//IndentLevel
+		[id(dispid_range_indentlevel),  propget,helpstring("property IndentLevel")] HRESULT IndentLevel([out,retval] VARIANT* RHS);
+		[id(dispid_range_indentlevel),  propput,helpstring("property IndentLevel")] HRESULT IndentLevel([in] VARIANT RHS);
+//InsertIndent
+		[id(dispid_range_insertindent),  helpstring("method InsertIndent")] HRESULT InsertIndent([in] long InsertAmount);
+//Insert
+		[id(dispid_range_insert),  helpstring("method Insert")] HRESULT Insert(
+			[in,optional] VARIANT Shift,
+			[in,optional] VARIANT CopyOrigin,
+			[out,retval] VARIANT* RHS);
+
+//Interior
+		[propget,id(dispid_range_interior), helpstring("property Interior")] HRESULT Interior([out, retval] IDispatch **value);
+//Item
+		[id(dispid_range_item),  propget,helpstring("property Item")] HRESULT Item(
+			[in] VARIANT RowIndex,
+			[in,optional] VARIANT ColumnIndex,
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+		[id(dispid_range_item),  propput,helpstring("property Item")] HRESULT Item(
+			[in] VARIANT RowIndex,
+			[in,optional] VARIANT ColumnIndex,
+			[in] long lcid,
+			[in] VARIANT RHS);
+//Justify
+		[id(dispid_range_justify),  helpstring("method Justify")] HRESULT Justify([out,retval] VARIANT* RHS);
+//Left
+		[propget,id(dispid_range_left), helpstring("property Left")] HRESULT Left([out, retval] VARIANT *value);
+//ListHeaderRows
+		[id(dispid_range_listheaderrows),  propget,helpstring("property ListHeaderRows")] HRESULT ListHeaderRows([out,retval] long* RHS);
+//ListNames
+		[id(dispid_range_listnames),  helpstring("property ListNames")] HRESULT ListNames([out,retval] VARIANT* RHS);
+//LocationInTable
+		[id(dispid_range_locationintable),  propget,helpstring("property LocationInTable")] HRESULT LocationInTable([out,retval] XlLocationInTable* RHS);
+//Locked
+		[propget,id(dispid_range_locked), helpstring("property Locked")] HRESULT Locked([out, retval] VARIANT *pparam);
+		[propput,id(dispid_range_locked), helpstring("property Locked")] HRESULT Locked([in] VARIANT param);
+//Merge
+		[id(dispid_range_merge), helpstring("method Merge")] HRESULT Merge([in, optional] VARIANT_BOOL flag);
+//UnMerge
+		[id(dispid_range_unmerge), helpstring("method UnMerge")] HRESULT UnMerge();
+//MergeArea
+		[propget,id(dispid_range_mergearea), helpstring("property MergeArea")] HRESULT MergeArea([out, retval] IDispatch **value);
+//MergeCells
+		[propget,id(dispid_range_mergecells), helpstring("property MergeCells")] HRESULT MergeCells([out, retval] VARIANT *pparam);
+		[propput,id(dispid_range_mergecells), helpstring("property MergeCells")] HRESULT MergeCells([in] VARIANT param);
+//Name
+		[id(dispid_range_name),  propget,helpstring("property Name")] HRESULT Name([out,retval] VARIANT* RHS);
+		[id(dispid_range_name),  propput,helpstring("property Name")] HRESULT Name([in] VARIANT RHS);
+//NavigateArrow
+		[id(dispid_range_navigatearrow),  helpstring("method NavigateArrow")] HRESULT NavigateArrow(
+			[in,optional] VARIANT TowardPrecedent,
+			[in,optional] VARIANT ArrowNumber,
+			[in,optional] VARIANT LinkNumber,
+			[out,retval] VARIANT* RHS);
+//_NewEnum
+		[id(dispid_range__newenum),  propget,helpstring("property _NewEnum")] HRESULT _NewEnum([out,retval] IUnknown** RHS);
+//Next
+		[id(dispid_range_next),  propget,helpstring("property Next")] HRESULT Next([out,retval] IDispatch**/*IRange***/ RHS);
+//NoteText
+		[id(dispid_range_notetext), helpstring("method NoteText")] HRESULT NoteText([in, optional] VARIANT  Text, [in, optional] VARIANT  Start, [in, optional] VARIANT  Length, [out, retval]  BSTR    *pText);
+//NumberFormat
+		[propget,id(dispid_range_numberformat), helpstring("property NumberFormat")] HRESULT NumberFormat([out, retval] VARIANT *pnumbformat);
+		[propput,id(dispid_range_numberformat), helpstring("property NumberFormat")] HRESULT NumberFormat([in] VARIANT numbformat);
+//NumberFormatLocal
+		[propget,id(dispid_range_numberformatlocal), helpstring("property NumberFormatLocal")] HRESULT NumberFormatLocal([out, retval] VARIANT *pnumbformat);
+		[propput,id(dispid_range_numberformatlocal), helpstring("property NumberFormatLocal")] HRESULT NumberFormatLocal([in] VARIANT numbformat);
+//Offset
+		[id(dispid_range_offset),  propget,helpstring("property Offset")] HRESULT Offset(
+			[in,optional] VARIANT RowOffset,
+			[in,optional] VARIANT ColumnOffset,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//Orientation
+		[id(dispid_range_orientation),  propget,helpstring("property Orientation")] HRESULT Orientation([out,retval] VARIANT* RHS);
+		[id(dispid_range_orientation),  propput,helpstring("property Orientation")] HRESULT Orientation([in] VARIANT RHS);
+//OutlineLevel
+		[id(dispid_range_outlinelevel),  propget,helpstring("property OutlineLevel")] HRESULT OutlineLevel([out,retval] VARIANT* RHS);
+		[id(dispid_range_outlinelevel),  propput,helpstring("property OutlineLevel")] HRESULT OutlineLevel([in] VARIANT RHS);
+//PageBreak
+		[id(dispid_range_pagebreak),  propget,helpstring("property PageBreak")] HRESULT PageBreak([out,retval] long* RHS);
+		[id(dispid_range_pagebreak),  propput,helpstring("property PageBreak")] HRESULT PageBreak([in] long RHS);
+//Parse
+		[id(dispid_range_parse),  helpstring("method Parse")] HRESULT Parse(
+			[in,optional] VARIANT ParseLine,
+			[in,optional] VARIANT Destination,
+			[out,retval] VARIANT* RHS);
+//_PasteSpecial
+		[id(dispid_range__pastespecial), helpstring("method _PasteSpecial")] HRESULT _PasteSpecial(
+			[in] XlPasteType Paste,
+			[in] XlPasteSpecialOperation Operation,
+			[in,optional] VARIANT SkipBlanks,
+			[in,optional] VARIANT Transpose,
+			[out,retval] VARIANT* RHS);
+//PivotField
+		[id(dispid_range_pivotfield),  propget,helpstring("property PivotField")] HRESULT PivotField([out,retval] IDispatch** RHS);
+//PivotItem
+		[id(dispid_range_pivotitem),  propget,helpstring("property PivotItem")] HRESULT PivotItem([out,retval] IDispatch** RHS);
+//PivotTable
+		[id(dispid_range_pivottable),  propget,helpstring("property PivotTable")] HRESULT PivotTable([out,retval] IDispatch** RHS);
+//Precedents
+		[id(dispid_range_precedents),  propget,helpstring("property Precedents")] HRESULT Precedents([out,retval] IDispatch**/*IRange***/ RHS);
+//PrefixCharacter
+		[id(dispid_range_prefixcharacter),  propget,helpstring("property PrefixCharacter")] HRESULT PrefixCharacter([out,retval] VARIANT* RHS);
+//Previous
+		[id(dispid_range_previous),  propget,helpstring("property Previous")] HRESULT Previous([out,retval] IDispatch**/*IRange***/ RHS);
+//_PrintOut
+		[id(dispid_range__printout),  helpstring("method _PrintOut")] HRESULT _PrintOut(
+			[in,optional] VARIANT From,
+			[in,optional] VARIANT To,
+			[in,optional] VARIANT Copies,
+			[in,optional] VARIANT Preview,
+			[in,optional] VARIANT ActivePrinter,
+			[in,optional] VARIANT PrintToFile,
+			[in,optional] VARIANT Collate,
+			[out,retval] VARIANT* RHS);
+//PrintPreview
+		[id(dispid_range_printpreview),  helpstring("method PrintPreview")] HRESULT PrintPreview(
+			[in,optional] VARIANT EnableChanges,
+			[out,retval] VARIANT* RHS);
+//QueryTable
+		[id(dispid_range_querytable),  propget,helpstring("property QueryTable")] HRESULT QueryTable([out,retval] IDispatch** RHS);
+//Range
+		[id(dispid_range_range),  propget,helpstring("property Range")] HRESULT Range(
+			[in] VARIANT Cell1,
+			[in,optional] VARIANT Cell2,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//RemoveSubtotal
+		[id(dispid_range_removesubtotal),  helpstring("method RemoveSubtotal")] HRESULT RemoveSubtotal([out,retval] VARIANT* RHS);
+//Replace
+		[id(dispid_range_replace),  helpstring("method Replace")] HRESULT Replace(
+			[in] VARIANT What,
+			[in] VARIANT Replacement,
+			[in,optional] VARIANT LookAt,
+			[in,optional] VARIANT SearchOrder,
+			[in,optional] VARIANT MatchCase,
+			[in,optional] VARIANT MatchByte,
+			[in,optional] VARIANT SearchFormat,
+			[in,optional] VARIANT ReplaceFormat,
+			[out,retval] VARIANT_BOOL* RHS);
+//Resize
+		[id(dispid_range_resize),  propget,helpstring("property Resize")] HRESULT Resize(
+			[in,optional] VARIANT RowSize,
+			[in,optional] VARIANT ColumnSize,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//Row
+		[propget,id(dispid_range_row), helpstring("property Row")] long Row();
+//RowDifferences
+		[id(dispid_range_rowdifferences),  helpstring("method RowDifferences")] HRESULT RowDifferences(
+			[in] VARIANT Comparison,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//RowHeight
+		[propget,id(dispid_range_rowheight), helpstring("property RowHeight")] HRESULT RowHeight([out, retval] long *pnrowheight);
+		[propput,id(dispid_range_rowheight), helpstring("property RowHeight")] HRESULT RowHeight([in] long nrowheight);
+//Rows
+		[id(dispid_range_rows),  propget,helpstring("property Rows")] HRESULT Rows([out,retval] IDispatch**/*IRange***/ RHS);
+//Run
+		[id(dispid_range_run),  helpstring("method Run")] HRESULT Run(
+			[in,optional] VARIANT Arg1,
+			[in,optional] VARIANT Arg2,
+			[in,optional] VARIANT Arg3,
+			[in,optional] VARIANT Arg4,
+			[in,optional] VARIANT Arg5,
+			[in,optional] VARIANT Arg6,
+			[in,optional] VARIANT Arg7,
+			[in,optional] VARIANT Arg8,
+			[in,optional] VARIANT Arg9,
+			[in,optional] VARIANT Arg10,
+			[in,optional] VARIANT Arg11,
+			[in,optional] VARIANT Arg12,
+			[in,optional] VARIANT Arg13,
+			[in,optional] VARIANT Arg14,
+			[in,optional] VARIANT Arg15,
+			[in,optional] VARIANT Arg16,
+			[in,optional] VARIANT Arg17,
+			[in,optional] VARIANT Arg18,
+			[in,optional] VARIANT Arg19,
+			[in,optional] VARIANT Arg20,
+			[in,optional] VARIANT Arg21,
+			[in,optional] VARIANT Arg22,
+			[in,optional] VARIANT Arg23,
+			[in,optional] VARIANT Arg24,
+			[in,optional] VARIANT Arg25,
+			[in,optional] VARIANT Arg26,
+			[in,optional] VARIANT Arg27,
+			[in,optional] VARIANT Arg28,
+			[in,optional] VARIANT Arg29,
+			[in,optional] VARIANT Arg30,
+			[out,retval] VARIANT* RHS);
+//Select
+		[id(dispid_range_select), helpstring("method Select")] HRESULT Select([out, retval] VARIANT *pvarResult);
+//Show
+		[id(dispid_range_show),  helpstring("method Show")] HRESULT Show([out,retval] VARIANT* RHS);
+//ShowDependents
+		[id(dispid_range_showdependents),  helpstring("method ShowDependents")] HRESULT ShowDependents(
+			[in,optional] VARIANT Remove,
+			[out,retval] VARIANT* RHS);
+//ShowDetail
+		[id(dispid_range_showdetail),  propget,helpstring("property ShowDetail")] HRESULT ShowDetail([out,retval] VARIANT* RHS);
+		[id(dispid_range_showdetail),  propput,helpstring("property ShowDetail")] HRESULT ShowDetail([in] VARIANT RHS);
+//ShowErrors
+		[id(dispid_range_showerrors),  helpstring("method ShowErrors")] HRESULT ShowErrors([out,retval] VARIANT* RHS);
+//ShowPrecedents
+		[id(dispid_range_showprecedents),  helpstring("method ShowPrecedents")] HRESULT ShowPrecedents(
+			[in,optional] VARIANT Remove,
+			[out,retval] VARIANT* RHS);
+//ShrinkToFit
+		[propget,id(dispid_range_shrinktofit), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([out, retval] VARIANT *pparam);
+		[propput,id(dispid_range_shrinktofit), helpstring("property ShrinkToFit")] HRESULT ShrinkToFit([in] VARIANT param);
+//Sort
+		[id(dispid_range_sort),  helpstring("method Sort")] HRESULT Sort(
+			[in,optional] VARIANT Key1,
+			[in] XlSortOrder Order1,
+			[in,optional] VARIANT Key2,
+			[in,optional] VARIANT Type,
+			[in] XlSortOrder Order2,
+			[in,optional] VARIANT Key3,
+			[in] XlSortOrder Order3,
+			[in] XlYesNoGuess Header,
+			[in,optional] VARIANT OrderCustom,
+			[in,optional] VARIANT MatchCase,
+			[in] XlSortOrientation Orientation,
+			[in] XlSortMethod SortMethod,
+			[in] XlSortDataOption DataOption1,
+			[in] XlSortDataOption DataOption2,
+			[in] XlSortDataOption DataOption3,
+			[out,retval] VARIANT* RHS);
+//SortSpecial
+		[id(dispid_range_sortspecial),  helpstring("method SortSpecial")] HRESULT SortSpecial(
+			[in,defaultvalue(1)] XlSortMethod SortMethod,
+			[in,optional] VARIANT Key1,
+			[in,defaultvalue(1)] XlSortOrder Order1,
+			[in,optional] VARIANT Type,
+			[in,optional] VARIANT Key2,
+			[in,defaultvalue(1)] XlSortOrder Order2,
+			[in,optional] VARIANT Key3,
+			[in,defaultvalue(1)] XlSortOrder Order3,
+			[in,defaultvalue(2)] XlYesNoGuess Header,
+			[in,optional] VARIANT OrderCustom,
+			[in,optional] VARIANT MatchCase,
+			[in,defaultvalue(2)] XlSortOrientation Orientation,
+			[in,defaultvalue(0)] XlSortDataOption DataOption1,
+			[in,defaultvalue(0)] XlSortDataOption DataOption2,
+			[in,defaultvalue(0)] XlSortDataOption DataOption3,
+			[out,retval] VARIANT* RHS);
+//SoundNote
+		[id(dispid_range_soundnote),  propget,helpstring("property SoundNote")] HRESULT SoundNote([out,retval] IDispatch** RHS);
+//SpecialCells
+		[id(dispid_range_specialcells),  helpstring("method SpecialCells")] HRESULT SpecialCells(
+			[in] XlCellType Type,
+			[in,optional] VARIANT Value,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//Style
+		[id(dispid_range_style),  propget,helpstring("property Style")] HRESULT Style([out,retval] VARIANT* RHS);
+		[id(dispid_range_style),  propput,helpstring("property Style")] HRESULT Style([in] VARIANT RHS);
+//SubscribeTo
+		[id(dispid_range_subscribeto),  helpstring("method SubscribeTo")] HRESULT SubscribeTo(
+			[in] BSTR Edition,
+			[in] XlSubscribeToFormat Format,
+			[out,retval] VARIANT* RHS);
+//Subtotal
+		[id(dispid_range_subtotal),  helpstring("method Subtotal")] HRESULT Subtotal(
+			[in] long GroupBy,
+			[in] XlConsolidationFunction Function,
+			[in] VARIANT TotalList,
+			[in,optional] VARIANT Replace,
+			[in,optional] VARIANT PageBreaks,
+			[in,] XlSummaryRow SummaryBelowData,
+			[out,retval] VARIANT* RHS);
+//Summary
+		[id(dispid_range_summary),  propget,helpstring("property Summary")] HRESULT Summary([out,retval] VARIANT* RHS);
+//Table
+		[id(dispid_range_table),  helpstring("method Table")] HRESULT Table(
+			[in,optional] VARIANT RowInput,
+			[in,optional] VARIANT ColumnInput,
+			[out,retval] VARIANT* RHS);
+//Text
+		[id(dispid_range_text),  propget,helpstring("property Text")] HRESULT Text([out,retval] VARIANT* RHS);
+//TextToColumns
+		[id(dispid_range_texttocolumns),  helpstring("method TextToColumns")] HRESULT TextToColumns(
+			[in,optional] VARIANT Destination,
+			[in] XlTextParsingType DataType,
+			[in] XlTextQualifier TextQualifier,
+			[in,optional] VARIANT ConsecutiveDelimiter,
+			[in,optional] VARIANT Tab,
+			[in,optional] VARIANT Semicolon,
+			[in,optional] VARIANT Comma,
+			[in,optional] VARIANT Space,
+			[in,optional] VARIANT Other,
+			[in,optional] VARIANT OtherChar,
+			[in,optional] VARIANT FieldInfo,
+			[in,optional] VARIANT DecimalSeparator,
+			[in,optional] VARIANT ThousandsSeparator,
+			[in,optional] VARIANT TrailingMinusNumbers,
+			[out,retval] VARIANT* RHS);
+//Top
+		[propget,id(dispid_range_top), helpstring("property Top")] HRESULT Top([out, retval] VARIANT *value);
+//Ungroup
+		[id(dispid_range_ungroup),  helpstring("method Ungroup")] HRESULT Ungroup([out,retval] VARIANT* RHS);
+//UseStandardHeight
+		[id(dispid_range_usestandardheight),  propget,helpstring("property UseStandardHeight")] HRESULT UseStandardHeight([out,retval] VARIANT* RHS);
+		[id(dispid_range_usestandardheight),  propput,helpstring("property UseStandardHeight")] HRESULT UseStandardHeight([in] VARIANT RHS);
+//UseStandardWidth
+		[id(dispid_range_usestandardwidth),  propget,helpstring("property UseStandardWidth")] HRESULT UseStandardWidth([out,retval] VARIANT* RHS);
+		[id(dispid_range_usestandardwidth),  propput,helpstring("property UseStandardWidth")] HRESULT UseStandardWidth([in] VARIANT RHS);
+//Validation
+		[id(dispid_range_validation),  propget,helpstring("property Validation")] HRESULT Validation([out,retval] IDispatch** RHS);
+//Value
+		[propget,id(dispid_range_value), helpstring("property Value")] HRESULT Value(
+			[in, optional] VARIANT varRangeValueDataType,
+			[in] long lcid,
+			[out, retval] VARIANT *pvarValue);
+		[propput,id(dispid_range_value), helpstring("property Value")] HRESULT Value(
+			[in, optional] VARIANT varRangeValueDataType,
+			[in] long lcid,
+			[in] VARIANT varValue);
+//Value2
+		[id(dispid_range_value2),  propget,helpstring("property Value2")] HRESULT Value2(
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+		[id(dispid_range_value2),  propput,helpstring("property Value2")] HRESULT Value2(
+			[in] long lcid,
+			[in] VARIANT RHS);
+//VerticalAlignment
+		[propget,id(dispid_range_verticalalignment), helpstring("property VerticalAlignment")] HRESULT VerticalAlignment([out, retval] XlVAlign *valign);
+		[propput,id(dispid_range_verticalalignment), helpstring("property VerticalAlignment")] HRESULT VerticalAlignment([in] XlVAlign valign);
+//Width
+		[propget,id(dispid_range_width), helpstring("property Width")] HRESULT Width([out, retval] VARIANT *value);
+//Worksheet
+		[propget,id(dispid_range_worksheet), helpstring("property Worksheet")] HRESULT Worksheet([out, retval] IDispatch **value);
+//WrapText
+		[propget,id(dispid_range_wraptext), helpstring("property WrapText")] HRESULT WrapText([out, retval] VARIANT_BOOL *pvbwraptext);
+		[propput,id(dispid_range_wraptext), helpstring("property WrapText")] HRESULT WrapText([in] VARIANT_BOOL pvbwraptext);
+//AddComment
+		[id(dispid_range_addcomment),  helpstring("method AddComment")] HRESULT AddComment(
+			[in,optional] VARIANT Text,
+			[out,retval] IDispatch**/*IComment***/ RHS);
+//Comment
+		[id(dispid_range_comment),  propget,helpstring("property Comment")] HRESULT Comment([out,retval] IDispatch** RHS);
+//ClearComments
+		[id(dispid_range_clearcomments), helpstring("method ClearComments")] HRESULT ClearComments();
+//Phonetic
+		[id(dispid_range_phonetic),  propget,helpstring("property Phonetic")] HRESULT Phonetic([out,retval] IDispatch** RHS);
+//FormatConditions
+		[id(dispid_range_formatconditions),  propget,helpstring("property FormatConditions")] HRESULT FormatConditions([out,retval] IDispatch** RHS);
+//ReadingOrder
+		[id(dispid_range_readingorder),  propget,helpstring("property ReadingOrder")] HRESULT ReadingOrder([out,retval] long* RHS);
+		[id(dispid_range_readingorder),  propput,helpstring("property ReadingOrder")] HRESULT ReadingOrder([in] long RHS);
+//Hyperlinks
+		[id(dispid_range_hyperlinks),  propget,helpstring("property Hyperlinks")] HRESULT Hyperlinks([out,retval] IDispatch** RHS);
+//Phonetics
+		[id(dispid_range_phonetics),  propget,helpstring("property Phonetics")] HRESULT Phonetics([out,retval] IDispatch** RHS);
+//SetPhonetic
+		[id(dispid_range_setphonetic),  helpstring("method SetPhonetic")] HRESULT SetPhonetic();
+//ID
+		[id(dispid_range_id),  propget,helpstring("property ID")] HRESULT ID([out,retval] BSTR* RHS);
+		[id(dispid_range_id),  propput,helpstring("property ID")] HRESULT ID([in] BSTR RHS);
+//PrintOut
+		[id(dispid_range_printout),  helpstring("method PrintOut")] HRESULT PrintOut(
+			[in,optional] VARIANT From,
+			[in,optional] VARIANT To,
+			[in,optional] VARIANT Copies,
+			[in,optional] VARIANT Preview,
+			[in,optional] VARIANT ActivePrinter,
+			[in,optional] VARIANT PrintToFile,
+			[in,optional] VARIANT Collate,
+			[in,optional] VARIANT PrToFileName,
+			[out,retval] VARIANT* RHS);
+//PivotCell
+		[id(dispid_range_pivotcell),  propget,helpstring("property PivotCell")] HRESULT PivotCell([out,retval] IDispatch** RHS);
+//Dirty
+		[id(dispid_range_dirty),  helpstring("method Dirty")] HRESULT Dirty();
+//Errors
+		[id(dispid_range_errors),  propget,helpstring("property Errors")] HRESULT Errors([out,retval] IDispatch** RHS);
+//SmartTags
+		[id(dispid_range_smarttags),  propget,helpstring("property SmartTags")] HRESULT SmartTags([out,retval] IDispatch** RHS);
+//Speak
+		[id(dispid_range_speak),  helpstring("method Speak")] HRESULT Speak(
+			[in,optional] VARIANT SpeakDirection,
+			[in,optional] VARIANT SpeakFormulas);
+//PasteSpecial
+		[id(dispid_range_pastespecial),  helpstring("method PasteSpecial")] HRESULT PasteSpecial(
+			[in,defaultvalue(-4104)] XlPasteType Paste,
+			[in,defaultvalue(-4142)] XlPasteSpecialOperation Operation,
+			[in,optional] VARIANT SkipBlanks,
+			[in,optional] VARIANT Transpose,
+			[out,retval] VARIANT* RHS);
+//AllowEdit
+		[id(dispid_range_allowedit),  propget,helpstring("property AllowEdit")] HRESULT AllowEdit([out,retval] VARIANT_BOOL* RHS);
+//ListObject
+		[id(dispid_range_listobject),  propget,helpstring("property ListObject")] HRESULT ListObject([out,retval] IDispatch** RHS);
+//XPath
+		[id(dispid_range_xpath),  propget,helpstring("property XPath")] HRESULT XPath([out,retval] IDispatch** RHS);
 	};
 
 	[

@@ -4501,7 +4501,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell2);
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
                 I_Range_get__Default((I_Range*)pdisp,cell1, cell2,&pretdisp);
-                I_Range_put_Value((I_Range*)pretdisp, vNull, vtmp);
+                I_Range_put_Value((I_Range*)pretdisp, vNull, 0, vtmp);
                 IDispatch_Release(pdisp);
                 IDispatch_Release(pretdisp);
                 return S_OK;
