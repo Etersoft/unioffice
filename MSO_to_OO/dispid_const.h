@@ -572,3 +572,23 @@
 #define dispid_range_listobject                                  169
 #define dispid_range_xpath                                       170
 
+/*ISheets*/
+#define dispid_sheets_application                                148
+#define dispid_sheets_creator                                    149
+#define dispid_sheets_parent                                     150
+#define dispid_sheets_add                                        181
+#define dispid_sheets_copy                                       551
+#define dispid_sheets_count                                      118
+#define dispid_sheets_delete                                     117
+#define dispid_sheets_fillacrosssheets                           469
+#define dispid_sheets_item                                       170
+#define dispid_sheets_move                                       637
+#define dispid_sheets__newenum                                   -4
+#define dispid_sheets__printout                                  905
+#define dispid_sheets_printpreview                               281
+#define dispid_sheets_select                                     235
+#define dispid_sheets_hpagebreaks                                1418
+#define dispid_sheets_vpagebreaks                                1419
+#define dispid_sheets_visible                                    558
+#define dispid_sheets__default                                   0
+#define dispid_sheets_printout                                   1772

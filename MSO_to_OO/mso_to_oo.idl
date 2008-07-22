@@ -584,6 +584,12 @@ import "wtypes.idl";
 		xlTextQualifierSingleQuote	= 0x00000002
 	} XlTextQualifier;
 
+	typedef enum {
+		xlFillWithAll 	= 0xFFFFEFF8,
+		xlFillWithContents		= 0x00000002,
+		xlFillWithFormats	= 0xFFFFEFE6
+	} XlFillWith;
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
@@ -1688,24 +1694,89 @@ import "wtypes.idl";
 	]
 	interface I_Sheets : IDispatch
 	{
-		[propget,id(1), helpstring("property _Default")] HRESULT _Default([in] VARIANT varIndex, [out, retval] IDispatch **ppSheet);
-//Count
-		[propget,id(2), helpstring("property Count")] HRESULT Count([out, retval] int *count);
 //Application
-		[propget,id(3), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
-//Parent
-		[propget,id(4), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
-//Item
-		[propget,id(5), helpstring("property Item")] HRESULT Item([in] VARIANT varIndex, [out, retval] IDispatch **ppSheet);
+		[propget,id(dispid_sheets_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //Creator
-		[propget,id(6), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+		[propget,id(dispid_sheets_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent
+		[propget,id(dispid_sheets_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
 //Add
-		[id(7), helpstring("method Add")] HRESULT Add(
+		[id(dispid_sheets_add), helpstring("method Add")] HRESULT Add(
 			[in, optional] VARIANT Before,
 			[in, optional] VARIANT After,
 			[in, optional] VARIANT Count,
 			[in, optional] VARIANT Type,
 			[out, retval] IDispatch **value);
+//Copy
+		[id(dispid_sheets_copy), helpstring("method Copy")] HRESULT Copy(
+			[in, optional] VARIANT Before,
+			[in, optional] VARIANT After,
+			[in] long lcid);
+//Count
+		[propget,id(dispid_sheets_count), helpstring("property Count")] HRESULT Count([out, retval] int *count);
+//Delete
+		[id(dispid_sheets_delete), helpstring("method Delete")] HRESULT Delete([in] long lcid);
+//FillAcrossSheets
+		[id(dispid_sheets_fillacrosssheets), helpstring("method FillAcrossSheets")] HRESULT FillAcrossSheets(
+			[in] IDispatch*/*IRange**/ IRange,
+			[in] XlFillWith Type,
+			[in] long lcid);
+//Item
+		[propget,id(dispid_sheets_item), helpstring("property Item")] HRESULT Item(
+			[in] VARIANT varIndex, 
+			[out, retval] IDispatch **ppSheet);
+//Move
+		[id(dispid_sheets_move), helpstring("method move")] HRESULT Move(
+			[in, optional] VARIANT Before,
+			[in, optional] VARIANT After,
+			[in] long lcid);
+//_NewEnum
+		[id(dispid_sheets__newenum), propget, helpstring("property _NewEnum")] HRESULT _NewEnum([out, retval] IUnknown** RHS);
+//_PrintOut
+		[id(dispid_sheets__printout), helpstring("method _PrintOut")] HRESULT _PrintOut(
+			[in, optional] VARIANT From,
+			[in, optional] VARIANT To,
+			[in, optional] VARIANT Copies,
+			[in, optional] VARIANT Preview,
+			[in, optional] VARIANT ActivePrinter,
+			[in, optional] VARIANT PrintToFile,
+			[in, optional] VARIANT Collate,
+			[in] long lcid);
+//PrintPreview
+		[id(dispid_sheets_printpreview), helpstring("method PrintPreview")] HRESULT PrintPreview(
+			[in, optional] VARIANT EnableChanges,
+			[in] long lcid);
+//Select
+		[id(dispid_sheets_select), helpstring("method Select")] HRESULT Select(
+			[in, optional] VARIANT Replace,
+			[in] long lcid);
+//HPageBreaks
+		[id(dispid_sheets_hpagebreaks), propget, helpstring("property HPageBreaks")] HRESULT HPageBreaks([out, retval] IDispatch** RHS);
+//VPageBreaks
+		[id(dispid_sheets_vpagebreaks), propget, helpstring("property VPageBreaks")] HRESULT VPageBreaks([out, retval] IDispatch** RHS);
+//Visible
+		[id(dispid_sheets_visible), propget, helpstring("property Visible")] HRESULT Visible(
+			[in] long lcid,
+			[out, retval] VARIANT* RHS);
+		[id(dispid_sheets_visible), propput, helpstring("property Visible")] HRESULT Visible(
+			[in] long lcid,
+			[in] VARIANT RHS);
+//_Default
+		[propget,id(dispid_sheets__default), helpstring("property _Default")] HRESULT _Default(
+			[in] VARIANT varIndex,
+			[out, retval] IDispatch **ppSheet);
+//PrintOut
+        [id(dispid_sheets_printout), helpstring("method PrintOut")]
+        HRESULT PrintOut(
+            [in, optional] VARIANT From,
+            [in, optional] VARIANT To,
+            [in, optional] VARIANT Copies,
+            [in, optional] VARIANT Preview,
+            [in, optional] VARIANT ActivePrinter,
+            [in, optional] VARIANT PrintToFile,
+            [in, optional] VARIANT Collate,
+            [in, optional] VARIANT PrToFileName,
+            [in] long lcid);
 	};
 
 	[

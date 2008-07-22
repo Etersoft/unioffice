@@ -396,6 +396,135 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
     return hres;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_Copy(
+        I_Sheets* iface,
+        VARIANT Before,
+        VARIANT After,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_Delete(
+        I_Sheets* iface,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_FillAcrossSheets(
+        I_Sheets* iface,
+        IDispatch *IRange,
+        XlFillWith Type,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_Move(
+        I_Sheets* iface,
+        VARIANT Before,
+        VARIANT After,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__NewEnum(
+        I_Sheets* iface,
+        IUnknown **RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets__PrintOut(
+        I_Sheets* iface,
+        VARIANT From,
+        VARIANT To,
+        VARIANT Copies,
+        VARIANT Preview,
+        VARIANT ActivePrinter,
+        VARIANT PrintToFile,
+        VARIANT Collate,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintPreview(
+        I_Sheets* iface,
+        VARIANT EnableChanges,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_Select(
+        I_Sheets* iface,
+        VARIANT Replace,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_HPageBreaks(
+        I_Sheets* iface,
+        IDispatch **RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_VPageBreaks(
+        I_Sheets* iface,
+        IDispatch **RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Visible(
+        I_Sheets* iface,
+        long lcid,
+        VARIANT *RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_put_Visible(
+        I_Sheets* iface,
+        long lcid,
+        VARIANT RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintOut(
+        I_Sheets* iface,
+        VARIANT From,
+        VARIANT To,
+        VARIANT Copies,
+        VARIANT Preview,
+        VARIANT ActivePrinter,
+        VARIANT PrintToFile,
+        VARIANT Collate,
+        VARIANT PrToFileName,
+        long lcid)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
 
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetTypeInfoCount(
@@ -425,31 +554,31 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_default)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_sheets__default;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_count)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_sheets_count;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_sheets_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_sheets_parent;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_item)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_sheets_item;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_sheets_creator;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_add)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_sheets_add;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -484,7 +613,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
 
     switch (dispIdMember)
     {
-    case 1:
+    case dispid_sheets__default:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -503,7 +632,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             return S_OK;
         }
-    case 2:
+    case dispid_sheets_count:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -518,7 +647,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             return S_OK;
         }
-    case 3:
+    case dispid_sheets_application:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -533,7 +662,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             return S_OK;
         }
-    case 4:
+    case dispid_sheets_parent:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -548,7 +677,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             return S_OK;
         }
-    case 5:
+    case dispid_sheets_item:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -567,7 +696,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             }
             return S_OK;
         }
-    case 6:
+    case dispid_sheets_creator:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
@@ -575,7 +704,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
             *pVarResult = vresult;
             return hres;
         }
-    case 7:
+    case dispid_sheets_add:
         if (pDispParams->cArgs>4) {
             TRACE(" (7) Error number of parameters \n");
             return E_FAIL;
@@ -613,13 +742,26 @@ const I_SheetsVtbl MSO_TO_OO_I_SheetsVtbl =
     MSO_TO_OO_I_Sheets_GetTypeInfo,
     MSO_TO_OO_I_Sheets_GetIDsOfNames,
     MSO_TO_OO_I_Sheets_Invoke,
-    MSO_TO_OO_I_Sheets_get__Default,
-    MSO_TO_OO_I_Sheets_get_Count,
     MSO_TO_OO_I_Sheets_get_Application,
-    MSO_TO_OO_I_Sheets_get_Parent,
-    MSO_TO_OO_I_Sheets_get_Item,
     MSO_TO_OO_I_Sheets_get_Creator,
-    MSO_TO_OO_I_Sheets_Add
+    MSO_TO_OO_I_Sheets_get_Parent,
+    MSO_TO_OO_I_Sheets_Add,
+    MSO_TO_OO_I_Sheets_Copy,
+    MSO_TO_OO_I_Sheets_get_Count,
+    MSO_TO_OO_I_Sheets_Delete,
+    MSO_TO_OO_I_Sheets_FillAcrossSheets,
+    MSO_TO_OO_I_Sheets_get_Item,
+    MSO_TO_OO_I_Sheets_Move,
+    MSO_TO_OO_I_Sheets_get__NewEnum,
+    MSO_TO_OO_I_Sheets__PrintOut,
+    MSO_TO_OO_I_Sheets_PrintPreview,
+    MSO_TO_OO_I_Sheets_Select,
+    MSO_TO_OO_I_Sheets_get_HPageBreaks,
+    MSO_TO_OO_I_Sheets_get_VPageBreaks,
+    MSO_TO_OO_I_Sheets_get_Visible,
+    MSO_TO_OO_I_Sheets_put_Visible,
+    MSO_TO_OO_I_Sheets_get__Default,
+    MSO_TO_OO_I_Sheets_PrintOut
 };
 
 extern HRESULT _I_SheetsConstructor(LPVOID *ppObj)
