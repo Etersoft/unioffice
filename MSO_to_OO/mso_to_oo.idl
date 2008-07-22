@@ -585,10 +585,22 @@ import "wtypes.idl";
 	} XlTextQualifier;
 
 	typedef enum {
-		xlFillWithAll 	= 0xFFFFEFF8,
+		xlFillWithAll 			= 0xFFFFEFF8,
 		xlFillWithContents		= 0x00000002,
-		xlFillWithFormats	= 0xFFFFEFE6
+		xlFillWithFormats		= 0xFFFFEFE6
 	} XlFillWith;
+
+	typedef enum {
+		xlSheetVisible 			= 0xffffffff,
+		xlSheetHidden 			= 0,
+		xlSheetVeryHidden 		= 2
+	} XlSheetVisibility;
+
+	typedef enum {
+		xlNoRestrictions 		= 0,
+		xlUnlockedCells 		= 1,
+		xlNoSelection 			= 0xffffefd2
+	} XlEnableSelection;
 
 //	typedef enum
 //	{
@@ -1639,50 +1651,561 @@ import "wtypes.idl";
 	]
 	interface I_Worksheet : IDispatch
 	{
-//Name
-		[propget,id(1), helpstring("property Name")] HRESULT Name([out, retval] BSTR *pbstrName);
-		[propput,id(1), helpstring("property Name")] HRESULT Name([in] BSTR bstrName);
-//Cells
-		[propget,id(2), helpstring("property Cells")] HRESULT Cells   ([out, retval] IDispatch **ppRange);
-//Range
-		[propget,id(3), helpstring("property Range")] HRESULT Range([in] VARIANT Cell1, [in, optional] VARIANT Cell2, [out, retval] IDispatch **ppRange);
-//Paste
-		[id(4), helpstring("method Paste")] HRESULT Paste([in, optional] VARIANT Destination, [in, optional] VARIANT Link, [in] long lcid);
+//Application
+		[id(dispid_worksheet_application),propget,helpstring(" property Application")] HRESULT Application([out,retval] IDispatch**/*IApplication***/ RHS);
+//Creator
+		[id(dispid_worksheet_creator),propget,helpstring("property Creator")] HRESULT Creator([out,retval] XlCreator* RHS);
+//Parent
+		[id(dispid_worksheet_parent),propget,helpstring("property Parent")] HRESULT Parent([out,retval] IDispatch** RHS);
 //Activate
-		[id(5), helpstring("method Activate")] HRESULT Activate();
-//Rows
-		[propget,id(6), helpstring("property Rows")] HRESULT Rows([in, optional] VARIANT Row, [out, retval] IDispatch **ppRange);
-//Columns
-		[propget,id(7), helpstring("property Columns")] HRESULT Columns([in, optional] VARIANT Column, [out, retval] IDispatch **ppRange);
+		[id(dispid_worksheet_activate),helpstring("method Activate")] HRESULT Activate([in] long lcid);
 //Copy
-		[id(8), helpstring("method Copy")] HRESULT Copy(
-			[in, optional] VARIANT Before,
-			[in, optional] VARIANT After);
+		[id(dispid_worksheet_copy),helpstring("method Copy")] HRESULT Copy(
+			[in,optional] VARIANT Before,
+			[in,optional] VARIANT After,
+			[in] long lcid);
 //Delete
-		[id(9), helpstring("method Delete")] HRESULT Delete();
+		[id(dispid_worksheet_delete),helpstring("method Delete")] HRESULT Delete([in] long lcid);
+//CodeName
+		[id(dispid_worksheet_codename),propget,helpstring("property CodeName")] HRESULT CodeName([out,retval] BSTR* RHS);
+//_CodeName
+		[id(dispid_worksheet__codename),propget,helpstring("property _CodeName")] HRESULT _CodeName([out,retval] BSTR* RHS);
+		[id(dispid_worksheet__codename),propput,helpstring("property _CodeName")] HRESULT _CodeName([in] BSTR RHS);
+//Index
+		[id(dispid_worksheet_index),propget,helpstring("property Index")] HRESULT Index(
+			[in] long lcid,
+			[out,retval] long* RHS);
+//Move
+		[id(dispid_worksheet_move),helpstring("method Move")] HRESULT Move(
+			[in,optional] VARIANT Before,
+			[in,optional] VARIANT After,
+			[in] long lcid);
+//Name
+		[id(dispid_worksheet_name),propget,helpstring("property Name")] HRESULT Name([out,retval] BSTR* RHS);
+		[id(dispid_worksheet_name),propput,helpstring("property Name")] HRESULT Name([in] BSTR RHS);
+//Next
+		[id(dispid_worksheet_next),propget,helpstring("property Next")] HRESULT Next([out,retval] IDispatch** RHS);
+//OnDoubleClick
+		[id(dispid_worksheet_ondoubleclick),propget,hidden,helpstring("property OnDoubleClick")] HRESULT OnDoubleClick(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_worksheet_ondoubleclick),propput,hidden,helpstring("property OnDoubleClick")] HRESULT OnDoubleClick(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OnSheetActivate
+		[id(dispid_worksheet_onsheetactivate),propget,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_worksheet_onsheetactivate),propput,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OnSheetDeactivate
+		[id(dispid_worksheet_onsheetdeactivate),propget,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_worksheet_onsheetdeactivate),propput,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
+			[in] long lcid,
+			[in] BSTR RHS);
 //PageSetup
-		[propget,id(10), helpstring("property PageSetup")] HRESULT PageSetup([out, retval] IDispatch **ppValue);
-//Protect
-		[id(11), helpstring("property Protect")] HRESULT Protect([in, optional] VARIANT Password,
-			[in, optional] VARIANT DrawingObjects,
-			[in, optional] VARIANT Contents,
-			[in, optional] VARIANT Scenarios,
-			[in, optional] VARIANT UserInterfaceOnly,
-			[in, optional] VARIANT AllowFormattingCells,
-			[in, optional] VARIANT AllowFormattingColumns,
-			[in, optional] VARIANT AllowFormattingRows,
-			[in, optional] VARIANT AllowInsertingColumns,
-			[in, optional] VARIANT AllowInsertingRows,
-			[in, optional] VARIANT AllowInsertingHyperlinks,
-			[in, optional] VARIANT AllowDeletingColumns,
-			[in, optional] VARIANT AllowDeletingRows,
-			[in, optional] VARIANT AllowSorting,
-			[in, optional] VARIANT AllowFiltering,
-			[in, optional] VARIANT AllowUsingPivotTables);
+		[id(dispid_worksheet_pagesetup),propget,helpstring("property PageSetup")] HRESULT PageSetup([out,retval] IDispatch** RHS);
+//Previous
+		[id(dispid_worksheet_previous),propget,helpstring("property Previous")] HRESULT Previous([out,retval] IDispatch** RHS);
+//_PrintOut
+		[id(dispid_worksheet__printout),hidden,helpstring("method _PrintOut")] HRESULT _PrintOut(
+			[in,optional] VARIANT From,
+			[in,optional] VARIANT To,
+			[in,optional] VARIANT Copies,
+			[in,optional] VARIANT Preview,
+			[in,optional] VARIANT ActivePrinter,
+			[in,optional] VARIANT PrintToFile,
+			[in,optional] VARIANT Collate,
+			[in] long lcid);
+//PrintPreview
+		[id(dispid_worksheet_printpreview),helpstring("method PrintPreview")] HRESULT PrintPreview(
+			[in,optional] VARIANT EnableChanges,
+			[in] long lcid);
+//_Protect
+		[id(dispid_worksheet__protect),hidden,helpstring("method _Protect")] HRESULT _Protect(
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT DrawingObjects,
+			[in,optional] VARIANT Contents,
+			[in,optional] VARIANT Scenarios,
+			[in,optional] VARIANT UserInterfaceOnly,
+			[in] long lcid);
+//ProtectContents
+		[id(dispid_worksheet_protectcontents),propget,helpstring("property ProtectContents")] HRESULT ProtectContents(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//ProtectDrawingObjects
+		[id(dispid_worksheet_protectdrawingobjects),propget,helpstring("property ProtectDrawingObjects")] HRESULT ProtectDrawingObjects(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//ProtectionMode
+		[id(dispid_worksheet_protectionmode),propget,helpstring("property ProtectionMode")] HRESULT ProtectionMode(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//ProtectScenarios
+		[id(dispid_worksheet_protectscenarios),propget,helpstring("property ProtectScenarios")] HRESULT ProtectScenarios(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//_SaveAs
+		[id(dispid_worksheet__saveas),hidden,helpstring("method _SaveAs")] HRESULT _SaveAs(
+			[in] BSTR Filename,
+			[in,optional] VARIANT FileFormat,
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT WriteResPassword,
+			[in,optional] VARIANT ReadOnlyRecommended,
+			[in,optional] VARIANT CreateBackup,
+			[in,optional] VARIANT AddToMru,
+			[in,optional] VARIANT TextCodepage,
+			[in,optional] VARIANT TextVisualLayout,
+			[in] long lcid);
+//Select
+		[id(dispid_worksheet_select),helpstring("method Select")] HRESULT Select(
+			[in,optional] VARIANT Replace,
+			[in] long lcid);
 //Unprotect
-		[id(12), helpstring("property Unprotect")] HRESULT Unprotect([in, optional] VARIANT Password);
+		[id(dispid_worksheet_unprotect),helpstring("method Unprotect")] HRESULT Unprotect(
+			[in,optional] VARIANT Password,
+			[in] long lcid);
+//Visible
+		[id(dispid_worksheet_visible),propget,helpstring("property Visible")] HRESULT Visible(
+			[in] long lcid,
+			[out,retval] XlSheetVisibility* RHS);
+		[id(dispid_worksheet_visible),propput,helpstring("property Visible")] HRESULT Visible(
+			[in] long lcid,
+			[in] XlSheetVisibility RHS);
 //Shapes
-		[propget, id(13), helpstring("property Shapes")] HRESULT Shapes([out, retval] IDispatch **ppValue);
+		[id(dispid_worksheet_shapes),propget,helpstring("property Shapes")] HRESULT Shapes([out,retval] IDispatch** RHS);
+//TransitionExpEval
+		[id(dispid_worksheet_transitionexpeval),propget,helpstring("property TransitionExpEval")] HRESULT TransitionExpEval(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_transitionexpeval),propput,helpstring("property TransitionExpEval")] HRESULT TransitionExpEval(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//Arcs
+		[id(dispid_worksheet_arcs),hidden,helpstring("method Arcs")] HRESULT Arcs(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//AutoFilterMode
+		[id(dispid_worksheet_autofiltermode),propget,helpstring("property AutoFilterMode")] HRESULT AutoFilterMode(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_autofiltermode),propput,helpstring("property AutoFilterMode")] HRESULT AutoFilterMode(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//SetBackgroundPicture
+		[id(dispid_worksheet_setbackgroundpicture),helpstring("method SetBackgroundPicture")] HRESULT SetBackgroundPicture([in] BSTR Filename);
+//Buttons
+		[id(dispid_worksheet_buttons),hidden,helpstring("Buttons")] HRESULT Buttons(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Calculate
+		[id(dispid_worksheet_calculate),helpstring("method Calculate")] HRESULT Calculate([in] long lcid);
+//EnableCalculation
+		[id(dispid_worksheet_enablecalculation),propget,helpstring("property EnableCalculation")] HRESULT EnableCalculation([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_enablecalculation),propput,helpstring("property EnableCalculation")] HRESULT EnableCalculation([in] VARIANT_BOOL RHS);
+//Cells
+		[id(dispid_worksheet_cells),propget,helpstring("property Cells")] HRESULT Cells([out,retval] IDispatch**/*IRange***/ RHS);
+//ChartObjects
+		[id(dispid_worksheet_chartobjects),helpstring("method ChartObjects")] HRESULT ChartObjects(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//CheckBoxes
+		[id(dispid_worksheet_checkboxes),hidden,helpstring("method CheckBoxes")] HRESULT CheckBoxes(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//CheckSpelling
+		[id(dispid_worksheet_checkspelling),helpstring("method CheckSpelling")] HRESULT CheckSpelling(
+			[in,optional] VARIANT CustomDictionary,
+			[in,optional] VARIANT IgnoreUppercase,
+			[in,optional] VARIANT AlwaysSuggest,
+			[in,optional] VARIANT SpellLang,
+			[in] long lcid);
+//CircularReference
+		[id(dispid_worksheet_circularreference),propget,helpstring("property CircularReference")] HRESULT CircularReference(
+			[in] long lcid,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//ClearArrows
+		[id(dispid_worksheet_cleararrows),helpstring("method ClearArrows")] HRESULT ClearArrows([in] long lcid);
+//Columns
+		[id(dispid_worksheet_columns),propget,helpstring("property Columns")] HRESULT Columns(
+			[in]VARIANT Column,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//ConsolidationFunction
+		[id(dispid_worksheet_consolidationfunction),propget,helpstring("property ConsolidationFunction")] HRESULT ConsolidationFunction(
+			[in] long lcid,
+			[out,retval] XlConsolidationFunction* RHS);
+//ConsolidationOptions
+		[id(dispid_worksheet_consolidationoptions),propget,helpstring("property ConsolidationOptions")] HRESULT ConsolidationOptions(
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+//ConsolidationSources
+		[id(dispid_worksheet_consolidationsources),propget,helpstring("property ConsolidationSources")] HRESULT ConsolidationSources(
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+//DisplayAutomaticPageBreaks
+		[id(dispid_worksheet_displayautomaticpagebreaks),propget,hidden,helpstring("property DisplayAutomaticPageBreaks")] HRESULT DisplayAutomaticPageBreaks(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_displayautomaticpagebreaks),propput,hidden,helpstring("property DisplayAutomaticPageBreaks")] HRESULT DisplayAutomaticPageBreaks(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//Drawings
+		[id(dispid_worksheet_drawings),hidden,helpstring("method Drawings")] HRESULT Drawings(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//DrawingObjects
+		[id(dispid_worksheet_drawingobjects),hidden,helpstring("method DrawingObjects")] HRESULT DrawingObjects(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//DropDowns
+		[id(dispid_worksheet_dropdowns),hidden,helpstring("method DropDowns")] HRESULT DropDowns(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//EnableAutoFilter
+		[id(dispid_worksheet_enableautofilter),propget,helpstring("property EnableAutoFilter")] HRESULT EnableAutoFilter(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_enableautofilter),propput,helpstring("property EnableAutoFilter")] HRESULT EnableAutoFilter(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//EnableSelection
+		[id(dispid_worksheet_enableselection),propget,helpstring("property EnableSelection")] HRESULT EnableSelection([out,retval] XlEnableSelection* RHS);
+		[id(dispid_worksheet_enableselection),propput,helpstring("property EnableSelection")] HRESULT EnableSelection([in] XlEnableSelection RHS);
+//EnableOutlining
+		[id(dispid_worksheet_enableoutlining),propget,helpstring("property EnableOutlining")] HRESULT EnableOutlining(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_enableoutlining),propput,helpstring("property EnableOutlining")] HRESULT EnableOutlining(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//EnablePivotTable
+		[id(dispid_worksheet_enablepivottable),propget,helpstring("property EnablePivotTable")] HRESULT EnablePivotTable(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_enablepivottable),propput,helpstring("property EnablePivotTable")] HRESULT EnablePivotTable(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//Evaluate
+		[id(dispid_worksheet_evaluate),helpstring("method Evaluate")] HRESULT Evaluate(
+			[in] VARIANT Name,
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+//_Evaluate
+		[id(dispid_worksheet__evaluate),helpstring("method _Evaluate")] HRESULT _Evaluate(
+			[in] VARIANT Name,
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+//FilterMode
+		[id(dispid_worksheet_filtermode),propget,helpstring("property FilterMode")] HRESULT FilterMode(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//ResetAllPageBreaks
+		[id(dispid_worksheet_resetallpagebreaks),helpstring("method ResetAllPageBreaks")] HRESULT ResetAllPageBreaks();
+//GroupBoxes
+		[id(dispid_worksheet_groupboxes),hidden,helpstring("method GroupBoxes")] HRESULT GroupBoxes(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//GroupObjects
+		[id(dispid_worksheet_groupobjects),hidden,helpstring("method roupObjects")] HRESULT GroupObjects(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Labels
+		[id(dispid_worksheet_labels),hidden,helpstring("method Labels")] HRESULT Labels(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Lines
+		[id(dispid_worksheet_lines),hidden,helpstring("method Lines")] HRESULT Lines(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//ListBoxes
+		[id(dispid_worksheet_listboxes),hidden,helpstring("method ListBoxes")] HRESULT ListBoxes(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Names
+		[id(dispid_worksheet_names),propget,helpstring("property Names")] HRESULT Names([out,retval] IDispatch** RHS);
+//OLEObjects
+		[id(dispid_worksheet_oleobjects),helpstring("method OLEObjects")] HRESULT OLEObjects(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//OnCalculate
+		[id(dispid_worksheet_oncalculate),propget,hidden,helpstring("property OnCalculate")] HRESULT OnCalculate(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_worksheet_oncalculate),propput,hidden,helpstring("property OnCalculate")] HRESULT OnCalculate(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OnData
+		[id(dispid_worksheet_ondata),propget,hidden,helpstring("property OnData")] HRESULT OnData(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_worksheet_ondata),propput,hidden,helpstring("property OnData")] HRESULT OnData(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OnEntry
+		[id(dispid_worksheet_onentry),propget,hidden,helpstring("property OnEntry")] HRESULT OnEntry(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_worksheet_onentry),propput,hidden,helpstring("property OnEntry")] HRESULT OnEntry(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OptionButtons
+		[id(dispid_worksheet_optionbuttons),hidden,helpstring("method OptionButtons")] HRESULT OptionButtons(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Outline
+		[id(dispid_worksheet_outline),propget,helpstring("property Outline")] HRESULT Outline([out,retval] IDispatch**/*IOutline***/ RHS);
+//Ovals
+		[id(dispid_worksheet_ovals),hidden,helpstring("method Ovals")] HRESULT Ovals(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Paste
+		[id(dispid_worksheet_paste),helpstring("method Paste")] HRESULT Paste(
+			[in,optional] VARIANT Destination,
+			[in,optional] VARIANT Link,
+			[in] long lcid);
+//_PasteSpecial
+		[id(dispid_worksheet__pastespecial),hidden,helpstring("method _PasteSpecial")] HRESULT _PasteSpecial(
+			[in,optional] VARIANT Format,
+			[in,optional] VARIANT Link,
+			[in,optional] VARIANT DisplayAsIcon,
+			[in,optional] VARIANT IconFileName,
+			[in,optional] VARIANT IconIndex,
+			[in,optional] VARIANT IconLabel,
+			[in] long lcid);
+//Pictures
+		[id(dispid_worksheet_pictures),hidden,helpstring("method Pictures")] HRESULT Pictures(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//PivotTables
+		[id(dispid_worksheet_pivottables),helpstring("method PivotTables")] HRESULT PivotTables(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//PivotTableWizard
+		[id(dispid_worksheet_pivottablewizard),helpstring("method PivotTableWizard")] HRESULT PivotTableWizard(
+			[in,optional] VARIANT SourceType,
+			[in,optional] VARIANT SourceData,
+			[in,optional] VARIANT TableDestination,
+			[in,optional] VARIANT TableName,
+			[in,optional] VARIANT RowGrand,
+			[in,optional] VARIANT ColumnGrand,
+			[in,optional] VARIANT SaveData,
+			[in,optional] VARIANT HasAutoFormat,
+			[in,optional] VARIANT AutoPage,
+			[in,optional] VARIANT Reserved,
+			[in,optional] VARIANT BackgroundQuery,
+			[in,optional] VARIANT OptimizeCache,
+			[in,optional] VARIANT PageFieldOrder,
+			[in,optional] VARIANT PageFieldWrapCount,
+			[in,optional] VARIANT ReadData,
+			[in,optional] VARIANT Connection,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Range
+		[id(dispid_worksheet_range),propget,helpstring("property Range")] HRESULT Range(
+			[in] VARIANT Cell1,
+			[in,optional] VARIANT Cell2,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//Rectangles
+		[id(dispid_worksheet_rectangles),hidden,helpstring("method Rectangles")] HRESULT Rectangles(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//Rows
+		[id(dispid_worksheet_rows),propget,helpstring("property Rows")] HRESULT Rows(
+			[in] VARIANT Row,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//Scenarios
+		[id(dispid_worksheet_scenarios),helpstring("method Scenarios")] HRESULT Scenarios(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//ScrollArea
+		[id(dispid_worksheet_scrollarea),propget,helpstring("property ScrollArea")] HRESULT ScrollArea([out,retval] BSTR* RHS);
+		[id(dispid_worksheet_scrollarea),propput,helpstring("property ScrollArea")] HRESULT ScrollArea([in] BSTR RHS);
+//ScrollBars
+		[id(dispid_worksheet_scrollbars),hidden,helpstring("method crollBars")] HRESULT ScrollBars(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//ShowAllData
+		[id(dispid_worksheet_showalldata),helpstring("method ShowAllData")] HRESULT ShowAllData([in] long lcid);
+//ShowDataForm
+		[id(dispid_worksheet_showdataform),helpstring("method ShowDataForm")] HRESULT ShowDataForm([in] long lcid);
+//Spinners
+		[id(dispid_worksheet_spinners),hidden,helpstring("method Spinners")] HRESULT Spinners(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//StandardHeight
+		[id(dispid_worksheet_standardheight),propget,helpstring("property StandardHeight")] HRESULT StandardHeight(
+			[in] long lcid,
+			[out,retval] double* RHS);
+//StandardWidth
+		[id(dispid_worksheet_standardwidth),propget,helpstring("property StandardWidth")] HRESULT StandardWidth(
+			[in] long lcid,
+			[out,retval] double* RHS);
+		[id(dispid_worksheet_standardwidth),propput,helpstring("property StandardWidth")] HRESULT StandardWidth(
+			[in] long lcid,
+			[in] double RHS);
+//TextBoxes
+		[id(dispid_worksheet_textboxes),hidden,helpstring("method TextBoxes")] HRESULT TextBoxes(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//TransitionFormEntry
+		[id(dispid_worksheet_transitionformentry),propget,helpstring("property TransitionFormEntry")] HRESULT TransitionFormEntry(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_transitionformentry),propput,helpstring("property TransitionFormEntry")] HRESULT TransitionFormEntry(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//Type
+		[id(dispid_worksheet_type),propget,helpstring("property Type")] HRESULT Type(
+			[in] long lcid,
+			[out,retval] XlSheetType* RHS);
+//UsedRange
+		[id(dispid_worksheet_usedrange),propget,helpstring("property UsedRange")] HRESULT UsedRange(
+			[in] long lcid,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//HPageBreaks
+		[id(dispid_worksheet_hpagebreaks),propget,helpstring("property HPageBreaks")] HRESULT HPageBreaks([out,retval] IDispatch** RHS);
+//VPageBreaks
+		[id(dispid_worksheet_vpagebreaks),propget,helpstring("property VPageBreaks")] HRESULT VPageBreaks([out,retval] IDispatch** RHS);
+//QueryTables
+		[id(dispid_worksheet_querytables),propget,helpstring("property QueryTables")] HRESULT QueryTables([out,retval] IDispatch** RHS);
+//DisplayPageBreaks
+		[id(dispid_worksheet_displaypagebreaks),propget,helpstring("property DisplayPageBreaks")] HRESULT DisplayPageBreaks([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_displaypagebreaks),propput,helpstring("property DisplayPageBreaks")] HRESULT DisplayPageBreaks([in] VARIANT_BOOL RHS);
+//Comments
+		[id(dispid_worksheet_comments),propget,helpstring("property Comments")] HRESULT Comments([out,retval] IDispatch** RHS);
+//Hyperlinks
+		[id(dispid_worksheet_hyperlinks),propget,helpstring("property Hyperlinks")] HRESULT Hyperlinks([out,retval] IDispatch** RHS);
+//ClearCircles
+		[id(dispid_worksheet_clearcircles),helpstring("method ClearCircles")] HRESULT ClearCircles();
+//CircleInvalid
+		[id(dispid_worksheet_circleinvalid),helpstring("method CircleInvalid")] HRESULT CircleInvalid();
+//_DisplayRightToLeft
+		[id(dispid_worksheet__displayrighttoleft),propget,hidden,helpstring("property _DisplayRightToLeft")] HRESULT _DisplayRightToLeft(
+			[in] long lcid,
+			[out,retval] long* RHS);
+		[id(dispid_worksheet__displayrighttoleft),propput,hidden,helpstring("property _DisplayRightToLeft")] HRESULT _DisplayRightToLeft(
+			[in] long lcid,
+			[in] long RHS);
+//AutoFilter
+		[id(dispid_worksheet_autofilter),propget,helpstring("property AutoFilter")] HRESULT AutoFilter([out,retval] IDispatch** RHS);
+//DisplayRightToLeft
+		[id(dispid_worksheet_displayrighttoleft),propget,helpstring("property DisplayRightToLeft")] HRESULT DisplayRightToLeft(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_worksheet_displayrighttoleft),propput,helpstring("property DisplayRightToLeft")] HRESULT DisplayRightToLeft(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//Scripts
+		[id(dispid_worksheet_scripts),propget,helpstring("property Scripts")] HRESULT Scripts([out,retval] IDispatch** RHS);
+//PrintOut
+		[id(dispid_worksheet_printout),helpstring("method PrintOut")] HRESULT PrintOut(
+			[in,optional] VARIANT From,
+			[in,optional] VARIANT To,
+			[in,optional] VARIANT Copies,
+			[in,optional] VARIANT Preview,
+			[in,optional] VARIANT ActivePrinter,
+			[in,optional] VARIANT PrintToFile,
+			[in,optional] VARIANT Collate,
+			[in,optional] VARIANT PrToFileName,
+			[in] long lcid);
+//_CheckSpelling
+		[id(dispid_worksheet__checkspelling),hidden,helpstring("method _CheckSpelling")] HRESULT _CheckSpelling(
+			[in,optional] VARIANT CustomDictionary,
+			[in,optional] VARIANT IgnoreUppercase,
+			[in,optional] VARIANT AlwaysSuggest,
+			[in,optional] VARIANT SpellLang,
+			[in,optional] VARIANT IgnoreFinalYaa,
+			[in,optional] VARIANT SpellScript,
+			[in] long lcid);
+//Tab
+		[id(dispid_worksheet_tab),propget,helpstring("property Tab")] HRESULT Tab([out,retval] IDispatch** RHS);
+//MailEnvelope
+		[id(dispid_worksheet_mailenvelope),propget,helpstring("property MailEnvelope")] HRESULT MailEnvelope([out,retval] IDispatch** RHS);
+//SaveAs
+		[id(dispid_worksheet_saveas),helpstring("method SaveAs")] HRESULT SaveAs(
+			[in] BSTR Filename,
+			[in,optional] VARIANT FileFormat,
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT WriteResPassword,
+			[in,optional] VARIANT ReadOnlyRecommended,
+			[in,optional] VARIANT CreateBackup,
+			[in,optional] VARIANT AddToMru,
+			[in,optional] VARIANT TextCodepage,
+			[in,optional] VARIANT TextVisualLayout,
+			[in,optional] VARIANT Local);
+//CustomProperties
+		[id(dispid_worksheet_customproperties),propget,helpstring("property CustomProperties")] HRESULT CustomProperties([out,retval] IDispatch** RHS);
+//SmartTags
+		[id(dispid_worksheet_smarttags),propget,helpstring("property SmartTags")] HRESULT SmartTags([out,retval] IDispatch** RHS);
+//Protection
+		[id(dispid_worksheet_protection),propget,helpstring("property Protection")] HRESULT Protection([out,retval] IDispatch** RHS);
+//PasteSpecial
+		[id(dispid_worksheet_pastespecial),helpstring("method PasteSpecial")] HRESULT PasteSpecial(
+			[in,optional] VARIANT Format,
+			[in,optional] VARIANT Link,
+			[in,optional] VARIANT DisplayAsIcon,
+			[in,optional] VARIANT IconFileName,
+			[in,optional] VARIANT IconIndex,
+			[in,optional] VARIANT IconLabel,
+			[in,optional] VARIANT NoHTMLFormatting,
+			[in] long lcid);
+//Protect
+		[id(dispid_worksheet_protect),helpstring("method Protect")] HRESULT Protect(
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT DrawingObjects,
+			[in,optional] VARIANT Contents,
+			[in,optional] VARIANT Scenarios,
+			[in,optional] VARIANT UserInterfaceOnly,
+			[in,optional] VARIANT AllowFormattingCells,
+			[in,optional] VARIANT AllowFormattingColumns,
+			[in,optional] VARIANT AllowFormattingRows,
+			[in,optional] VARIANT AllowInsertingColumns,
+			[in,optional] VARIANT AllowInsertingRows,
+			[in,optional] VARIANT AllowInsertingHyperlinks,
+			[in,optional] VARIANT AllowDeletingColumns,
+			[in,optional] VARIANT AllowDeletingRows,
+			[in,optional] VARIANT AllowSorting,
+			[in,optional] VARIANT AllowFiltering,
+			[in,optional] VARIANT AllowUsingPivotTables);
+//ListObjects
+		[id(dispid_worksheet_listobjects),propget,helpstring("property ListObjects")] HRESULT ListObjects([out,retval] IDispatch** RHS);
+//XmlDataQuery
+		[id(dispid_worksheet_xmldataquery),helpstring("method XmlDataQuery")] HRESULT XmlDataQuery(
+			[in] BSTR XPath,
+			[in,optional] VARIANT SelectionNamespaces,
+			[in,optional] VARIANT Map,
+			[out,retval] IDispatch**/*IRange***/ RHS);
+//XmlMapQuery
+		[id(dispid_worksheet_xmlmapquery),helpstring("method XmlMapQuery")] HRESULT XmlMapQuery(
+			[in] BSTR XPath,
+			[in,optional] VARIANT SelectionNamespaces,
+			[in,optional] VARIANT Map,
+			[out,retval] IDispatch**/*IRange***/ RHS);
 	};
 
 	[

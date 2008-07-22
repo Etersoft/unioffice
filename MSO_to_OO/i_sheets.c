@@ -388,7 +388,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
     }
     V_I4(&par2)++;
     hres = MSO_TO_OO_I_Sheets_get__Default(iface, par2,value);
-    I_Worksheet_Activate((I_Worksheet*)(*value));
+    I_Worksheet_Activate((I_Worksheet*)(*value), 0);
 
     VariantClear(&par1);
     VariantClear(&par2);
