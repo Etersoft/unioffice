@@ -602,6 +602,200 @@ import "wtypes.idl";
 		xlNoSelection 			= 0xffffefd2
 	} XlEnableSelection;
 
+	typedef enum {
+		xlReadOnly 			= 0x00000003,
+		xlReadWrite 			= 0x00000002
+	} XlFileAccess;
+
+	typedef enum {
+		xlLinkTypeExcelLinks 		= 0x00000001,
+		xlLinkTypeOLELinks 		= 0x00000002
+	} XlLinkType;
+
+	typedef enum {
+		xlLocalSessionChanges 		= 0x00000002,
+		xlOtherSessionChanges 		= 0x00000003,
+		xlUserResolution 		= 0x00000001
+	} XlSaveConflictResolution;
+
+	typedef enum {
+		xlDisplayShapes 		= 0xFFFFEFF8,
+		xlHide 				= 0x00000003,
+		xlPlaceholders 			= 0x00000002
+	} XlDisplayDrawingObjects;
+
+	typedef enum {
+		xlEditionDate 			= 0x00000002,
+		xlUpdateState 			= 0x00000001,
+		xlLinkInfoStatus 		= 0x00000003
+	} XlLinkInfo;
+
+	typedef enum {
+		xlAutoActivate 			= 0x00000003,
+		xlAutoClose 			= 0x00000002,
+		xlAutoDeactivate 		= 0x00000004,
+		xlAutoOpen 			= 0x00000001
+	} XlRunAutoMacro;
+
+	typedef enum {
+		xlPriorityHigh 			= 0xFFFFEFE1,
+		xlPriorityLow 			= 0xFFFFEFDA,
+		xlPriorityNormal 		= 0xFFFFEFD1,
+	} XlPriority;
+
+	typedef enum {
+		msoEncodingThai 		= 874,
+		msoEncodingJapaneseShiftJIS 	= 932,
+		msoEncodingSimplifiedChineseGBK = 936,
+		msoEncodingKorean 		= 949,
+		msoEncodingTraditionalChineseBig5 = 950,
+		msoEncodingUnicodeLittleEndian 	= 1200,
+		msoEncodingUnicodeBigEndian 	= 1201,
+		msoEncodingCentralEuropean 	= 1250,
+		msoEncodingCyrillic 		= 1251,
+		msoEncodingWestern 		= 1252,
+		msoEncodingGreek 		= 1253,
+		msoEncodingTurkish 		= 1254,
+		msoEncodingHebrew 		= 1255,
+		msoEncodingArabic 		= 1256,
+		msoEncodingBaltic 		= 1257,
+		msoEncodingVietnamese 		= 1258,
+		msoEncodingAutoDetect 		= 50001,
+		msoEncodingJapaneseAutoDetect 	= 50932,
+		msoEncodingSimplifiedChineseAutoDetect = 50936,
+		msoEncodingKoreanAutoDetect 	= 50949,
+		msoEncodingTraditionalChineseAutoDetect = 50950,
+		msoEncodingCyrillicAutoDetect 	= 51251,
+		msoEncodingGreekAutoDetect 	= 51253,
+		msoEncodingArabicAutoDetect 	= 51256,
+		msoEncodingISO88591Latin1 	= 28591,
+		msoEncodingISO88592CentralEurope = 28592,
+		msoEncodingISO88593Latin3 	= 28593,
+		msoEncodingISO88594Baltic 	= 28594,
+		msoEncodingISO88595Cyrillic 	= 28595,
+		msoEncodingISO88596Arabic 	= 28596,
+		msoEncodingISO88597Greek 	= 28597,
+		msoEncodingISO88598Hebrew 	= 28598,
+		msoEncodingISO88599Turkish 	= 28599,
+		msoEncodingISO885915Latin9 	= 28605,
+		msoEncodingISO88598HebrewLogical = 38598,
+		msoEncodingISO2022JPNoHalfwidthKatakana = 50220,
+		msoEncodingISO2022JPJISX02021984 = 50221,
+		msoEncodingISO2022JPJISX02011989 = 50222,
+		msoEncodingISO2022KR 		= 50225,
+		msoEncodingISO2022CNTraditionalChinese = 50227,
+		msoEncodingISO2022CNSimplifiedChinese = 50229,
+		msoEncodingMacRoman 		= 10000,
+		msoEncodingMacJapanese 		= 10001,
+		msoEncodingMacTraditionalChineseBig5 = 10002,
+		msoEncodingMacKorean 		= 10003,
+		msoEncodingMacArabic 		= 10004,
+		msoEncodingMacHebrew 		= 10005,
+		msoEncodingMacGreek1 		= 10006,
+		msoEncodingMacCyrillic 		= 10007,
+		msoEncodingMacSimplifiedChineseGB2312 = 10008,
+		msoEncodingMacRomania 		= 10010,
+		msoEncodingMacUkraine 		= 10017,
+		msoEncodingMacLatin2 		= 10029,
+		msoEncodingMacIcelandic 	= 10079,
+		msoEncodingMacTurkish 		= 10081,
+		msoEncodingMacCroatia 		= 10082,
+		msoEncodingEBCDICUSCanada 	= 37,
+		msoEncodingEBCDICInternational 	= 500,
+		msoEncodingEBCDICMultilingualROECELatin2 = 870,
+		msoEncodingEBCDICGreekModern 	= 875,
+		msoEncodingEBCDICTurkishLatin5 	= 1026,
+		msoEncodingEBCDICGermany = 20273,
+		msoEncodingEBCDICDenmarkNorway 	= 20277,
+		msoEncodingEBCDICFinlandSweden 	= 20278,
+		msoEncodingEBCDICItaly 		= 20280,
+		msoEncodingEBCDICLatinAmericaSpain = 20284,
+		msoEncodingEBCDICUnitedKingdom 	= 20285,
+		msoEncodingEBCDICJapaneseKatakanaExtended = 20290,
+		msoEncodingEBCDICFrance 	= 20297,
+		msoEncodingEBCDICArabic 	= 20420,
+		msoEncodingEBCDICGreek 		= 20423,
+		msoEncodingEBCDICHebrew 	= 20424,
+		msoEncodingEBCDICKoreanExtended = 20833,
+		msoEncodingEBCDICThai 		= 20838,
+		msoEncodingEBCDICIcelandic 	= 20871,
+		msoEncodingEBCDICTurkish 	= 20905,
+		msoEncodingEBCDICRussian 	= 20880,
+		msoEncodingEBCDICSerbianBulgarian = 21025,
+		msoEncodingEBCDICJapaneseKatakanaExtendedAndJapanese = 50930,
+		msoEncodingEBCDICUSCanadaAndJapanese = 50931,
+		msoEncodingEBCDICKoreanExtendedAndKorean = 50933,
+		msoEncodingEBCDICSimplifiedChineseExtendedAndSimplifiedChinese = 50935,
+		msoEncodingEBCDICUSCanadaAndTraditionalChinese = 50937,
+		msoEncodingEBCDICJapaneseLatinExtendedAndJapanese = 50939,
+		msoEncodingOEMUnitedStates 	= 437,
+		msoEncodingOEMGreek437G 	= 737,
+		msoEncodingOEMBaltic 		= 775,
+		msoEncodingOEMMultilingualLatinI = 850,
+		msoEncodingOEMMultilingualLatinII = 852,
+		msoEncodingOEMCyrillic 		= 855,
+		msoEncodingOEMTurkish 		= 857,
+		msoEncodingOEMPortuguese 	= 860,
+		msoEncodingOEMIcelandic 	= 861,
+		msoEncodingOEMHebrew 		= 862,
+		msoEncodingOEMCanadianFrench 	= 863,
+		msoEncodingOEMArabic 		= 864,
+		msoEncodingOEMNordic 		= 865,
+		msoEncodingOEMCyrillicII 	= 866,
+		msoEncodingOEMModernGreek 	= 869,
+		msoEncodingEUCJapanese 		= 51932,
+		msoEncodingEUCChineseSimplifiedChinese = 51936,
+		msoEncodingEUCKorean 		= 51949,
+		msoEncodingEUCTaiwaneseTraditionalChinese = 51950,
+		msoEncodingISCIIDevanagari	= 57002,
+		msoEncodingISCIIBengali 	= 57003,
+		msoEncodingISCIITamil 		= 57004,
+		msoEncodingISCIITelugu 		= 57005,
+		msoEncodingISCIIAssamese 	= 57006,
+		msoEncodingISCIIOriya 		= 57007,
+		msoEncodingISCIIKannada 	= 57008,
+		msoEncodingISCIIMalayalam 	= 57009,
+		msoEncodingISCIIGujarati 	= 57010,
+		msoEncodingISCIIPunjabi 	= 57011,
+		msoEncodingArabicASMO 		= 708,
+		msoEncodingArabicTransparentASMO = 720,
+		msoEncodingKoreanJohab 		= 1361,
+		msoEncodingTaiwanCNS 		= 20000,
+		msoEncodingTaiwanTCA 		= 20001,
+		msoEncodingTaiwanEten 		= 20002,
+		msoEncodingTaiwanIBM5550 	= 20003,
+		msoEncodingTaiwanTeleText 	= 20004,
+		msoEncodingTaiwanWang 		= 20005,
+		msoEncodingIA5IRV 		= 20105,
+		msoEncodingIA5German 		= 20106,
+		msoEncodingIA5Swedish 		= 20107,
+		msoEncodingIA5Norwegian 	= 20108,
+		msoEncodingUSASCII 		= 20127,
+		msoEncodingT61 			= 20261,
+		msoEncodingISO6937NonSpacingAccent = 20269,
+		msoEncodingKOI8R 		= 20866,
+		msoEncodingExtAlphaLowercase 	= 21027,
+		msoEncodingKOI8U 		= 21866,
+		msoEncodingEuropa3 		= 29001,
+		msoEncodingHZGBSimplifiedChinese = 52936,
+		msoEncodingSimplifiedChineseGB18030 = 54936,
+		msoEncodingUTF7 		= 65000,
+		msoEncodingUTF8 		= 65001
+	} MsoEncoding;
+
+	typedef enum
+	{
+		xlUpdateLinksUserSetting   	= 0x00000001,
+		xlUpdateLinksNever 		= 0x00000002,
+		xlUpdateLinksAlways 		= 0x00000003
+	} XlUpdateLinks;
+
+	typedef enum {
+		xlXmlImportSuccess 		= 0,
+		xlXmlImportElementsTruncated 	= 1,
+		xlXmlImportValidationFailed 	= 2
+	} XlXmlImportResult;
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
@@ -2311,43 +2505,651 @@ import "wtypes.idl";
 	]
 	interface I_Workbook : IDispatch
 	{
-		[propget,id(1), helpstring("property Sheets")] HRESULT Sheets([out, retval] IDispatch **ppSheets);
-//WorkSheets = Sheets
-		[propget,id(2), helpstring("property WorkSheets")] HRESULT WorkSheets([out, retval] IDispatch **ppSheets);
+//Application
+		[id(dispid_workbook_application),propget,helpstring("property Application")] HRESULT Application([out,retval] IDispatch**/*IApplication***/ RHS);
+//Creator
+		[id(dispid_workbook_creator),propget,helpstring("property Creator")] HRESULT Creator([out,retval] XlCreator* RHS);
+//Parent
+		[id(dispid_workbook_parent),propget,helpstring("property Parent")] HRESULT Parent([out,retval] IDispatch** RHS);
+//AcceptLabelsInFormulas
+		[id(dispid_workbook_acceptlabelsinformulas),propget,helpstring("property AcceptLabelsInFormulas")] HRESULT AcceptLabelsInFormulas([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_acceptlabelsinformulas),propput,helpstring("property AcceptLabelsInFormulas")] HRESULT AcceptLabelsInFormulas([in] VARIANT_BOOL RHS);
+//Activate
+		[id(dispid_workbook_activate),helpstring("method Activate")] HRESULT Activate([in] long lcid);
+//ActiveChart
+		[id(dispid_workbook_activeChart),propget,helpstring("property ActiveChart")] HRESULT ActiveChart([out,retval] IDispatch** RHS);
+//ActiveSheet
+		[id(dispid_workbook_activeSheet),propget,helpstring("property ActiveSheet")] HRESULT ActiveSheet([out,retval] IDispatch** RHS);
+//Author
+		[id(dispid_workbook_author),propget,hidden,helpstring("property Author")] HRESULT Author(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_author),propput,hidden,helpstring("property Author")] HRESULT Author(
+			[in] long lcid,
+			[in] BSTR RHS);
+//AutoUpdateFrequency
+		[id(dispid_workbook_autoupdatefrequency),propget,helpstring("property AutoUpdateFrequency")] HRESULT AutoUpdateFrequency([out,retval] long* RHS);
+		[id(dispid_workbook_autoupdatefrequency),propput,helpstring("property AutoUpdateFrequency")] HRESULT AutoUpdateFrequency([in] long RHS);
+//AutoUpdateSaveChanges
+		[id(dispid_workbook_autoupdatesavechanges),propget,helpstring("property AutoUpdateSaveChanges")] HRESULT AutoUpdateSaveChanges([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_autoupdatesavechanges),propput,helpstring("property AutoUpdateSaveChanges")] HRESULT AutoUpdateSaveChanges([in] VARIANT_BOOL RHS);
+//ChangeHistoryDuration
+		[id(dispid_workbook_changehistoryduration),propget,helpstring("property ChangeHistoryDuration")] HRESULT ChangeHistoryDuration([out,retval] long* RHS);
+		[id(dispid_workbook_changehistoryduration),propput,helpstring("property ChangeHistoryDuration")] HRESULT ChangeHistoryDuration([in] long RHS);
+//BuiltinDocumentProperties
+		[id(dispid_workbook_builtindocumentproperties),propget,helpstring("property BuiltinDocumentProperties")] HRESULT BuiltinDocumentProperties([out,retval] IDispatch** RHS);
+//ChangeFileAccess
+		[id(dispid_workbook_changefileaccess),helpstring("method ChangeFileAccess")] HRESULT ChangeFileAccess(
+			[in] XlFileAccess Mode,
+			[in,optional] VARIANT WritePassword,
+			[in,optional] VARIANT Notify,
+			[in] long lcid);
+//ChangeLink
+		[id(dispid_workbook_changelink),helpstring("method ChangeLink")] HRESULT ChangeLink(
+			[in] BSTR Name,
+			[in] BSTR NewName,
+			[in] XlLinkType Type,
+			[in] long lcid);
+//Charts
+		[id(dispid_workbook_charts),propget,helpstring("property Charts")] HRESULT Charts([out,retval] IDispatch**/*ISheets***/ RHS);
 //Close
-		[id(3), helpstring("method Close")] HRESULT Close(
-			[in, optional] VARIANT SaveChanges,
-			[in, optional] VARIANT Filename,
-			[in, optional] VARIANT RouteWorkbook);
-//SaveAs
-		[id(4), helpstring("method SaveAs")] HRESULT SaveAs(
-			[in, optional] VARIANT Filename,
-			[in, optional] VARIANT FileFormat,
-			[in, optional] VARIANT Password,
-			[in, optional] VARIANT WriteResPassword,
-			[in, optional] VARIANT ReadOnlyRecommended,
-			[in, optional] VARIANT CreateBackup,
-			[in, optional] XlSaveAsAccessMode AccessMode,
-			[in, optional] VARIANT ConflictResolution,
-			[in, optional] VARIANT AddToMru,
-			[in, optional] VARIANT TextCodepage,
-			[in, optional] VARIANT TextVisualLayout,
-			[in, optional] VARIANT Local);
-//Save
-		[id(5), helpstring("method Save")] HRESULT Save();
-//Protect
-		[id(6), helpstring("method Protect")] HRESULT Protect(
-			[in, optional] VARIANT Password,
-			[in, optional] VARIANT Structure,
-			[in, optional] VARIANT Windows);
-//Unprotect
-		[id(7), helpstring("method Unprotect")] HRESULT Unprotect(
-			[in, optional] VARIANT Password);
+		[id(dispid_workbook_close),helpstring("method Close")] HRESULT Close(
+			[in,optional] VARIANT SaveChanges,
+			[in,optional] VARIANT Filename,
+			[in,optional] VARIANT RouteWorkbook,
+			[in] long lcid);
+//CodeName
+		[id(dispid_workbook_codename),propget,helpstring("property CodeName")] HRESULT CodeName([out,retval] BSTR* RHS);
+//_CodeName
+		[id(dispid_workbook__codename),propget,helpstring("property _CodeName")] HRESULT _CodeName([out,retval] BSTR* RHS);
+		[id(dispid_workbook__codename),propput,helpstring("property _CodeName")] HRESULT _CodeName([in] BSTR RHS);
+//Colors
+		[id(dispid_workbook_colors),propget,helpstring("property Colors")] HRESULT Colors(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+		[id(dispid_workbook_colors),propput,helpstring("property Colors")] HRESULT Colors(
+			[in,optional] VARIANT Index,
+			[in] long lcid,
+			[in] VARIANT RHS);
+//CommandBars
+		[id(dispid_workbook_commandbars),propget,helpstring("property CommandBars")] HRESULT CommandBars([out,retval] IDispatch**/*_CommandBars***/ RHS);
+//Comments
+		[id(dispid_workbook_comments),propget,hidden,helpstring("property Comments")] HRESULT Comments(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_comments),propput,hidden,helpstring(" property Comments")] HRESULT Comments(
+			[in] long lcid,
+			[in] BSTR RHS);
+//ConflictResolution
+		[id(dispid_workbook_conflictresolution),propget,helpstring("property ConflictResolution")]
+		HRESULT ConflictResolution([out,retval] XlSaveConflictResolution* RHS);
+		[id(dispid_workbook_conflictresolution),propput,helpstring("property ConflictResolution")] HRESULT ConflictResolution([in] XlSaveConflictResolution RHS);
+//Container
+		[id(dispid_workbook_container),propget,helpstring("property Container")] HRESULT Container([out,retval] IDispatch** RHS);
+//CreateBackup
+		[id(dispid_workbook_createbackup),propget,helpstring("property CreateBackup")] HRESULT CreateBackup(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//CustomDocumentProperties
+		[id(dispid_workbook_customdocumentproperties),propget,helpstring("property CustomDocumentProperties")] HRESULT CustomDocumentProperties([out,retval] IDispatch** RHS);
+//Date1904
+		[id(dispid_workbook_date1904),propget,helpstring("property Date1904")] HRESULT Date1904(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_date1904),propput,helpstring("property Date1904")] HRESULT Date1904(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//DeleteNumberFormat
+		[id(dispid_workbook_deletenumberformat),helpstring("method DeleteNumberFormat")] HRESULT DeleteNumberFormat(
+			[in] BSTR NumberFormat,
+			[in] long lcid);
+//DialogSheets
+		[id(dispid_workbook_dialogsheets),propget,hidden,helpstring("property DialogSheets")] HRESULT DialogSheets([out,retval] IDispatch**/*ISheets***/ RHS);
+//DisplayDrawingObjects
+		[id(dispid_workbook_displaydrawingobjects),propget,helpstring("property DisplayDrawingObjects")] HRESULT DisplayDrawingObjects(
+			[in] long lcid,
+			[out,retval] XlDisplayDrawingObjects* RHS);
+		[id(dispid_workbook_displaydrawingobjects),propput,helpstring("property DisplayDrawingObjects")] HRESULT DisplayDrawingObjects(
+			[in] long lcid,
+			[in] XlDisplayDrawingObjects RHS);
+//ExclusiveAccess
+		[id(dispid_workbook_exclusiveaccess),helpstring("method ExclusiveAccess")] HRESULT ExclusiveAccess(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//FileFormat
+		[id(dispid_workbook_fileformat),propget,helpstring("property FileFormat")] HRESULT FileFormat(
+			[in] long lcid,
+			[out,retval] XlFileFormat* RHS);
+//ForwardMailer
+		[id(dispid_workbook_forwardmailer),helpstring("method ForwardMailer")] HRESULT ForwardMailer([in] long lcid);
+//FullName
+		[id(dispid_workbook_fullname),propget,helpstring("property FullName")] HRESULT FullName(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+//HasMailer
+		[id(dispid_workbook_hasmailer),propget,hidden,helpstring("property HasMailer")] HRESULT HasMailer(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_hasmailer),propput,hidden,helpstring("property HasMailer")] HRESULT HasMailer(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//HasPassword
+		[id(dispid_workbook_haspassword),propget,helpstring("property HasPassword")] HRESULT HasPassword(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//HasRoutingSlip
+		[id(dispid_workbook_hasroutingslip),propget,helpstring("property HasRoutingSlip")] HRESULT HasRoutingSlip(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_hasroutingslip),propput,helpstring("property HasRoutingSlip")] HRESULT HasRoutingSlip(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//IsAddin
+		[id(dispid_workbook_isaddin),propget,helpstring("property IsAddin")] HRESULT IsAddin([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_isaddin),propput,helpstring("property IsAddin")] HRESULT IsAddin([in] VARIANT_BOOL RHS);
+//Keywords
+		[id(dispid_workbook_keywords),propget,hidden,helpstring("property Keywords")] HRESULT Keywords(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_keywords),propput,hidden,helpstring("property Keywords")] HRESULT Keywords(
+			[in] long lcid,
+			[in] BSTR RHS);
+//LinkInfo
+		[id(dispid_workbook_linkinfo),helpstring("method LinkInfo")] HRESULT LinkInfo(
+			[in] BSTR Name,
+			[in] XlLinkInfo LinkInfo,
+			[in,optional] VARIANT Type,
+			[in,optional] VARIANT EditionRef,
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+//LinkSources
+		[id(dispid_workbook_linksources),helpstring("method LinkSources")] HRESULT LinkSources(
+			[in,optional] VARIANT Type,
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+//Mailer
+		[id(dispid_workbook_mailer),propget,helpstring("property Mailer")] HRESULT Mailer([out,retval] IDispatch** RHS);
+//MergeWorkbook
+		[id(dispid_workbook_mergeworkbook),helpstring("method MergeWorkbook")] HRESULT MergeWorkbook([in] VARIANT Filename);
+//Modules
+		[id(dispid_workbook_modules),propget,hidden,helpstring("property Modules")] HRESULT Modules([out,retval] IDispatch**/*ISheets***/ RHS);
+//MultiUserEditing
+		[id(dispid_workbook_multiuserediting),propget,helpstring("property MultiUserEditing")] HRESULT MultiUserEditing(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
 //Name
-		[propget,id(8), helpstring("property Name")] HRESULT Name([out, retval] BSTR *retval);
+		[id(dispid_workbook_name),propget,helpstring("property Name")] HRESULT Name([out,retval] BSTR* RHS);
 //Names
-		[propget,id(9), helpstring("property Names")] HRESULT Names([out, retval] IDispatch **retval);
-
+		[id(dispid_workbook_names),propget,helpstring("property Names")] HRESULT Names([out,retval] IDispatch** RHS);
+//NewWindow
+		[id(dispid_workbook_newwindow),helpstring("method NewWindow")] HRESULT NewWindow(
+			[in] long lcid,
+			[out,retval] IDispatch** RHS);
+//OnSave
+		[id(dispid_workbook_onsave),propget,hidden,helpstring("property OnSave")] HRESULT OnSave(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_onsave),propput,hidden,helpstring("property OnSave")] HRESULT OnSave(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OnSheetActivate
+		[id(dispid_workbook_onsheetactivate),propget,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_onsheetactivate),propput,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OnSheetDeactivate
+		[id(dispid_workbook_onsheetdeactivate),propget,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_onsheetdeactivate),propput,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
+			[in] long lcid,
+			[in] BSTR RHS);
+//OpenLinks
+		[id(dispid_workbook_openlinks),helpstring("method OpenLinks")] HRESULT OpenLinks(
+			[in] BSTR Name,
+			[in,optional] VARIANT ReadOnly,
+			[in,optional] VARIANT Type,
+			[in] long lcid);
+//Path
+		[id(dispid_workbook_path),propget,helpstring("property Path")] HRESULT Path(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+//PersonalViewListSettings
+		[id(dispid_workbook_personalviewlistsettings),propget,helpstring("property PersonalViewListSettings")] HRESULT PersonalViewListSettings([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_personalviewlistsettings),propput,helpstring("property PersonalViewListSettings")] HRESULT PersonalViewListSettings([in] VARIANT_BOOL RHS);
+//PersonalViewPrintSettings
+		[id(dispid_workbook_personalviewprintsettings),propget,helpstring("property PersonalViewPrintSettings")] HRESULT PersonalViewPrintSettings([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_personalviewprintsettings),propput,helpstring("property PersonalViewPrintSettings")] HRESULT PersonalViewPrintSettings([in] VARIANT_BOOL RHS);
+//PivotCaches
+		[id(dispid_workbook_pivotcaches),helpstring("method PivotCaches")] HRESULT PivotCaches([out,retval] IDispatch** RHS);
+//Post
+		[id(dispid_workbook_post),helpstring("method Post")] HRESULT Post(
+			[in,optional] VARIANT DestName,
+			[in] long lcid);
+//PrecisionAsDisplayed
+		[id(dispid_workbook_precisionasdisplayed),propget,helpstring("property PrecisionAsDisplayed")] HRESULT PrecisionAsDisplayed(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_precisionasdisplayed),propput,helpstring("property PrecisionAsDisplayed")] HRESULT PrecisionAsDisplayed(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//_PrintOut
+		[id(dispid_workbook__printout),hidden,helpstring("method _PrintOut")] HRESULT _PrintOut(
+			[in,optional] VARIANT From,
+			[in,optional] VARIANT To,
+			[in,optional] VARIANT Copies,
+			[in,optional] VARIANT Preview,
+			[in,optional] VARIANT ActivePrinter,
+			[in,optional] VARIANT PrintToFile,
+			[in,optional] VARIANT Collate,
+			[in] long lcid);
+//PrintPreview
+		[id(dispid_workbook_printpreview),helpstring("method PrintPreview")] HRESULT PrintPreview(
+			[in,optional] VARIANT EnableChanges,
+			[in] long lcid);
+//_Protect
+		[id(dispid_workbook__protect),hidden,helpstring("method _Protect")] HRESULT _Protect(
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT Structure,
+			[in,optional] VARIANT Windows);
+//ProtectSharing
+		[id(dispid_workbook_protectsharing),helpstring("method ProtectSharing")] HRESULT ProtectSharing(
+			[in,optional] VARIANT Filename,
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT WriteResPassword,
+			[in,optional] VARIANT ReadOnlyRecommended,
+			[in,optional] VARIANT CreateBackup,
+			[in,optional] VARIANT SharingPassword);
+//ProtectStructure
+		[id(dispid_workbook_protectstructure),propget,helpstring("property ProtectStructure")] HRESULT ProtectStructure([out,retval] VARIANT_BOOL* RHS);
+//ProtectWindows
+		[id(dispid_workbook_protectwindows),propget,helpstring("property ProtectWindows")] HRESULT ProtectWindows([out,retval] VARIANT_BOOL* RHS);
+//ReadOnly
+		[id(dispid_workbook_readonly),propget,helpstring("property ReadOnly")] HRESULT ReadOnly(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//_ReadOnlyRecommended
+		[id(dispid_workbook__readonlyrecommended),propget,hidden,helpstring("property _ReadOnlyRecommended")] HRESULT _ReadOnlyRecommended(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//RefreshAll
+		[id(dispid_workbook_refreshall),helpstring("method RefreshAll")] HRESULT RefreshAll();
+//Reply
+		[id(dispid_workbook_reply),helpstring("method Reply")] HRESULT Reply([in] long lcid);
+//ReplyAll
+		[id(dispid_workbook_replyall),helpstring("method ReplyAll")] HRESULT ReplyAll([in] long lcid);
+//RemoveUser
+		[id(dispid_workbook_removeuser),helpstring("method RemoveUser")] HRESULT RemoveUser([in] long Index);
+//RevisionNumber
+		[id(dispid_workbook_revisionnumber),propget,helpstring("property RevisionNumber")] HRESULT RevisionNumber(
+			[in] long lcid,
+			[out,retval] long* RHS);
+//Route
+		[id(dispid_workbook_route),helpstring("method Route")] HRESULT Route([in] long lcid);
+//Routed
+		[id(dispid_workbook_routed),propget,helpstring("property Routed")] HRESULT Routed(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//RoutingSlip
+		[id(dispid_workbook_routingslip),propget,helpstring("property RoutingSlip")] HRESULT RoutingSlip([out,retval] IDispatch** RHS);
+//RunAutoMacros
+		[id(dispid_workbook_runautomacros),helpstring("method RunAutoMacros")] HRESULT RunAutoMacros(
+			[in] XlRunAutoMacro Which,
+			[in] long lcid);
+//Save
+		[id(dispid_workbook_save),helpstring("method Save")] HRESULT Save([in] long lcid);
+//_SaveAs
+		[id(dispid_workbook__saveas),hidden,helpstring("method _SaveAs")] HRESULT _SaveAs(
+			[in,optional] VARIANT Filename,
+			[in,optional] VARIANT FileFormat,
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT WriteResPassword,
+			[in,optional] VARIANT ReadOnlyRecommended,
+			[in,optional] VARIANT CreateBackup,
+			[in,defaultvalue(1)] XlSaveAsAccessMode AccessMode,
+			[in,optional] VARIANT ConflictResolution,
+			[in,optional] VARIANT AddToMru,
+			[in,optional] VARIANT TextCodepage,
+			[in,optional] VARIANT TextVisualLayout,
+			[in] long lcid);
+//SaveCopyAs
+		[id(dispid_workbook_savecopyas),helpstring("method SaveCopyAs")] HRESULT SaveCopyAs(
+			[in,optional] VARIANT Filename,
+			[in] long lcid);
+//Saved
+		[id(dispid_workbook_saved),propget,helpstring("property Saved")] HRESULT Saved(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_saved),propput,helpstring("property Saved")] HRESULT Saved(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//SaveLinkValues
+		[id(dispid_workbook_savelinkvalues),propget,helpstring("property SaveLinkValues")] HRESULT SaveLinkValues(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_savelinkvalues),propput,helpstring("property SaveLinkValues")] HRESULT SaveLinkValues(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//SendMail
+		[id(dispid_workbook_sendmail),helpstring("method SendMail")] HRESULT SendMail(
+			[in] VARIANT Recipients,
+			[in,optional] VARIANT Subject,
+			[in,optional] VARIANT ReturnReceipt,
+			[in] long lcid);
+//SendMailer
+		[id(dispid_workbook_sendmailer),helpstring("method SendMailer")] HRESULT SendMailer(
+			[in,optional] VARIANT FileFormat,
+			[in,defaultvalue(-4143)] XlPriority Priority,
+			[in] long lcid);
+//SetLinkOnData
+		[id(dispid_workbook_setLinkondata),helpstring("method SetLinkOnData")] HRESULT SetLinkOnData(
+			[in] BSTR Name,
+			[in,optional] VARIANT Procedure,
+			[in] long lcid);
+//Sheets
+		[id(dispid_workbook_sheets),propget,helpstring("property Sheets")] HRESULT Sheets([out,retval] IDispatch**/*ISheets***/ RHS);
+//ShowConflictHistory
+		[id(dispid_workbook_showconflicthistory),propget,helpstring("property ShowConflictHistory")] HRESULT ShowConflictHistory(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_showconflicthistory),propput,helpstring("property ShowConflictHistory")] HRESULT ShowConflictHistory(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//Styles
+		[id(dispid_workbook_styles),propget,helpstring("property Styles")] HRESULT Styles([out,retval] IDispatch** RHS);
+//Subject
+		[id(dispid_workbook_subject),propget,hidden,helpstring("property Subject")] HRESULT Subject(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_subject),propput,hidden,helpstring("property Subject")] HRESULT Subject(
+			[in] long lcid,
+			[in] BSTR RHS);
+//Title
+		[id(dispid_workbook_title),propget,hidden,helpstring("property Title")] HRESULT Title(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+		[id(dispid_workbook_title),propput,hidden,helpstring("property Title")] HRESULT Title(
+			[in] long lcid,
+			[in] BSTR RHS);
+//Unprotect
+		[id(dispid_workbook_unprotect),helpstring("method Unprotect")] HRESULT Unprotect(
+			[in,optional] VARIANT Password,
+			[in] long lcid);
+//UnprotectSharing
+		[id(dispid_workbook_unprotectsharing),helpstring("method UnprotectSharing")] HRESULT UnprotectSharing([in,optional] VARIANT SharingPassword);
+//UpdateFromFile
+		[id(dispid_workbook_updatefromfile),helpstring("method UpdateFromFile")] HRESULT UpdateFromFile([in] long lcid);
+//UpdateLink
+		[id(dispid_workbook_updatelink),helpstring("method UpdateLink")] HRESULT UpdateLink(
+			[in,optional] VARIANT Name,
+			[in,optional] VARIANT Type,
+			[in] long lcid);
+//UpdateRemoteReferences
+		[id(dispid_workbook_updateremotereferences),propget,helpstring("property UpdateRemoteReferences")] HRESULT UpdateRemoteReferences(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_updateremotereferences),propput,helpstring("property UpdateRemoteReferences")] HRESULT UpdateRemoteReferences(
+			[in] long lcid,
+			[in] VARIANT_BOOL RHS);
+//UserControl
+		[id(dispid_workbook_usercontrol),propget,hidden,helpstring("property UserControl")] HRESULT UserControl([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_usercontrol),propput,hidden,helpstring("property UserControl")] HRESULT UserControl([in] VARIANT_BOOL RHS);
+//UserStatus
+		[id(dispid_workbook_userstatus),propget,helpstring("property UserStatus")] HRESULT UserStatus(
+			[in] long lcid,
+			[out,retval] VARIANT* RHS);
+//CustomViews
+		[id(dispid_workbook_customviews),propget,helpstring("property CustomViews")] HRESULT CustomViews([out,retval] IDispatch** RHS);
+//Windows
+		[id(dispid_workbook_windows),propget,helpstring("proprety Windows")] HRESULT Windows([out,retval] IDispatch** RHS);
+//Worksheets
+		[id(dispid_workbook_worksheets),propget,helpstring("property Worksheets")] HRESULT Worksheets([out,retval] IDispatch**/*ISheets***/ RHS);
+//WriteReserved
+		[id(dispid_workbook_writereserved),propget,helpstring("property WriteReserved")] HRESULT WriteReserved(
+			[in] long lcid,
+			[out,retval] VARIANT_BOOL* RHS);
+//WriteReservedBy
+		[id(dispid_workbook_writereservedby),propget,helpstring("property WriteReservedBy")] HRESULT WriteReservedBy(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+//Excel4IntlMacroSheets
+		[id(dispid_workbook_excel4intlmacrosheets),propget,helpstring("property Excel4IntlMacroSheets")] HRESULT Excel4IntlMacroSheets([out,retval] IDispatch**/*ISheets***/ RHS);
+//Excel4MacroSheets
+		[id(dispid_workbook_excel4macrosheets),propget,helpstring("property Excel4MacroSheets")] HRESULT Excel4MacroSheets([out,retval] IDispatch**/*ISheets***/ RHS);
+//TemplateRemoveExtData
+		[id(dispid_workbook_templateremoveextdata),propget,helpstring("property TemplateRemoveExtData")] HRESULT TemplateRemoveExtData([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_templateremoveextdata),propput,helpstring("property TemplateRemoveExtData")] HRESULT TemplateRemoveExtData([in] VARIANT_BOOL RHS);
+//HighlightChangesOptions
+		[id(dispid_workbook_highlightchangesoptions),helpstring("method HighlightChangesOptions")] HRESULT HighlightChangesOptions(
+			[in,optional] VARIANT When,
+			[in,optional] VARIANT Who,
+			[in,optional] VARIANT Where);
+//HighlightChangesOnScreen
+		[id(dispid_workbook_highlightchangesonScreen),propget,helpstring("property HighlightChangesOnScreen")] HRESULT HighlightChangesOnScreen([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_highlightchangesonScreen),propput,helpstring("property HighlightChangesOnScreen")] HRESULT HighlightChangesOnScreen([in] VARIANT_BOOL RHS);
+//KeepChangeHistory
+		[id(dispid_workbook_keepchangehistory),propget,helpstring("property KeepChangeHistory")] HRESULT KeepChangeHistory([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_keepchangehistory),propput,helpstring("property KeepChangeHistory")] HRESULT KeepChangeHistory([in] VARIANT_BOOL RHS);
+//ListChangesOnNewSheet
+		[id(dispid_workbook_listchangesonnewsheet),propget,helpstring("property ListChangesOnNewSheet")] HRESULT ListChangesOnNewSheet([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_listchangesonnewsheet),propput,helpstring("property ListChangesOnNewSheet")] HRESULT ListChangesOnNewSheet([in] VARIANT_BOOL RHS);
+//PurgeChangeHistoryNow
+		[id(dispid_workbook_purgechangehistorynow),helpstring("method PurgeChangeHistoryNow")] HRESULT PurgeChangeHistoryNow(
+			[in] long Days,
+			[in,optional] VARIANT SharingPassword);
+//AcceptAllChanges
+		[id(dispid_workbook_acceptallchanges),helpstring("method AcceptAllChanges")] HRESULT AcceptAllChanges(
+			[in,optional] VARIANT When,
+			[in,optional] VARIANT Who,
+			[in,optional] VARIANT Where);
+//RejectAllChanges
+		[id(dispid_workbook_rejectallchanges),helpstring("method RejectAllChanges")] HRESULT RejectAllChanges(
+			[in,optional] VARIANT When,
+			[in,optional] VARIANT Who,
+			[in,optional] VARIANT Where);
+//PivotTableWizard
+		[id(dispid_workbook_pivottablewizard),hidden,helpstring("method PivotTableWizard")] HRESULT PivotTableWizard(
+			[in,optional] VARIANT SourceType,
+			[in,optional] VARIANT SourceData,
+			[in,optional] VARIANT TableDestination,
+			[in,optional] VARIANT TableName,
+			[in,optional] VARIANT RowGrand,
+			[in,optional] VARIANT ColumnGrand,
+			[in,optional] VARIANT SaveData,
+			[in,optional] VARIANT HasAutoFormat,
+			[in,optional] VARIANT AutoPage,
+			[in,optional] VARIANT Reserved,
+			[in,optional] VARIANT BackgroundQuery,
+			[in,optional] VARIANT OptimizeCache,
+			[in,optional] VARIANT PageFieldOrder,
+			[in,optional] VARIANT PageFieldWrapCount,
+			[in,optional] VARIANT ReadData,
+			[in,optional] VARIANT Connection,
+			[in] long lcid);
+//ResetColors
+		[id(dispid_workbook_resetcolors),helpstring("method ResetColors")] HRESULT ResetColors();
+//VBProject
+		[id(dispid_workbook_vbproject),propget,helpstring("property VBProject")] HRESULT VBProject([out,retval] IDispatch** RHS);
+//FollowHyperlink
+		[id(dispid_workbook_followhyperlink),helpstring("method FollowHyperlink")] HRESULT FollowHyperlink(
+			[in] BSTR Address,
+			[in,optional] VARIANT SubAddress,
+			[in,optional] VARIANT NewWindow,
+			[in,optional] VARIANT AddHistory,
+			[in,optional] VARIANT ExtraInfo,
+			[in,optional] VARIANT Method,
+			[in,optional] VARIANT HeaderInfo);
+//AddToFavorites
+		[id(dispid_workbook_addtofavorites),helpstring("method AddToFavorites")] HRESULT AddToFavorites();
+//IsInplace
+		[id(dispid_workbook_isinplace),propget,helpstring("property IsInplace")] HRESULT IsInplace([out,retval] VARIANT_BOOL* RHS);
+//PrintOut
+		[id(dispid_workbook_printout),helpstring("method PrintOut")] HRESULT PrintOut(
+			[in,optional] VARIANT From,
+			[in,optional] VARIANT To,
+			[in,optional] VARIANT Copies,
+			[in,optional] VARIANT Preview,
+			[in,optional] VARIANT ActivePrinter,
+			[in,optional] VARIANT PrintToFile,
+			[in,optional] VARIANT Collate,
+			[in,optional] VARIANT PrToFileName,
+			[in] long lcid);
+//WebPagePreview
+		[id(dispid_workbook_webpagepreview),helpstring("Wmethod ebPagePreview")] HRESULT WebPagePreview();
+//PublishObjects
+		[id(dispid_workbook_publishobjects),propget,helpstring("property PublishObjects")] HRESULT PublishObjects([out,retval] IDispatch** RHS);
+//WebOptions
+		[id(dispid_workbook_weboptions),propget,helpstring("property WebOptions")] HRESULT WebOptions([out,retval] IDispatch** RHS);
+//ReloadAs
+		[id(dispid_workbook_reloadas),helpstring("method ReloadAs")] HRESULT ReloadAs([in] MsoEncoding Encoding);
+//HTMLProject
+		[id(dispid_workbook_htmlproject),propget,helpstring("property HTMLProject")] HRESULT HTMLProject([out,retval] IDispatch** RHS);
+//EnvelopeVisible
+		[id(dispid_workbook_envelopevisible),propget,helpstring("property EnvelopeVisible")] HRESULT EnvelopeVisible([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_envelopevisible),propput,helpstring("property EnvelopeVisible")] HRESULT EnvelopeVisible([in] VARIANT_BOOL RHS);
+//CalculationVersion
+		[id(dispid_workbook_calculationVersion),propget,helpstring("property CalculationVersion")] HRESULT CalculationVersion([out,retval] long* RHS);
+//Dummy17
+		[id(dispid_workbook_dummy17),hidden,helpstring("method Dummy17")] HRESULT Dummy17([in] long calcid);
+//sblt
+		[id(dispid_workbook_sblt),hidden,helpstring("method sblt")] HRESULT sblt([in] BSTR s);
+//VBASigned
+		[id(dispid_workbook_vbasigned),propget,helpstring("property VBASigned")] HRESULT VBASigned([out,retval] VARIANT_BOOL* RHS);
+//ShowPivotTableFieldList
+		[id(dispid_workbook_showpivottablefieldlist),propget,helpstring("property ShowPivotTableFieldList")] HRESULT ShowPivotTableFieldList([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_showpivottablefieldlist),propput,helpstring("property ShowPivotTableFieldList")] HRESULT ShowPivotTableFieldList([in] VARIANT_BOOL RHS);
+//UpdateLinks
+		[id(dispid_workbook_updatelinks),propget,helpstring("property UpdateLinks")] HRESULT UpdateLinks([out,retval] XlUpdateLinks* RHS);
+		[id(dispid_workbook_updatelinks),propput,helpstring("property UpdateLinks")] HRESULT UpdateLinks([in] XlUpdateLinks RHS);
+//BreakLink
+		[id(dispid_workbook_breaklink),helpstring("method BreakLink")] HRESULT BreakLink(
+			[in] BSTR Name,
+			[in] XlLinkType Type);
+//Dummy16
+		[id(dispid_workbook_dummy16),hidden,helpstring("method Dummy16")] HRESULT Dummy16();
+//SaveAs
+		[id(dispid_workbook_saveas),helpstring("method SaveAs")] HRESULT SaveAs(
+			[in,optional] VARIANT Filename,
+			[in,optional] VARIANT FileFormat,
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT WriteResPassword,
+			[in,optional] VARIANT ReadOnlyRecommended,
+			[in,optional] VARIANT CreateBackup,
+			[in,defaultvalue(1)] XlSaveAsAccessMode AccessMode,
+			[in,optional] VARIANT ConflictResolution,
+			[in,optional] VARIANT AddToMru,
+			[in,optional] VARIANT TextCodepage,
+			[in,optional] VARIANT TextVisualLayout,
+			[in,optional] VARIANT Local,
+			[in] long lcid);
+//EnableAutoRecover
+		[id(dispid_workbook_enableautorecover),propget,helpstring("property EnableAutoRecover")] HRESULT EnableAutoRecover([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_enableautorecover),propput,helpstring("property EnableAutoRecover")] HRESULT EnableAutoRecover([in] VARIANT_BOOL RHS);
+//RemovePersonalInformation
+		[id(dispid_workbook_removepersonalinformation),propget,helpstring("property RemovePersonalInformation")] HRESULT RemovePersonalInformation([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_removepersonalinformation),propput,helpstring("property RemovePersonalInformation")] HRESULT RemovePersonalInformation([in] VARIANT_BOOL RHS);
+//FullNameURLEncoded
+		[id(dispid_workbook_fullnameurlencoded),propget,helpstring("property FullNameURLEncoded")] HRESULT FullNameURLEncoded(
+			[in] long lcid,
+			[out,retval] BSTR* RHS);
+//CheckIn
+		[id(dispid_workbook_checkin),helpstring("method CheckIn")] HRESULT CheckIn(
+			[in,optional] VARIANT SaveChanges,
+			[in,optional] VARIANT Comments,
+			[in,optional] VARIANT MakePublic);
+//CanCheckIn
+		[id(dispid_workbook_cancheckin),helpstring("method CanCheckIn")] HRESULT CanCheckIn([out,retval] VARIANT_BOOL* RHS);
+//SendForReview
+		[id(dispid_workbook_sendforreview),helpstring("method SendForReview")] HRESULT SendForReview(
+			[in,optional] VARIANT Recipients,
+			[in,optional] VARIANT Subject,
+			[in,optional] VARIANT ShowMessage,
+			[in,optional] VARIANT IncludeAttachment);
+//ReplyWithChanges
+		[id(dispid_workbook_replywithchanges),helpstring("method ReplyWithChanges")] HRESULT ReplyWithChanges([in,optional] VARIANT ShowMessage);
+//EndReview
+		[id(dispid_workbook_endreview),helpstring("method EndReview")] HRESULT EndReview();
+//Password
+		[id(dispid_workbook_password),propget,helpstring("property Password")] HRESULT Password([out,retval] BSTR* RHS);
+		[id(dispid_workbook_password),propput,helpstring("property Password")] HRESULT Password([in] BSTR RHS);
+//WritePassword
+		[id(dispid_workbook_writepassword),propget,helpstring("property WritePassword")] HRESULT WritePassword([out,retval] BSTR* RHS);
+		[id(dispid_workbook_writepassword),propput,helpstring("property WritePassword")] HRESULT WritePassword([in] BSTR RHS);
+//PasswordEncryptionProvider
+		[id(dispid_workbook_passwordencryptionprovider),propget,helpstring("property PasswordEncryptionProvider")] HRESULT PasswordEncryptionProvider([out,retval] BSTR* RHS);
+//PasswordEncryptionAlgorithm
+		[id(dispid_workbook_passwordencryptionalgorithm),propget,helpstring("property PasswordEncryptionAlgorithm")] HRESULT PasswordEncryptionAlgorithm([out,retval] BSTR* RHS);
+//PasswordEncryptionKeyLength
+		[id(dispid_workbook_passwordencryptionkeylength),propget,helpstring("property PasswordEncryptionKeyLength")] HRESULT PasswordEncryptionKeyLength([out,retval] long* RHS);
+//SetPasswordEncryptionOptions
+		[id(dispid_workbook_setpasswordencryptionoptions),helpstring("method SetPasswordEncryptionOptions")] HRESULT SetPasswordEncryptionOptions(
+			[in,optional] VARIANT PasswordEncryptionProvider,
+			[in,optional] VARIANT PasswordEncryptionAlgorithm,
+			[in,optional] VARIANT PasswordEncryptionKeyLength,
+			[in,optional] VARIANT PasswordEncryptionFileProperties);
+//PasswordEncryptionFileProperties
+		[id(dispid_workbook_passwordencryptionfileproperties),propget,helpstring("property PasswordEncryptionFileProperties")] HRESULT PasswordEncryptionFileProperties([out,retval] VARIANT_BOOL* RHS);
+//ReadOnlyRecommended
+		[id(dispid_workbook_readonlyrecommended),propget,helpstring("property ReadOnlyRecommended")] HRESULT ReadOnlyRecommended([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_readonlyrecommended),propput,helpstring("property ReadOnlyRecommended")] HRESULT ReadOnlyRecommended([in] VARIANT_BOOL RHS);
+//Protect
+		[id(dispid_workbook_protect),helpstring("method Protect")] HRESULT Protect(
+			[in,optional] VARIANT Password,
+			[in,optional] VARIANT Structure,
+			[in,optional] VARIANT Windows);
+//SmartTagOptions
+		[id(dispid_workbook_smarttagoptions),propget,helpstring("property SmartTagOptions")] HRESULT SmartTagOptions([out,retval] IDispatch** RHS);
+//RecheckSmartTags
+		[id(dispid_workbook_rechecksmarttags),helpstring("method RecheckSmartTags")] HRESULT RecheckSmartTags();
+//Permission
+		[id(dispid_workbook_permission),propget,helpstring("property Permission")] HRESULT Permission([out,retval] IDispatch** RHS);
+//SharedWorkspace
+		[id(dispid_workbook_sharedworkspace),propget,helpstring("property SharedWorkspace")] HRESULT SharedWorkspace([out,retval] IDispatch** RHS);
+//Sync
+		[id(dispid_workbook_sync),propget,helpstring("property Sync")] HRESULT Sync([out,retval] IDispatch** RHS);
+//SendFaxOverInternet
+		[id(dispid_workbook_sendfaxoverinternet),helpstring("method SendFaxOverInternet")] HRESULT SendFaxOverInternet(
+			[in,optional] VARIANT Recipients,
+			[in,optional] VARIANT Subject,
+			[in,optional] VARIANT ShowMessage);
+//XmlNamespaces
+		[id(dispid_workbook_xmlnamespaces),propget,helpstring("property XmlNamespaces")] HRESULT XmlNamespaces([out,retval] IDispatch** RHS);
+//XmlMaps
+		[id(dispid_workbook_xmlmaps),propget,helpstring("property XmlMaps")] HRESULT XmlMaps([out,retval] IDispatch** RHS);
+//XmlImport
+		[id(dispid_workbook_xmlimport),helpstring("method XmlImport")] HRESULT XmlImport(
+			[in] BSTR Url,
+			[out] IDispatch** ImportMap,
+			[in,optional] VARIANT Overwrite,
+			[in,optional] VARIANT Destination,
+			[out,retval] XlXmlImportResult* RHS);
+//SmartDocument
+		[id(dispid_workbook_smartdocument),propget,helpstring("property SmartDocument")] HRESULT SmartDocument([out,retval] IDispatch** RHS);
+//DocumentLibraryVersions
+		[id(dispid_workbook_documentlibraryversions),propget,helpstring("property DocumentLibraryVersions")] HRESULT DocumentLibraryVersions([out,retval] IDispatch** RHS);
+//InactiveListBorderVisible
+		[id(dispid_workbook_inactivelistbordervisible),propget,helpstring("property InactiveListBorderVisible")] HRESULT InactiveListBorderVisible([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_inactivelistbordervisible),propput,helpstring("property InactiveListBorderVisible")] HRESULT InactiveListBorderVisible([in] VARIANT_BOOL RHS);
+//DisplayInkComments
+		[id(dispid_workbook_displayinkcomments),propget,helpstring("property DisplayInkComments")] HRESULT DisplayInkComments([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_workbook_displayinkcomments),propput,helpstring("property DisplayInkComments")] HRESULT DisplayInkComments([in] VARIANT_BOOL RHS);
+//XmlImportXml
+		[id(dispid_workbook_xmlimportxml),helpstring("method XmlImportXml")] HRESULT XmlImportXml(
+			[in] BSTR Data,
+			[out] IDispatch** ImportMap,
+			[in,optional] VARIANT Overwrite,
+			[in,optional] VARIANT Destination,
+			[out,retval] XlXmlImportResult* RHS);
+//SaveAsXMLData
+		[id(dispid_workbook_saveAsxmldata),helpstring("method SaveAsXMLData")] HRESULT SaveAsXMLData(
+			[in] BSTR Filename,
+			[in] IDispatch* Map);
+//ToggleFormsDesign
+		[id(dispid_workbook_toggleformsdesign),helpstring("method ToggleFormsDesign")]
+		HRESULT ToggleFormsDesign();
 	};
 
 	[
@@ -2359,10 +3161,6 @@ import "wtypes.idl";
 	]
 	interface Names : IDispatch
 	{
-
-
-
-
 //Application
 		[propget,id(dispid_names_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //Creator
