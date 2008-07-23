@@ -2359,6 +2359,10 @@ import "wtypes.idl";
 	]
 	interface Names : IDispatch
 	{
+
+
+
+
 //Application
 		[propget,id(dispid_names_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 //Creator
@@ -2406,10 +2410,24 @@ import "wtypes.idl";
 	]
 	interface I_Workbooks : IDispatch
 	{
+//Application
+		[propget,id(dispid_workbooks_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+//Creator
+		[propget,id(dispid_workbooks_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent
+		[propget,id(dispid_workbooks_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
 //Add 	Creates a new workbook. The new workbook becomes the active workbook. Returns a Workbook object.
-		[id(1), helpstring("method Add")] HRESULT Add([in, optional] VARIANT varTemplate, [out, retval] IDispatch **ppWorkbook);
+		[id(dispid_workbooks_Add), helpstring("method Add")] HRESULT Add([in, optional] VARIANT varTemplate, [out, retval] IDispatch **ppWorkbook);
+//Close 	Closes the object. 
+		[id(dispid_workbooks_Close), helpstring("method Close")] HRESULT Close([in] long lcid);
+//Count
+		[propget,id(dispid_workbooks_Count), helpstring("property Count")] HRESULT Count([out, retval] int *count);
+//Item
+		[propget,id(dispid_workbooks_Item), helpstring("property Item")] HRESULT Item([in] VARIANT index, [out, retval] IDispatch **result);
+//_NewEnum
+		[id(dispid_workbooks__NewEnum), propget, helpstring("property _NewEnum")] HRESULT _NewEnum([out, retval] IUnknown** RHS);
 //_Open
-		[id(2), hidden, helpstring("method _Open")] HRESULT _Open(
+		[id(dispid_workbooks__Open), hidden, helpstring("method _Open")] HRESULT _Open(
 			[in]           BSTR        Filename,
 			[in, optional] VARIANT     UpdateLinks,
 			[in, optional] VARIANT     ReadOnly,
@@ -2425,16 +2443,48 @@ import "wtypes.idl";
 			[in, optional] VARIANT     AddToMru,
 			[in]     long        Lcid,
 			[out, retval]  IDispatch **ppWorkbook);
-//Close 	Closes the object. 
-		[id(3), helpstring("method Close")] HRESULT Close([in] long lcid);
-//Count
-		[propget,id(4), helpstring("property Count")] HRESULT Count([out, retval] int *count);
-//Application
-		[propget,id(5), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
-//Parent
-		[propget,id(6), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+//__OpenText
+		[id(dispid_workbooks___OpenText), hidden, helpstring("method __OpenText")] HRESULT __OpenText(
+			[in]           BSTR        Filename,
+			[in, optional] VARIANT     Origin,
+			[in, optional] VARIANT     StartRow,
+			[in, optional] VARIANT     DataType,
+			[in, optional] VARIANT     TextQualifier,
+			[in, optional] VARIANT     ConsecutiveDelimiter,
+			[in, optional] VARIANT     Tab,
+			[in, optional] VARIANT     Semicolon,
+			[in, optional] VARIANT     Comma,
+			[in, optional] VARIANT     Space,
+			[in, optional] VARIANT     Other,
+			[in, optional] VARIANT     OtherChar,
+			[in, optional] VARIANT     FieldInfo,
+			[in, optional] VARIANT     TextVisualLayout,
+			[in]     long        Lcid,
+			[out, retval]  IDispatch **ppWorkbook);
+//_Default
+		[propget,id(dispid_workbooks__Default), helpstring("property _Default")] HRESULT _Default([in] VARIANT varIndex, [out, retval] IDispatch **ppSheet);
+//_OpenText
+		[id(dispid_workbooks__OpenText), hidden, helpstring("method _OpenText")] HRESULT _OpenText(
+			[in]           BSTR        Filename,
+			[in, optional] VARIANT     Origin,
+			[in, optional] VARIANT     StartRow,
+			[in, optional] VARIANT     DataType,
+			[in, optional] VARIANT     TextQualifier,
+			[in, optional] VARIANT     ConsecutiveDelimiter,
+			[in, optional] VARIANT     Tab,
+			[in, optional] VARIANT     Semicolon,
+			[in, optional] VARIANT     Comma,
+			[in, optional] VARIANT     Space,
+			[in, optional] VARIANT     Other,
+			[in, optional] VARIANT     OtherChar,
+			[in, optional] VARIANT     FieldInfo,
+			[in, optional] VARIANT     TextVisualLayout,
+			[in, optional] VARIANT     DecimalSeparator,
+			[in, optional] VARIANT     ThousandsSeparator,
+			[in]     long        Lcid,
+			[out, retval]  IDispatch **ppWorkbook);
 //Open
-		[id(7), helpstring("method Open")] HRESULT Open(
+		[id(dispid_workbooks_Open), helpstring("method Open")] HRESULT Open(
 			[in]           BSTR        Filename,
 			[in, optional] VARIANT     UpdateLinks,
 			[in, optional] VARIANT     ReadOnly,
@@ -2453,7 +2503,7 @@ import "wtypes.idl";
 			[in]     long        Lcid,
 			[out, retval]  IDispatch **ppWorkbook);
 //OpenText
-		[id(8), helpstring("method OpenText")] HRESULT OpenText(
+		[id(dispid_workbooks_OpenText), helpstring("method OpenText")] HRESULT OpenText(
 			[in]           BSTR        Filename,
 			[in, optional] VARIANT     Origin,
 			[in, optional] VARIANT     StartRow,
@@ -2474,41 +2524,8 @@ import "wtypes.idl";
 			[in, optional] VARIANT     Local,
 			[in]     long        Lcid,
 			[out, retval]  IDispatch **ppWorkbook);
-//_OpenText
-		[id(9), hidden, helpstring("method _OpenText")] HRESULT _OpenText(
-			[in]           BSTR        Filename,
-			[in, optional] VARIANT     Origin,
-			[in, optional] VARIANT     StartRow,
-			[in, optional] VARIANT     DataType,
-			[in, optional] VARIANT     TextQualifier,
-			[in, optional] VARIANT     ConsecutiveDelimiter,
-			[in, optional] VARIANT     Tab,
-			[in, optional] VARIANT     Semicolon,
-			[in, optional] VARIANT     Comma,
-			[in, optional] VARIANT     Space,
-			[in, optional] VARIANT     Other,
-			[in, optional] VARIANT     OtherChar,
-			[in, optional] VARIANT     FieldInfo,
-			[in, optional] VARIANT     TextVisualLayout,
-			[in, optional] VARIANT     DecimalSeparator,
-			[in, optional] VARIANT     ThousandsSeparator,
-			[in]     long        Lcid,
-			[out, retval]  IDispatch **ppWorkbook);
-//OpenXML
-		[id(10), helpstring("method OpenXML")] HRESULT OpenXML(
-			[in]           BSTR        Filename,
-			[in, optional] VARIANT     Stylesheets,
-			[in, optional] VARIANT     LoadOption,
-			[in]     long        Lcid,
-			[out, retval]  IDispatch **ppWorkbook);
-//_OpenXML
-		[id(11), hidden, helpstring("method _OpenXML")] HRESULT _OpenXML(
-			[in]           BSTR        Filename,
-			[in, optional] VARIANT     Stylesheets,
-			[in]     long        Lcid,
-			[out, retval]  IDispatch **ppWorkbook);
 //OpenDatabase
-		[id(12), helpstring("method OpenDatabase")] HRESULT OpenDatabase(
+		[id(dispid_workbooks_OpenDatabase), helpstring("method OpenDatabase")] HRESULT OpenDatabase(
 			[in]           BSTR        Filename,
 			[in, optional] VARIANT     CommandText,
 			[in, optional] VARIANT     CommandType,
@@ -2516,37 +2533,24 @@ import "wtypes.idl";
 			[in, optional] VARIANT     ImportDataAs,
 			[in]     long        Lcid,
 			[out, retval]  IDispatch **ppWorkbook);
-//CanCheckOut
-		[propget,id(13), helpstring("property CanCheckOut")] HRESULT CanCheckOut([in] BSTR Filename, [out, retval] VARIANT_BOOL *result);
-		[propput,id(13), helpstring("property CanCheckOut")] HRESULT CanCheckOut([in] BSTR Filename, [in] VARIANT_BOOL result);
 //CheckOut
-		[id(14), helpstring("method CanCheckOut")] HRESULT CheckOut([in] BSTR Filename);
-//Creator
-		[propget,id(15), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
-//_Default
-		[propget,id(16), helpstring("property _Default")] HRESULT _Default([in] VARIANT varIndex, [out, retval] IDispatch **ppSheet);
-//Item
-		[propget,id(17), helpstring("property Item")] HRESULT Item([in] VARIANT index, [out, retval] IDispatch **result);
-//__OpenText
-		[id(18), hidden, helpstring("method __OpenText")] HRESULT __OpenText(
+		[id(dispid_workbooks_CheckOut), helpstring("method CanCheckOut")] HRESULT CheckOut([in] BSTR Filename);
+//CanCheckOut
+		[propget,id(dispid_workbooks_CanCheckOut), helpstring("property CanCheckOut")] HRESULT CanCheckOut([in] BSTR Filename, [out, retval] VARIANT_BOOL *result);
+		[propput,id(13), helpstring("property CanCheckOut")] HRESULT CanCheckOut([in] BSTR Filename, [in] VARIANT_BOOL result);
+//_OpenXML
+		[id(dispid_workbooks__OpenXML), hidden, helpstring("method _OpenXML")] HRESULT _OpenXML(
 			[in]           BSTR        Filename,
-			[in, optional] VARIANT     Origin,
-			[in, optional] VARIANT     StartRow,
-			[in, optional] VARIANT     DataType,
-			[in, optional] VARIANT     TextQualifier,
-			[in, optional] VARIANT     ConsecutiveDelimiter,
-			[in, optional] VARIANT     Tab,
-			[in, optional] VARIANT     Semicolon,
-			[in, optional] VARIANT     Comma,
-			[in, optional] VARIANT     Space,
-			[in, optional] VARIANT     Other,
-			[in, optional] VARIANT     OtherChar,
-			[in, optional] VARIANT     FieldInfo,
-			[in, optional] VARIANT     TextVisualLayout,
+			[in, optional] VARIANT     Stylesheets,
 			[in]     long        Lcid,
 			[out, retval]  IDispatch **ppWorkbook);
-//Methods
-//GetEnumerator 	Returns an enumerator to support iterating through the collection.   .NET
+//OpenXML
+		[id(dispid_workbooks_OpenXML), helpstring("method OpenXML")] HRESULT OpenXML(
+			[in]           BSTR        Filename,
+			[in, optional] VARIANT     Stylesheets,
+			[in, optional] VARIANT     LoadOption,
+			[in]     long        Lcid,
+			[out, retval]  IDispatch **ppWorkbook);
 		};
 
 	[

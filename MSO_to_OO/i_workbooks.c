@@ -542,6 +542,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks___OpenText(
     return E_NOTIMPL;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__NewEnum(
+        I_Workbooks* iface,
+        IUnknown **RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
 /*** IDispatch methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetTypeInfoCount(
         I_Workbooks* iface,
@@ -570,75 +578,75 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetIDsOfNames(
         DISPID *rgDispId)
 {
     if (!lstrcmpiW(*rgszNames, str_add)) {
-        *rgDispId = 1;
+        *rgDispId = dispid_workbooks_Add;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str__open)) {
-        *rgDispId = 2;
+        *rgDispId = dispid_workbooks__Open;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_close)) {
-        *rgDispId = 3;
+        *rgDispId = dispid_workbooks_Close;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_count)) {
-        *rgDispId = 4;
+        *rgDispId = dispid_workbooks_Count;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = 5;
+        *rgDispId = dispid_workbooks_application;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = 6;
+        *rgDispId = dispid_workbooks_parent;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_open)) {
-        *rgDispId = 7;
+        *rgDispId = dispid_workbooks_Open;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_opentext)) {
-        *rgDispId = 8;
+        *rgDispId = dispid_workbooks_OpenText;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str__opentext)) {
-        *rgDispId = 9;
+        *rgDispId = dispid_workbooks__OpenText;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_openxml)) {
-        *rgDispId = 10;
+        *rgDispId = dispid_workbooks_OpenXML;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str__openxml)) {
-        *rgDispId = 11;
+        *rgDispId = dispid_workbooks__OpenXML;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_opendatabase)) {
-        *rgDispId = 12;
+        *rgDispId = dispid_workbooks_OpenDatabase;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_cancheckout)) {
-        *rgDispId = 13;
+        *rgDispId = dispid_workbooks_CanCheckOut;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_checkout)) {
-        *rgDispId = 14;
+        *rgDispId = dispid_workbooks_CheckOut;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = 15;
+        *rgDispId = dispid_workbooks_creator;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str__default)) {
-        *rgDispId = 16;
+        *rgDispId = dispid_workbooks__Default;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str_item)) {
-        *rgDispId = 17;
+        *rgDispId = dispid_workbooks_Item;
         return S_OK;
     }
     if (!lstrcmpiW(*rgszNames, str___opentext)) {
-        *rgDispId = 18;
+        *rgDispId = dispid_workbooks___OpenText;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -677,7 +685,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
     if (This == NULL) return E_POINTER;
 
     switch (dispIdMember) {
-        case 1:
+        case dispid_workbooks_Add:
             if (pDispParams->cArgs==1) {
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &astemp);
                 if (V_VT(&astemp)!=VT_BSTR) {
@@ -703,7 +711,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 V_DISPATCH(pVarResult)=(IDispatch *)iapp;
             }
             return S_OK;
-        case 2:
+        case dispid_workbooks__Open:
             /*Зависит от кол-ва посланных параметров*/
             if (pDispParams->cArgs==0) return E_FAIL;
             /*Используем только имя файла*/
@@ -718,10 +726,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 V_DISPATCH(pVarResult)=(IDispatch *)iapp;
             }
             return S_OK;
-        case 3:
+        case dispid_workbooks_Close:
             MSO_TO_OO_I_Workbooks_Close(iface, l);
             return S_OK;
-        case 4:
+        case dispid_workbooks_Count:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
@@ -737,7 +745,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 }
                 return hr;
             }
-        case 5:
+        case dispid_workbooks_application:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
@@ -752,7 +760,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 }
                 return S_OK;
             }
-        case 6:
+        case dispid_workbooks_parent:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
@@ -767,7 +775,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 }
                 return S_OK;
             }
-        case 7:
+        case dispid_workbooks_Open:
             /*Зависит от кол-ва посланных параметров*/
             if (pDispParams->cArgs==0) return E_FAIL;
             /*Используем только имя файла*/
@@ -782,27 +790,27 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 V_DISPATCH(pVarResult)=(IDispatch *)iapp;
             }
             return S_OK;
-        case 8:
+        case dispid_workbooks_OpenText:
             /*MSO_TO_OO_I_Workbooks_OpenText*/
             TRACE("Stub: METHOD OpenText \n");
             return S_OK;
-        case 9:
+        case dispid_workbooks__OpenText:
             /*MSO_TO_OO_I_Workbooks__OpenText*/
             TRACE("Stub: METHOD _OpenText \n");
             return S_OK;
-        case 10:
+        case dispid_workbooks_OpenXML:
             /*MSO_TO_OO_I_Workbooks_OpenXML*/
             TRACE("Stub: METHOD OpenXML \n");
             return S_OK;
-        case 11:
+        case dispid_workbooks__OpenXML:
             /*MSO_TO_OO_I_Workbooks__OpenXML*/
             TRACE("Stub: METHOD _OpenXML \n");
             return S_OK;
-        case 12:
+        case dispid_workbooks_OpenDatabase:
             /*MSO_TO_OO_I_Workbooks_OpenDatabase*/
             TRACE("Stub: METHOD OpenDatabase \n");
             return S_OK;
-        case 13:
+        case dispid_workbooks_CanCheckOut:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 if (pDispParams->cArgs!=2) return E_FAIL;
                 hr = MSO_TO_OO_I_Workbooks_put_CanCheckOut(iface, V_BSTR(&(pDispParams->rgvarg[1])), V_BOOL(&(pDispParams->rgvarg[0])));
@@ -816,11 +824,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 }
                 return hr;
             }
-        case 14:
+        case dispid_workbooks_CheckOut:
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = MSO_TO_OO_I_Workbooks_CheckOut(iface, V_BSTR(&(pDispParams->rgvarg[0])));
             return hr;
-        case 15:
+        case dispid_workbooks_creator:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 /*это свойство только для чтения*/
                 return E_NOTIMPL;
@@ -829,7 +837,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                *pVarResult = vresult;
                return hr;
             }
-        case 16:
+        case dispid_workbooks__Default:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
@@ -837,7 +845,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 TRACE("Stub: PPROPERTY _Default \n");
                 return S_OK;
             }
-        case 17:
+        case dispid_workbooks_Item:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return S_OK;
             } else {
@@ -845,7 +853,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 TRACE("Stub: PROPERTY Item \n");
                 return S_OK;
             }
-        case 18:
+        case dispid_workbooks___OpenText:
             /*MSO_TO_OO_I_Workbooks___OpenText*/
             TRACE("Stub: METHOD __OpenText \n");
             return S_OK;
@@ -863,25 +871,26 @@ const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl =
     MSO_TO_OO_I_Workbooks_GetTypeInfo,
     MSO_TO_OO_I_Workbooks_GetIDsOfNames,
     MSO_TO_OO_I_Workbooks_Invoke,
+    MSO_TO_OO_I_Workbooks_get_Application,
+    MSO_TO_OO_I_Workbooks_get_Creator,
+    MSO_TO_OO_I_Workbooks_get_Parent,
     MSO_TO_OO_I_Workbooks_Add,
-    MSO_TO_OO_I_Workbooks__Open,
     MSO_TO_OO_I_Workbooks_Close,
     MSO_TO_OO_I_Workbooks_get_Count,
-    MSO_TO_OO_I_Workbooks_get_Application,
-    MSO_TO_OO_I_Workbooks_get_Parent,
+    MSO_TO_OO_I_Workbooks_get_Item,
+    MSO_TO_OO_I_Workbooks_get__NewEnum,
+    MSO_TO_OO_I_Workbooks__Open,
+    MSO_TO_OO_I_Workbooks___OpenText,
+    MSO_TO_OO_I_Workbooks_get__Default,
+    MSO_TO_OO_I_Workbooks__OpenText,
     MSO_TO_OO_I_Workbooks_Open,
     MSO_TO_OO_I_Workbooks_OpenText,
-    MSO_TO_OO_I_Workbooks__OpenText,
-    MSO_TO_OO_I_Workbooks_OpenXML,
-    MSO_TO_OO_I_Workbooks__OpenXML,
     MSO_TO_OO_I_Workbooks_OpenDatabase,
+    MSO_TO_OO_I_Workbooks_CheckOut,
     MSO_TO_OO_I_Workbooks_get_CanCheckOut,
     MSO_TO_OO_I_Workbooks_put_CanCheckOut,
-    MSO_TO_OO_I_Workbooks_CheckOut,
-    MSO_TO_OO_I_Workbooks_get_Creator,
-    MSO_TO_OO_I_Workbooks_get__Default,
-    MSO_TO_OO_I_Workbooks_get_Item,
-    MSO_TO_OO_I_Workbooks___OpenText
+    MSO_TO_OO_I_Workbooks__OpenXML,
+    MSO_TO_OO_I_Workbooks_OpenXML
 };
 
 extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj)

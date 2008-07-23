@@ -711,3 +711,24 @@
 #define dispid_worksheet_xmldataquery                            7
 #define dispid_worksheet_xmlmapquery                             8
 
+/*IWorkbooks*/
+#define dispid_workbooks_application                             148
+#define dispid_workbooks_creator                                 149
+#define dispid_workbooks_parent                                  150
+#define dispid_workbooks_Add                                     181
+#define dispid_workbooks_Close                                   277
+#define dispid_workbooks_Count                                   118
+#define dispid_workbooks_Item                                    170
+#define dispid_workbooks__NewEnum                                -4
+#define dispid_workbooks__Open                                   682
+#define dispid_workbooks___OpenText                              683
+#define dispid_workbooks__Default                                0
+#define dispid_workbooks__OpenText                               1773
+#define dispid_workbooks_Open                                    1923
+#define dispid_workbooks_OpenText                                1924
+#define dispid_workbooks_OpenDatabase                            2067
+#define dispid_workbooks_CheckOut                                2069
+#define dispid_workbooks_CanCheckOut                             2070
+#define dispid_workbooks__OpenXML                                2071
+#define dispid_workbooks_OpenXML                                 2072
+
