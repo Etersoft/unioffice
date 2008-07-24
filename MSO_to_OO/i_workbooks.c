@@ -166,11 +166,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
 
     hres = I_Workbook_QueryInterface(punk, &IID_I_Workbook, (void**) &(This->pworkbook[This->current_workbook]));
 /*    I_Workbook_Release(punk);*/
-    if (FAILED(hres)) return E_FAIL;
-    *ppWorkbook = This->pworkbook[This->current_workbook];
+    if (FAILED(hres)) {
+        TRACE("ERROR when QueryInterface\n");
+        return E_FAIL;
+    }
+    if (!ppWorkbook) {
+        /*подумать над правильностью такого решения*/
+        ppWorkbook = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, sizeof(WorkbookImpl*));
+        TRACE(" AllocMemory");
+        *ppWorkbook = This->pworkbook[This->current_workbook];
+    } else {
+        *ppWorkbook = This->pworkbook[This->current_workbook];
+    }
 
-
-    if (V_VT(&varTemplate)==VT_EMPTY) {
+    if ((V_VT(&varTemplate)==VT_EMPTY)||
+        (V_VT(&varTemplate)==VT_NULL) ||
+        (lstrlenW(V_BSTR(&varTemplate))==0)) {
         hres = MSO_TO_OO_I_Workbook_Initialize( This->pworkbook[This->current_workbook], This->pApplication);
     } else {
        /* Необходимо преобразовать путь+имя в нужную форму

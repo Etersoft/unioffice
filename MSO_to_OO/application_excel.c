@@ -1045,6 +1045,15 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActivePrinter(
     return E_NOTIMPL;
 }
 
+static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ActivePrinter(
+        I_ApplicationExcel* iface,
+        long lcid,
+        BSTR RHS)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveWindow(
         I_ApplicationExcel* iface,
         IDispatch **RHS)
@@ -4861,6 +4870,7 @@ const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
     MSO_TO_OO_I_ApplicationExcel_get_ActiveDialog,
     MSO_TO_OO_I_ApplicationExcel_get_ActiveMenuBar,
     MSO_TO_OO_I_ApplicationExcel_get_ActivePrinter,
+    MSO_TO_OO_I_ApplicationExcel_put_ActivePrinter,
     MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet,
     MSO_TO_OO_I_ApplicationExcel_get_ActiveWindow,
     MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook,
@@ -5127,8 +5137,8 @@ const I_ApplicationExcelVtbl MSO_TO_OO_I_ApplicationExcel_Vtbl =
     MSO_TO_OO_I_ApplicationExcel_get_Value,
     MSO_TO_OO_I_ApplicationExcel_get_VBE,
     MSO_TO_OO_I_ApplicationExcel_get_Version,
-    MSO_TO_OO_I_ApplicationExcel_put_Visible,
     MSO_TO_OO_I_ApplicationExcel_get_Visible,
+    MSO_TO_OO_I_ApplicationExcel_put_Visible,
     MSO_TO_OO_I_ApplicationExcel_Volatile,
     MSO_TO_OO_I_ApplicationExcel__Wait,
     MSO_TO_OO_I_ApplicationExcel_get_Width,

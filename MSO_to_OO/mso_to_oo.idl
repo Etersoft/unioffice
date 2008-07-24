@@ -3378,6 +3378,9 @@ import "wtypes.idl";
 		[id(dispid_application_activeprinter), propget, helpstring("property ActivePrinter")] HRESULT ActivePrinter(
 			[in] long lcid,
 			[out, retval] BSTR* RHS);
+		[id(dispid_application_activeprinter), propput, helpstring("property ActivePrinter")] HRESULT ActivePrinter(
+			[in] long lcid,
+			[in] BSTR RHS);
 //ActiveSheet 	Returns an object that represents the active sheet (the sheet on top) in the active workbook or in the specified window or workbook. Returns Nothing if no sheet is active.
 		[propget,id(dispid_application_activesheet),helpstring("property ActiveSheet")] HRESULT ActiveSheet([out, retval] IDispatch** RHS);
 //ActiveWindow 	Returns a Window object that represents the active window (the window on top). Returns Nothing if there are no windows open.
@@ -4451,12 +4454,12 @@ import "wtypes.idl";
 //Version 	Returns the Microsoft Excel version number.
 		[propget,id(dispid_application_version)] HRESULT Version([in] long Lcid, [out, retval] BSTR *pVersion);
 //Visible 	Determines whether the object is visible.
-		[propput,id(dispid_application_visible)] HRESULT Visible(
-			[in] long Lcid,
-			[in] VARIANT_BOOL vbVisible);
 		[propget,id(dispid_application_visible)] HRESULT Visible(
 			[in] long Lcid,
 			[out, retval] VARIANT_BOOL *vbVisible);
+		[propput,id(dispid_application_visible)] HRESULT Visible(
+			[in] long Lcid,
+			[in] VARIANT_BOOL vbVisible);
 //Volatile 	Marks a user-defined function as volatile. A volatile function must be recalculated whenever calculation occurs in any cells on the worksheet. A nonvolatile function is recalculated only when the input variables change. This method has no effect if it's not inside a user-defined function used to calculate a worksheet cell. 
 		[id(dispid_application_volatile), helpstring("method Volatile")] HRESULT Volatile(
 			[in, optional] VARIANT Volatile,
