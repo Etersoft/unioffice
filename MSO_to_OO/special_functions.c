@@ -232,11 +232,14 @@ HRESULT MSO_TO_OO_I_Sheets_Initialize(
     WorkbookImpl *Thiswb = (WorkbookImpl*)wb;
     This->pwb = (IDispatch*)wb;
 
+    VariantClear(&resultSheets);
     HRESULT hres = AutoWrap(DISPATCH_METHOD, &resultSheets, Thiswb->pDoc, L"getSheets", 0);
 
     This->pOOSheets = V_DISPATCH(&resultSheets);
-    if (FAILED(hres)) return E_NOINTERFACE;
-
+    if (FAILED(hres)) {
+        TRACE("ERROR when getSheets");
+        return E_NOINTERFACE;
+    }
     IDispatch_AddRef(This->pOOSheets);
     VariantClear(&resultSheets);
     return hres;

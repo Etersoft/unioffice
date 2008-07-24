@@ -2355,6 +2355,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=dret;
+                } else {
+                    IDispatch_Release(dret);
                 }
                 break;
             case 1:
@@ -2363,6 +2365,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=pretdisp;
+                } else {
+                    IDispatch_Release(pretdisp);
                 }
                 I_Range_Release((I_Range*)dret);
                break;
@@ -2375,6 +2379,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=pretdisp;
+                } else {
+                    IDispatch_Release(pretdisp);
                 }
                 I_Range_Release((I_Range*)dret);
                break;
@@ -2401,6 +2407,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             if (pVarResult!=NULL){
                 V_VT(pVarResult) = VT_DISPATCH;
                 V_DISPATCH(pVarResult) = dret;
+            } else {
+                IDispatch_Release(dret);
             }
             return S_OK;
             default:
@@ -2429,6 +2437,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult) = VT_DISPATCH;
                     V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
                 }
                 return S_OK;
             case 1:
@@ -2443,6 +2453,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult) = VT_DISPATCH;
                     V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
                 }
                 return S_OK;
             }
@@ -2462,6 +2474,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult) = VT_DISPATCH;
                     V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
                 }
                 return S_OK;
             case 1:
@@ -2476,6 +2490,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult) = VT_DISPATCH;
                     V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
                 }
                 return S_OK;
             }

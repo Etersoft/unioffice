@@ -2274,11 +2274,15 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)dret;
                     I_Sheets_Release((I_Sheets*)drets);
+                } else {
+                    IDispatch_Release(dret);
                 }
             } else {
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)drets;
+                } else {
+                    IDispatch_Release(drets);
                 }
             }
             return hr;
@@ -2303,11 +2307,15 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)dret;
                     I_Sheets_Release((I_Sheets*)drets);
+                } else {
+                    IDispatch_Release(dret);
                 }
             } else {
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)drets;
+                } else {
+                    IDispatch_Release(drets);
                 }
             }
             return hr;
@@ -2399,6 +2407,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)drets;
+                } else {
+                    IDispatch_Release(drets);
                 }
                 break;
             case 1:

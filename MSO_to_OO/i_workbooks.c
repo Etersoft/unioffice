@@ -147,7 +147,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
 
     TRACE(" \n");
 
-    if (This == NULL) return E_POINTER;
+    if (This == NULL) {
+        TRACE("ERROR Object is NULL \n");
+        return E_POINTER;
+    }
 
     hres = _I_WorkbookConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
@@ -173,7 +176,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
     if (!ppWorkbook) {
         /*подумать над правильностью такого решения*/
         ppWorkbook = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, sizeof(WorkbookImpl*));
-        TRACE(" AllocMemory");
+        TRACE(" AllocMemory \n");
         *ppWorkbook = This->pworkbook[This->current_workbook];
     } else {
         *ppWorkbook = This->pworkbook[This->current_workbook];
@@ -720,6 +723,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             if (pVarResult!=NULL){
                 V_VT(pVarResult)=VT_DISPATCH;
                 V_DISPATCH(pVarResult)=(IDispatch *)iapp;
+            } else {
+                IDispatch_Release(iapp);
             }
             return S_OK;
         case dispid_workbooks__Open:
@@ -735,6 +740,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             if (pVarResult!=NULL){
                 V_VT(pVarResult)=VT_DISPATCH;
                 V_DISPATCH(pVarResult)=(IDispatch *)iapp;
+            } else {
+                IDispatch_Release(iapp);
             }
             return S_OK;
         case dispid_workbooks_Close:
@@ -768,6 +775,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)iapp;
+                } else {
+                    IDispatch_Release(iapp);
                 }
                 return S_OK;
             }
@@ -783,6 +792,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)iapp;
+                } else {
+                    IDispatch_Release(iapp);
                 }
                 return S_OK;
             }
@@ -799,6 +810,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             if (pVarResult!=NULL){
                 V_VT(pVarResult)=VT_DISPATCH;
                 V_DISPATCH(pVarResult)=(IDispatch *)iapp;
+            } else {
+                IDispatch_Release(iapp);
             }
             return S_OK;
         case dispid_workbooks_OpenText:

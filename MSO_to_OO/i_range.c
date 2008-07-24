@@ -4064,6 +4064,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             if (pVarResult!=NULL){
                 V_VT(pVarResult) = VT_DISPATCH;
                 V_DISPATCH(pVarResult) = dret;
+            } else {
+                IDispatch_Release(dret);
             }
             return S_OK;
         }
