@@ -20,6 +20,23 @@
 
 #include "mso_to_oo_private.h"
 
+static WCHAR const str_application[] = {
+    'A','p','p','l','i','c','a','t','i','o','n',0};
+static WCHAR const str_parent[] = {
+    'P','a','r','e','n','t',0};
+static WCHAR const str_creator[] = {
+    'C','r','e','a','t','o','r',0};
+static WCHAR const str_add[] = {
+    'A','d','d',0};
+static WCHAR const str_item[] = {
+    'I','t','e','m',0};
+static WCHAR const str_count[] = {
+    'C','o','u','n','t',0};
+static WCHAR const str__default[] = {
+    '_','D','e','f','a','u','l','t',0};
+static WCHAR const str_getenumerator[] = {
+    'G','e','t','E','n','u','m','e','r','a','t','o','r',0};
+
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_Names_AddRef(
         Names* iface)
@@ -97,28 +114,77 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Application(
         Names* iface,
         IDispatch **value)
 {
+    NamesImpl *This = (NamesImpl*)iface;
 
+    TRACE("\n");
+
+    if (This==NULL) return E_POINTER;
+
+    if (value==NULL)
+        return E_POINTER;
+
+    *value = This->pApplication;
+    IDispatch_AddRef(This->pApplication);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_get_Count(
         Names* iface,
         int *count)
 {
+    NamesImpl *This = (NamesImpl*)iface;
+    VARIANT vret;
+    HRESULT hres;
 
+    TRACE("\n");
+
+    VariantInit(&vret);
+
+    hres = AutoWrap(DISPATCH_METHOD, &vret, This->pOONames, L"getCount", 0);
+    if (FAILED(hres)) {
+        TRACE("Error when getCount \n");
+        return E_FAIL;
+    }
+
+    hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I2);
+    if (FAILED(hres)) {
+        TRACE("Error when VariantChangeTypeEx \n");
+        return E_FAIL;
+    }
+
+    *count = V_I2(&vret);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_get_Creator(
         Names* iface,
         VARIANT *result)
 {
-
+    TRACE("\n");
+    V_VT(result) = VT_I4;
+    V_I4(result) = 1480803660;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_get_Parent(
         Names* iface,
         IDispatch **value)
 {
+    NamesImpl *This = (NamesImpl*)iface;
 
+    TRACE("\n");
+
+    if (This==NULL) return E_POINTER;
+
+    if (value==NULL)
+        return E_POINTER;
+
+    *value = This->pwb;
+    IDispatch_AddRef(This->pwb);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names__Default(
@@ -128,7 +194,8 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
         VARIANT RefersTo,
         IDispatch **ppvalue)
 {
-
+    TRACE("\n");
+    return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_Add(
@@ -146,7 +213,8 @@ static HRESULT WINAPI MSO_TO_OO_Names_Add(
         VARIANT RefersToR1C1Local,
         IDispatch **ppvalue)
 {
-
+    TRACE("\n");
+    return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_GetEnumerator(
@@ -163,7 +231,8 @@ static HRESULT WINAPI MSO_TO_OO_Names_Item(
         VARIANT RefersTo,
         IDispatch **ppvalue)
 {
-
+    TRACE("\n");
+    return E_NOTIMPL;
 }
 
 
@@ -181,7 +250,8 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-
+    TRACE("\n");
+    return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_GetIDsOfNames(
@@ -192,7 +262,43 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
+    if (!lstrcmpiW(*rgszNames, str_application)) {
+        *rgDispId = dispid_names_application;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_creator)) {
+        *rgDispId = dispid_names_creator;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_parent)) {
+        *rgDispId = dispid_names_parent;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_add)) {
+        *rgDispId = dispid_names_add;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_item)) {
+        *rgDispId = dispid_names_item;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str__default)) {
+        *rgDispId = dispid_names__default;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_count)) {
+        *rgDispId = dispid_names_count;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_getenumerator)) {
+        *rgDispId = dispid_names_getenumerator;
+        return S_OK;
+    }
 
+    /*Выводим название метода или свойства,
+    чтобы знать чего не хватает.*/
+    WTRACE(L" %s NOT REALIZE \n",*rgszNames);
+    return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_Invoke(
@@ -206,7 +312,88 @@ static HRESULT WINAPI MSO_TO_OO_Names_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
+    HRESULT hres;
+    IDispatch *dret;
+    VARIANT vresult;
+    int iret;
 
+    TRACE("\n");
+
+    VariantInit(&vresult);
+
+    if (iface == NULL) {
+        TRACE("ERROR Object is NULL\n");
+       return E_POINTER;
+    }
+
+    switch(dispIdMember)
+    {
+    case dispid_names_application:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_Names_get_Application(iface,&dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+            } else {
+                IDispatch_Release(dret);
+            }
+            return S_OK;
+        }
+    case dispid_names_creator:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_Names_get_Creator(iface, &vresult);
+            if (pVarResult!=NULL){
+                *pVarResult = vresult;
+            }
+            return hres;
+        }
+    case dispid_names_parent:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_Names_get_Parent(iface,&dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+            } else {
+                IDispatch_Release(dret);
+            }
+            return S_OK;
+        }
+    case dispid_names_add:
+        return E_NOTIMPL;
+    case dispid_names_item:
+        return E_NOTIMPL;
+    case dispid_names__default:
+        return E_NOTIMPL;
+    case dispid_names_count:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_Names_get_Count(iface, &iret);
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_I2;
+                V_I2(pVarResult) = iret;
+            }
+            return hres;
+        }
+    case dispid_names_getenumerator:
+        return E_NOTIMPL;
+    }
+    TRACE("Unknown dispid =  \n",dispIdMember);
+    return E_NOTIMPL;
 }
 
 const NamesVtbl MSO_TO_OO_NamesVtbl =

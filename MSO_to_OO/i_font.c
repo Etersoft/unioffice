@@ -518,11 +518,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Parent(
 
     if (This==NULL) return E_POINTER;
 
-    *value = This->prange;
-    I_Range_AddRef(This->prange);
-
     if (value==NULL)
         return E_POINTER;
+
+    *value = This->prange;
+    I_Range_AddRef(This->prange);
 
     return S_OK;
 }
