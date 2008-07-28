@@ -267,6 +267,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_QueryInterface(
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
+    *ppvObject = NULL;
+
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_ApplicationExcel)) {
