@@ -139,6 +139,15 @@ typedef struct
 
 typedef struct
 {
+    const NameVtbl *nameVtbl;
+    LONG ref;
+    IDispatch *pnames;              /*указатель на Names*/
+    IDispatch *pApplication;     /*указатель на Application*/
+    IDispatch *pOOName;         /*указатель на OpenOffice Names*/
+} NameImpl;
+
+typedef struct
+{
     const I_WorkbookVtbl *_workbookVtbl;
     LONG ref;
     IDispatch *pApplication;  /*Указатель на Application*/
@@ -206,6 +215,6 @@ extern HRESULT _I_BorderConstructor(LPVOID *ppObj);
 extern HRESULT _I_ShapesConstructor(LPVOID *ppObj);
 extern HRESULT _I_ShapeConstructor(LPVOID *ppObj);
 extern HRESULT _NamesConstructor(LPVOID *ppObj);
-
+extern HRESULT _NameConstructor(LPVOID *ppObj);
 #endif /* __OOFFICE_PRIVATE_H__ */
 

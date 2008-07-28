@@ -37,6 +37,400 @@ static WCHAR const str__default[] = {
 static WCHAR const str_getenumerator[] = {
     'G','e','t','E','n','u','m','e','r','a','t','o','r',0};
 
+
+/*Name interface*/
+/*** IUnknown methods ***/
+static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
+        Name* iface,
+        REFIID riid,
+        void **ppvObject)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static ULONG WINAPI MSO_TO_OO_Name_AddRef(
+        Name* iface)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static ULONG WINAPI MSO_TO_OO_Name_Release(
+        Name* iface)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+/*** Name methods ***/
+static HRESULT WINAPI MSO_TO_OO_Name_get_Application(
+        Name* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_Creator(
+        Name* iface,
+        VARIANT *result)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_Parent(
+        Name* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get__Default(
+        Name* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_Index(
+        Name* iface,
+        int *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_Category(
+        Name* iface,
+        long lcid,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_Category(
+        Name* iface,
+        long lcid,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_CategoryLocal(
+        Name* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_CategoryLocal(
+        Name* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_Delete(
+        Name* iface)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_MacroType(
+        Name* iface,
+        XlXLMMacroType *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_MacroType(
+        Name* iface,
+        XlXLMMacroType value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
+        Name* iface,
+        long lcid,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
+        Name* iface,
+        long lcid,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_RefersTo(
+        Name* iface,
+        long lcid,
+        VARIANT *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_RefersTo(
+        Name* iface,
+        long lcid,
+        VARIANT value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_ShortcutKey(
+        Name* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_ShortcutKey(
+        Name* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_Value(
+        Name* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_Value(
+        Name* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_Visible(
+        Name* iface,
+        VARIANT_BOOL *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_Visible(
+        Name* iface,
+        VARIANT_BOOL value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_NameLocal(
+        Name* iface,
+        BSTR *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_NameLocal(
+        Name* iface,
+        BSTR value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToLocal(
+        Name* iface,
+        VARIANT *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToLocal(
+        Name* iface,
+        VARIANT value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1(
+        Name* iface,
+        long lcid,
+        VARIANT *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1(
+        Name* iface,
+        long lcid,
+        VARIANT value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1Local(
+        Name* iface,
+        VARIANT *value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1Local(
+        Name* iface,
+        VARIANT value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
+        Name* iface,
+        IDispatch **value)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+/*** IDispatch methods ***/
+static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfoCount(
+        Name* iface,
+        UINT *pctinfo)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfo(
+        Name* iface,
+        UINT iTInfo,
+        LCID lcid,
+        ITypeInfo **ppTInfo)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_GetIDsOfNames(
+        Name* iface,
+        REFIID riid,
+        LPOLESTR *rgszNames,
+        UINT cNames,
+        LCID lcid,
+        DISPID *rgDispId)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
+        Name* iface,
+        DISPID dispIdMember,
+        REFIID riid,
+        LCID lcid,
+        WORD wFlags,
+        DISPPARAMS *pDispParams,
+        VARIANT *pVarResult,
+        EXCEPINFO *pExcepInfo,
+        UINT *puArgErr)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}
+
+const NameVtbl MSO_TO_OO_NameVtbl =
+{
+    MSO_TO_OO_Name_QueryInterface,
+    MSO_TO_OO_Name_AddRef,
+    MSO_TO_OO_Name_Release,
+    MSO_TO_OO_Name_GetTypeInfoCount,
+    MSO_TO_OO_Name_GetTypeInfo,
+    MSO_TO_OO_Name_GetIDsOfNames,
+    MSO_TO_OO_Name_Invoke,
+    MSO_TO_OO_Name_get_Application,
+    MSO_TO_OO_Name_get_Creator,
+    MSO_TO_OO_Name_get_Parent,
+    MSO_TO_OO_Name_get__Default,
+    MSO_TO_OO_Name_get_Index,
+    MSO_TO_OO_Name_get_Category,
+    MSO_TO_OO_Name_put_Category,
+    MSO_TO_OO_Name_get_CategoryLocal,
+    MSO_TO_OO_Name_put_CategoryLocal,
+    MSO_TO_OO_Name_Delete,
+    MSO_TO_OO_Name_get_MacroType,
+    MSO_TO_OO_Name_put_MacroType,
+    MSO_TO_OO_Name_get_Name,
+    MSO_TO_OO_Name_put_Name,
+    MSO_TO_OO_Name_get_RefersTo,
+    MSO_TO_OO_Name_put_RefersTo,
+    MSO_TO_OO_Name_get_ShortcutKey,
+    MSO_TO_OO_Name_put_ShortcutKey,
+    MSO_TO_OO_Name_get_Value,
+    MSO_TO_OO_Name_put_Value,
+    MSO_TO_OO_Name_get_Visible,
+    MSO_TO_OO_Name_put_Visible,
+    MSO_TO_OO_Name_get_NameLocal,
+    MSO_TO_OO_Name_put_NameLocal,
+    MSO_TO_OO_Name_get_RefersToLocal,
+    MSO_TO_OO_Name_put_RefersToLocal,
+    MSO_TO_OO_Name_get_RefersToR1C1,
+    MSO_TO_OO_Name_put_RefersToR1C1,
+    MSO_TO_OO_Name_get_RefersToR1C1Local,
+    MSO_TO_OO_Name_put_RefersToR1C1Local,
+    MSO_TO_OO_Name_get_RefersToRange
+};
+
+extern HRESULT _NameConstructor(LPVOID *ppObj)
+{
+    NameImpl *name;
+
+    TRACE("(%p)\n", ppObj);
+
+    name = HeapAlloc(GetProcessHeap(), 0, sizeof(*name));
+    if (!name)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    name->nameVtbl = &MSO_TO_OO_NameVtbl;
+    name->ref = 0;
+    name->pApplication = NULL;
+    name->pnames = NULL;
+    name->pOOName = NULL;
+
+    *ppObj = &name->nameVtbl;
+
+    return S_OK;
+}
+
+/*Names interface*/
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_Names_AddRef(
         Names* iface)
