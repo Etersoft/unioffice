@@ -897,3 +897,24 @@
 #define dispid_workbook_xmlimportxml                             13
 #define dispid_workbook_saveAsxmldata                            14
 #define dispid_workbook_toggleformsdesign                        15
+
+/*Name*/
+#define dispid_name_application                                 1
+#define dispid_name_creator                                     2
+#define dispid_name_parent                                      3
+#define dispid_name__default                                    4
+#define dispid_name_index                                       5
+#define dispid_name_category                                    6
+#define dispid_name_categorylocal                               7
+#define dispid_name_delete                                      8
+#define dispid_name_macrotype                                   9
+#define dispid_name_name                                        10
+#define dispid_name_refersto                                    11
+#define dispid_name_shortcutkey                                 12
+#define dispid_name_value                                       13
+#define dispid_name_visible                                     14
+#define dispid_name_namelocal                                   15
+#define dispid_name_referstolocal                               16
+#define dispid_name_referstor1c1                                17
+#define dispid_name_referstor1c1local                           18
+#define dispid_name_referstorange                               19

@@ -796,6 +796,13 @@ import "wtypes.idl";
 		xlXmlImportValidationFailed 	= 2
 	} XlXmlImportResult;
 
+
+	typedef enum {
+		xlCommand 			= 0x00000002,
+		xlFunction 			= 0x00000001,
+		xlNotXLM 			= 0x00000003
+	} XlXLMMacroType;
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
@@ -3151,6 +3158,83 @@ import "wtypes.idl";
 		[id(dispid_workbook_toggleformsdesign),helpstring("method ToggleFormsDesign")]
 		HRESULT ToggleFormsDesign();
 	};
+
+	[
+		object,
+		uuid(000208B9-0001-0000-C000-000000000046),
+		dual,
+		helpstring("Name Interface"),
+		pointer_default(unique)
+	]
+        interface Name : IDispatch
+	{
+//Application
+		[propget,id(dispid_name_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+//Creator
+		[propget,id(dispid_name_creator), helpstring("property Creator")] HRESULT Creator([out, retval] VARIANT *result);
+//Parent
+		[propget,id(dispid_name_parent), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
+//_Default
+		[propget,id(dispid_name__default), helpstring("property _Default")] HRESULT _Default([out, retval] BSTR *value);
+//Index
+		[propget,id(dispid_name_index), helpstring("property Index")] HRESULT Index([out, retval] int *value);
+//Category
+		[propget,id(dispid_name_category), helpstring("property Category")] HRESULT Category(
+			[in] long lcid,
+			[out, retval] BSTR *value);
+		[propput,id(dispid_name_category), helpstring("property Category")] HRESULT Category(
+			[in] long lcid,
+			[in] BSTR value);
+//CategoryLocal
+		[propget,id(dispid_name_categorylocal), helpstring("property CategoryLocal")] HRESULT CategoryLocal([out, retval] BSTR *value);
+		[propput,id(dispid_name_categorylocal), helpstring("property CategoryLocal")] HRESULT CategoryLocal([in] BSTR value);
+//Delete
+		[id(dispid_name_delete), helpstring("property Delete")] HRESULT Delete();
+//MacroType
+		[propget,id(dispid_name_macrotype), helpstring("property MacroType")] HRESULT MacroType([out, retval] XlXLMMacroType *value);
+		[propput,id(dispid_name_macrotype), helpstring("property MacroType")] HRESULT MacroType([in] XlXLMMacroType value);
+//Name
+		[propget,id(dispid_name_name), helpstring("property Name")] HRESULT Name(
+			[in] long lcid,
+			[out, retval] BSTR *value);
+		[propput,id(dispid_name_name), helpstring("property Name")] HRESULT Name(
+			[in] long lcid,
+			[in] BSTR value);
+//RefersTo
+		[propget,id(dispid_name_refersto), helpstring("property RefersTo")] HRESULT RefersTo(
+			[in] long lcid,
+			[out, retval] VARIANT *value);
+		[propput,id(dispid_name_refersto), helpstring("property RefersTo")] HRESULT RefersTo(
+			[in] long lcid,
+			[in] VARIANT value);
+//ShortcutKey
+		[propget,id(dispid_name_shortcutkey), helpstring("property ShortcutKey")] HRESULT ShortcutKey([out, retval] BSTR *value);
+		[propput,id(dispid_name_shortcutkey), helpstring("property ShortcutKey")] HRESULT ShortcutKey([in] BSTR value);
+//Value
+		[propget,id(dispid_name_value), helpstring("property Value")] HRESULT Value([out, retval] BSTR *value);
+		[propput,id(dispid_name_value), helpstring("property Value")] HRESULT Value([in] BSTR value);
+//Visible
+		[propget,id(dispid_name_value), helpstring("property Visible")] HRESULT Visible([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_name_value), helpstring("property Visible")] HRESULT Visible([in] VARIANT_BOOL value);
+//NameLocal
+		[propget,id(dispid_name_namelocal), helpstring("property NameLocal")] HRESULT NameLocal([out, retval] BSTR *value);
+		[propput,id(dispid_name_namelocal), helpstring("property NameLocal")] HRESULT NameLocal([in] BSTR value);
+//RefersToLocal
+		[propget,id(dispid_name_referstolocal), helpstring("property RefersToLocal")] HRESULT RefersToLocal([out, retval] VARIANT *value);
+		[propput,id(dispid_name_referstolocal), helpstring("property RefersToLocal")] HRESULT RefersToLocal([in] VARIANT value);
+//RefersToR1C1
+		[propget,id(dispid_name_referstor1c1), helpstring("property RefersToR1C1")] HRESULT RefersToR1C1(
+			[in] long lcid,
+			[out, retval] VARIANT *value);
+		[propput,id(dispid_name_referstor1c1), helpstring("property RefersToR1C1")] HRESULT RefersToR1C1(
+			[in] long lcid,
+			[in] VARIANT value);
+//RefersToR1C1Local
+		[propget,id(dispid_name_referstor1c1local), helpstring("property RefersToR1C1Local")] HRESULT RefersToR1C1Local([out, retval] VARIANT *value);
+		[propput,id(dispid_name_referstor1c1local), helpstring("property RefersToR1C1Local")] HRESULT RefersToR1C1Local([in] VARIANT value);
+//RefersToRange
+		[propget,id(dispid_name_referstorange), helpstring("property RefersToRange")] HRESULT RefersToRange([out, retval] /*IRange***/IDispatch **value);
+	}
 
 	[
 		object,
