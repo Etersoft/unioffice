@@ -597,7 +597,6 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
         VARIANT_BOOL astemplate)
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
-    /* External AddWorkbook */
     VARIANT resultDoc;
     VARIANT param0,param1,param2,param3;
     VARIANT res;
@@ -1107,6 +1106,17 @@ WCHAR* insert(WCHAR* src,WCHAR* dst,unsigned int index)
     return res;
 }
 
+int strcmpnW(WCHAR *str1, WCHAR *str2)
+{
+    int i=0;
+    TRACE("\n");
+    while (*(str2+i)!=0) {
+        if (*(str2+i)!=*(str1+i)) return 0;
+        i++;
+    }
+    return 1;
+}
+
 HRESULT MSO_TO_OO_MakeURLFromFilename(
          BSTR value,
          BSTR *retval)
@@ -1115,20 +1125,29 @@ HRESULT MSO_TO_OO_MakeURLFromFilename(
     WCHAR *ptr;
     WCHAR *tmp1,tmp2[] = {'2','0',0};
     WCHAR file_str[] = {'f','i','l','e',':','/','/','l','o','c','a','l','h','o','s','t','/',0};
+    WCHAR http[] = {'h','t','t','p',0};
+    WCHAR https[] = {'h','t','t','p','s',0};
+    WCHAR ftp[] = {'f','t','p',0};
+
     ptr = SysAllocString(value);
-    i=0;
-    while (*(ptr+i)!=0) {
-        if (*(ptr+i)==' ') {
-            *(ptr+i)='%';
-        tmp1=insert(ptr,tmp2,i+1);
+    TRACE("%i \n", strcmpnW(ptr, http));
+    TRACE("%i \n", strcmpnW(ptr, https));
+    TRACE("%i \n", strcmpnW(ptr, ftp));
+    if ((strcmpnW(ptr, http)+strcmpnW(ptr, https)+strcmpnW(ptr, ftp))==0) {
+        i=0;
+        while (*(ptr+i)!=0) {
+            if (*(ptr+i)==' ') {
+                *(ptr+i)='%';
+            tmp1=insert(ptr,tmp2,i+1);
+            ptr = tmp1;
+        }
+        if (*(ptr+i) == '\\')
+            *(ptr+i) = '/';
+        i++;
+        }
+        tmp1=insert(ptr,file_str,0);
         ptr = tmp1;
-    }
-    if (*(ptr+i) == '\\')
-        *(ptr+i) = '/';
-    i++;
-    }
-    tmp1=insert(ptr,file_str,0);
-    ptr = tmp1;
+        }
 
     *retval = ptr;
 
