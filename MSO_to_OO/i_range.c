@@ -108,6 +108,8 @@ static WCHAR const str_entirecolumn[] = {
     'E','n','t','i','r','e','C','o','l','u','m','n',0};
 static WCHAR const str_entirerow[] = {
     'E','n','t','i','r','e','R','o','w',0};
+static WCHAR const str_formular1c1[] = {
+    'F','o','r','m','u','l','a','R','1','C','1',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -2906,8 +2908,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1(
         long lcid,
         VARIANT *RHS)
 {
+    VARIANT tmp;
+
     TRACE(" \n");
-    return E_NOTIMPL;
+
+    VariantInit(&tmp);
+
+    return I_Range_get_Value(iface, tmp, lcid, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1(
@@ -2915,8 +2922,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1(
         long lcid,
         VARIANT RHS)
 {
+    /* .uno:SheetUseR1C1 */
+    VARIANT tmp;
+
     TRACE(" \n");
-    return E_NOTIMPL;
+
+    VariantInit(&tmp);
+
+    return I_Range_put_Value(iface, tmp, lcid, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1Local(
@@ -4009,6 +4022,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
         *rgDispId = dispid_range_entirerow;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_formular1c1)) {
+        *rgDispId = dispid_range_formular1c1;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -4850,6 +4867,26 @@ TRACE("Parametr 1\n");
             }
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
+        }
+    case dispid_range_formular1c1:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if ((pDispParams->cArgs>2)||(pDispParams->cArgs==0)) return E_FAIL;
+            if (pDispParams->cArgs==1) {
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
+                hres = MSO_TO_OO_I_Range_put_FormulaR1C1(iface, 0,  var2);
+            }
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
+        } else {
+            hres = MSO_TO_OO_I_Range_get_FormulaR1C1(iface, 0,  pVarResult);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
         }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
