@@ -309,20 +309,24 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
     This->pOOSheet = oosheet;
     IDispatch_AddRef(This->pOOSheet);
 
-    /*если This->pAllRange = NULL его надо создать*/
-    if (This->pAllRange == NULL) {
-        hres = _I_RangeConstructor((LPVOID*) &punk);
-        if (FAILED(hres)) return E_NOINTERFACE;
 
-        hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &(This->pAllRange));
-
-        if (FAILED(hres)) return E_NOINTERFACE;
+    if (This->pAllRange != NULL) {
+        IDispatch_Release(This->pAllRange);
+        This->pAllRange = NULL;
     }
+    /*если This->pAllRange = NULL его надо создать*/
+    hres = _I_RangeConstructor((LPVOID*) &punk);
+    if (FAILED(hres)) return E_NOINTERFACE;
+
+    hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &(This->pAllRange));
+
+    if (FAILED(hres)) return E_NOINTERFACE;
 
     /*присваиваем указатель на worksheet*/
     RangeImpl *this_range = (RangeImpl*) ((I_Range*)This->pAllRange);
     this_range->pwsheet = (IDispatch*)iface;
-    IDispatch_AddRef(this_range->pwsheet);
+    this_range->is_release = 0;
+//    IDispatch_AddRef(this_range->pwsheet);
 
     WorkbookImpl *wbtemp = (WorkbookImpl*)This->pwb;
     /*присваиваем указатель на Application*/
@@ -548,6 +552,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
 
         if (FAILED(hres)) TRACE("FAILED 1 CLOSE   \n"); else TRACE("SUCCESS 1 CLOSE   \n");
         IDispatch_Release(This->pDoc);
+        This->pDoc = NULL;
         return S_OK;
     }
 
@@ -585,6 +590,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
     if (FAILED(hres)) TRACE("FAILED CLOSE   \n"); else TRACE("SUCCESS CLOSE   \n");
 
     IDispatch_Release(This->pDoc);
+    This->pDoc = NULL;
     IDispatch_Release(dpv);
     VariantClear(&res);
     return S_OK;
@@ -1454,6 +1460,10 @@ HRESULT MSO_TO_OO_Names_Initialize(
     This->pApplication = (IDispatch*)(wbi->pApplication);
     if (This->pApplication != NULL) I_ApplicationExcel_AddRef((I_ApplicationExcel*)(This->pApplication));
 
+    if (wbi->pDoc==NULL) {
+        TRACE("Object pDoc is NULL\n");
+        return E_FAIL;
+    }
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vRet, wbi->pDoc, L"NamedRanges",0);
     if (FAILED(hres)) {
         TRACE("ERROR when NamedRanges \n");

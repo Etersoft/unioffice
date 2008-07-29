@@ -88,7 +88,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
-    
+
     if (This == NULL) return E_POINTER;
 
     ref = InterlockedDecrement(&This->ref);
@@ -97,6 +97,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
             I_ApplicationExcel_Release(This->pApplication);
             This->pApplication = NULL;
         }
+        TRACE("(%p) (%p) (%p) (%p)\n", iface, This, This->pDoc, This->pSheets);
         if (This->pDoc != NULL) {
             IDispatch_Release(This->pDoc);
             This->pDoc = NULL;

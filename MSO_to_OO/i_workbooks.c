@@ -256,6 +256,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Close(
     HeapFree(GetProcessHeap(),HEAP_ZERO_MEMORY,This->pworkbook);
     This->count_workbooks = 0;
     This->current_workbook = -1;
+    This->pworkbook = NULL;
 
     return S_OK;
 }

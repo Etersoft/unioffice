@@ -187,7 +187,7 @@ static ULONG WINAPI MSO_TO_OO_I_Range_Release(
             IDispatch_Release(This->pOORange);
             This->pOORange = NULL;
         }
-        if (This->pwsheet != NULL) {
+        if ((This->pwsheet != NULL)&&(This->is_release==1)) {
             IDispatch_Release(This->pwsheet);
             This->pwsheet = NULL;
         }
@@ -1124,7 +1124,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Parent(
     if (This == NULL) return E_POINTER;
 
     *value = This->pwsheet;
-    I_Worksheet_AddRef(This->pwsheet);
+    I_Worksheet_AddRef(*value);
 
     if (value==NULL)
         return E_POINTER;
@@ -1143,7 +1143,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Worksheet(
     if (This == NULL) return E_POINTER;
 
     *value = This->pwsheet;
-    I_Worksheet_AddRef(This->pwsheet);
+    I_Worksheet_AddRef(*value);
 
     if (value==NULL)
         return E_POINTER;
@@ -5125,6 +5125,7 @@ extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
     range->pOORange = NULL;
     range->pwsheet = NULL;
     range->pApplication = NULL;
+    range->is_release = 1;
 
     *ppObj = &range->_rangeVtbl;
 

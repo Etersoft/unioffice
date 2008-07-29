@@ -720,7 +720,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Quit(
         TRACE("ERROR Object is NULL\n");
         return E_FAIL;
     }
-    /*При вызове этого метода вызываем вызываем метод Close объекта WorkBooks*/
+    /*При вызове этого метода вызываем метод Close объекта WorkBooks*/
     I_Workbooks_Close((I_Workbooks*)(This->pdWorkbooks), 0);
 
     return S_OK;

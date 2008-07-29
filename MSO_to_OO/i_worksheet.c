@@ -173,6 +173,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Cells(
 
     TRACE("\n");
 
+    if (This->pAllRange==NULL) return E_FAIL;
+
     *ppRange = This->pAllRange;
     IDispatch_AddRef(This->pAllRange);
 
