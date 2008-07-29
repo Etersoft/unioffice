@@ -384,6 +384,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Visible(
         long lcid,
         VARIANT_BOOL vbVisible)
 {
+/*
+thisComponent.CurrentController.Frame.ContainerWindow.SetVisible(true)
+*/
     TRACE("\n");
     return S_OK;
 }
@@ -782,7 +785,69 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ScreenUpdating(
         long lcid,
         VARIANT_BOOL vbscup)
 {
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+    HRESULT hres;
+    IDispatch *wb;
+    VARIANT tmp;
+
     TRACE("\n");
+    VariantInit(&tmp);
+
+    if (vbscup == VARIANT_TRUE) {
+        hres = I_ApplicationExcel_get_ActiveWorkbook(iface, &wb);
+        WorkbookImpl *wbi = (WorkbookImpl*)wb;
+        if (FAILED(hres)) {
+            TRACE("ERROR when get ActiveWorkbook \n");
+            return E_FAIL;
+        }
+
+        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"unLockControllers", 0);
+        if (FAILED(hres)) {
+            TRACE("ERROR When unLockControllers\n");
+            IDispatch_Release(wb);
+            return E_FAIL;
+        }
+
+        VariantClear(&tmp);
+        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"removeActionLock", 0);
+        if (FAILED(hres)) {
+            TRACE("ERROR When removeActionLock\n");
+            IDispatch_Release(wb);
+            return E_FAIL;
+        }
+    } else {
+/*
+Отключение вывода
+Document.OleFunction("lockControllers");
+Document.OleFunction("addActionLock");
+*/
+        hres = I_ApplicationExcel_get_ActiveWorkbook(iface, &wb);
+        WorkbookImpl *wbi = (WorkbookImpl*)wb;
+        if (FAILED(hres)) {
+            TRACE("ERROR when get ActiveWorkbook \n");
+            return E_FAIL;
+        }
+
+        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"lockControllers", 0);
+        if (FAILED(hres)) {
+            TRACE("ERROR When lockControllers\n");
+            IDispatch_Release(wb);
+            return E_FAIL;
+        }
+
+        VariantClear(&tmp);
+        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"addActionLock", 0);
+        if (FAILED(hres)) {
+            TRACE("ERROR When addActionLock\n");
+            IDispatch_Release(wb);
+            return E_FAIL;
+        }
+
+
+    }
+
+    This->screenupdating = vbscup;
+
     return S_OK;
 }
 
@@ -791,9 +856,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ScreenUpdating(
         long lcid,
         VARIANT_BOOL *vbscup)
 {
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     TRACE("\n");
-    /*Всегда возвращаем TRUE*/
-    *vbscup = VARIANT_TRUE;
+    *vbscup = This->screenupdating;
     return S_OK;
 }
 
@@ -5260,6 +5325,7 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
     _applicationexcell->pdOOApp = NULL;
     _applicationexcell->pdOODesktop = NULL;
     _applicationexcell->pdWorkbooks = NULL;
+    _applicationexcell->screenupdating = VARIANT_TRUE;
 
     /*Создание указателей на объекты openOfffice 
     Create OpenOffice Service Manager */

@@ -179,6 +179,7 @@ typedef struct
     IDispatch *pdOODesktop;
     IDispatch *pdWorkbooks;
 
+    VARIANT_BOOL screenupdating;
 
 } _ApplicationExcelImpl;
 
