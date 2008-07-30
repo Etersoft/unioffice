@@ -178,12 +178,34 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     V_VT(&param0) = VT_BSTR;
     V_BSTR(&param0) = SysAllocString(L"private:factory/scalc"); /* Type of created document */
 /*    This->filename = SysAllocString(L""); */
+
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"_blank");  /* Template */
     V_VT(&param2) = VT_I2;
     V_I2(&param2) = 0;  /* Another params count */
-    V_VT(&param3) = VT_VARIANT | VT_ARRAY;
-    V_ARRAY(&param3) = NULL;
+
+    long ix=0;
+    MSO_TO_OO_GetDispatchPropertyValue(app, &dpv);
+    if (dpv == NULL)
+        return E_FAIL;
+    VARIANT p1,p2;
+    V_VT(&p1) = VT_BSTR;
+    V_BSTR(&p1) = SysAllocString(L"Hidden");
+    AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Name", 1, p1);
+    SysFreeString(V_BSTR(&p1));
+    V_VT(&p2) = VT_BOOL; 
+    if (Thisapp->visible==VARIANT_FALSE) V_BOOL(&p2) = VARIANT_TRUE;else V_BOOL(&p2) = VARIANT_FALSE;
+
+    AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Value", 1, p2);
+
+    SAFEARRAY FAR* pPropVals;
+
+    pPropVals = SafeArrayCreateVector( VT_DISPATCH, 0, 1 );
+
+    hres = SafeArrayPutElement( pPropVals, &ix, dpv );
+
+    V_VT(&param3) = VT_ARRAY | VT_DISPATCH;
+    V_ARRAY(&param3) = pPropVals;
 
     hres = AutoWrap(DISPATCH_METHOD, &resultDoc, Thisapp->pdOODesktop, L"loadComponentFromURL", 4, param3, param2, param1, param0);
     if (FAILED (hres)) {
@@ -212,8 +234,6 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     VariantClear(&param2);
     VariantClear(&param3);
     VariantClear(&resultDoc);
-
-    MSO_TO_OO_Workbook_SetVisible(iface, Thisapp->visible);
 
     return hres;
 }
@@ -639,7 +659,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
         V_ARRAY(&param3) = NULL;
     } else {
         /*формируем запрос на шаблон*/
-        IDispatch *dpv;
+        IDispatch *dpv,*dpv2;
         long ix=0;
         MSO_TO_OO_GetDispatchPropertyValue(app, &dpv);
         if (dpv == NULL)
@@ -652,15 +672,31 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
         V_VT(&p2) = VT_BOOL; 
         V_BOOL(&p2) = VARIANT_TRUE;
         AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Value", 1, p2);
+        MSO_TO_OO_GetDispatchPropertyValue(app, &dpv2);
+        if (dpv == NULL)
+            return E_FAIL;
+        VariantClear(&p1);
+        VariantClear(&p2);
+        V_VT(&p1) = VT_BSTR;
+        V_BSTR(&p1) = SysAllocString(L"Hidden");
+        AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv2, L"Name", 1, p1);
+        SysFreeString(V_BSTR(&p1));
+        V_VT(&p2) = VT_BOOL;
+        if (Thisapp->visible==VARIANT_FALSE) V_BOOL(&p2) = VARIANT_TRUE; else V_BOOL(&p2) = VARIANT_FALSE;
+        AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv2, L"Value", 1, p2);
 
         SAFEARRAY FAR* pPropVals;
 
-        pPropVals = SafeArrayCreateVector( VT_DISPATCH, 0, 1 );
+        pPropVals = SafeArrayCreateVector( VT_DISPATCH, 0, 2 );
 
         hres = SafeArrayPutElement( pPropVals, &ix, dpv );
+        ix++;
+        hres = SafeArrayPutElement( pPropVals, &ix, dpv2 );
 
         V_VT(&param3) = VT_ARRAY | VT_DISPATCH;
         V_ARRAY(&param3) = pPropVals;
+        VariantClear(&p1);
+        VariantClear(&p2);
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &resultDoc, Thisapp->pdOODesktop, L"loadComponentFromURL", 4, param3, param2, param1, param0);
@@ -689,8 +725,6 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     VariantClear(&param2);
     VariantClear(&param3);
     VariantClear(&resultDoc);
-
-    MSO_TO_OO_Workbook_SetVisible(iface, Thisapp->visible);
 
     return hres;
 }
