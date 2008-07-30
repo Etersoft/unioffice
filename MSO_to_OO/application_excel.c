@@ -384,12 +384,15 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Visible(
         long lcid,
         VARIANT_BOOL vbVisible)
 {
-/*
-thisComponent.CurrentController.Frame.ContainerWindow.SetVisible(true)
-*/
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+    WorkbooksImpl* wbs = (WorkbooksImpl*)This->pdWorkbooks;
+    int i;
 
     TRACE("\n");
+
+    for (i=0; i<wbs->count_workbooks;i++) {
+        MSO_TO_OO_Workbook_SetVisible((I_Workbook*)(wbs->pworkbook[i]), vbVisible);
+    }
 
     This->visible = vbVisible;
 

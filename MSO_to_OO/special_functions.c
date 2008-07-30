@@ -212,6 +212,9 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     VariantClear(&param2);
     VariantClear(&param3);
     VariantClear(&resultDoc);
+
+    MSO_TO_OO_Workbook_SetVisible(iface, Thisapp->visible);
+
     return hres;
 }
 
@@ -686,6 +689,9 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     VariantClear(&param2);
     VariantClear(&param3);
     VariantClear(&resultDoc);
+
+    MSO_TO_OO_Workbook_SetVisible(iface, Thisapp->visible);
+
     return hres;
 }
 
@@ -1480,4 +1486,60 @@ HRESULT MSO_TO_OO_Names_Initialize(
     return S_OK;
 }
 
+HRESULT MSO_TO_OO_Workbook_SetVisible(
+        I_Workbook *wb,
+        VARIANT_BOOL vbvisible)
+{
+    WorkbookImpl *This = (WorkbookImpl*)wb;
+    HRESULT hres;
+    VARIANT oocontr, ooframe, oocontwindow, param, res;
+
+    TRACE("\n");
+
+    VariantInit(&oocontr);
+    VariantInit(&ooframe);
+    VariantInit(&oocontwindow);
+    VariantInit(&param);
+    VariantInit(&res);
+
+    hres = AutoWrap(DISPATCH_METHOD, &oocontr,This->pDoc, L"getCurrentController",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getCurrentController \n");
+        return hres;
+    }
+    hres = AutoWrap(DISPATCH_METHOD, &ooframe, V_DISPATCH(&oocontr), L"getFrame",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getFrame \n");
+        VariantClear(&oocontr);
+        return hres;
+    }
+    hres = AutoWrap(DISPATCH_METHOD, &oocontwindow, V_DISPATCH(&ooframe), L"getContainerWindow",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getContainerWindow \n");
+        VariantClear(&oocontr);
+        VariantClear(&ooframe);
+        return hres;
+    }
+
+    V_VT(&param) = VT_BOOL;
+    V_BOOL(&param) = vbvisible;
+
+    hres = AutoWrap(DISPATCH_METHOD, &res, V_DISPATCH(&oocontwindow), L"setVisible",1,param);
+    if (FAILED(hres)) {
+        TRACE("ERROR when setVisible \n");
+        VariantClear(&oocontr);
+        VariantClear(&ooframe);
+        VariantClear(&oocontwindow);
+        VariantClear(&param);
+        return hres;
+    }
+
+    VariantClear(&oocontr);
+    VariantClear(&ooframe);
+    VariantClear(&oocontwindow);
+    VariantClear(&param);
+    VariantClear(&res);
+
+    return S_OK;
+}
 

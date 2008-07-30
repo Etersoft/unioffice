@@ -157,7 +157,9 @@ HRESULT MSO_TO_OO_Names_Initialize(
         Names* iface,
         I_Workbook *wb);
 
-
+HRESULT MSO_TO_OO_Workbook_SetVisible(
+        I_Workbook *wb,
+        VARIANT_BOOL vbvisible);
 
 
 
