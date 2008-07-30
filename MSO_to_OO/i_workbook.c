@@ -38,6 +38,8 @@ static WCHAR const str_name[] = {
     'N','a','m','e',0};
 static WCHAR const str_names[] = {
     'N','a','m','e','s',0};
+static WCHAR const str_activesheet[] = {
+    'A','c','t','i','v','e','S','h','e','e','t',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
@@ -471,8 +473,27 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ActiveSheet(
         I_Workbook* iface,
         IDispatch **RHS)
 {
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    I_Sheets *pSheets;
+    HRESULT hres;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    hres = I_Workbook_get_Sheets(iface, (IDispatch**) &pSheets);
+    if (FAILED(hres)) {
+        *RHS = NULL;
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_GetActiveSheet(pSheets, (I_Worksheet**)RHS);
+    if (FAILED(hres)) {
+        I_Sheets_Release(pSheets);
+        *RHS = NULL;
+        return hres;
+    }
+    I_Sheets_Release(pSheets);
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Author(
@@ -2218,6 +2239,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetIDsOfNames(
         *rgDispId = dispid_workbook_names;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_activesheet)) {
+        *rgDispId = dispid_workbook_activeSheet;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -2418,6 +2443,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             default:
                 TRACE("ERROR invalid parameters\n");
                 break;
+            }
+            return S_OK;
+        }
+    case dispid_workbook_activeSheet:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            hr = MSO_TO_OO_I_Workbook_get_ActiveSheet(iface, &drets);
+            if (FAILED(hr)) {
+                TRACE("Error get ActiveSheet \n");
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=(IDispatch *)drets;
+            } else {
+                IDispatch_Release(drets);
             }
             return S_OK;
         }
