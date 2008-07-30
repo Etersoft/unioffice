@@ -110,6 +110,8 @@ static WCHAR const str_entirerow[] = {
     'E','n','t','i','r','e','R','o','w',0};
 static WCHAR const str_formular1c1[] = {
     'F','o','r','m','u','l','a','R','1','C','1',0};
+static WCHAR const str_cells[] = {
+    'C','e','l','l','s',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -2554,7 +2556,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Cells(
         IDispatch **RHS)
 {
     TRACE(" \n");
-    return E_NOTIMPL;
+
+    *RHS = (IDispatch*)iface;
+    I_Range_AddRef(*RHS);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Characters(
@@ -4026,6 +4032,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
         *rgDispId = dispid_range_formular1c1;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_cells)) {
+        *rgDispId = dispid_range_cells;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -4887,6 +4897,26 @@ TRACE("Parametr 1\n");
                 return hres;
             }
             return S_OK;
+        }
+    case dispid_range_cells://Cells
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_I_Range_get_Cells(iface, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            } else {
+                IDispatch_Release(dret);
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
         }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
