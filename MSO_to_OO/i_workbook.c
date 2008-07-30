@@ -1481,14 +1481,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Windows(
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Worksheets(
-        I_Workbook* iface,
-        IDispatch **RHS)
-{
-    TRACE("\n");
-    return E_NOTIMPL;
-}
-
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WriteReserved(
         I_Workbook* iface,
         long lcid,
@@ -2602,7 +2594,7 @@ const I_WorkbookVtbl MSO_TO_OO_I_WorkbookVtbl =
     MSO_TO_OO_I_Workbook_get_UserStatus,
     MSO_TO_OO_I_Workbook_get_CustomViews,
     MSO_TO_OO_I_Workbook_get_Windows,
-    MSO_TO_OO_I_Workbook_get_Worksheets,
+    MSO_TO_OO_I_Workbook_get_WorkSheets,
     MSO_TO_OO_I_Workbook_get_WriteReserved,
     MSO_TO_OO_I_Workbook_get_WriteReservedBy,
     MSO_TO_OO_I_Workbook_get_Excel4IntlMacroSheets,

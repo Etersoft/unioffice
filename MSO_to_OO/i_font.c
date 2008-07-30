@@ -47,6 +47,11 @@ static WCHAR const str_creator[] = {
     'C','r','e','a','t','o','r',0};
 static WCHAR const str_shadow[] = {
     'S','h','a','d','o','w',0};
+static WCHAR const str_subscript[] = {
+    'S','u','b','s','c','r','i','p','t',0};
+static WCHAR const str_superscript[] = {
+    'S','u','p','e','r','s','c','r','i','p','t',0};
+
 
 /*IUnknown*/
 static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
@@ -634,7 +639,38 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Subscript(
         I_Font* iface,
         VARIANT *RHS)
 {
+/*    _FontImpl *This = (_FontImpl*)iface;
+    HRESULT hres;
+    VARIANT res;
+    RangeImpl *range = (RangeImpl*)This->prange;
+    VARIANT vsubscript;
+
     TRACE(" \n");
+
+    VariantInit (&vsubscript);
+    VariantInit (&res);
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &res, range->pOORange, L"CharEscapement", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when put CharEscapement\n");
+        return E_FAIL;
+    }
+
+    hres = VariantChangeTypeEx(&res, &res, 0, 0, VT_I2);
+    if (FAILED(hres)) {
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
+    }
+    if (V_I2(&res)<0) {
+        V_VT(RHS) = VT_BOOL;
+        V_BOOL(RHS) = VARIANT_TRUE;
+    } else {
+        V_VT(RHS) = VT_BOOL;
+        V_BOOL(RHS) = VARIANT_FALSE;
+    }
+
+    return S_OK;*/
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -642,7 +678,38 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
         I_Font* iface,
         VARIANT RHS)
 {
+/*    _FontImpl *This = (_FontImpl*)iface;
+    HRESULT hres;
+    VARIANT res;
+    RangeImpl *range = (RangeImpl*)This->prange;
+    VARIANT vsubscript;
+
     TRACE(" \n");
+
+    VariantInit (&vsubscript);
+    VariantInit (&res);
+
+    hres = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
+    }
+    if (V_BOOL(&RHS)==VARIANT_TRUE) {
+        V_VT(&vsubscript) = VT_I4;
+        V_BOOL(&vsubscript) = -50;
+    } else {
+        V_VT(&vsubscript) = VT_I4;
+        V_BOOL(&vsubscript) = 0;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharEscapement", 1, vsubscript);
+    if (FAILED(hres)) {
+        TRACE("ERROR when put CharEscapement\n");
+        return E_FAIL;
+    }
+
+    return S_OK;*/
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -650,7 +717,38 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Superscript(
         I_Font* iface,
         VARIANT *RHS)
 {
+/*    _FontImpl *This = (_FontImpl*)iface;
+    HRESULT hres;
+    VARIANT res;
+    RangeImpl *range = (RangeImpl*)This->prange;
+    VARIANT vsubscript;
+
     TRACE(" \n");
+
+    VariantInit (&vsubscript);
+    VariantInit (&res);
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &res, range->pOORange, L"CharEscapement", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when put CharEscapement\n");
+        return E_FAIL;
+    }
+
+    hres = VariantChangeTypeEx(&res, &res, 0, 0, VT_I2);
+    if (FAILED(hres)) {
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
+    }
+    if (V_I2(&res)>0) {
+        V_VT(RHS) = VT_BOOL;
+        V_BOOL(RHS) = VARIANT_TRUE;
+    } else {
+        V_VT(RHS) = VT_BOOL;
+        V_BOOL(RHS) = VARIANT_FALSE;
+    }
+
+    return S_OK;*/
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -658,7 +756,38 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
         I_Font* iface,
         VARIANT RHS)
 {
+/*    _FontImpl *This = (_FontImpl*)iface;
+    HRESULT hres;
+    VARIANT res;
+    RangeImpl *range = (RangeImpl*)This->prange;
+    VARIANT vsubscript;
+
     TRACE(" \n");
+
+    VariantInit (&vsubscript);
+    VariantInit (&res);
+
+    hres = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
+    }
+    if (V_BOOL(&RHS)==VARIANT_TRUE) {
+        V_VT(&vsubscript) = VT_I4;
+        V_BOOL(&vsubscript) = 50;
+    } else {
+        V_VT(&vsubscript) = VT_I4;
+        V_BOOL(&vsubscript) = 0;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharEscapement", 1, vsubscript);
+    if (FAILED(hres)) {
+        TRACE("ERROR when put CharEscapement\n");
+        return E_FAIL;
+    }
+
+    return S_OK;*/
+    TRACE("\n");
     return E_NOTIMPL;
 }
 
@@ -738,7 +867,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
         *rgDispId = dispid_font_shadow;
         return S_OK;
     }
-
+    if (!lstrcmpiW(*rgszNames, str_subscript)) {
+        *rgDispId = dispid_font_subscript;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_superscript)) {
+        *rgDispId = dispid_font_superscript;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE \n",*rgszNames);
@@ -1026,6 +1162,42 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
+    case dispid_font_subscript:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) return E_FAIL;
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            return MSO_TO_OO_I_Font_put_Subscript(iface, vtmp);
+        } else {
+            hr = MSO_TO_OO_I_Font_get_Subscript(iface, &vtmp);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_BOOL;
+                V_BOOL(pVarResult) = V_BOOL(&vtmp);
+            }
+            return S_OK;
+        }
+    case dispid_font_superscript:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) return E_FAIL;
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            return MSO_TO_OO_I_Font_put_Superscript(iface, vtmp);
+        } else {
+            hr = MSO_TO_OO_I_Font_get_Superscript(iface, &vtmp);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_BOOL;
+                V_BOOL(pVarResult) = V_BOOL(&vtmp);
+            }
+            return S_OK;
+        }
+
+
     }
     return E_NOTIMPL;
 }
