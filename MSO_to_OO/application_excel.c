@@ -4496,6 +4496,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             MSO_TO_OO_I_ApplicationExcel_put_WindowState(iface, 0, tmp);
             return S_OK;
         } else {
+
             return E_NOTIMPL;
         }
     case dispid_application_visible:
@@ -4509,7 +4510,16 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             vbin = V_BOOL(&vtmp);
             return MSO_TO_OO_I_ApplicationExcel_put_Visible(iface, 0, vbin);
         } else {
-            return E_NOTIMPL;
+            hr = MSO_TO_OO_I_ApplicationExcel_get_Visible(iface, 0, &vbin);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_BOOL;
+                V_BOOL(pVarResult) = vbin;
+            }
+            return S_OK;
         }
     case dispid_application_workbooks:
         if (wFlags==DISPATCH_PROPERTYPUT) {
