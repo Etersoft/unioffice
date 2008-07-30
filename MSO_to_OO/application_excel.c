@@ -387,7 +387,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Visible(
 /*
 thisComponent.CurrentController.Frame.ContainerWindow.SetVisible(true)
 */
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+
     TRACE("\n");
+
+    This->visible = vbVisible;
+
     return S_OK;
 }
 
@@ -396,8 +401,13 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Visible(
         long lcid,
         VARIANT_BOOL *vbVisible)
 {
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+   *vbVisible = This->visible;
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Workbooks(
@@ -5326,6 +5336,7 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
     _applicationexcell->pdOODesktop = NULL;
     _applicationexcell->pdWorkbooks = NULL;
     _applicationexcell->screenupdating = VARIANT_TRUE;
+    _applicationexcell->visible = VARIANT_FALSE;
 
     /*Создание указателей на объекты openOfffice 
     Create OpenOffice Service Manager */
