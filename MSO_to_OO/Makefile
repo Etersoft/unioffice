@@ -6,8 +6,8 @@ STRIP=i386-mingw32msvc-strip
 
 LIBS=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
 CFLAGS=-O2 -D_FORTIFY_SOURCE=2
-OBJECTS = tools.o \
-	mso_to_oo_i.o \
+OBJECTS = mso_to_oo_i.o \
+	tools.o \
 	main.o \
 	factory.o \
 	regsvr.o \

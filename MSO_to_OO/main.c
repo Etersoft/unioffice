@@ -21,6 +21,7 @@
 #include "mso_to_oo_private.h"
 
 LONG dll_ref = 0;
+FILE *trace_file;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -41,7 +42,20 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
 __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVOID *ppv)
 {
     *ppv = NULL;
+    char file_name[]= {'\\','u','n','i','o','f','f','i','c','e','.','l','o','g',0};
+    char buf[MAX_PATH+50];
+    int len,i=0;
+
     if (IsEqualGUID(rclsid, &CLSID__ApplicationExcel)) {
+        /*Начинаем запись лога если файл существует*/
+        len = GetSystemDirectoryA(buf, MAX_PATH);
+        if (len) {
+            while (file_name[i]!=0) {buf[len+i]=file_name[i];i++;};
+            if (GetFileAttributesA(buf) != 0xFFFFFFFF) {
+            trace_file = fopen(buf,"w");
+            }
+        }
+
         return IClassFactory_QueryInterface((LPCLASSFACTORY)&OOFFICE_ClassFactory, iid, ppv);
     }
 
@@ -50,6 +64,9 @@ __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVO
 
 __declspec(dllexport) STDAPI DllCanUnloadNow(void)
 {
+    /*закрываем файл лога*/
+    if (trace_file) fclose(trace_file);
+
     TRACE("GLOBAL REF = %i \n",dll_ref);
     return dll_ref != 0 ? S_FALSE : S_OK;
 }

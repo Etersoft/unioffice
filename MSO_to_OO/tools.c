@@ -20,9 +20,11 @@
 
 #define COBJMACROS
 
+#include "mso_to_oo_private.h"
 #include "tools.h"
 #include "debug.h"
 #include <stdio.h>
+
 
 /*
 The purpose of the AutoWrap() function in this sample is to wrap the calls for GetIDsOfNames and Invoke 
