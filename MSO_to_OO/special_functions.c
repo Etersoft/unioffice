@@ -629,9 +629,11 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     VARIANT resultDoc;
     VARIANT param0,param1,param2,param3;
     VARIANT res;
-    IDispatch *dpv = NULL;
     HRESULT hres;
     IUnknown *punk = NULL;
+    IDispatch *dpv = NULL,*dpv2 = NULL;
+    long ix=0;
+    VARIANT p1,p2;
 
     TRACE("\n");
 
@@ -655,16 +657,30 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     V_VT(&param2) = VT_I2;
     V_I2(&param2) = 0;  // Another params count
     if (astemplate==VARIANT_FALSE) {
-        V_VT(&param3) = VT_ARRAY | VT_DISPATCH;
-        V_ARRAY(&param3) = NULL;
-    } else {
-        /*формируем запрос на шаблон*/
-        IDispatch *dpv,*dpv2;
-        long ix=0;
         MSO_TO_OO_GetDispatchPropertyValue(app, &dpv);
         if (dpv == NULL)
             return E_FAIL;
-        VARIANT p1,p2;
+        V_VT(&p1) = VT_BSTR;
+        V_BSTR(&p1) = SysAllocString(L"Hidden");
+        AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Name", 1, p1);
+        SysFreeString(V_BSTR(&p1));
+        V_VT(&p2) = VT_BOOL;
+        if (Thisapp->visible==VARIANT_FALSE) V_BOOL(&p2) = VARIANT_TRUE; else V_BOOL(&p2) = VARIANT_FALSE;
+        AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Value", 1, p2);
+
+        SAFEARRAY FAR* pPropVals;
+
+        pPropVals = SafeArrayCreateVector( VT_DISPATCH, 0, 1 );
+
+        hres = SafeArrayPutElement( pPropVals, &ix, dpv );
+
+        V_VT(&param3) = VT_ARRAY | VT_DISPATCH;
+        V_ARRAY(&param3) = pPropVals;
+    } else {
+        /*формируем запрос на шаблон*/
+        MSO_TO_OO_GetDispatchPropertyValue(app, &dpv);
+        if (dpv == NULL)
+            return E_FAIL;
         V_VT(&p1) = VT_BSTR;
         V_BSTR(&p1) = SysAllocString(L"AsTemplate");
         AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Name", 1, p1);
@@ -1535,6 +1551,16 @@ HRESULT MSO_TO_OO_Workbook_SetVisible(
     VariantInit(&oocontwindow);
     VariantInit(&param);
     VariantInit(&res);
+
+    if (This==NULL) {
+        TRACE("Object is NULL \n");
+        return S_OK;
+    }
+
+    if (This->pDoc==NULL) {
+        TRACE("Object pDoc is NULL \n");
+        return S_OK;
+    }
 
     hres = AutoWrap(DISPATCH_METHOD, &oocontr,This->pDoc, L"getCurrentController",0);
     if (FAILED(hres)) {
