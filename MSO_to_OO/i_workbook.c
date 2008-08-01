@@ -95,10 +95,10 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pApplication != NULL) {
-            I_ApplicationExcel_Release(This->pApplication);
+ /*       if (This->pApplication != NULL) {
+            I_ApplicationExcel_Release(This->pApplication);*/
             This->pApplication = NULL;
-        }
+ /*       }*/
         TRACE("(%p) (%p) (%p) (%p)\n", iface, This, This->pDoc, This->pSheets);
         if (This->pDoc != NULL) {
             IDispatch_Release(This->pDoc);

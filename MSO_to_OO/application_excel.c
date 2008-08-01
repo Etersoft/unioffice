@@ -247,12 +247,12 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_AddRef(
         return E_POINTER;
     }
 
+    TRACE("REF=%i \n", This->ref);
+
     ref = InterlockedIncrement(&This->ref);
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-
-    TRACE("REF=%i \n", This->ref);
 
     return ref;
 }
@@ -298,9 +298,9 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_Release(
 
     if (This == NULL) return E_POINTER;
 
-    ref = InterlockedDecrement(&This->ref);
-
     TRACE("REF = %i \n", This->ref);
+
+    ref = InterlockedDecrement(&This->ref);
 
     if (ref == 0) {
         if (This->pdOOApp != NULL) {

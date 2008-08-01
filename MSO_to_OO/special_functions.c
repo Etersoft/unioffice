@@ -29,7 +29,7 @@ HRESULT MSO_TO_OO_I_Workbooks_Initialize(
     TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
-    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);
+/*    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);*/
     This->count_workbooks = 0;
     This->current_workbook = -1;
     This->pworkbook = NULL;
@@ -168,7 +168,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
-    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);
+ /*   if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);*/
     _ApplicationExcelImpl *Thisapp = (_ApplicationExcelImpl*)app;
 
     VariantInit(&param0);
@@ -209,7 +209,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
 
     hres = AutoWrap(DISPATCH_METHOD, &resultDoc, Thisapp->pdOODesktop, L"loadComponentFromURL", 4, param3, param2, param1, param0);
     if (FAILED (hres)) {
-        I_ApplicationExcel_Release(This->pApplication);
+    /*    I_ApplicationExcel_Release(This->pApplication);*/
         This->pApplication = NULL;
         return hres;
     }
@@ -254,6 +254,7 @@ HRESULT MSO_TO_OO_I_Sheets_Initialize(
 
     WorkbookImpl *Thiswb = (WorkbookImpl*)wb;
     This->pwb = (IDispatch*)wb;
+/*    IDispatch_AddRef(This->pwb);*/
 
     VariantClear(&resultSheets);
     HRESULT hres = AutoWrap(DISPATCH_METHOD, &resultSheets, Thiswb->pDoc, L"getSheets", 0);
@@ -638,7 +639,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     TRACE("\n");
 
     This->pApplication = (IDispatch*)app;
-    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);
+/*    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);*/
     _ApplicationExcelImpl *Thisapp = (_ApplicationExcelImpl*)app;
 
     VariantInit(&param0);
@@ -719,7 +720,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     if (FAILED (hres)) {
         TRACE("Ne udalos` zagruzit \n");
         WTRACE(L"Filename = %s \n", Filename);
-        I_ApplicationExcel_Release(This->pApplication);
+/*        I_ApplicationExcel_Release(This->pApplication);*/
         This->pApplication = NULL;
         return hres;
     }

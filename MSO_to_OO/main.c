@@ -65,9 +65,9 @@ __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVO
 __declspec(dllexport) STDAPI DllCanUnloadNow(void)
 {
     /*закрываем файл лога*/
+    TRACE("GLOBAL REF = %i \n",dll_ref);
     if (trace_file) fclose(trace_file);
 
-    TRACE("GLOBAL REF = %i \n",dll_ref);
     return dll_ref != 0 ? S_FALSE : S_OK;
 }
 

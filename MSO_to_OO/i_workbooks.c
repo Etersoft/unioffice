@@ -113,15 +113,15 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
 
     if (This == NULL) return E_POINTER;
 
-    ref = InterlockedDecrement(&This->ref);
-
     TRACE("REF = %i \n", This->ref);
 
+    ref = InterlockedDecrement(&This->ref);
+
     if (ref == 0) {
-        if (This->pApplication!=NULL) {
-            IDispatch_Release(This->pApplication);
+/*        if (This->pApplication!=NULL) {
+            IDispatch_Release(This->pApplication);*/
             This->pApplication==NULL;
-        }
+/*        }*/
         for (i=0;i<This->count_workbooks;i++)
             if (This->pworkbook[i]!=NULL) IDispatch_Release(This->pworkbook[i]);
         if (This->count_workbooks>0) HeapFree(GetProcessHeap(),HEAP_ZERO_MEMORY,This->pworkbook);

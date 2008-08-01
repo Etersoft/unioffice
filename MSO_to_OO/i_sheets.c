@@ -88,10 +88,10 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pwb != NULL) {
-            IDispatch_Release(This->pwb);
+/*        if (This->pwb != NULL) {
+            IDispatch_Release(This->pwb);*/
             This->pwb = NULL;
-        }
+/*        }*/
         if (This->pOOSheets != NULL) {
             IDispatch_Release(This->pOOSheets);
             This->pOOSheets = NULL;
