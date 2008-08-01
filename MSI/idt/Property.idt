@@ -37,8 +37,8 @@ OSType	windows
 ProductCode	{643315BA-DEF8-4CBE-AB26-C54B71535DFD}
 ProductID	{FC88355A-743B-4434-A4EC-41B7DFD2AA04}
 ProductLanguage	1033
-ProductName	UniOffice@Etersoft v0.2
-ProductVersion	0.2
+ProductName	UniOffice@Etersoft v0.3
+ProductVersion	0.3
 Progress1	Installing
 Progress2	installs
 PROMPTROLLBACKCOST	P
