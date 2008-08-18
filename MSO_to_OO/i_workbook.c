@@ -249,9 +249,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     }
     TRACE("\n");
     /* Call StoreToURL for save document to file */
-    hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"StoreToURL", 2, p3, p1);
+    hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"StoreAsURL", 2, p3, p1);
     if (FAILED(hres)) {
-        TRACE("ERROR when StoreToURL \n");
+        TRACE("ERROR when StoreAsURL \n");
         return hres;
     }
     VariantClear(&res);

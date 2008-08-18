@@ -607,7 +607,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
     V_BSTR(&p1) = SysAllocString(filename);
 
     /* Call StoreToURL for save document to file */
-    AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"StoreToURL", 2, p3, p1);
+    AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"StoreAsURL", 2, p3, p1);
 
     hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"close", 1, p2);
     /* hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"Dispose", 0); */
