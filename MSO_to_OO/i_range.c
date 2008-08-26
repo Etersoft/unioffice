@@ -2899,8 +2899,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Formula(
         long lcid,
         VARIANT RHS)
 {
+    VARIANT vNull;
     TRACE(" \n");
-    return E_NOTIMPL;
+    VariantInit(&vNull);
+    V_VT(&vNull) = VT_NULL;
+    return I_Range_put_Value(iface, vNull, 0, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaArray(
