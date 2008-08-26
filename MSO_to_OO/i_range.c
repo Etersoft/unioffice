@@ -401,6 +401,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
     VARIANT resultCell;
     HRESULT hres;
     VARIANT parmRow; // XPOS
+    VARIANT vartype;
+
+    VariantInit(&vartype);
     V_VT(&parmRow) = VT_I2;
     V_I2(&parmRow) = 0;
     VARIANT parmColumn; // nYPos
@@ -412,8 +415,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
         TRACE("ERROR when getCellByPosition \n");
         return hres;
     }
+/*Необходимо узнать тип ячейки и после этого уже читать значение*/
+    hres = AutoWrap(DISPATCH_METHOD, &vartype, V_DISPATCH(&resultCell), L"getType", 0);
 
-    hres = AutoWrap(DISPATCH_METHOD, pvarValue, V_DISPATCH(&resultCell), L"getFormula", 0);
+    switch V_I4(&vartype){
+    case vtFORMULA:
+    case vtVALUE:
+        hres = AutoWrap(DISPATCH_METHOD, pvarValue, V_DISPATCH(&resultCell), L"getValue", 0);
+        break;
+    case vtEMPTY:
+        V_VT(pvarValue)=VT_NULL;
+        hres = S_OK;
+        break;
+    case vtTEXT:
+    default:
+        hres = AutoWrap(DISPATCH_METHOD, pvarValue, V_DISPATCH(&resultCell), L"getFormula", 0);
+    } 
 
     return hres;
 }
