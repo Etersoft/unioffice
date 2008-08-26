@@ -112,6 +112,8 @@ static WCHAR const str_formular1c1[] = {
     'F','o','r','m','u','l','a','R','1','C','1',0};
 static WCHAR const str_cells[] = {
     'C','e','l','l','s',0};
+static WCHAR const str_formula[] = {
+    'F','o','r','m','u','l','a',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -4092,6 +4094,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
         *rgDispId = dispid_range_cells;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_formula)) {
+        *rgDispId = dispid_range_formula;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -4973,6 +4979,27 @@ TRACE("Parametr 1\n");
             }
             TRACE("pVarResult = NULL \n");
             return E_FAIL;
+        }
+    case dispid_range_formula:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if ((pDispParams->cArgs>1)||(pDispParams->cArgs==0)) return E_FAIL;
+            if (pDispParams->cArgs==1) {
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
+                hres = MSO_TO_OO_I_Range_put_Formula(iface, 0,  var2);
+            }
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
+        } else {
+            if (pDispParams->cArgs!=0) return E_FAIL;
+            hres = MSO_TO_OO_I_Range_get_Formula(iface, 0,  pVarResult);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
         }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
