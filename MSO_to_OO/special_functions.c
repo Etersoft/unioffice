@@ -161,9 +161,12 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     VARIANT resultDoc;
     VARIANT param0,param1,param2,param3;
     VARIANT res;
-    IDispatch *dpv = NULL;
+    VARIANT varIndex, varName, vNull;
+    BSTR bstrName;
+    IDispatch *dpv = NULL, *wsh;
     HRESULT hres;
     IUnknown *punk = NULL;
+    int count_list,delta_list;
 
     TRACE("\n");
 
@@ -175,6 +178,8 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     VariantInit(&param1);
     VariantInit(&param2);
     VariantInit(&param3);
+    VariantInit(&vNull);
+    V_VT(&vNull) = VT_NULL;
     V_VT(&param0) = VT_BSTR;
     V_BSTR(&param0) = SysAllocString(L"private:factory/scalc"); /* Type of created document */
 /*    This->filename = SysAllocString(L""); */
@@ -228,6 +233,47 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     if (FAILED(hres)){
         TRACE("ERROR FAILED Sheets_Initialize \n");
     }
+    /*теперь необходимо сделать указанное число листов*/
+    I_Sheets_get_Count((I_Sheets*)(This->pSheets), &count_list);
+    if (count_list>Thisapp->sheetsinnewworkbook) {
+        /*Нужно удалить листы до требуемого кол-ва*/
+        VariantInit(&varIndex);
+        do {
+            VariantClear(&varIndex);
+            V_VT(&varIndex) = VT_I4;
+            V_I4(&varIndex) = count_list;
+            I_Sheets_get_Item((I_Sheets*)(This->pSheets), varIndex, &wsh);
+            I_Worksheet_Delete((I_Worksheet*)wsh, 0);
+            IDispatch_Release(wsh);
+            wsh = NULL;
+            I_Sheets_get_Count((I_Sheets*)(This->pSheets), &count_list);
+        } while (count_list!=Thisapp->sheetsinnewworkbook);
+        VariantClear(&varIndex);
+    } else {
+        if (count_list<Thisapp->sheetsinnewworkbook) {
+            /*нужно добавить листов до требуемого кол-ва*/
+            VariantInit(&varIndex);
+            V_VT(&varIndex) = VT_I4;
+            V_I4(&varIndex) = count_list;
+            I_Sheets_get_Item((I_Sheets*)(This->pSheets), varIndex, &wsh);
+            I_Worksheet_get_Name((I_Worksheet*)wsh, &bstrName);
+            VariantClear(&varIndex);
+            V_VT(&varIndex) = VT_I4;
+            V_I4(&varIndex) = Thisapp->sheetsinnewworkbook - count_list;
+            IDispatch_Release(wsh);
+            wsh = NULL;
+            V_VT(&varName) = VT_BSTR;
+            V_BSTR(&varName) = SysAllocString(bstrName);
+            I_Sheets_Add((I_Sheets*)(This->pSheets), vNull, varName, varIndex , vNull, &wsh);
+            IDispatch_Release(wsh);
+            wsh = NULL;
+            SysFreeString(bstrName);
+            VariantClear(&varIndex);
+            VariantClear(&varName);
+        }
+    }
+
+
     /*освобождаем память выделенную под строки*/
     VariantClear(&param0);
     VariantClear(&param1);

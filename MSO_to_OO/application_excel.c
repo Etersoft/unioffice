@@ -66,6 +66,8 @@ static WCHAR const str_rows[] = {
     'R','o','w','s',0};
 static WCHAR const str_selection[] = {
     'S','e','l','e','c','t','i','o','n',0};
+static WCHAR const str_sheetsinnewworkbook[] = {
+    'S','h','e','e','t','s','I','n','N','e','w','W','o','r','k','b','o','o','k',0};
 
 #define DEFINE_THIS(class,ifild,iface) ((class*)((BYTE*)(iface)-offsetof(class,p ## ifild ## Vtbl)))
 
@@ -3220,8 +3222,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_SheetsInNewWorkbook(
         long lcid,
         long *RHS)
 {
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     TRACE("\n");
-    return E_NOTIMPL;
+    *RHS = This->sheetsinnewworkbook;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_SheetsInNewWorkbook(
@@ -3229,8 +3233,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_SheetsInNewWorkbook(
         long lcid,
         long RHS)
 {
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     TRACE("\n");
-    return E_NOTIMPL;
+    This->sheetsinnewworkbook = RHS;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ShowChartTipNames(
@@ -4418,6 +4424,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
         *rgDispId = dispid_application_selection;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_sheetsinnewworkbook)) {
+        *rgDispId = dispid_application_sheetsinnewworkbook;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE\n", *rgszNames);
@@ -4935,6 +4945,29 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
+    case dispid_application_sheetsinnewworkbook:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) return E_FAIL;
+            /*преобразовываем любой тип к I4*/
+            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            if (FAILED(hr)) {
+                TRACE("sheetsinnewworkbook ERROR when VariantChangeTypeEx\n");
+                return E_FAIL;
+            }
+            tmp = V_I4(&vtmp);
+            return MSO_TO_OO_I_ApplicationExcel_put_SheetsInNewWorkbook(iface, 0, tmp);
+        } else {
+            hr = MSO_TO_OO_I_ApplicationExcel_get_SheetsInNewWorkbook(iface, 0, &tmp);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return E_FAIL;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_I4;
+                V_I4(pVarResult) = tmp;
+            }
+            return S_OK;
+        }
     }
 
     return E_NOTIMPL;
@@ -5350,7 +5383,7 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
     _applicationexcell->pdWorkbooks = NULL;
     _applicationexcell->screenupdating = VARIANT_TRUE;
     _applicationexcell->visible = VARIANT_FALSE;
-
+    _applicationexcell->sheetsinnewworkbook = 1;
     /*Создание указателей на объекты openOfffice 
     Create OpenOffice Service Manager */
     hres = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);

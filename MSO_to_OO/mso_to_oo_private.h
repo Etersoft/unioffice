@@ -181,6 +181,7 @@ typedef struct
 
     VARIANT_BOOL screenupdating;
     VARIANT_BOOL visible;
+    long sheetsinnewworkbook;
 
 } _ApplicationExcelImpl;
 
