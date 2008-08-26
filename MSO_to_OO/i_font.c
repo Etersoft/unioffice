@@ -678,7 +678,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
         I_Font* iface,
         VARIANT RHS)
 {
-/*    _FontImpl *This = (_FontImpl*)iface;
+    _FontImpl *This = (_FontImpl*)iface;
     HRESULT hres;
     VARIANT res;
     RangeImpl *range = (RangeImpl*)This->prange;
@@ -708,7 +708,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
         return E_FAIL;
     }
 
-    return S_OK;*/
+    return S_OK;
     TRACE("\n");
     return E_NOTIMPL;
 }
@@ -756,7 +756,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
         I_Font* iface,
         VARIANT RHS)
 {
-/*    _FontImpl *This = (_FontImpl*)iface;
+    _FontImpl *This = (_FontImpl*)iface;
     HRESULT hres;
     VARIANT res;
     RangeImpl *range = (RangeImpl*)This->prange;
@@ -786,7 +786,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
         return E_FAIL;
     }
 
-    return S_OK;*/
+    return S_OK;
     TRACE("\n");
     return E_NOTIMPL;
 }

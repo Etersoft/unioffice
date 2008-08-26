@@ -149,7 +149,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
             /*Необходимо заменять запятую на подчеркивание, т.к. OO не поддерживает запятые*/
             int i=0;
             WTRACE(L"name = ");
-            while (*(V_BSTR(&varIndex)+i)!=0) {if (*(V_BSTR(&varIndex)+i)==L',') *(V_BSTR(&varIndex)+i)=L'_';fwprintf(stderr, L"%c", *(V_BSTR(&varIndex)+i));i++;}
+            while (*(V_BSTR(&varIndex)+i)!=0) {if (*(V_BSTR(&varIndex)+i)==L',') *(V_BSTR(&varIndex)+i)=L'_';WTRACE(L"%c", *(V_BSTR(&varIndex)+i));i++;}
             WTRACE(L"\n");
 
             hres = AutoWrap (DISPATCH_METHOD, &resultSheet, This->pOOSheets, L"getByName", 1, varIndex);
@@ -277,11 +277,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         IDispatch **value)
 {
     SheetsImpl *This = (SheetsImpl*)iface;
-    int ftype_add = 0,i;
+    int ftype_add = 0,i, j;
     int count;
     HRESULT hres;
     VARIANT par1,par2,res;
     BSTR tmp;
+    IDispatch *wsh = NULL;
 
     VariantInit(&par1);
     VariantInit(&par2);
@@ -370,15 +371,24 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
     }
 
     for (i=V_I4(&Count);i>0;i--) {
-        VariantClear(&par1);
-        V_VT(&par1) = VT_BSTR;
-        V_BSTR(&par1) = SysAllocString(L"Sheet");
-        hres = VarBstrFromI4(count+i, 0, 0, &tmp);
-        if (FAILED(hres)) {
-            TRACE("ERROR when VarBSTRFromI4\n");
-            tmp = SysAllocString(L"4");
-        }
-        VarBstrCat(V_BSTR(&par1), tmp, &(V_BSTR(&par1)));
+        j=0;
+        do {
+            VariantClear(&par1);
+            V_VT(&par1) = VT_BSTR;
+            V_BSTR(&par1) = SysAllocString(L"Sheet");
+            hres = VarBstrFromI4(count+i+j, 0, 0, &tmp);
+            if (FAILED(hres)) {
+                TRACE("ERROR when VarBSTRFromI4\n");
+                tmp = SysAllocString(L"4");
+            }
+            VarBstrCat(V_BSTR(&par1), tmp, &(V_BSTR(&par1)));
+            j++;
+            hres = I_Sheets_get__Default(iface, par1, &wsh);
+            if (wsh!=NULL) {
+                IDispatch_Release(wsh);
+                wsh = NULL;
+                }
+        } while (!FAILED(hres));
 
         hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheets, L"insertNewByName", 2,par2,par1);
         if (FAILED(hres)) {
