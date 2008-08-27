@@ -73,6 +73,13 @@ import "wtypes.idl";
 		xlVAlignTop		= -4160
 	} XlVAlign;
 
+	typedef enum {
+		xlUnderlineStyleDouble 			= 0xffffefe9,
+		xlUnderlineStyleDoubleAccounting 	= 5,
+		xlUnderlineStyleNone 			= 0xffffefd2,
+		xlUnderlineStyleSingle 			= 2,
+		xlUnderlineStyleSingleAccounting 	= 4
+	} XlUnderlineStyle;
 	typedef enum
 	{
 		xlHAlignCenter			= -4108,
@@ -970,8 +977,8 @@ import "wtypes.idl";
 		[propget, id(dispid_font_superscript), helpstring("property Superscript")] HRESULT  Superscript([out, retval] VARIANT* RHS);
 		[propput, id(dispid_font_superscript), helpstring("property Superscript")] HRESULT  Superscript([in] VARIANT RHS);
 // Underline 	Returns or sets the type of underline applied to the font.
-		[propget,id(dispid_font_underline), helpstring("property Underline")] HRESULT Underline([out, retval] VARIANT_BOOL *pvbUnderline);
-		[propput,id(dispid_font_underline), helpstring("property Underline")] HRESULT Underline([in] VARIANT_BOOL vbUnderline);
+		[propget,id(dispid_font_underline), helpstring("property Underline")] HRESULT Underline([out, retval] VARIANT *pvbUnderline);
+		[propput,id(dispid_font_underline), helpstring("property Underline")] HRESULT Underline([in] VARIANT vbUnderline);
 	};
 
 	[

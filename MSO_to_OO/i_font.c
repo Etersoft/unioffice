@@ -52,6 +52,25 @@ static WCHAR const str_subscript[] = {
 static WCHAR const str_superscript[] = {
     'S','u','p','e','r','s','c','r','i','p','t',0};
 
+#define usNONE 0
+#define usSINGLE 1
+#define usDOUBLE 2
+#define usDOTTED 3
+#define usDONTKNOW 4
+#define usDASH 5
+#define usLONGDASH 6
+#define usDASHDOT 7
+#define usDASHDOTDOT 8
+#define usSMALLWAVE 9
+#define usWAVE 10
+#define usDOUBLEWAVE 11
+#define usBOLD 12
+#define usBOLDDOTTED 13
+#define usBOLDDASH 14
+#define usBOLDLONGDASH 15
+#define usBOLDDASHDOT 16
+#define usBOLDDASHDOTDOT 17
+#define usBOLDWAVE 18
 
 /*IUnknown*/
 static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
@@ -223,7 +242,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Italic(
 /* TODO 1 - нет подчеркивания 2-есть подчеркивание*/
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Underline(
         I_Font* iface,
-        VARIANT_BOOL *pvbUnderline)
+        VARIANT *pvbUnderline)
 {
     _FontImpl *This = (_FontImpl*)iface;
 
@@ -238,32 +257,77 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Underline(
 
     if (hres != S_OK)
        return hres;
-   *pvbUnderline = V_BOOL(&vUnderlineState);
+
+    V_VT(pvbUnderline) = VT_I4;
+
+    hres = VariantChangeTypeEx(&vUnderlineState, &vUnderlineState, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
+    }
+
+    switch(V_I4(&vUnderlineState)) {
+        case usSINGLE:
+            V_I4(pvbUnderline) = xlUnderlineStyleSingle;
+            break;
+        case usDOUBLE:
+            V_I4(pvbUnderline) = xlUnderlineStyleDouble;
+            break;
+        case usNONE:
+            V_I4(pvbUnderline) = xlUnderlineStyleNone;
+            break;
+        default:
+            TRACE("ERROR CharUnderline \n");
+            return E_FAIL;
+    }
 
     return S_OK;
 }
 /* TODO 1 - нет подчеркивания 2-есть подчеркивание*/
 static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
         I_Font* iface,
-        VARIANT_BOOL vbUnderline)
+        VARIANT vbUnderline)
 {
     _FontImpl *This = (_FontImpl*)iface;
+    HRESULT hres;
 
     TRACE("\n");
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
 
-    V_VT(&vUnderlineState) = VT_BOOL;
-    V_BOOL(&vUnderlineState) = vbUnderline;
+    hres = VariantChangeTypeEx(&vbUnderline, &vbUnderline, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
+    }
+
+    V_VT(&vUnderlineState) = VT_I4;
+
+    switch (V_I4(&vbUnderline)) {
+        case xlUnderlineStyleDouble:
+        case xlUnderlineStyleDoubleAccounting:
+        V_I4(&vUnderlineState) = usDOUBLE;
+        break;
+        case xlUnderlineStyleNone:
+        V_I4(&vUnderlineState) = usNONE;
+        break;
+        case xlUnderlineStyleSingle:
+        case xlUnderlineStyleSingleAccounting:
+        V_I4(&vUnderlineState) = usSINGLE;
+        break;
+    default :
+      TRACE("ERROR parameters \n");
+      return E_FAIL;
+    }
 
     VARIANT res;
 
     RangeImpl *range = (RangeImpl*)This->prange;
 
-    HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharUnderline", 1, vUnderlineState);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharUnderline", 1, vUnderlineState);
 
-    return S_OK;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
@@ -961,22 +1025,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
-            hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
+ /*           hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
             if (FAILED(hr)) {
                 TRACE("(case 3) ERROR VariantChangeTypeEx   %08x\n",hr);
                 return E_FAIL;
             }
-            vbin = V_BOOL(&vtmp);
-            return MSO_TO_OO_I_Font_put_Underline(iface, vbin);
+            vbin = V_BOOL(&vtmp);*/
+            return MSO_TO_OO_I_Font_put_Underline(iface, vtmp);
         } else {
-            hr = MSO_TO_OO_I_Font_get_Underline(iface, &ret);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
             if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_BOOL;
-                V_BOOL(pVarResult) = ret;
+                hr = MSO_TO_OO_I_Font_get_Underline(iface, pVarResult);
+                if (FAILED(hr)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hr;
+                }
             }
             return S_OK;
         }
