@@ -5387,21 +5387,27 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
     /*Создание указателей на объекты openOfffice 
     Create OpenOffice Service Manager */
     hres = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
-    if (FAILED(hres))
+    if (FAILED(hres)) {
+        TRACE("ERROR when  CLSIDFromProgID  com.sun.star.ServiceManager \n");
         return E_NOINTERFACE;
+    }
 
     /* Start server and get IDispatch...*/
     hres = CoCreateInstance(&clsid, NULL, CLSCTX_LOCAL_SERVER | CLSCTX_INPROC_SERVER, &IID_IDispatch, (void**) &(_applicationexcell->pdOOApp));
-    if (FAILED(hres))
+    if (FAILED(hres)) {
+        TRACE("ERROR when CoCreateInstance \n");
         return E_NOINTERFACE;
+    }
 
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"com.sun.star.frame.Desktop");
     /* Get Desktop and its assoc. IDispatch...*/
     hres = AutoWrap(DISPATCH_METHOD, &result, _applicationexcell->pdOOApp, L"CreateInstance", 1, param1);
 
-    if (FAILED(hres))
+    if (FAILED(hres)) {
+        TRACE("ERROR when CreateInstance \n");
         return E_NOINTERFACE;
+    }
 
     _applicationexcell->pdOODesktop = result.pdispVal;
     hres = IDispatch_AddRef(_applicationexcell->pdOODesktop);

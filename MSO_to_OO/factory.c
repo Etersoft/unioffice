@@ -94,13 +94,13 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
 
     res = _ApplicationExcelConstructor((LPVOID*) &punk);
     if (FAILED(res)) {
-        TRACE("ERROR when _ApplicationExcelConstructor");
+        TRACE("ERROR when _ApplicationExcelConstructor \n");
         return res;
     }
 
     res = I_ApplicationExcel_QueryInterface(punk, riid, ppvObj);
     if (FAILED(res)) {
-        TRACE("ERROR when ApplicationExcel_QueryInterface");
+        TRACE("ERROR when ApplicationExcel_QueryInterface \n");
         return res;
     }
 
