@@ -180,6 +180,7 @@ typedef struct
     IDispatch *pdWorkbooks;
 
     VARIANT_BOOL screenupdating;
+    VARIANT_BOOL displayalerts;
     VARIANT_BOOL visible;
     long sheetsinnewworkbook;
 

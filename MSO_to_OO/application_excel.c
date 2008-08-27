@@ -347,9 +347,13 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts(
         long lcid,
         VARIANT_BOOL vbDisplayAlerts)
 {
-   TRACE("\n");
-   /*Возвращаем успех*/
-   return S_OK;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+
+    TRACE("\n");
+
+    This->displayalerts = vbDisplayAlerts;
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(
@@ -357,10 +361,13 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(
         long lcid,
         VARIANT_BOOL *vbDisplayAlerts)
 {
-   TRACE("\n");
-   /*Возвращаем успех*/
-   *vbDisplayAlerts = VARIANT_FALSE;
-   return S_OK;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+
+    TRACE("\n");
+
+   *vbDisplayAlerts = This->displayalerts;
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_WindowState(
@@ -731,9 +738,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Quit(
         I_ApplicationExcel* iface)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
-
+    VARIANT res;
     TRACE("\n");
 
+    VariantInit(&res);
     if (iface==NULL) {
         TRACE("ERROR Object is NULL\n");
         return E_FAIL;
@@ -741,7 +749,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Quit(
     /*При вызове этого метода вызываем метод Close объекта WorkBooks*/
     I_Workbooks_Close((I_Workbooks*)(This->pdWorkbooks), 0);
 
-    return S_OK;
+    HRESULT hres = AutoWrap(DISPATCH_METHOD, &res, This->pdOODesktop, L"terminate", 0);
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveCell(
@@ -4491,7 +4501,16 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             vbin = V_BOOL(&vtmp);
             return MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts(iface, 0, vbin);
         } else {
-            return E_NOTIMPL;
+            hr = MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(iface, 0, &vbin);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_BOOL;
+                V_BOOL(pVarResult) = vbin;
+            }
+            return S_OK;
         }
     case dispid_application_windowstate:
         if (wFlags==DISPATCH_PROPERTYPUT) {
@@ -5384,6 +5403,7 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
     _applicationexcell->screenupdating = VARIANT_TRUE;
     _applicationexcell->visible = VARIANT_FALSE;
     _applicationexcell->sheetsinnewworkbook = 1;
+    _applicationexcell->displayalerts = VARIANT_TRUE;
     /*Создание указателей на объекты openOfffice 
     Create OpenOffice Service Manager */
     hres = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);

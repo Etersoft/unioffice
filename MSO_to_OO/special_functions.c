@@ -598,7 +598,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
          BSTR filename)
 {
     WorkbookImpl *This = (WorkbookImpl*)wb;
-
+    _ApplicationExcelImpl *this_app = (_ApplicationExcelImpl*)(This->pApplication);
     VARIANT res;
     SAFEARRAY FAR* pPropVals;
     long ix = 0;
