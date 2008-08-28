@@ -82,7 +82,6 @@ typedef struct
     const I_OutlineVtbl *_outlineVtbl;
     LONG ref;
     IDispatch *pwsh;           /*Указатель на Worksheet*/
-    IDispatch *OOoutline;
 } OutlineImpl;
 
 typedef struct

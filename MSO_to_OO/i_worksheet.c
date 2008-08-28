@@ -47,6 +47,8 @@ static WCHAR const str_unprotect[] = {
     'U','n','p','r','o','t','e','c','t',0};
 static WCHAR const str_shapes[] = {
     'S','h','a','p','e','s',0};
+static WCHAR const str_outline[] = {
+    'O','u','t','l','i','n','e',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
@@ -1704,8 +1706,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Outline(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
+    HRESULT hres;
+    IUnknown *pObj;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    hres = _I_OutlineConstructor((void**)&pObj);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call constructor IOutline\n");
+        return E_FAIL;
+    }
+
+    hres = I_Outline_QueryInterface(pObj, &IID_I_Outline, (void**)RHS);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call IOutline->QueryInterface\n");
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_I_Outline_Initialize((I_Outline*)*RHS, iface);
+    if (FAILED(hres)) {
+        TRACE(" ERROR when call Outline initialize\n");
+        return E_FAIL;
+    }
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Ovals(
@@ -2255,6 +2279,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetIDsOfNames(
         *rgDispId = dispid_worksheet_shapes;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_outline)) {
+        *rgDispId = dispid_worksheet_outline;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE\n",*rgszNames);
@@ -2614,7 +2642,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 return S_OK;
             }
         }
-
+    case dispid_worksheet_outline:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            return E_NOTIMPL;
+        } else {
+            switch (pDispParams->cArgs) {
+            case 0:
+                TRACE("0 Parameter\n");
+                hres = MSO_TO_OO_I_Worksheet_get_Outline(iface, &dret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_DISPATCH;
+                    V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                return S_OK;
+            default:
+                TRACE("ERROR parameters \n");
+                return E_FAIL;
+            }
+        }
     }
 
     return E_NOTIMPL;

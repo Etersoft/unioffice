@@ -1650,3 +1650,17 @@ HRESULT MSO_TO_OO_Workbook_SetVisible(
     return S_OK;
 }
 
+HRESULT MSO_TO_OO_I_Outline_Initialize(
+        I_Outline* iface,
+        I_Worksheet *iwsh)
+{
+    OutlineImpl *This = (OutlineImpl*)iface;
+
+    if (This->pwsh!=NULL) {
+        I_Worksheet_Release((I_Worksheet*)This->pwsh);
+    }
+    This->pwsh = (IDispatch*)iwsh;
+    I_Worksheet_AddRef((I_Worksheet*)This->pwsh);
+
+    return S_OK;
+}

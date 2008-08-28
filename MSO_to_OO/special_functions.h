@@ -161,6 +161,10 @@ HRESULT MSO_TO_OO_Workbook_SetVisible(
         I_Workbook *wb,
         VARIANT_BOOL vbvisible);
 
+HRESULT MSO_TO_OO_I_Outline_Initialize(
+        I_Outline* iface,
+        I_Worksheet *iwsh);
+
 
 
 

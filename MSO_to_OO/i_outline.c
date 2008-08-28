@@ -76,10 +76,6 @@ static ULONG WINAPI MSO_TO_OO_I_Outline_Release(
             IDispatch_Release(This->pwsh);
             This->pwsh = NULL;
         }
-        if (This->OOoutline!=NULL) {
-            IDispatch_Release(This->OOoutline);
-            This->OOoutline = NULL;
-        }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
@@ -197,7 +193,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    TRACE("\n");
+
+    /*Выводим название метода или свойства,
+    чтобы знать чего не хватает.*/
+    WTRACE(L" NOT REALIZE\n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -253,7 +252,6 @@ extern HRESULT _I_OutlineConstructor(LPVOID *ppObj)
     outline->_outlineVtbl = &MSO_TO_OO_I_Outline_Vtbl;
     outline->ref = 0;
     outline->pwsh = NULL;
-    outline->OOoutline = NULL;
 
     *ppObj = &outline->_outlineVtbl;
 
