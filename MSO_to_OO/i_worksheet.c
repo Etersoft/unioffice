@@ -49,6 +49,8 @@ static WCHAR const str_shapes[] = {
     'S','h','a','p','e','s',0};
 static WCHAR const str_outline[] = {
     'O','u','t','l','i','n','e',0};
+static WCHAR const str_visible[] = {
+    'V','i','s','i','b','l','e',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
@@ -2283,6 +2285,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetIDsOfNames(
         *rgDispId = dispid_worksheet_outline;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_visible)) {
+        *rgDispId = dispid_worksheet_visible;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE\n",*rgszNames);
@@ -2309,6 +2315,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     VARIANT cell1,cell2,tmpval;
     VARIANT vmas[16];
     int i;
+    long ltmp;
 
     VariantInit(&vNull);
     VariantInit(&cell1);
@@ -2665,6 +2672,34 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 TRACE("ERROR parameters \n");
                 return E_FAIL;
             }
+        }
+    case dispid_worksheet_visible:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) return E_FAIL;
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &tmpval);
+            hres = VariantChangeTypeEx(&tmpval, &tmpval, 0, 0, VT_I4);
+            if (FAILED(hres)) {
+                TRACE("(case 8) ERROR VariantChangeTypeEx   %08x\n",hres);
+                return E_FAIL;
+            }
+            ltmp = V_I4(&tmpval);
+            hres = MSO_TO_OO_I_Worksheet_put_Visible(iface, 0, (XlSheetVisibility)ltmp);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            return S_OK;
+        } else {
+            hres = MSO_TO_OO_I_Worksheet_get_Visible(iface, 0, (XlSheetVisibility*)&ltmp);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_I4;
+                V_I4(pVarResult) = ltmp;
+            }
+            return S_OK;
         }
     }
 
