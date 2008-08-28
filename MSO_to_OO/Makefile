@@ -24,6 +24,7 @@ OBJECTS = mso_to_oo_i.o \
 	i_shape.o \
 	i_shapes.o \
 	i_sheets.o \
+	i_outline.o\
 	i_worksheet.o \
 	application_excel.o
 

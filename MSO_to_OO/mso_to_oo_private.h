@@ -229,5 +229,6 @@ extern HRESULT _I_ShapesConstructor(LPVOID *ppObj);
 extern HRESULT _I_ShapeConstructor(LPVOID *ppObj);
 extern HRESULT _NamesConstructor(LPVOID *ppObj);
 extern HRESULT _NameConstructor(LPVOID *ppObj);
+extern HRESULT _I_OutlineConstructor(LPVOID *ppObj);
 #endif /* __OOFFICE_PRIVATE_H__ */
 
