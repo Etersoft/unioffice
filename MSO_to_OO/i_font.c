@@ -1025,12 +1025,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
- /*           hr = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_BOOL);
-            if (FAILED(hr)) {
-                TRACE("(case 3) ERROR VariantChangeTypeEx   %08x\n",hr);
-                return E_FAIL;
-            }
-            vbin = V_BOOL(&vtmp);*/
             return MSO_TO_OO_I_Font_put_Underline(iface, vtmp);
         } else {
             if (pVarResult!=NULL){

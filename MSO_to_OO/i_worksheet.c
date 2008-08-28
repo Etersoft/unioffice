@@ -1241,8 +1241,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Visible(
         long lcid,
         XlSheetVisibility *RHS)
 {
+    WorksheetImpl *This = (WorksheetImpl*)iface;
+    VARIANT res;
+    HRESULT hres;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    if (This == NULL) return E_POINTER;
+
+    VariantInit(&res);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &res, This->pOOSheet, L"IsVisible", 0);
+
+    if (FAILED(hres)) TRACE("ERROR when IsVisible \n");
+
+    hres = VariantChangeTypeEx(&res, &res, 0, 0, VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR when VariantChangeTypeEx \n");
+        return E_FAIL;
+    }
+
+    switch (V_BOOL(&res)) {
+        case VARIANT_TRUE:
+            *RHS = xlSheetVisible;
+            break;
+        case VARIANT_FALSE:
+            *RHS = xlSheetHidden;
+            break;
+    }
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_Visible(
@@ -1250,8 +1277,32 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_Visible(
         long lcid,
         XlSheetVisibility RHS)
 {
+    WorksheetImpl *This = (WorksheetImpl*)iface;
+    VARIANT res, param1;
+    HRESULT hres;
+
     TRACE("\n");
-    return E_NOTIMPL;
+    VariantInit(&param1);
+
+    if (This == NULL) return E_POINTER;
+
+    V_VT(&param1) = VT_BOOL;
+    switch (RHS) {
+        case xlSheetVeryHidden:
+        case xlSheetHidden:
+            V_BOOL(&param1) = VARIANT_FALSE;
+            break;
+        case xlSheetVisible:
+            V_BOOL(&param1) = VARIANT_TRUE;
+            break;
+    }
+
+    VariantInit(&res);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOOSheet, L"IsVisible", 1, param1);
+
+    if (FAILED(hres)) TRACE("ERROR when IsVisible \n");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_TransitionExpEval(
