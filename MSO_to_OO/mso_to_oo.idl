@@ -810,6 +810,11 @@ import "wtypes.idl";
 		xlNotXLM 			= 0x00000003
 	} XlXLMMacroType;
 
+	typedef enum {
+		xlSummaryOnLeft 			= 0xFFFFEFDD,
+		xlSummaryOnRight 			= 0xFFFFEFC8,
+	} XlSummaryColumn;
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
@@ -1848,6 +1853,37 @@ import "wtypes.idl";
 			[in] float endX,
 			[in] float endY,
 			[out, retval] IDispatch **ppValue);
+	};
+
+	[
+		object,
+		uuid(000208AB-0001-0000-C000-000000000046),
+		dual,
+		helpstring("I_Outline Interface"),
+		pointer_default(unique)
+	]
+	interface I_Outline : IDispatch
+	{
+//Application
+		[id(dispid_outline_application),propget,helpstring(" property Application")] HRESULT Application([out,retval] IDispatch**/*IApplication***/ RHS);
+//Creator
+		[id(dispid_outline_creator),propget,helpstring("property Creator")] HRESULT Creator([out,retval] XlCreator* RHS);
+//Parent
+		[id(dispid_outline_parent),propget,helpstring("property Parent")] HRESULT Parent([out,retval] IDispatch** RHS);
+//AutomaticStyles
+		[id(dispid_outline_automaticstyles),propget,helpstring("property AutomaticStyles")] HRESULT AutomaticStyles([out,retval] VARIANT_BOOL* RHS);
+		[id(dispid_outline_automaticstyles),propput,helpstring("property AutomaticStyles")] HRESULT AutomaticStyles([in] VARIANT_BOOL RHS);
+//ShowLevels
+		[id(dispid_outline_showlevels),helpstring("method ShowLevels")] HRESULT ShowLevels(
+			[in] VARIANT RowLevels,
+			[in] VARIANT ColumnLevels,
+			[out] VARIANT *RHS);
+//SummaryColumn
+		[id(dispid_outline_summarycolumn),propget, helpstring("property SummaryColumn")] HRESULT SummaryColumn([out, retval] XlSummaryColumn* RHS);
+		[id(dispid_outline_summarycolumn),propput, helpstring("property SummaryColumn")] HRESULT SummaryColumn([in] XlSummaryColumn RHS);
+//SummaryRow
+		[id(dispid_outline_summaryrow),propget, helpstring("property SummaryRow")] HRESULT SummaryRow([out, retval] XlSummaryRow* RHS);
+		[id(dispid_outline_summaryrow),propput, helpstring("property SummaryRow")] HRESULT SummaryRow([in] XlSummaryRow RHS);
 	};
 
 	[

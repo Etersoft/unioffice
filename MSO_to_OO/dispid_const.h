@@ -918,3 +918,13 @@
 #define dispid_name_referstor1c1                                17
 #define dispid_name_referstor1c1local                           18
 #define dispid_name_referstorange                               19
+
+/*IOutline*/
+#define dispid_outline_application                              148
+#define dispid_outline_creator                                  149
+#define dispid_outline_parent                                   150
+#define dispid_outline_automaticstyles                          959
+#define dispid_outline_showlevels                               960
+#define dispid_outline_summarycolumn                            961
+#define dispid_outline_summaryrow                               902
+
