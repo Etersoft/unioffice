@@ -20,6 +20,7 @@
 
 #include "special_functions.h"
 
+
 HRESULT MSO_TO_OO_I_Workbooks_Initialize(
         I_Workbooks* iface,
         I_ApplicationExcel *app)

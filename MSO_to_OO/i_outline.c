@@ -25,6 +25,10 @@
 
 static WCHAR const str_showlevels[] = {
     'S','h','o','w','L','e','v','e','l','s',0};
+static WCHAR const str_summarycolumn[] = {
+    'S','u','m','m','a','r','y','C','o','l','u','m','n',0};
+static WCHAR const str_summaryrow[] = {
+    'S','u','m','m','a','r','y','R','o','w',0};
 
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
@@ -182,7 +186,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryColumn(
         XlSummaryColumn *RHS)
 {
     TRACE("\n");
-    return E_NOTIMPL;
+    *RHS = xlSummaryOnLeft;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_put_SummaryColumn(
@@ -190,7 +195,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_SummaryColumn(
         XlSummaryColumn RHS)
 {
     TRACE("\n");
-    return E_NOTIMPL;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryRow(
@@ -198,7 +203,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryRow(
         XlSummaryRow *RHS)
 {
     TRACE("\n");
-    return E_NOTIMPL;
+    *RHS = xlSummaryAbove;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_put_SummaryRow(
@@ -206,7 +212,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_SummaryRow(
         XlSummaryRow RHS)
 {
     TRACE("\n");
-    return E_NOTIMPL;
+    return S_OK;
 }
 
 
@@ -241,6 +247,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         *rgDispId = dispid_outline_showlevels;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_summarycolumn)) {
+        *rgDispId = dispid_outline_summarycolumn;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_summaryrow)) {
+        *rgDispId = dispid_outline_summaryrow;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" NOT REALIZE\n",*rgszNames);
@@ -260,6 +274,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
 {
     VARIANT param1, param2, vNull;
     HRESULT hres;
+    long lret = 0;
 
     TRACE("\n");
 
@@ -291,6 +306,54 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
                 default:
                     TRACE("Error parameters \n");
                     return E_FAIL;
+            }
+            break;
+        case dispid_outline_summarycolumn:
+            if (wFlags==DISPATCH_PROPERTYPUT) {
+                if (pDispParams->cArgs!=1) return E_FAIL;
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
+                hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+                if (FAILED(hres)) {
+                    TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
+                    return hres;
+                }
+                lret = V_I4(&param1);
+                return MSO_TO_OO_I_Outline_put_SummaryColumn(iface, (XlSummaryColumn)lret);
+            } else {
+                hres = MSO_TO_OO_I_Outline_get_SummaryColumn(iface,(XlSummaryColumn*)&lret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_I4;
+                    V_I4(pVarResult) = lret;
+                }
+                return S_OK;
+            }
+            break;
+        case dispid_outline_summaryrow:
+            if (wFlags==DISPATCH_PROPERTYPUT) {
+                if (pDispParams->cArgs!=1) return E_FAIL;
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
+                hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+                if (FAILED(hres)) {
+                    TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
+                    return hres;
+                }
+                lret = V_I4(&param1);
+                return MSO_TO_OO_I_Outline_put_SummaryRow(iface, (XlSummaryRow)lret);
+            } else {
+                hres = MSO_TO_OO_I_Outline_get_SummaryRow(iface,(XlSummaryRow*)&lret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_I4;
+                    V_I4(pVarResult) = lret;
+                }
+                return S_OK;
             }
             break;
     }
