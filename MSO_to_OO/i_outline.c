@@ -20,6 +20,12 @@
 
 #include "mso_to_oo_private.h"
 
+#define toCOLUMNS 0
+#define toROWS 1
+
+static WCHAR const str_showlevels[] = {
+    'S','h','o','w','L','e','v','e','l','s',0};
+
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
         I_Outline* iface)
@@ -129,8 +135,46 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
         VARIANT ColumnLevels,
         VARIANT *RHS)
 {
+    OutlineImpl *This = (OutlineImpl*)iface;
+    WorksheetImpl *wsh = (WorksheetImpl*)This->pwsh;
+    HRESULT hres;
+    VARIANT param1, param2, vret;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    VariantInit(&param1);
+    VariantInit(&param2);
+    VariantInit(&vret);
+
+    if ((V_VT(&RowLevels)!=VT_NULL) && (V_VT(&ColumnLevels)!=VT_EMPTY)) {
+        hres = VariantChangeTypeEx(&param1, &RowLevels, 0, 0, VT_I4);
+        if (FAILED(hres)) {
+            TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+            return hres;
+        }
+        V_VT(&param2) = VT_I4;
+        V_I4(&param2) = toROWS;
+    } else {
+        hres = VariantChangeTypeEx(&param1, &ColumnLevels, 0, 0, VT_I4);
+        if (FAILED(hres)) {
+            TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+            return hres;
+        }
+        V_VT(&param2) = VT_I4;
+        V_I4(&param2) = toROWS;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"showLevel", 2, param2, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when showLevel\n");
+        return hres;
+    }
+
+    VariantClear(&param1);
+    VariantClear(&param2);
+    VariantClear(&vret);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryColumn(
@@ -193,7 +237,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-
+    if (!lstrcmpiW(*rgszNames, str_showlevels)) {
+        *rgDispId = dispid_outline_showlevels;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" NOT REALIZE\n",*rgszNames);
@@ -211,7 +258,43 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
+    VARIANT param1, param2, vNull;
+    HRESULT hres;
+
     TRACE("\n");
+
+    VariantInit(&param1);
+    VariantInit(&param2);
+    VariantInit(&vNull);
+    V_VT(&vNull) = VT_NULL;
+
+    switch (dispIdMember) {
+        case dispid_outline_showlevels:
+            switch (pDispParams->cArgs) {
+                case 1:
+                    MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
+                    hres = MSO_TO_OO_I_Outline_ShowLevels(iface, param1, vNull, pVarResult);
+                    if (FAILED(hres)) {
+                        pExcepInfo->bstrDescription=SysAllocString(str_error);
+                        TRACE("(case 2) ERROR ShowLevels hres = %08x\n",hres);
+                    }
+                    return hres;
+                case 2:
+                    MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &param1);
+                    MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param2);
+                    hres = MSO_TO_OO_I_Outline_ShowLevels(iface, param1, param2, pVarResult);
+                    if (FAILED(hres)) {
+                        pExcepInfo->bstrDescription=SysAllocString(str_error);
+                        TRACE("(case 2) ERROR ShowLevels hres = %08x\n",hres);
+                    }
+                    return hres;
+                default:
+                    TRACE("Error parameters \n");
+                    return E_FAIL;
+            }
+            break;
+    }
+    TRACE("dispid ( %i ) Not realized\n");
     return E_NOTIMPL;
 }
 
