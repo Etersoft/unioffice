@@ -31,6 +31,9 @@ static WCHAR const str_summaryrow[] = {
     'S','u','m','m','a','r','y','R','o','w',0};
 static WCHAR const str_automaticstyles[] = {
     'A','u','t','o','m','a','t','i','c','S','t','y','l','e','s',0};
+static WCHAR const str_creator[] = {
+    'C','r','e','a','t','o','r',0};
+
 
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
@@ -108,7 +111,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Creator(
         XlCreator *RHS)
 {
     TRACE("\n");
-    return E_NOTIMPL;
+    *RHS = xlCreatorCode;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Parent(
@@ -293,6 +297,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         *rgDispId = dispid_outline_automaticstyles;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_creator)) {
+        *rgDispId = dispid_outline_creator;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" NOT REALIZE\n",*rgszNames);
@@ -314,6 +322,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
     HRESULT hres;
     long lret = 0;
     VARIANT_BOOL vbret;
+    XlCreator xlret;
 
     TRACE("\n");
 
@@ -418,6 +427,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
                 return S_OK;
             }
             break;
+        case dispid_outline_creator:
+            if (wFlags==DISPATCH_PROPERTYPUT) {
+                return E_NOTIMPL;
+            } else {
+                hres = MSO_TO_OO_I_Outline_get_Creator(iface, &xlret);
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_I4;
+                    V_I4(pVarResult) = (long) xlret;
+                }
+                return hres;
+        }
     }
     TRACE("dispid ( %i ) Not realized\n");
     return E_NOTIMPL;
