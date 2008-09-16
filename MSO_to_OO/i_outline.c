@@ -29,6 +29,8 @@ static WCHAR const str_summarycolumn[] = {
     'S','u','m','m','a','r','y','C','o','l','u','m','n',0};
 static WCHAR const str_summaryrow[] = {
     'S','u','m','m','a','r','y','R','o','w',0};
+static WCHAR const str_automaticstyles[] = {
+    'A','u','t','o','m','a','t','i','c','S','t','y','l','e','s',0};
 
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
@@ -122,15 +124,47 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_AutomaticStyles(
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
-    return E_NOTIMPL;
+    /*Always return VARIANT_FALSE*/
+    *RHS = VARIANT_FALSE;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
         I_Outline* iface,
         VARIANT_BOOL RHS)
 {
+    OutlineImpl *This = (OutlineImpl*)iface;
+    WorksheetImpl *wsh = (WorksheetImpl*)This->pwsh;
+    HRESULT hres;
+    VARIANT param1, cols, vret;
+    IDispatch *tmp_range;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    VariantClear(&param1);
+    VariantClear(&cols);
+    VariantClear(&vret);
+
+    if (RHS == VARIANT_TRUE) {
+
+        V_BSTR(&cols) = SysAllocString(L"1:256");
+        I_Worksheet_get_Columns((I_Worksheet*)(This->pwsh),cols,&tmp_range);
+        V_VT(&param1) = VT_DISPATCH;
+        V_DISPATCH(&param1) = tmp_range;
+
+        hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"autoOutline", 1, param1);
+        if (FAILED(hres)) TRACE("ERROR when autoOutline\n");
+        VariantClear(&param1);
+        tmp_range = NULL;
+        VariantClear(&cols);
+    } else {
+        hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"clearOutline", 0);
+        if (FAILED(hres)) TRACE("ERROR when autoOutline\n");
+    }
+
+    VariantClear(&vret);
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
@@ -255,6 +289,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         *rgDispId = dispid_outline_summaryrow;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_automaticstyles)) {
+        *rgDispId = dispid_outline_automaticstyles;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" NOT REALIZE\n",*rgszNames);
@@ -275,6 +313,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
     VARIANT param1, param2, vNull;
     HRESULT hres;
     long lret = 0;
+    VARIANT_BOOL vbret;
 
     TRACE("\n");
 
@@ -352,6 +391,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
                 if (pVarResult!=NULL){
                     V_VT(pVarResult) = VT_I4;
                     V_I4(pVarResult) = lret;
+                }
+                return S_OK;
+            }
+            break;
+        case dispid_outline_automaticstyles:
+            if (wFlags==DISPATCH_PROPERTYPUT) {
+                if (pDispParams->cArgs!=1) return E_FAIL;
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
+                hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_BOOL);
+                if (FAILED(hres)) {
+                    TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
+                    return hres;
+                }
+                return MSO_TO_OO_I_Outline_put_AutomaticStyles(iface, V_BOOL(&param1));
+            } else {
+                hres = MSO_TO_OO_I_Outline_get_AutomaticStyles(iface,&vbret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_BOOL;
+                    V_BOOL(pVarResult) = vbret;
                 }
                 return S_OK;
             }
