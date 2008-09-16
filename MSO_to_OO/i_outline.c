@@ -35,7 +35,8 @@ static WCHAR const str_creator[] = {
     'C','r','e','a','t','o','r',0};
 static WCHAR const str_parent[] = {
     'P','a','r','e','n','t',0};
-
+static WCHAR const str_application[] = {
+    'A','p','p','l','i','c','a','t','i','o','n',0};
 
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
@@ -104,8 +105,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Application(
         I_Outline* iface,
         IDispatch **RHS)
 {
+    OutlineImpl *This = (OutlineImpl*)iface;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    if (This==NULL) return E_POINTER;
+
+    if (RHS==NULL)
+        return E_POINTER;
+
+    I_Worksheet_get_Application((I_Worksheet*)(This->pwsh),RHS);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Creator(
@@ -318,6 +329,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         *rgDispId = dispid_outline_parent;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_application)) {
+        *rgDispId = dispid_outline_application;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" NOT REALIZE\n",*rgszNames);
@@ -462,6 +477,24 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
                 return E_NOTIMPL;
             } else {
                 hres = MSO_TO_OO_I_Outline_get_Parent(iface,&dret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult)=VT_DISPATCH;
+                    V_DISPATCH(pVarResult)=dret;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                return S_OK;
+            }
+            break;
+        case dispid_outline_application:
+            if (wFlags==DISPATCH_PROPERTYPUT) {
+                return E_NOTIMPL;
+            } else {
+                hres = MSO_TO_OO_I_Outline_get_Application(iface,&dret);
                 if (FAILED(hres)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
                     return hres;
