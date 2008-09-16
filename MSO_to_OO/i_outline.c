@@ -33,6 +33,8 @@ static WCHAR const str_automaticstyles[] = {
     'A','u','t','o','m','a','t','i','c','S','t','y','l','e','s',0};
 static WCHAR const str_creator[] = {
     'C','r','e','a','t','o','r',0};
+static WCHAR const str_parent[] = {
+    'P','a','r','e','n','t',0};
 
 
     /*** IUnknown methods ***/
@@ -119,8 +121,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Parent(
         I_Outline* iface,
         IDispatch **RHS)
 {
+    OutlineImpl *This = (OutlineImpl*)iface;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    if (This==NULL) return E_POINTER;
+
+    if (RHS==NULL)
+        return E_POINTER;
+
+    *RHS = This->pwsh;
+    I_Worksheet_AddRef((I_Worksheet*)(This->pwsh));
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_AutomaticStyles(
@@ -301,6 +314,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         *rgDispId = dispid_outline_creator;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_parent)) {
+        *rgDispId = dispid_outline_parent;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" NOT REALIZE\n",*rgszNames);
@@ -323,6 +340,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
     long lret = 0;
     VARIANT_BOOL vbret;
     XlCreator xlret;
+    IDispatch *dret;
 
     TRACE("\n");
 
@@ -437,7 +455,26 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
                     V_I4(pVarResult) = (long) xlret;
                 }
                 return hres;
-        }
+            }
+            break;
+        case dispid_outline_parent:
+            if (wFlags==DISPATCH_PROPERTYPUT) {
+                return E_NOTIMPL;
+            } else {
+                hres = MSO_TO_OO_I_Outline_get_Parent(iface,&dret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult)=VT_DISPATCH;
+                    V_DISPATCH(pVarResult)=dret;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                return S_OK;
+            }
+            break;
     }
     TRACE("dispid ( %i ) Not realized\n");
     return E_NOTIMPL;
