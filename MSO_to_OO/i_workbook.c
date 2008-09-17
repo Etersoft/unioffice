@@ -405,6 +405,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Names(
 
     if (FAILED(hres)) {
         IDispatch_Release(pNames);
+        TRACE("Error when MSO_TO_OO_Names_Initialize \n");
         return hres;
     }
 
@@ -2431,6 +2432,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
                 break;
             case 1:
                 //необходимо запросить Names->Item
+                TRACE("1 parameter - NOT REALIZE \n");
                 break;
             default:
                 TRACE("ERROR invalid parameters\n");
