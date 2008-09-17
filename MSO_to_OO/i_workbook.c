@@ -2258,6 +2258,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     IDispatch *drets;
     IDispatch *dret;
     VARIANT vmas[12];
+    VARIANT vNull;
     int i;
     VARIANT vtmp;
     BSTR bret;
@@ -2267,6 +2268,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
          V_VT(&vmas[i])=VT_EMPTY;
     }
 
+    VariantInit(&vNull);
+    V_VT(&vNull) = VT_NULL;
     TRACE("\n");
 
     if (This == NULL) return E_POINTER;
@@ -2418,25 +2421,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
         } else {
             hr = MSO_TO_OO_I_Workbook_get_Names(iface, &drets);
             if (FAILED(hr)) {
-                TRACE("Error get Name \n");
+                TRACE("Error get Names \n");
                 return hr;
             }
-            switch (pDispParams->cArgs) {
-            case 0:
+            if (pDispParams->cArgs==0) {
                 if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=(IDispatch *)drets;
                 } else {
                     IDispatch_Release(drets);
                 }
-                break;
-            case 1:
-                //необходимо запросить Names->Item
-                TRACE("1 parameter - NOT REALIZE \n");
-                break;
-            default:
-                TRACE("ERROR invalid parameters\n");
-                break;
+            } else {
+                /*необходимо перевернуть параметры*/
+                for (i=0;i<pDispParams->cArgs;i++) {
+                    if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
+                }
+
+                hr = Names_Item((Names*)drets, vmas[0], vmas[1], vmas[2], &dret);
+                if (FAILED(hr)) {
+                    TRACE("Error get Name \n");
+                    return hr;
+                }
+
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult)=VT_DISPATCH;
+                    V_DISPATCH(pVarResult)=(IDispatch *)dret;
+                    IDispatch_Release(drets);
+                } else {
+                    IDispatch_Release(dret);
+                }
             }
             return S_OK;
         }
