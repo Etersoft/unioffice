@@ -626,7 +626,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_Item(
         IDispatch **ppvalue)
 {
     TRACE("\n");
-    return E_NOTIMPL;
+    return MSO_TO_OO_Names__Default(iface, Index, IndexLocal, RefersTo, ppvalue);
 }
 
 
@@ -767,10 +767,13 @@ static HRESULT WINAPI MSO_TO_OO_Names_Invoke(
             return S_OK;
         }
     case dispid_names_add:
+        TRACE("NOT realize \n");
         return E_NOTIMPL;
     case dispid_names_item:
+        TRACE("NOT realize \n");
         return E_NOTIMPL;
     case dispid_names__default:
+        TRACE("NOT realize \n");
         return E_NOTIMPL;
     case dispid_names_count:
         if (wFlags==DISPATCH_PROPERTYPUT) {
@@ -784,6 +787,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_Invoke(
             return hres;
         }
     case dispid_names_getenumerator:
+        TRACE("NOT realize \n");
         return E_NOTIMPL;
     }
     TRACE("Unknown dispid =  \n",dispIdMember);
