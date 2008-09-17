@@ -2481,8 +2481,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
         } else {
             switch (pDispParams->cArgs) {
             case 1:
-                TRACE("(case 3) ONE PARAMETR IS SEND\n");
-                return E_NOTIMPL;
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
+                hres = MSO_TO_OO_I_Worksheet_get_Range(iface, cell1, vNull, &dret);
+                if (FAILED(hres)) {
+                    pExcepInfo->bstrDescription=SysAllocString(str_error);
+                    return hres;
+                }
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult) = VT_DISPATCH;
+                    V_DISPATCH(pVarResult) = dret;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                return S_OK;
             case 2:
             /*Привести параметры к типу VARIANT если они переданы по ссылке*/
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell1);
