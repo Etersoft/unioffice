@@ -38,6 +38,8 @@ static WCHAR const str_getenumerator[] = {
     'G','e','t','E','n','u','m','e','r','a','t','o','r',0};
 static WCHAR const str_referstorange[] = {
     'R','e','f','e','r','s','T','o','R','a','n','g','e',0}; 
+static WCHAR const str_name[] = {
+    'N','a','m','e',0};
 
 /*Name interface*/
 /*** IUnknown methods ***/
@@ -213,8 +215,23 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
         long lcid,
         BSTR *value)
 {
+    NameImpl *This = (NameImpl*)iface;
+    HRESULT hres;
+    VARIANT vres;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    VariantInit(&vres);
+
+    hres = AutoWrap(DISPATCH_METHOD, &vres, This->pOOName, L"getName", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getName \n");
+        return hres;
+    }
+    *value = SysAllocString(V_BSTR(&vres));
+    VariantClear(&vres);
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
@@ -222,8 +239,25 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
         long lcid,
         BSTR value)
 {
+    NameImpl *This = (NameImpl*)iface;
+    HRESULT hres;
+    VARIANT vres, param1;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    VariantInit(&vres);
+    VariantInit(&param1);
+
+    V_VT(&param1) = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(value);
+
+    hres = AutoWrap(DISPATCH_METHOD, &vres, This->pOOName, L"setName", 1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when setName \n");
+    }
+    VariantClear(&param1);
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_RefersTo(
@@ -460,6 +494,10 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetIDsOfNames(
         *rgDispId = dispid_name_referstorange;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_name)) {
+        *rgDispId = dispid_name_name;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE \n",*rgszNames);
@@ -479,8 +517,11 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
 {
     HRESULT hres;
     IDispatch *dret;
+    BSTR tmpbstr;
+    VARIANT vparam1;
 
     TRACE("\n");
+    VariantInit(&vparam1);
 
     if (iface==NULL) {
         TRACE("ERROR Object is NULL \n");
@@ -505,6 +546,29 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
             } else {
                 IDispatch_Release(dret);
             }
+            return S_OK;
+        }
+    case dispid_name_name:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs>1) {
+                TRACE("ERROR parameter referstorange\n");
+                return E_FAIL;
+            }
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vparam1);
+            return MSO_TO_OO_Name_put_Name(iface, 0, V_BSTR(&vparam1));
+        } else {
+            hres = MSO_TO_OO_Name_get_Name(iface, 0, &tmpbstr);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_BSTR;
+                V_BSTR(pVarResult)=SysAllocString(tmpbstr);
+            } else {
+                IDispatch_Release(dret);
+            }
+            SysFreeString(tmpbstr);
             return S_OK;
         }
     }

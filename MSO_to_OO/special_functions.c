@@ -1674,7 +1674,7 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
     NameImpl *This = (NameImpl*)iface;
     NamesImpl *onames = (NamesImpl*)pnames;
     WorkbookImpl *wbi = (WorkbookImpl*)(onames->pwb);
-    VARIANT vRet;
+    VARIANT vRet,vRet2;
     HRESULT hres;
 
     TRACE("\n");
@@ -1703,15 +1703,22 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
         return E_FAIL;
     }
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRet, wbi->pDoc, L"NamedRanges",1,varname);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRet, wbi->pDoc, L"NamedRanges",0);
     if (FAILED(hres)) {
         TRACE("ERROR when NamedRange \n");
         return E_FAIL;
     }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vRet2, V_DISPATCH(&vRet), L"getByName",1,varname);
+    if (FAILED(hres)) {
+        TRACE("ERROR when NamedRange \n");
+        return E_FAIL;
+    }
+
     if (This->pOOName!=NULL) {
          IDispatch_Release(This->pOOName);
     }
-    This->pOOName = V_DISPATCH(&vRet);
+    This->pOOName = V_DISPATCH(&vRet2);
     if (This->pOOName != NULL) IDispatch_AddRef(This->pOOName);
 
     VariantClear(&vRet);
