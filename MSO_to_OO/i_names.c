@@ -666,8 +666,14 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
         *ppvalue = pname;
         return S_OK;
     } else {
-        TRACE("ERROR This type of parameter not realized\n");
-        return E_FAIL;
+        if ((V_VT(&Index)==VT_EMPTY)||(V_VT(&Index)==VT_NULL)) {
+            TRACE("ERROR Empty param \n ");
+            return E_FAIL;
+        } else {
+            /*доступ по индексу*/
+            TRACE("NOT REALIZED \n");
+            return E_FAIL;
+        }
     }
     return S_OK;
 }
