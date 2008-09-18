@@ -658,7 +658,7 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
     }
 
     if (V_VT(&Index)==VT_BSTR) {
-        hres = MSO_TO_OO_Name_Initialize_By_Name((Name*)pname, iface, V_BSTR(&Index));
+        hres = MSO_TO_OO_Name_Initialize_By_Name((Name*)pname, iface, Index);
         if (FAILED(hres)) {
             IDispatch_Release(pname);
             return hres;

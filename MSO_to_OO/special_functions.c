@@ -1669,8 +1669,52 @@ HRESULT MSO_TO_OO_I_Outline_Initialize(
 HRESULT MSO_TO_OO_Name_Initialize_By_Name(
         Name* iface,
         Names *pnames,
-        BSTR bstrname)
+        VARIANT varname)
 {
+    NameImpl *This = (NameImpl*)iface;
+    NamesImpl *onames = (NamesImpl*)pnames;
+    WorkbookImpl *wbi = (WorkbookImpl*)(onames->pwb);
+    VARIANT vRet;
+    HRESULT hres;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    VariantInit(&vRet);
+
+    if (This == NULL) {
+        TRACE("ERROR THIS = NULL \n");
+        return E_POINTER;
+    }
+
+    if (This->pnames!=NULL) {
+         Names_Release((Names*)(This->pnames));
+    }
+    This->pnames = (IDispatch*)pnames;
+    if (This->pnames != NULL) Names_AddRef((Names*)(This->pnames));
+
+    if (This->pApplication!=NULL) {
+         I_ApplicationExcel_Release((I_ApplicationExcel*)(This->pApplication));
+    }
+    This->pApplication = (IDispatch*)(wbi->pApplication);
+    if (This->pApplication != NULL) I_ApplicationExcel_AddRef((I_ApplicationExcel*)(This->pApplication));
+
+    if (wbi->pDoc==NULL) {
+        TRACE("Object pDoc is NULL\n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRet, wbi->pDoc, L"NamedRanges",1,varname);
+    if (FAILED(hres)) {
+        TRACE("ERROR when NamedRange \n");
+        return E_FAIL;
+    }
+    if (This->pOOName!=NULL) {
+         IDispatch_Release(This->pOOName);
+    }
+    This->pOOName = V_DISPATCH(&vRet);
+    if (This->pOOName != NULL) IDispatch_AddRef(This->pOOName);
+
+    VariantClear(&vRet);
+
+    return S_OK;
 }
