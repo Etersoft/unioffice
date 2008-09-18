@@ -165,7 +165,10 @@ HRESULT MSO_TO_OO_I_Outline_Initialize(
         I_Outline* iface,
         I_Worksheet *iwsh);
 
-
+HRESULT MSO_TO_OO_Name_Initialize_By_Name(
+        Name* iface,
+        Names *pnames,
+        BSTR bstrname);
 
 
 

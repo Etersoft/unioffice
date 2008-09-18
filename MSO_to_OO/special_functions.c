@@ -1665,3 +1665,12 @@ HRESULT MSO_TO_OO_I_Outline_Initialize(
 
     return S_OK;
 }
+
+HRESULT MSO_TO_OO_Name_Initialize_By_Name(
+        Name* iface,
+        Names *pnames,
+        BSTR bstrname)
+{
+    TRACE("\n");
+    return E_NOTIMPL;
+}

@@ -588,8 +588,42 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
         VARIANT RefersTo,
         IDispatch **ppvalue)
 {
+    /*Используем пока только первый параметр*/
+    NamesImpl *This = (NamesImpl*)iface;
+    HRESULT hres;
+    IUnknown *punk = NULL;
+    IDispatch *pname;
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    if (This == NULL) return E_POINTER;
+
+    *ppvalue = NULL;
+
+    hres = _NameConstructor((LPVOID*) &punk);
+    if (FAILED(hres)) {
+        TRACE("ERROR when call constructor \n");
+        return E_NOINTERFACE;
+    }
+
+    hres = Name_QueryInterface(punk, &IID_Name, (void**) &pname);
+    if (pname == NULL) {
+        return E_FAIL;
+    }
+
+    if (V_VT(&Index)==VT_BSTR) {
+        hres = MSO_TO_OO_Name_Initialize_By_Name((Name*)pname, iface, V_BSTR(&Index));
+        if (FAILED(hres)) {
+            IDispatch_Release(pname);
+            return hres;
+        }
+        *ppvalue = pname;
+        return S_OK;
+    } else {
+        TRACE("ERROR This type of parameter not realized\n");
+        return E_FAIL;
+    }
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_Add(
