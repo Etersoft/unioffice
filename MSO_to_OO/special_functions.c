@@ -1067,7 +1067,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize_ByName(
 {
     RangeImpl *This = (RangeImpl*)iface;
     RangeImpl *This_parent = (RangeImpl*)pParentRange;
-
+    TRACE("\n");
     if (This_parent->pOORange == NULL) {
        return E_POINTER;
     }
@@ -1076,7 +1076,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize_ByName(
     VariantInit (&resRange);
 
     HRESULT hres = AutoWrap(DISPATCH_METHOD, &resRange, This_parent->pOORange, L"getCellRangeByName", 1, rangename);
-    if (hres != S_OK) {
+    if (FAILED(hres)) {
         This->pOORange = NULL;
         return hres;
     }

@@ -36,7 +36,8 @@ static WCHAR const str__default[] = {
     '_','D','e','f','a','u','l','t',0};
 static WCHAR const str_getenumerator[] = {
     'G','e','t','E','n','u','m','e','r','a','t','o','r',0};
-
+static WCHAR const str_referstorange[] = {
+    'R','e','f','e','r','s','T','o','R','a','n','g','e',0}; 
 
 /*Name interface*/
 /*** IUnknown methods ***/
@@ -361,8 +362,71 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
         Name* iface,
         IDispatch **value)
 {
+    NameImpl *This = (NameImpl*)iface;
+    NamesImpl *onames = (NamesImpl*)This->pnames;
+    I_Sheets *shs;
+    I_Worksheet *wsh;
+    int i, count=0;
+    VARIANT index,vNull, vname;
+    BSTR tmpname;
+    HRESULT hres;
+
     TRACE("\n");
-    return E_NOTIMPL;
+    VariantInit(&index);
+    VariantInit(&vNull);
+    V_VT(&vNull) = VT_NULL;
+    VariantInit(&vname);
+
+    hres = I_Workbook_get_Sheets((I_Workbook*)onames->pwb,(IDispatch**) &shs);
+    if (FAILED(hres)) {
+        TRACE("ERROR When get Sheets\n");
+        I_Sheets_Release(shs);
+        return E_FAIL;
+    }
+
+    I_Sheets_get_Count(shs, &count);
+    if (FAILED(hres)) {
+        TRACE("ERROR When get count\n");
+        I_Sheets_Release(shs);
+        return E_FAIL;
+    }
+
+    /*получаем имя объекта name*/
+    hres = Name_get_Name(iface, 0, &tmpname);
+    if (FAILED(hres)) {
+        TRACE("ERROR When get name\n");
+        I_Sheets_Release(shs);
+        return E_FAIL;
+    }
+    V_VT(&vname) = VT_BSTR;
+    V_BSTR(&vname) = SysAllocString(tmpname);
+    SysFreeString(tmpname);
+
+
+    V_VT(&index) = VT_I4;
+    for (i=0;i<count;i++) {
+         V_I4(&index) = i+1;
+         hres = I_Sheets_get_Item(shs, index,(IDispatch**)&wsh);
+         if (FAILED(hres)) {
+             TRACE("ERROR When get Sheets\n");
+             I_Sheets_Release(shs);
+             VariantClear(&vname);
+             return E_FAIL;
+         }
+         hres = I_Worksheet_get_Range(wsh, vname, vNull, value);
+         I_Worksheet_Release(wsh);
+         if (!FAILED(hres)) {
+             I_Sheets_Release(shs);
+             VariantClear(&vname);
+             return S_OK;
+         }
+    }
+
+    I_Sheets_Release(shs);
+    VariantClear(&vname);
+
+    TRACE("NOT FIND\n");
+    return E_FAIL;
 }
 
 /*** IDispatch methods ***/
@@ -392,7 +456,13 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    TRACE("\n");
+    if (!lstrcmpiW(*rgszNames, str_referstorange)) {
+        *rgDispId = dispid_name_referstorange;
+        return S_OK;
+    }
+    /*Выводим название метода или свойства,
+    чтобы знать чего не хватает.*/
+    WTRACE(L" %s NOT REALIZE \n",*rgszNames);
     return E_NOTIMPL;
 }
 
@@ -407,7 +477,39 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
+    HRESULT hres;
+    IDispatch *dret;
+
     TRACE("\n");
+
+    if (iface==NULL) {
+        TRACE("ERROR Object is NULL \n");
+        return E_FAIL;
+    }
+
+    switch(dispIdMember)
+    {
+    case dispid_name_referstorange:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("NOT_IMPL \n");
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_Name_get_RefersToRange(iface, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+            } else {
+                IDispatch_Release(dret);
+            }
+            return S_OK;
+        }
+    }
+
+    TRACE(" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
 }
 
