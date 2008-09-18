@@ -151,7 +151,7 @@ typedef struct
     LONG ref;
     IDispatch *pnames;              /*указатель на Names*/
     IDispatch *pApplication;     /*указатель на Application*/
-    IDispatch *pOOName;         /*указатель на OpenOffice Names*/
+    IDispatch *pOOName;         /*указатель на OpenOffice Name*/
 } NameImpl;
 
 typedef struct

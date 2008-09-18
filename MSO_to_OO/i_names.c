@@ -40,27 +40,73 @@ static WCHAR const str_getenumerator[] = {
 
 /*Name interface*/
 /*** IUnknown methods ***/
+static ULONG WINAPI MSO_TO_OO_Name_AddRef(
+        Name* iface)
+{
+    NameImpl *This = (NameImpl*)iface;
+    ULONG ref;
+
+    TRACE("REF = %i \n", This->ref);
+
+    if (This == NULL) return E_POINTER;
+
+    ref = InterlockedIncrement(&This->ref);
+    if (ref == 1) {
+        InterlockedIncrement(&dll_ref);
+    }
+    return ref;
+}
+
 static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
         Name* iface,
         REFIID riid,
         void **ppvObject)
 {
-    TRACE("\n");
-    return E_NOTIMPL;
-}
+    NameImpl *This = (NameImpl*)iface;
 
-static ULONG WINAPI MSO_TO_OO_Name_AddRef(
-        Name* iface)
-{
     TRACE("\n");
-    return E_NOTIMPL;
+
+    if (This == NULL || ppvObject == NULL) return E_POINTER;
+
+    if (IsEqualGUID(riid, &IID_IDispatch) ||
+            IsEqualGUID(riid, &IID_IUnknown) ||
+            IsEqualGUID(riid, &IID_Name)) {
+        *ppvObject = &This->nameVtbl;
+        MSO_TO_OO_Name_AddRef(iface);
+        return S_OK;
+    }
+
+    return E_NOINTERFACE;
 }
 
 static ULONG WINAPI MSO_TO_OO_Name_Release(
         Name* iface)
 {
-    TRACE("\n");
-    return E_NOTIMPL;
+    NameImpl *This = (NameImpl*)iface;
+    ULONG ref;
+
+    TRACE("REF = %i \n", This->ref);
+
+    if (This == NULL) return E_POINTER;
+
+    ref = InterlockedDecrement(&This->ref);
+    if (ref == 0) {
+        if (This->pApplication != NULL) {
+            I_ApplicationExcel_Release(This->pApplication);
+            This->pApplication = NULL;
+        }
+        if (This->pnames != NULL) {
+            IDispatch_Release(This->pnames);
+            This->pnames = NULL;
+        }
+        if (This->pOOName != NULL) {
+            IDispatch_Release(This->pOOName);
+            This->pOOName = NULL;
+        }
+        InterlockedDecrement(&dll_ref);
+        HeapFree(GetProcessHeap(), 0, This);
+    }
+    return ref;
 }
 
 /*** Name methods ***/
