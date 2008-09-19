@@ -458,7 +458,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
             cell1.x = 1;
             cell1.y = V_I4(&Row);
             cell2.x = 256;
-            cell2.y = V_I4(&Row);;
+            cell2.y = V_I4(&Row);
             hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
             if (hres != S_OK) {
                 IDispatch_Release(pRange);

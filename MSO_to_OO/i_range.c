@@ -114,6 +114,8 @@ static WCHAR const str_cells[] = {
     'C','e','l','l','s',0};
 static WCHAR const str_formula[] = {
     'F','o','r','m','u','l','a',0};
+static WCHAR const str_offset[] = {
+    'O','f','f','s','e','t',0};
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -3172,8 +3174,73 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
         VARIANT ColumnOffset,
         IDispatch **RHS)
 {
+    RangeImpl* This = (RangeImpl*)iface;
+    WorksheetImpl* wsh = (WorksheetImpl*)This->pwsheet;
+    HRESULT hres;
+    long left, top, right, bottom;
+    long drow = 0, dcol = 0;
+    struct CELL_COORD lefttop, rightbottom;
+    IDispatch *pCell;
+    IUnknown *punk;
+
     TRACE(" \n");
-    return E_NOTIMPL;
+
+    if ((V_VT(&RowOffset)!=VT_EMPTY)&&(V_VT(&RowOffset)!=VT_NULL)) {
+         hres = VariantChangeTypeEx(&RowOffset, &RowOffset, 0, 0, VT_I4);
+         if (FAILED(hres)) {
+             TRACE("ERROR when VariantChangeTypeEx\n");
+         }
+         drow = V_I4(&RowOffset);
+    }
+
+    if ((V_VT(&ColumnOffset)!=VT_EMPTY)&&(V_VT(&ColumnOffset)!=VT_NULL)) {
+         hres = VariantChangeTypeEx(&ColumnOffset, &ColumnOffset, 0, 0, VT_I4);
+         if (FAILED(hres)) {
+             TRACE("ERROR when VariantChangeTypeEx\n");
+         }
+         dcol = V_I4(&ColumnOffset);
+    }
+
+    hres = MSO_TO_OO_GetRangeAddress(iface, &left, &top, &right, &bottom);
+    if (FAILED(hres)) {
+        TRACE("ERROR when GetRangeAddress \n");
+        return E_FAIL;
+    }
+    TRACE("drow = %i , dcol = %i \n", drow, dcol);
+    TRACE("StartRow = %i, StartColumn = %i, EndRow = %i, EndColumn = %i \n", left, top, right, bottom);
+    /*В OpenOffice оси направлены наоборот*/
+    left += drow;
+    right += drow;
+    top += dcol;
+    bottom += dcol;
+    TRACE("StartRow = %i, StartColumn = %i, EndRow = %i, EndColumn = %i \n", left, top, right, bottom);
+    /*создаем новый */
+    lefttop.x = top+1;
+    lefttop.y = left+1;
+    rightbottom.x = bottom+1;
+    rightbottom.y = right+1;
+
+
+    hres = _I_RangeConstructor((LPVOID*) &punk);
+
+    if (FAILED(hres)) return E_NOINTERFACE;
+
+    hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
+
+    if (pCell == NULL) {
+        TRACE("ERROR when QueryInterface\n");
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_I_Range_Initialize((I_Range*)pCell, (I_Range*)wsh->pAllRange, lefttop, rightbottom);
+        if (FAILED(hres)){
+            TRACE("ERROR when initialize\n");
+            I_Range_Release(pCell);
+            return hres;
+        }
+    *RHS = pCell;
+
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Orientation(
@@ -4085,6 +4152,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
         *rgDispId = dispid_range_formula;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_offset)) {
+        *rgDispId = dispid_range_offset;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L"%s NOT REALIZE\n",*rgszNames);
@@ -4987,6 +5058,40 @@ TRACE("Parametr 1\n");
                 return hres;
             }
             return S_OK;
+        }
+    case dispid_range_offset://Offset
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            V_VT(&var1) = VT_NULL;
+            V_VT(&var2) = VT_NULL;
+            switch (pDispParams->cArgs) {
+            case 1:
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+                break;
+            case 2:
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
+                break;
+            default:
+                TRACE("Error invalide number of parameters\n");
+                return E_FAIL;
+            }
+            hres = MSO_TO_OO_I_Range_get_Offset(iface, var1, var2, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            } else {
+                IDispatch_Release(dret);
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
         }
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
