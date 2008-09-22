@@ -928,3 +928,16 @@
 #define dispid_outline_summarycolumn                            961
 #define dispid_outline_summaryrow                               902
 
+/*IWindows*/
+#define dispid_windows_application                              148
+#define dispid_windows_creator                                  149
+#define dispid_windows_parent                                   150
+#define dispid_windows_arrange                                  1
+#define dispid_windows_count                                    2
+#define dispid_windows_item                                     3
+#define dispid_windows__newenum                                 4
+#define dispid_windows__default                                 5
+
+
+
+

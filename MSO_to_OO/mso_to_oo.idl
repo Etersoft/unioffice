@@ -811,9 +811,16 @@ import "wtypes.idl";
 	} XlXLMMacroType;
 
 	typedef enum {
-		xlSummaryOnLeft 			= 0xFFFFEFDD,
-		xlSummaryOnRight 			= 0xFFFFEFC8,
+		xlSummaryOnLeft 		= 0xFFFFEFDD,
+		xlSummaryOnRight 		= 0xFFFFEFC8
 	} XlSummaryColumn;
+
+	typedef enum {
+		xlArrangeStyleCascade 		= 0xFFFFEFDD,
+		xlArrangeStyleHorizontal 	= 0xFFFFEFC8,
+		xlArrangeStyleTiled 		= 0x00000001,
+		xlArrangeStyleVertical 		= 0xFFFFEFBA
+	} XlArrangeStyle;
 
 //	typedef enum
 //	{
@@ -3498,6 +3505,27 @@ import "wtypes.idl";
 	]
 	interface I_Windows : IDispatch
 	{
+//Application
+		[propget,id(dispid_windows_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+//Creator
+		[id(dispid_windows_creator), propget, helpstring("property Creator")]HRESULT Creator([out, retval] XlCreator* RHS);
+//Parent
+		[id(dispid_windows_parent), propget, helpstring("property Parent")]HRESULT Parent([out, retval] IDispatch** RHS);
+//Arrange
+		[id(dispid_windows_arrange), helpstring("method Arrange")]HRESULT Arrange(
+			[in] XlArrangeStyle ArrangeStyle,
+			[in] VARIANT ActiveWorkbook,
+			[in] VARIANT SyncHorizontal,
+			[in] VARIANT SyncVertical,
+			[out, retval] VARIANT* RHS);
+//Count
+		[id(dispid_windows_count), propget, helpstring("property Count")]HRESULT Count([out, retval] long* retval);
+//Item
+		[id(dispid_windows_item), propget, helpstring("property item")]HRESULT Item([in] VARIANT Index, [out, retval] IDispatch** RHS);
+//_NewEnum
+		[id(dispid_windows__newenum), propget, helpstring("property _NewEnum")]HRESULT _NewEnum([out, retval] IUnknown** RHS);
+//_Default
+		[id(dispid_windows__default), propget, helpstring("property _Default")]HRESULT _Default([in] VARIANT Index, [out, retval] IDispatch** RHS);
 	}
 
 	[
