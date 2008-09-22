@@ -428,7 +428,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
         hres = AutoWrap(DISPATCH_METHOD, pvarValue, V_DISPATCH(&resultCell), L"getValue", 0);
         break;
     case vtEMPTY:
-        V_VT(pvarValue)=VT_NULL;
+        V_VT(pvarValue)=VT_EMPTY;
         hres = S_OK;
         break;
     case vtTEXT:
