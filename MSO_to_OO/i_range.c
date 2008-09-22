@@ -116,6 +116,11 @@ static WCHAR const str_formula[] = {
     'F','o','r','m','u','l','a',0};
 static WCHAR const str_offset[] = {
     'O','f','f','s','e','t',0};
+static WCHAR const str_rows[] = {
+    'R','o','w','s',0};
+static WCHAR const str_columns[] = {
+    'C','o','l','u','m','n','s',0};
+
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -2620,7 +2625,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Columns(
         IDispatch **RHS)
 {
     TRACE(" \n");
-    return E_NOTIMPL;
+    return I_Range_get_EntireColumn(iface, RHS);;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Consolidate(
@@ -3451,7 +3456,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Rows(
         IDispatch **RHS)
 {
     TRACE(" \n");
-    return E_NOTIMPL;
+    return I_Range_get_EntireRow(iface, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Run(
@@ -4154,6 +4159,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_offset)) {
         *rgDispId = dispid_range_offset;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_rows)) {
+        *rgDispId = dispid_range_rows;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_columns)) {
+        *rgDispId = dispid_range_columns;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -5079,6 +5092,46 @@ TRACE("Parametr 1\n");
                 return E_FAIL;
             }
             hres = MSO_TO_OO_I_Range_get_Offset(iface, var1, var2, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            } else {
+                IDispatch_Release(dret);
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
+    case dispid_range_columns://Columns
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_I_Range_get_Columns(iface, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            } else {
+                IDispatch_Release(dret);
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
+    case dispid_range_rows://Columns
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            hres = MSO_TO_OO_I_Range_get_Rows(iface, &dret);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
