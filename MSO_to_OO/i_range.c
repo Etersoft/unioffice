@@ -5041,14 +5041,37 @@ TRACE("Parametr 1\n");
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
             }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
+            switch (pDispParams->cArgs) {
+            case 0:
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult)=VT_DISPATCH;
+                    V_DISPATCH(pVarResult)=dret;
+                    return hres;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                TRACE("pVarResult = NULL \n");
+                return E_FAIL;
+            case 1:
+                TRACE("ERROR One parameter not realizes \n");
+                return E_FAIL;
+            case 2:
+                /*необходимо получить ячейку с нужными координатами*/
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
+                hres = I_Range_get__Default(iface, var1, var2, &dret);
+                if (pVarResult!=NULL){
+                    V_VT(pVarResult)=VT_DISPATCH;
+                    V_DISPATCH(pVarResult)=dret;
+                    return hres;
+                } else {
+                    IDispatch_Release(dret);
+                }
+                TRACE("pVarResult = NULL \n");
+                return E_FAIL;
+            default:
+                TRACE("Error number of parameter \n");
             }
-            TRACE("pVarResult = NULL \n");
             return E_FAIL;
         }
     case dispid_range_formula:
