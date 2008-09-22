@@ -3480,6 +3480,28 @@ import "wtypes.idl";
 
 	[
 		object,
+		uuid(00020893-0001-0000-C000-000000000046),
+		dual,
+		helpstring("I_Window Interface"),
+		pointer_default(unique)
+	]
+	interface I_Window : IDispatch
+	{
+	}
+
+	[
+		object,
+		uuid(00020892-0001-0000-C000-000000000046),
+		dual,
+		helpstring("I_Windows Interface"),
+		pointer_default(unique)
+	]
+	interface I_Windows : IDispatch
+	{
+	}
+
+	[
+		object,
 		uuid(000208D5-0000-0000-C000-000000000046),
 		dual,
 		helpstring("I_Application Interface"),
@@ -4828,7 +4850,7 @@ import "wtypes.idl";
 //MapPaperSize 	True if documents formatted for the standard paper size of another country/region (for example, A4) are automatically adjusted so that they're printed correctly on the standard paper size (for example, Letter) of your country/region.
 		[id(dispid_application_mappapersize), propget, helpstring("property MapPaperSize")] HRESULT MapPaperSize([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_mappapersize), propput, helpstring("property MapPaperSize")] HRESULT MapPaperSize([in] VARIANT_BOOL RHS);
-//ShowStartupDialog 	Returns True (default) when the New Workbook task pane appears for a Microsoft Excel application.
+//ShowStartupDialog 	Returns Trueеличена оперативная память до 2Гб (default) when the New Workbook task pane appears for a Microsoft Excel application.
 		[id(dispid_application_showstartupdialog), propget, helpstring("property ShowStartupDialog")] HRESULT ShowStartupDialog([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_showstartupdialog), propput, helpstring("property ShowStartupDialog")] HRESULT ShowStartupDialog([in] VARIANT_BOOL RHS);
 //DecimalSeparator 	Sets or returns the character used for the decimal separator as a String.
