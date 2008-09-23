@@ -822,6 +822,19 @@ import "wtypes.idl";
 		xlArrangeStyleVertical 		= 0xFFFFEFBA
 	} XlArrangeStyle;
 
+	typedef enum {
+		xlChartAsWindow 		= 0x00000005,
+		xlChartInPlace 			= 0x00000004,
+		xlClipboard 			= 0x00000003,
+		xlInfo 				= 0xFFFFEFDF,
+		xlWorkbook 			= 0x0000000
+	} XlWindowType;
+
+	typedef enum {
+		xlNormalView 			= 0x00000001,
+		xlPageBreakPreview 		= 0x00000002
+	} XlWindowView;
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
@@ -3494,6 +3507,201 @@ import "wtypes.idl";
 	]
 	interface I_Window : IDispatch
 	{
+//Application
+		[propget,id(dispid_window_application), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+//Creator
+		[id(dispid_window_creator), propget, helpstring("property Creator")]HRESULT Creator([out, retval] XlCreator* RHS);
+//Parent
+		[id(dispid_window_parent), propget, helpstring("property Parent")]HRESULT Parent([out, retval] IDispatch** RHS);
+//Activate
+		[id(dispid_window_activate), propget, helpstring("method Activate")]HRESULT Activate([out, retval]VARIANT* RHS);
+//ActivateNext
+		[id(dispid_window_activatenext), propget, helpstring("method ActivateNext")]HRESULT ActivateNext([out, retval]VARIANT* RHS);
+//ActivatePrevious
+		[id(dispid_window_activateprevious), propget, helpstring("method ActivatePrevious")]HRESULT ActivatePrevious([out, retval]VARIANT* RHS);
+//ActiveCell
+		[id(dispid_window_activecell), propget, helpstring("property ActiveCell")]HRESULT ActiveCell([out, retval] IDispatch** RHS);
+//ActiveChart
+		[id(dispid_window_activechart), propget, helpstring("property ActiveChart")]HRESULT ActiveChart([out, retval] IDispatch** RHS);
+//ActivePane
+		[id(dispid_window_activepane), propget, helpstring("property ActivePane")]HRESULT ActivePane([out, retval] IDispatch** RHS);
+//ActiveSheet
+		[id(dispid_window_activesheet), propget, helpstring("property ActiveSheet")]HRESULT ActiveSheet([out, retval] IDispatch** RHS);
+//Caption
+		[id(dispid_window_caption), propget, helpstring("property Caption")]HRESULT Caption([out, retval] VARIANT* RHS);
+		[id(dispid_window_caption), propput, helpstring("property Caption")]HRESULT Caption([in] VARIANT RHS);
+//Close
+		[id(dispid_window_close), propget, helpstring("method Close")]HRESULT Close(  [in] VARIANT SaveChanges,
+			[in] VARIANT Filename,
+			[in] VARIANT RouteWorkbook,
+			[out, retval] VARIANT_BOOL *RHS);
+//DisplayFormulas
+		[id(dispid_window_displayformulas), propget, helpstring("property DisplayFormulas")]HRESULT DisplayFormulas([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayformulas), propput, helpstring("property DisplayFormulas")]HRESULT DisplayFormulas([in] VARIANT_BOOL RHS);
+//DisplayGridlines
+		[id(dispid_window_displaygridlines), propget, helpstring("property DisplayGridlines")]HRESULT DisplayGridlines([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displaygridlines), propput, helpstring("property DisplayGridlines")]HRESULT DisplayGridlines([in] VARIANT_BOOL RHS);
+//DisplayHeadings
+		[id(dispid_window_displayheadings), propget, helpstring("property DisplayHeadings")]HRESULT DisplayHeadings([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayheadings), propput, helpstring("property DisplayHeadings")]HRESULT DisplayHeadings([in] VARIANT_BOOL RHS);
+//DisplayHorizontalScrollBar
+		[id(dispid_window_displayhorisontalscrollbar), propget, helpstring("property DisplayHorizontalScrollBar")]HRESULT DisplayHorizontalScrollBar([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayhorisontalscrollbar), propput, helpstring("property DisplayHorizontalScrollBar")]HRESULT DisplayHorizontalScrollBar([in] VARIANT_BOOL RHS);
+//DisplayOutline
+		[id(dispid_window_displayoutline), propget, helpstring("property DisplayOutline")]HRESULT DisplayOutline([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayoutline), propput, helpstring("property DisplayOutline")]HRESULT DisplayOutline([in] VARIANT_BOOL RHS);
+//_DisplayRightToLeft
+		[id(dispid_window__displayrighttoleft), propget, helpstring("property _DisplayRightToLeft")]HRESULT _DisplayRightToLeft([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window__displayrighttoleft), propput, helpstring("property _DisplayRightToLeft")]HRESULT _DisplayRightToLeft([in] VARIANT_BOOL RHS);
+//DisplayVerticalScrollBar
+		[id(dispid_window_displayverticalscrollbar), propget, helpstring("property DisplayVerticalScrollBar")]HRESULT DisplayVerticalScrollBar([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayverticalscrollbar), propput, helpstring("property DisplayVerticalScrollBar")]HRESULT DisplayVerticalScrollBar([in] VARIANT_BOOL RHS);
+//DisplayWorkbookTabs
+		[id(dispid_window_displayworkbooktabs), propget, helpstring("property DisplayWorkbookTabs")]HRESULT DisplayWorkbookTabs([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayworkbooktabs), propput, helpstring("property DisplayWorkbookTabs")]HRESULT DisplayWorkbookTabs([in] VARIANT_BOOL RHS);
+//DisplayZeros
+		[id(dispid_window_displayzeros), propget, helpstring("property DisplayZeros")]HRESULT DisplayZeros([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayzeros), propput, helpstring("property DisplayZeros")]HRESULT DisplayZeros([in] VARIANT_BOOL RHS);
+//EnableResize
+		[id(dispid_window_enableresize), propget, helpstring("property EnableResize")]HRESULT EnableResize([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_enableresize), propput, helpstring("property EnableResize")]HRESULT EnableResize([in] VARIANT_BOOL RHS);
+//FreezePanes
+		[id(dispid_window_freezepanes), propget, helpstring("property FreezePanes")]HRESULT FreezePanes([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_freezepanes), propput, helpstring("property FreezePanes")]HRESULT FreezePanes([in] VARIANT_BOOL RHS);
+//GridlineColor
+		[id(dispid_window_gridlinecolor), propget, helpstring("property GridlineColor")]HRESULT GridlineColor([out, retval] long* RHS);
+		[id(dispid_window_gridlinecolor), propput, helpstring("property GridlineColor")]HRESULT GridlineColor([in] long RHS);
+//GridlineColorIndex
+		[id(dispid_window_gridlinecolorindex), propget, helpstring("property GridlineColorIndex")]HRESULT GridlineColorIndex([out, retval] XlColorIndex* RHS);
+		[id(dispid_window_gridlinecolorindex), propput, helpstring("property GridlineColorIndex")]HRESULT GridlineColorIndex([in] XlColorIndex RHS);
+//Height
+		[id(dispid_window_height), propget, helpstring("property Height")]HRESULT Height([out, retval] double* RHS);
+		[id(dispid_window_height), propput, helpstring("property Height")]HRESULT Height([in] double RHS);
+//Index
+		[id(dispid_window_index), propget, helpstring("property Index")]HRESULT Index([out, retval] long* RHS);
+//LargeScroll
+		[id(dispid_window_largescroll), helpstring("method LargeScroll")]HRESULT LargeScroll(  [in] VARIANT Down,
+			[in] VARIANT Up,
+			[in] VARIANT toRight,
+			[in] VARIANT toLeft,
+			[out, retval] VARIANT *RHS);
+//left
+		[id(dispid_window_left), propget, helpstring("property Left")]HRESULT Left([out, retval] double* RHS);
+		[id(dispid_window_left), propput, helpstring("property Left")]HRESULT Left([in] double RHS);
+//NewWindow
+		[id(dispid_window_newwindow), helpstring("method NewWindow")]HRESULT NewWindow([out, retval] VARIANT *RHS);
+//OnWindow
+		[id(dispid_window_onwindow), propget, helpstring("property OnWindow")]HRESULT OnWindow([out, retval] BSTR* RHS);
+		[id(dispid_window_onwindow), propput, helpstring("property OnWindow")]HRESULT OnWindow([in] BSTR RHS);
+//Panes
+		[id(dispid_window_panes), propget, helpstring("property Panes")]HRESULT Panes([out, retval] IDispatch** RHS);
+//PrintOut
+		[id(dispid_window_printout), helpstring("method PrintOut")]HRESULT PrintOut(
+			[in] VARIANT From,
+			[in] VARIANT To_,
+			[in] VARIANT Copies,
+			[in] VARIANT Preview,
+			[in] VARIANT ActivePrinter,
+			[in] VARIANT PrintToFile,
+			[in] VARIANT Collate,
+			[in] VARIANT PrToFileName,
+			[out, retval] VARIANT *RHS);
+//PrintPreview
+		[id(dispid_window_printpreview), helpstring("method PrintPreview")]HRESULT PrintPreview(
+			[in] VARIANT EnableChanges,
+			[out, retval] VARIANT *RHS);
+//RangeSelection
+		[id(dispid_window_rangeselection), propget, helpstring("property RangeSelection")]HRESULT RangeSelection([out, retval] IDispatch** RHS);
+//ScrollColumn
+		[id(dispid_window_scrollcolumn), propget, helpstring("property ScrollColumn")]HRESULT ScrollColumn([out, retval] long* RHS);
+		[id(dispid_window_scrollcolumn), propput, helpstring("property ScrollColumn")]HRESULT ScrollColumn([in] long RHS);
+//ScrollRow
+		[id(dispid_window_scrollrow), propget, helpstring("property ScrollRow")]HRESULT ScrollRow([out, retval] long* RHS);
+		[id(dispid_window_scrollrow), propput, helpstring("property ScrollRow")]HRESULT ScrollRow([in] long RHS);
+//ScrollWorkbookTabs
+		[id(dispid_window_scrollworkbooktabs), helpstring("method ScrollWorkbookTabs")]HRESULT ScrollWorkbookTabs(
+			[in] VARIANT Sheets,
+			[in] VARIANT Position,
+			[out, retval] VARIANT *RHS);
+//SelectedSheets
+		[id(dispid_window_selectedsheets), propget, helpstring("property SelectedSheets")]HRESULT SelectedSheets([out, retval] IDispatch** RHS);
+//Selection
+		[id(dispid_window_selection), propget, helpstring("property Selection")]HRESULT Selection([out, retval] IDispatch** RHS);
+//SmallScroll
+		[id(dispid_window_smallscroll), helpstring("method SmallScroll")]HRESULT SmallScroll(  [in] VARIANT Down,
+			[in] VARIANT Up,
+			[in] VARIANT toRight,
+			[in] VARIANT toLeft,
+			[out, retval] VARIANT *RHS);
+//Split
+		[id(dispid_window_split), propget, helpstring("property Split")]HRESULT Split([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_split), propput, helpstring("property Split")]HRESULT Split([in] VARIANT_BOOL RHS);
+//SplitColumn
+		[id(dispid_window_splitcolumn), propget, helpstring("property SplitColumn")]HRESULT SplitColumn([out, retval] long* RHS);
+		[id(dispid_window_splitcolumn), propput, helpstring("property SplitColumn")]HRESULT SplitColumn([in] long RHS);
+//SplitHorizontal
+		[id(dispid_window_splithorisontal), propget, helpstring("property SplitHorizontal")]HRESULT SplitHorizontal([out, retval] double* RHS);
+		[id(dispid_window_splithorisontal), propput, helpstring("property SplitHorizontal")]HRESULT SplitHorizontal([in] double RHS);
+//SplitRow
+		[id(dispid_window_splitrow), propget, helpstring("property SplitRow")]HRESULT SplitRow([out, retval] long* RHS);
+		[id(dispid_window_splitrow), propput, helpstring("property SplitRow")]HRESULT SplitRow([in] long RHS);
+//SplitVertical
+		[id(dispid_window_splitvertical), propget, helpstring("property SplitVertical")]HRESULT SplitVertical([out, retval] double* RHS);
+		[id(dispid_window_splitvertical), propput, helpstring("property SplitVertical")]HRESULT SplitVertical([in] double RHS);
+//TabRatio
+		[id(dispid_window_tabratio), propget, helpstring("property TabRatio")]HRESULT TabRatio([out, retval] double* RHS);
+		[id(dispid_window_tabratio), propput, helpstring("property TabRatio")]HRESULT TabRatio([in] double RHS);
+//Top
+		[id(dispid_window_top), propget, helpstring("property Top")]HRESULT Top([out, retval] double* RHS);
+		[id(dispid_window_top), propput, helpstring("property Top")]HRESULT Top([in] double RHS);
+//Type
+		[id(dispid_window_type), propget, helpstring("property Top")]HRESULT Type([out, retval] XlWindowType* RHS);
+//UsableHeight
+		[id(dispid_window_usableheight), propget, helpstring("property UsableHeight")]HRESULT UsableHeight([out, retval] double* RHS);
+//UsableWidth
+		[id(dispid_window_usablewidth), propget, helpstring("property UsableWidth")]HRESULT UsableWidth([out, retval] double* RHS);
+//Visible
+		[id(dispid_window_visible), propget, helpstring("property Visible")]HRESULT Visible([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_visible), propput, helpstring("property Visible")]HRESULT Visible([in] VARIANT_BOOL RHS);
+//VisibleRange
+		[id(dispid_window_visiblerange), propget, helpstring("property VisibleRange")]HRESULT VisibleRange([out, retval] IDispatch** RHS);
+//Width
+		[id(dispid_window_width), propget, helpstring("property Width")]HRESULT Width([out, retval] double* RHS);
+		[id(dispid_window_width), propput, helpstring("property Width")]HRESULT Width([in] double RHS);
+//WindowNumber
+		[id(dispid_window_windownumber), propget, helpstring("property WindowNumber")]HRESULT WindowNumber([out, retval] long* RHS);
+//WindowState
+		[id(dispid_window_windowstate), propget, helpstring("property WindowState")]HRESULT WindowState([out, retval] XlWindowState* RHS);
+		[id(dispid_window_windowstate), propput, helpstring("property WindowState")]HRESULT WindowState([in] XlWindowState RHS);
+//Zoom
+		[id(dispid_window_zoom), propget, helpstring("property Zoom")]HRESULT Zoom([out, retval] VARIANT* RHS);
+		[id(dispid_window_zoom), propput, helpstring("property Zoom")]HRESULT Zoom([in] VARIANT RHS);
+//View
+		[id(dispid_window_view), propget, helpstring("property View")]HRESULT View([out, retval] XlWindowView* RHS);
+		[id(dispid_window_view), propput, helpstring("property View")]HRESULT View([in] XlWindowView RHS);
+//DisplayRightToLeft
+		[id(dispid_window_displayrighttoleft), propget, helpstring("property DisplayRightToLeft")]HRESULT DisplayRightToLeft([out, retval] VARIANT_BOOL* RHS);
+		[id(dispid_window_displayrighttoleft), propput, helpstring("property DisplayRightToLeft")]HRESULT DisplayRightToLeft([in] VARIANT_BOOL RHS);
+//PointsToScreenPixelsX
+		[id(dispid_window_pointstoscreenpixelsx), helpstring("method PointsToScreenPixelsX")]HRESULT PointsToScreenPixelsX(
+			[in] long Points,
+			[out, retval] long* RHS);
+//PointsToScreenPixelsY
+		[id(dispid_window_pointstoscreenpixelsy), helpstring("method PointsToScreenPixelsY")]HRESULT PointsToScreenPixelsY(
+			[in] long Points,
+			[out, retval] long* RHS);
+//RangeFromPoint
+		[id(dispid_window_rangefrompoint), helpstring("method RangeFromPoint")]HRESULT RangeFromPoint(
+			[in] long x,
+			[in] long y,
+			[out, retval] IDispatch** RHS);
+//ScrollIntoView
+		[id(dispid_window_scrollintoview), helpstring("method ScrollIntoView")]HRESULT ScrollIntoView(
+			[in] long left,
+			[in] long top,
+			[in] long width,
+			[in] long height,
+			[in] VARIANT Start);
 	}
 
 	[
