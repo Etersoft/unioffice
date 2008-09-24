@@ -1,0 +1,53 @@
+/*
+ * IDL source for unioffice_word.dll
+ *
+ * Copyright (C) 2008 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+ */
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "wtypes.idl";
+
+	[
+		object,
+		uuid(C044EB9E-1A07-42ac-A7CF-B8FCA9EC8178),
+		dual,
+		helpstring("IApplication Interface"),
+		pointer_default(unique)
+	]
+	interface IApplication : IDispatch
+	{
+	};
+
+[
+	uuid(8D6D5C97-A482-47cf-AFFB-6AF80DE773B3),
+	version(1.0),
+	helpstring("unioffice_word 1.0 Type Library")
+]
+library unioffice_wordLib
+{
+	importlib("stdole2.tlb");
+	
+	[
+		uuid(8C2602D1-DA74-48df-BF05-AD8A139787FC),
+		helpstring("_Application Class for Word")
+	]
+	coclass CApplication
+	{
+		[default] interface IApplication;
+	};
+};
