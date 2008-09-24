@@ -36,10 +36,10 @@ all: mso_to_oo.dll
 	$(GCC) $(CFLAGS) -c $^ -o $@ 
 
 mso_to_oo_i.c:
-	widl -I /usr/include/wine/windows -u -h mso_to_oo.idl
+	widl -I /usr/include/wine/windows -u -h -t mso_to_oo.idl
 mso_to_oo.dll: $(OBJECTS)  
 	$(LD) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
 	$(STRIP) --strip-all $@
 
 clean:
-	rm -f *.o *.dll *.h~ *.c~ *.idl~ mso_to_oo.h mso_to_oo_i.c
+	rm -f *.o *.dll *.h~ *.c~ *.idl~ mso_to_oo.h mso_to_oo_i.c *.tlb
