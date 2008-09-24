@@ -21,6 +21,7 @@
 import "oaidl.idl";
 import "ocidl.idl";
 import "wtypes.idl";
+#undef CINTERFACE
 
 	[
 		object,
@@ -31,6 +32,8 @@ import "wtypes.idl";
 	]
 	interface IApplication : IDispatch
 	{
+//Application
+		[propget,id(0), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
 	};
 
 [
