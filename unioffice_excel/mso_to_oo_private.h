@@ -35,7 +35,7 @@
 #include <ole2.h>
 #include <ocidl.h>
 #include <stddef.h>
-#include "mso_to_oo.h"
+#include "unioffice_excel.h"
 #include "main_constants.h"
 #include "debug.h"
 #include "dispid_const.h"

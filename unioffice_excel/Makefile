@@ -6,7 +6,7 @@ STRIP=i386-mingw32msvc-strip
 
 LIBS=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
 CFLAGS=-O2 -D_FORTIFY_SOURCE=2
-OBJECTS = mso_to_oo_i.o \
+OBJECTS = unioffice_excel_i.o \
 	tools.o \
 	main.o \
 	factory.o \
@@ -30,16 +30,16 @@ OBJECTS = mso_to_oo_i.o \
 
 .PHONY: all clean
 
-all: mso_to_oo.dll
+all: unioffice_excel.dll
 
 .c.o:
 	$(GCC) $(CFLAGS) -c $^ -o $@ 
 
-mso_to_oo_i.c:
-	widl -I /usr/include/wine/windows -u -h -t mso_to_oo.idl
-mso_to_oo.dll: $(OBJECTS)  
+unioffice_excel_i.c:
+	widl -I /usr/include/wine/windows -u -h -t unioffice_excel.idl
+unioffice_excel.dll: $(OBJECTS)  
 	$(LD) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
 	$(STRIP) --strip-all $@
 
 clean:
-	rm -f *.o *.dll *.h~ *.c~ *.idl~ mso_to_oo.h mso_to_oo_i.c *.tlb
+	rm -f *.o *.dll *.h~ *.c~ *.idl~ unioffice_excel.h unioffice_excel_i.c *.tlb
