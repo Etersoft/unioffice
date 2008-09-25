@@ -51,6 +51,8 @@ static WCHAR const str_outline[] = {
     'O','u','t','l','i','n','e',0};
 static WCHAR const str_visible[] = {
     'V','i','s','i','b','l','e',0};
+static WCHAR const str_select[] = {
+    'S','e','l','e','c','t',0};
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
@@ -1232,8 +1234,54 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Select(
         VARIANT Replace,
         long lcid)
 {
+    WorksheetImpl *This = (WorksheetImpl*)(iface);
+
     TRACE("\n");
-    return E_NOTIMPL;
+
+    if (This == NULL) return E_POINTER;
+    if (This->pOOSheet == NULL) {
+        TRACE("ERROR OOSheet = NULL \n");
+        return E_POINTER;
+    }
+
+    WorkbookImpl *wb = (WorkbookImpl*)(This->pwb);
+
+    VARIANT vRes,vRet,param;
+    VariantInit(&vRes);
+    VariantInit(&vRet);
+    VariantInit(&param);
+    HRESULT hres;
+
+    hres = VariantChangeTypeEx(&Replace, &Replace, 0, 0, VT_BOOL);
+    if (FAILED(hres)) {
+        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+        return E_FAIL;
+    }
+
+    if (V_BOOL(&Replace)==VARIANT_TRUE) {
+            hres = AutoWrap(DISPATCH_METHOD, &vRes, wb->pDoc,   L"getCurrentController",0);
+        if (FAILED(hres)) {
+            TRACE("ERROR when getCurrentController \n");
+            return hres;
+        }
+
+        V_VT(&param) = VT_DISPATCH;
+        V_DISPATCH(&param) = This->pOOSheet;
+        IDispatch_AddRef(V_DISPATCH(&param));
+
+        hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vRes), L"Select",1,param);
+
+        if (FAILED(hres)) {
+            TRACE("ERROR when Select \n");
+            return hres;
+        }
+    } else {
+        TRACE("Get VARIANT_FALSE as parameter \n");
+    }
+    VariantClear(&vRes);
+    VariantClear(&vRet);
+    VariantClear(&param);
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Visible(
@@ -2340,6 +2388,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetIDsOfNames(
         *rgDispId = dispid_worksheet_visible;
         return S_OK;
     }
+    if (!lstrcmpiW(*rgszNames, str_select)) {
+        *rgDispId = dispid_worksheet_select;
+        return S_OK;
+    }
     /*Выводим название метода или свойства,
     чтобы знать чего не хватает.*/
     WTRACE(L" %s NOT REALIZE\n",*rgszNames);
@@ -2763,6 +2815,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             }
             return S_OK;
         }
+    case dispid_worksheet_select://Method select
+        switch (pDispParams->cArgs) {
+        case 1:
+            TRACE("ERROR parameters number = %i \n", pDispParams->cArgs);
+            return E_FAIL;
+
+            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2))) {
+                TRACE("ERROR when CorrectArg \n");
+                return E_FAIL;
+            }
+            break;
+        case 0:
+            V_VT(&cell2) = VT_BOOL;
+            V_BOOL(&cell2) = VARIANT_TRUE;
+            break;
+        }
+        return MSO_TO_OO_I_Worksheet_Select(iface, cell2, 0);
     }
 
     return E_NOTIMPL;
