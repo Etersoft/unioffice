@@ -262,8 +262,25 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Save(
         I_Workbook* iface,
         long lcid)
 {
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    VARIANT res;
+    HRESULT hres;
+
     TRACE(" \n");
-    return E_NOTIMPL;
+
+    if (This==NULL) {
+        TRACE("ERROR objetct is NULL \n");
+        return E_FAIL;
+    }
+
+    /* Call Store for save document to file */
+    hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"Store",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when StoreAsURL \n");
+        return hres;
+    }
+    VariantClear(&res);
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_Protect(
@@ -2374,8 +2391,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
         }
         return hr;
     case dispid_workbook_save:
-        hr = MSO_TO_OO_I_Workbook_Save(iface, 0);
-        return hr;
+        return MSO_TO_OO_I_Workbook_Save(iface, 0);
     case dispid_workbook_protect://Protect
         for (i=0;i<12;i++) {
             VariantInit(&vmas[i]);
