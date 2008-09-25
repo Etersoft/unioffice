@@ -509,7 +509,7 @@ static struct regsvr_coclass const coclass_list[] = {
     {   &CLSID__ApplicationExcel,
         "Excel.Application",
         NULL,
-        "mso_to_oo.dll",
+        "unioffice_excel.dll",
         "Both"
     },
     { NULL }            /* list terminator */

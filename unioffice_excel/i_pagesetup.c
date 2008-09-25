@@ -170,7 +170,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftMargin(
         return hres;
     }
 
-    *value = V_I4(&vres);
+    hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
+
+    *value = V_R8(&vres)/1000*28;
+    VarR8Round(*value, 0, value);
 
     VariantClear(&name_of_style);
     VariantClear(&vstyles);
@@ -218,6 +225,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
         TRACE("ERROR when StyleFamilies \n");
         return hres;
     }
+
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
@@ -225,6 +233,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
         TRACE("ERROR when getByName \n");
         return hres;
     }
+
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
         TRACE("ERROR when getByName2 \n");
@@ -232,12 +241,17 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     }
 
     VariantClear(&param1);
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = value;
-
+    V_VT(&param1) = VT_R8;
+    value = value/28*1000; /*т.к. OpenOffice измеряет в 1/100мм, а MS Office в точках 1/28 см.*/
+    V_R8(&param1) = value;
+    hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"LeftMargin",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when  LeftMargin \n");
+        TRACE("ERROR when LeftMargin \n");
         return hres;
     }
 
@@ -306,7 +320,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightMargin(
         return hres;
     }
 
-    *value = V_I4(&vres);
+    hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
+
+    *value = V_R8(&vres)/1000*28;
+    VarR8Round(*value, 0, value);
 
     VariantClear(&name_of_style);
     VariantClear(&vstyles);
@@ -368,8 +389,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
     }
 
     VariantClear(&param1);
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = value;
+    V_VT(&param1) = VT_R8;
+    value = value/28*1000; /*т.к. OpenOffice измеряет в 1/100мм, а MS Office в точках 1/28 см.*/
+    V_R8(&param1) = value;
+    hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"RightMargin",1, param1);
     if (FAILED(hres)) {
@@ -442,7 +469,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_TopMargin(
         return hres;
     }
 
-    *value = V_I4(&vres);
+    hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
+
+    *value = V_R8(&vres)/1000*28;
+    VarR8Round(*value, 0, value);
 
     VariantClear(&name_of_style);
     VariantClear(&vstyles);
@@ -504,8 +538,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
     }
 
     VariantClear(&param1);
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = value;
+    V_VT(&param1) = VT_R8;
+    value = value/28*1000; /*т.к. OpenOffice измеряет в 1/100мм, а MS Office в точках 1/28 см.*/
+    V_R8(&param1) = value;
+    hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"TopMargin",1, param1);
     if (FAILED(hres)) {
@@ -578,7 +618,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BottomMargin(
         return hres;
     }
 
-    *value = V_I4(&vres);
+    hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
+
+    *value = V_R8(&vres)/1000*28;
+    VarR8Round(*value, 0, value);
 
     VariantClear(&name_of_style);
     VariantClear(&vstyles);
@@ -640,8 +687,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
     }
 
     VariantClear(&param1);
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = value;
+    V_VT(&param1) = VT_R8;
+    value = value/28*1000; /*т.к. OpenOffice измеряет в 1/100мм, а MS Office в точках 1/28 см.*/
+    V_R8(&param1) = value;
+    hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"BottomMargin",1, param1);
     if (FAILED(hres)) {
@@ -1269,7 +1322,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_HeaderMargin(
         return hres;
     }
 
-    *value = V_I4(&vres);
+    hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
+
+    *value = V_R8(&vres)/1000*28;
+    VarR8Round(*value, 0, value);
 
     VariantClear(&name_of_style);
     VariantClear(&vstyles);
@@ -1331,8 +1391,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
     }
 
     VariantClear(&param1);
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = value;
+    V_VT(&param1) = VT_R8;
+    value = value/28*1000; /*т.к. OpenOffice измеряет в 1/100мм, а MS Office в точках 1/28 см.*/
+    V_R8(&param1) = value;
+    hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"HeaderHeight",1, param1);
     if (FAILED(hres)) {
@@ -1405,7 +1471,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FooterMargin(
         return hres;
     }
 
-    *value = V_I4(&vres);
+    hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
+
+    *value = V_R8(&vres)/1000*28;
+    VarR8Round(*value, 0, value);
 
     VariantClear(&name_of_style);
     VariantClear(&vstyles);
@@ -1467,8 +1540,14 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
     }
 
     VariantClear(&param1);
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = value;
+    V_VT(&param1) = VT_R8;
+    value = value/28*1000; /*т.к. OpenOffice измеряет в 1/100мм, а MS Office в точках 1/28 см.*/
+    V_R8(&param1) = value;
+    hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE(" (1) ERROR when VariantChangeType \n");
+        return hres;
+    }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"FooterHeight",1, param1);
     if (FAILED(hres)) {
@@ -2297,6 +2376,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
                 return hres;
             }
             dval = V_R8(&vtmp);
+            VarR8Round(dval, 0, &dval);
             hres = MSO_TO_OO_I_PageSetup_put_LeftMargin(iface, dval);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -2329,6 +2409,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
                 return hres;
             }
             dval = V_R8(&vtmp);
+            VarR8Round(dval, 0, &dval);
             hres = MSO_TO_OO_I_PageSetup_put_RightMargin(iface, dval);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -2361,6 +2442,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
                 return hres;
             }
             dval = V_R8(&vtmp);
+            VarR8Round(dval, 0, &dval);
             hres = MSO_TO_OO_I_PageSetup_put_TopMargin(iface, dval);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -2393,6 +2475,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
                 return hres;
             }
             dval = V_R8(&vtmp);
+            VarR8Round(dval, 0, &dval);
             hres = MSO_TO_OO_I_PageSetup_put_BottomMargin(iface, dval);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -2523,6 +2606,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
                 return hres;
             }
             dval = V_R8(&vtmp);
+            VarR8Round(dval, 0, &dval);
             hres = MSO_TO_OO_I_PageSetup_put_HeaderMargin(iface, dval);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -2555,6 +2639,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
                 return hres;
             }
             dval = V_R8(&vtmp);
+            VarR8Round(dval, 0, &dval);
             hres = MSO_TO_OO_I_PageSetup_put_FooterMargin(iface, dval);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
