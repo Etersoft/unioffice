@@ -27,7 +27,7 @@ extern "C"
 
 LONG dll_ref = 0;
 
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+__declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     switch (fdwReason)
     {
@@ -41,22 +41,22 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     return TRUE;
 }
 
-HRESULT WINAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVOID *ppv)
+__declspec(dllexport) HRESULT __stdcall DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVOID *ppv)
 {
     return E_NOTIMPL;
 }
 
-HRESULT WINAPI DllCanUnloadNow()
+__declspec(dllexport) HRESULT __stdcall DllCanUnloadNow()
 {
     return dll_ref != 0 ? S_FALSE : S_OK;
 }
 
-HRESULT WINAPI DllRegisterServer()
+__declspec(dllexport) HRESULT __stdcall DllRegisterServer()
 {
     return E_NOTIMPL;
 }
 
-HRESULT WINAPI DllUnRegisterServer()
+__declspec(dllexport) HRESULT __stdcall DllUnRegisterServer()
 {
     return  E_NOTIMPL;
 }
