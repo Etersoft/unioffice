@@ -20,7 +20,6 @@
 
 #define COBJMACROS
 
-#include "mso_to_oo_private.h"
 #include "tools.h"
 #include "debug.h"
 #include <stdio.h>
