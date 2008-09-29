@@ -7,6 +7,7 @@ STRIP=i386-mingw32msvc-strip
 LIBS=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
 CFLAGS=-O2 -D_FORTIFY_SOURCE=2
 OBJECTS = unioffice_word_i.o \
+	regsvr.o \
 	main.o
 
 .PHONY: all clean
@@ -14,7 +15,10 @@ OBJECTS = unioffice_word_i.o \
 all: unioffice_word.dll
 
 .c.o:
-	$(GCC) $(CFLAGS) -c $^ -o $@ 
+	$(GCC) $(CFLAGS) -c $^ -o $@
+
+.cpp.o:
+	$(GCC) $(CFLAGS) -c $^ -o $@
 
 unioffice_word_i.c:
 	widl -I /usr/include/wine/windows -u -h -t unioffice_word.idl
