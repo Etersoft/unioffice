@@ -51,16 +51,6 @@ __declspec(dllexport) HRESULT __stdcall DllCanUnloadNow()
     return dll_ref != 0 ? S_FALSE : S_OK;
 }
 
-__declspec(dllexport) HRESULT __stdcall DllRegisterServer()
-{
-    return E_NOTIMPL;
-}
-
-__declspec(dllexport) HRESULT __stdcall DllUnRegisterServer()
-{
-    return  E_NOTIMPL;
-}
-
 #ifdef __cplusplus
 }
 #endif
