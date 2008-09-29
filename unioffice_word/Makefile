@@ -27,4 +27,4 @@ unioffice_word.dll: $(OBJECTS)
 	$(STRIP) --strip-all $@
 
 clean:
-	rm -f *.o *.dll *.h~ *.c~ *.idl~ unioffice_word.h unioffice_word_i.c *.tlb
+	rm -f *.o *.dll *.h~ *.c~ *.cpp~ *.idl~ unioffice_word.h unioffice_word_i.c *.tlb
