@@ -50,6 +50,8 @@ static WCHAR const str_subscript[] = {
     'S','u','b','s','c','r','i','p','t',0};
 static WCHAR const str_superscript[] = {
     'S','u','p','e','r','s','c','r','i','p','t',0};
+static WCHAR const str_outlinefont[] = {
+    'O','u','t','l','i','n','e','F','o','n','t',0};
 
 #define usNONE 0
 #define usSINGLE 1
@@ -687,7 +689,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_OutlineFont(
         VARIANT *RHS)
 {
     TRACE(" \n");
-    return E_NOTIMPL;
+    V_VT(RHS) = VT_BOOL;
+    V_BOOL(RHS) = VARIANT_FALSE;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_put_OutlineFont(
@@ -695,7 +699,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_OutlineFont(
         VARIANT RHS)
 {
     TRACE(" \n");
-    return E_NOTIMPL;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Subscript(
@@ -936,6 +940,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
     }
     if (!lstrcmpiW(*rgszNames, str_superscript)) {
         *rgDispId = dispid_font_superscript;
+        return S_OK;
+    }
+    if (!lstrcmpiW(*rgszNames, str_outlinefont)) {
+        *rgDispId = dispid_font_outlinefont;
         return S_OK;
     }
     /*Выводим название метода или свойства,
@@ -1251,7 +1259,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
             }
             return S_OK;
         }
-
+    case dispid_font_outlinefont:
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs!=1) return E_FAIL;
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
+            return MSO_TO_OO_I_Font_put_OutlineFont(iface, vtmp);
+        } else {
+            hr = MSO_TO_OO_I_Font_get_OutlineFont(iface, &vtmp);
+            if (FAILED(hr)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hr;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult) = VT_BOOL;
+                V_BOOL(pVarResult) = V_BOOL(&vtmp);
+            }
+            return S_OK;
+        }
 
     }
     return E_NOTIMPL;
