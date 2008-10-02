@@ -567,7 +567,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
             }
             return hres;
         default:
-            hres = AutoWrap(DISPATCH_METHOD, &res, V_DISPATCH(&resultCell), L"setFormula", 1, varValue);
+            hres = AutoWrap(DISPATCH_METHOD, &res, V_DISPATCH(&resultCell), L"setValue", 1, varValue);
             if (hres != S_OK) {
                 TRACE("ERROR when setFormula \n");
                 TRACE("    VT = %i \n",V_VT(&varValue));
