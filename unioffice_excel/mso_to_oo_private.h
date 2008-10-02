@@ -156,6 +156,13 @@ typedef struct
 
 typedef struct
 {
+    const I_WindowsVtbl *_windowsVtbl;
+    LONG ref;
+    IDispatch *pApplication;     /*указатель на Application*/
+} WindowsImpl;
+
+typedef struct
+{
     const I_WorkbookVtbl *_workbookVtbl;
     LONG ref;
     IDispatch *pApplication;  /*Указатель на Application*/
@@ -229,5 +236,6 @@ extern HRESULT _I_ShapeConstructor(LPVOID *ppObj);
 extern HRESULT _NamesConstructor(LPVOID *ppObj);
 extern HRESULT _NameConstructor(LPVOID *ppObj);
 extern HRESULT _I_OutlineConstructor(LPVOID *ppObj);
+extern HRESULT _I_WindowsConstructor(LPVOID *ppObj);
 #endif /* __OOFFICE_PRIVATE_H__ */
 

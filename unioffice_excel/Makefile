@@ -26,6 +26,7 @@ OBJECTS = unioffice_excel_i.o \
 	i_sheets.o \
 	i_outline.o\
 	i_worksheet.o \
+	i_windows.o \
 	application_excel.o
 
 .PHONY: all clean
