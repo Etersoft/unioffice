@@ -174,15 +174,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
     VariantClear(&vret);
 
     if (RHS == VARIANT_TRUE) {
-
+        V_VT(&cols) = VT_BSTR;
         V_BSTR(&cols) = SysAllocString(L"1:256");
         I_Worksheet_get_Columns((I_Worksheet*)(This->pwsh),cols,&tmp_range);
+        RangeImpl *rangeimp = (RangeImpl*)tmp_range;
         V_VT(&param1) = VT_DISPATCH;
-        V_DISPATCH(&param1) = tmp_range;
+        V_DISPATCH(&param1) = rangeimp->pOORange;
+        IDispatch_AddRef(rangeimp->pOORange);
 
         hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"autoOutline", 1, param1);
         if (FAILED(hres)) TRACE("ERROR when autoOutline\n");
         VariantClear(&param1);
+        IDispatch_Release(tmp_range);
         tmp_range = NULL;
         VariantClear(&cols);
     } else {
