@@ -5147,4 +5147,6 @@ library MSO_TO_OOLib
 	interface I_PageSetup;
 	interface I_Borders;
 	interface I_Border;
+	interface Name;
+	interface Names;
 };
