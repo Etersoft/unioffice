@@ -34,6 +34,7 @@
 #include <winreg.h>
 #include <ole2.h>
 #include <ocidl.h>
+#include <oaidl.h>
 #include <stddef.h>
 #include "unioffice_excel.h"
 #include "main_constants.h"
@@ -163,6 +164,13 @@ typedef struct
 
 typedef struct
 {
+    const I_WindowVtbl *_windowVtbl;
+    LONG ref;
+    IDispatch *pWindows;     /*указатель на IWindows*/
+} WindowImpl;
+
+typedef struct
+{
     const I_WorkbookVtbl *_workbookVtbl;
     LONG ref;
     IDispatch *pApplication;  /*Указатель на Application*/
@@ -237,5 +245,6 @@ extern HRESULT _NamesConstructor(LPVOID *ppObj);
 extern HRESULT _NameConstructor(LPVOID *ppObj);
 extern HRESULT _I_OutlineConstructor(LPVOID *ppObj);
 extern HRESULT _I_WindowsConstructor(LPVOID *ppObj);
+extern HRESULT _I_WindowConstructor(LPVOID *ppObj);
 #endif /* __OOFFICE_PRIVATE_H__ */
 
