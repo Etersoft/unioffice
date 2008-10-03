@@ -21,38 +21,31 @@
 #include "mso_to_oo_private.h"
 
 
-static WCHAR const str_name[] = {
-    'N','a','m','e',0};
-static WCHAR const str_cells[] = {
-    'C','e','l','l','s',0};
-static WCHAR const str_range[] = {
-    'R','a','n','g','e',0};
-static WCHAR const str_paste[] = {
-    'P','a','s','t','e',0};
-static WCHAR const str_activate[] = {
-    'A','c','t','i','v','a','t','e',0};
-static WCHAR const str_rows[] = {
-    'R','o','w','s',0};
-static WCHAR const str_columns[] = {
-    'C','o','l','u','m','n','s',0};
-static WCHAR const str_copy[] = {
-    'C','o','p','y',0};
-static WCHAR const str_delete[] = {
-    'D','e','l','e','t','e',0};
-static WCHAR const str_pagesetup[] = {
-    'P','a','g','e','S','e','t','u','p',0};
-static WCHAR const str_protect[] = {
-    'P','r','o','t','e','c','t',0};
-static WCHAR const str_unprotect[] = {
-    'U','n','p','r','o','t','e','c','t',0};
-static WCHAR const str_shapes[] = {
-    'S','h','a','p','e','s',0};
-static WCHAR const str_outline[] = {
-    'O','u','t','l','i','n','e',0};
-static WCHAR const str_visible[] = {
-    'V','i','s','i','b','l','e',0};
-static WCHAR const str_select[] = {
-    'S','e','l','e','c','t',0};
+ITypeInfo *ti_worksheet = NULL;
+
+HRESULT get_typeinfo_worksheet(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if (ti_worksheet) {
+        *typeinfo = ti_worksheet;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Worksheet, &ti_worksheet);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_worksheet;
+    return hres;
+}
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
@@ -2328,74 +2321,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_name)) {
-        *rgDispId = dispid_worksheet_name;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_worksheet(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_cells)) {
-        *rgDispId = dispid_worksheet_cells;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_range)) {
-        *rgDispId = dispid_worksheet_range;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_paste)) {
-        *rgDispId = dispid_worksheet_paste;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_activate)) {
-        *rgDispId = dispid_worksheet_activate;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_rows)) {
-        *rgDispId = dispid_worksheet_rows;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_columns)) {
-        *rgDispId = dispid_worksheet_columns;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_copy)) {
-        *rgDispId = dispid_worksheet_copy;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_delete)) {
-        *rgDispId = dispid_worksheet_delete;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_pagesetup)) {
-        *rgDispId = dispid_worksheet_pagesetup;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_protect)) {
-        *rgDispId = dispid_worksheet_protect;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_unprotect)) {
-        *rgDispId = dispid_worksheet_unprotect;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_shapes)) {
-        *rgDispId = dispid_worksheet_shapes;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_outline)) {
-        *rgDispId = dispid_worksheet_outline;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_visible)) {
-        *rgDispId = dispid_worksheet_visible;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_select)) {
-        *rgDispId = dispid_worksheet_select;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L" %s NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
