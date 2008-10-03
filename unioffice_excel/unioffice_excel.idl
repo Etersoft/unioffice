@@ -5139,4 +5139,5 @@ library MSO_TO_OOLib
 
 	interface I_Font;
 	interface I_Workbooks;
+	interface I_Workbook;
 };

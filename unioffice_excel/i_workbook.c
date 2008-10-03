@@ -20,26 +20,31 @@
 
 #include "mso_to_oo_private.h"
 
-static WCHAR const str_sheets[] = {
-    'S','h','e','e','t','s',0};
-static WCHAR const str_worksheets[] = {
-    'W','o','r','k','S','h','e','e','t','s',0};
-static WCHAR const str_close[] = {
-    'C','l','o','s','e',0};
-static WCHAR const str_saveas[] = {
-    'S','a','v','e','A','s',0};
-static WCHAR const str_save[] = {
-    'S','a','v','e',0};
-static WCHAR const str_protect[] = {
-    'P','r','o','t','e','c','t',0};
-static WCHAR const str_unprotect[] = {
-    'U','n','p','r','o','t','e','c','t',0};
-static WCHAR const str_name[] = {
-    'N','a','m','e',0};
-static WCHAR const str_names[] = {
-    'N','a','m','e','s',0};
-static WCHAR const str_activesheet[] = {
-    'A','c','t','i','v','e','S','h','e','e','t',0};
+ITypeInfo *ti_workbook = NULL;
+
+HRESULT get_typeinfo_workbook(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if (ti_workbook) {
+        *typeinfo = ti_workbook;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Workbook, &ti_workbook);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_workbook;
+    return hres;
+}
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
@@ -2213,50 +2218,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_sheets)) {
-        *rgDispId = dispid_workbook_sheets;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_workbook(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_worksheets)) {
-        *rgDispId = dispid_workbook_worksheets;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_close)) {
-        *rgDispId = dispid_workbook_close;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_saveas)) {
-        *rgDispId = dispid_workbook_saveas;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_save)) {
-        *rgDispId = dispid_workbook_save;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_protect)) {
-        *rgDispId = dispid_workbook_protect;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_unprotect)) {
-        *rgDispId = dispid_workbook_unprotect;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_name)) {
-        *rgDispId = dispid_workbook_name;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_names)) {
-        *rgDispId = dispid_workbook_names;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_activesheet)) {
-        *rgDispId = dispid_workbook_activeSheet;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L"%s NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
