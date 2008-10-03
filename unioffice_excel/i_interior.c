@@ -387,6 +387,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
         UINT *puArgErr)
 {
     InteriorImpl *This = (InteriorImpl*)iface;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_interrior(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+    }
+
+    return hres;
+
+/*    InteriorImpl *This = (InteriorImpl*)iface;
     HRESULT hres;
     IDispatch *dret;
     VARIANT vresult,vtmp;
@@ -501,7 +517,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
     }
 
     TRACE(" dispIdMember = %i NOT REALIZE\n",dispIdMember);
-    return E_NOTIMPL;
+    return E_NOTIMPL;*/
 }
 
 const I_InteriorVtbl MSO_TO_OO_I_Interior_Vtbl =
