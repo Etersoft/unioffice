@@ -22,105 +22,31 @@
 #include "special_functions.h"
 #include "oleauto.h"
 
-static WCHAR const str__Default[] = {
-    '_','D','e','f','a','u','l','t',0};
-static WCHAR const str_ColumnWidth[] = {
-    'C','o','l','u','m','n','W','i','d','t','h',0};
-static WCHAR const str_font[] = {
-    'F','o','n','t',0};
-static WCHAR const str_value[] = {
-    'V','a','l','u','e',0};
-static WCHAR const str_select[] = {
-    'S','e','l','e','c','t',0};
-static WCHAR const str_notetext[] = {
-    'N','o','t','e','T','e','x','t',0};
-static WCHAR const str_clearcontents[] = {
-    'C','l','e','a','r','C','o','n','t','e','n','t','s',0};
-static WCHAR const str_column[] = {
-    'C','o','l','u','m','n',0};
-static WCHAR const str_row[] = {
-    'R','o','w',0};
-static WCHAR const str_horisontalalign[] = {
-    'H','o','r','i','z','o','n','t','a','l','A','l','i','g','n','m','e','n','t',0};
-static WCHAR const str_verticalalign[] = {
-    'V','e','r','t','i','c','a','l','A','l','i','g','n','m','e','n','t',0};
-static WCHAR const str_merge[] = {
-    'M','e','r','g','e',0};
-static WCHAR const str_unmerge[] = {
-    'U','n','M','e','r','g','e',0};
-static WCHAR const str_wraptext[] = {
-    'W','r','a','p','T','e','x','t',0};
-static WCHAR const str_application[] = {
-    'A','p','p','l','i','c','a','t','i','o','n',0};
-static WCHAR const str_parent[] = {
-    'P','a','r','e','n','t',0};
-static WCHAR const str_worksheet[] = {
-    'W','o','r','k','s','h','e','e','t',0};
-static WCHAR const str_clear[] = {
-    'C','l','e','a','r',0};
-static WCHAR const str_clearcomments[] = {
-    'C','l','e','a','r','C','o','m','m','e','n','t','s',0};
-static WCHAR const str_clearformats[] = {
-    'C','l','e','a','r','F','o','r','m','a','t','s',0};
-static WCHAR const str_clearnotes[] = {
-    'C','l','e','a','r','N','o','t','e','s',0};
-static WCHAR const str_clearoutline[] = {
-    'C','l','e','a','r','O','u','t','l','i','n','e',0};
-static WCHAR const str_interior[] = {
-    'I','n','t','e','r','i','o','r',0};
-static WCHAR const str_borders[] = {
-    'B','o','r','d','e','r','s',0};
-static WCHAR const str_count[] = {
-    'C','o','u','n','t',0};
-static WCHAR const str_delete[] = {
-    'D','e','l','e','t','e',0};
-static WCHAR const str_rowheight[] = {
-    'R','o','w','H','e','i','g','h','t',0};
-static WCHAR const str_copy[] = {
-    'C','o','p','y',0};
-static WCHAR const str_numberformat[] = {
-    'N','u','m','b','e','r','F','o','r','m','a','t',0};
-static WCHAR const str_numberformatlocal[] = {
-    'N','u','m','b','e','r','F','o','r','m','a','t','L','o','c','a','l',0};
-static WCHAR const str_height[] = {
-    'H','e','i','g','h','t',0};
-static WCHAR const str_width[] = {
-    'W','i','d','t','h',0};
-static WCHAR const str_left[] = {
-    'L','e','f','t',0};
-static WCHAR const str_top[] = {
-    'T','o','p',0};
-static WCHAR const str_shrinktofit[] = {
-    'S','h','r','i','n','k','T','o','F','i','t',0};
-static WCHAR const str_mergecells[] = {
-    'M','e','r','g','e','C','e','l','l','s',0};
-static WCHAR const str_locked[] = {
-    'L','o','c','k','e','d',0};
-static WCHAR const str_hidden[] = {
-    'H','i','d','d','e','n',0};
-static WCHAR const str_mergearea[] = {
-    'M','e','r','g','e','A','r','e','a',0};
-static WCHAR const str_autofit[] = {
-    'A','u','t','o','F','i','t',0};
-static WCHAR const str_insert[] = {
-    'I','n','s','e','r','t',0};
-static WCHAR const str_entirecolumn[] = {
-    'E','n','t','i','r','e','C','o','l','u','m','n',0};
-static WCHAR const str_entirerow[] = {
-    'E','n','t','i','r','e','R','o','w',0};
-static WCHAR const str_formular1c1[] = {
-    'F','o','r','m','u','l','a','R','1','C','1',0};
-static WCHAR const str_cells[] = {
-    'C','e','l','l','s',0};
-static WCHAR const str_formula[] = {
-    'F','o','r','m','u','l','a',0};
-static WCHAR const str_offset[] = {
-    'O','f','f','s','e','t',0};
-static WCHAR const str_rows[] = {
-    'R','o','w','s',0};
-static WCHAR const str_columns[] = {
-    'C','o','l','u','m','n','s',0};
+ITypeInfo *ti_range = NULL;
 
+HRESULT get_typeinfo_range(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if (ti_range) {
+        *typeinfo = ti_range;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Range, &ti_range);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_range;
+    return hres;
+}
 
 /*флаги для работы с ячейками*/
 const long VALUE 	= 1;
@@ -3973,206 +3899,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str__Default)) {
-        *rgDispId = dispid_range__default;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_range(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_ColumnWidth)) {
-        *rgDispId = dispid_range_columnwidth;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_font)) {
-        *rgDispId = dispid_range_font;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_value)) {
-        *rgDispId = dispid_range_value;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_select)) {
-        *rgDispId = dispid_range_select;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_notetext)) {
-        *rgDispId = dispid_range_notetext;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_clearcontents)) {
-        *rgDispId = dispid_range_clearcontents;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_column)) {
-        *rgDispId = dispid_range_column;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_row)) {
-        *rgDispId = dispid_range_row;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_horisontalalign)) {
-        *rgDispId = dispid_range_horizontalalignment;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_verticalalign)) {
-        *rgDispId = dispid_range_verticalalignment;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_merge)) {
-        *rgDispId = dispid_range_merge;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_unmerge)) {
-        *rgDispId = dispid_range_unmerge;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_wraptext)) {
-        *rgDispId = dispid_range_wraptext;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = dispid_range_application;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = dispid_range_parent;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_worksheet)) {
-        *rgDispId = dispid_range_worksheet;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_clear)) {
-        *rgDispId = dispid_range_clear;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_clearcomments)) {
-        *rgDispId = dispid_range_clearcomments;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_clearformats)) {
-        *rgDispId = dispid_range_clearformats;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_clearnotes)) {
-        *rgDispId = dispid_range_clearnotes;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_clearoutline)) {
-        *rgDispId = dispid_range_clearoutline;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_interior)) {
-        *rgDispId = dispid_range_interior;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_borders)) {
-        *rgDispId = dispid_range_borders;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_count)) {
-        *rgDispId = dispid_range_count;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_delete)) {
-        *rgDispId = dispid_range_delete;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_rowheight)) {
-        *rgDispId = dispid_range_rowheight;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_copy)) {
-        *rgDispId = dispid_range_copy;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_numberformat)) {
-        *rgDispId = dispid_range_numberformat;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_numberformatlocal)) {
-        *rgDispId = dispid_range_numberformatlocal;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_height)) {
-        *rgDispId = dispid_range_height;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_width)) {
-        *rgDispId = dispid_range_width;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_left)) {
-        *rgDispId = dispid_range_left;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_top)) {
-        *rgDispId = dispid_range_top;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_shrinktofit)) {
-        *rgDispId = dispid_range_shrinktofit;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_mergecells)) {
-        *rgDispId = dispid_range_mergecells;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_locked)) {
-        *rgDispId = dispid_range_locked;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_hidden)) {
-        *rgDispId = dispid_range_hidden;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_mergearea)) {
-        *rgDispId = dispid_range_mergearea;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_autofit)) {
-        *rgDispId = dispid_range_autofit;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_insert)) {
-        *rgDispId = dispid_range_insert;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_entirecolumn)) {
-        *rgDispId = dispid_range_entirecolumn;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_entirerow)) {
-        *rgDispId = dispid_range_entirerow;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_formular1c1)) {
-        *rgDispId = dispid_range_formular1c1;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_cells)) {
-        *rgDispId = dispid_range_cells;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_formula)) {
-        *rgDispId = dispid_range_formula;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_offset)) {
-        *rgDispId = dispid_range_offset;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_rows)) {
-        *rgDispId = dispid_range_rows;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_columns)) {
-        *rgDispId = dispid_range_columns;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L"%s NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(

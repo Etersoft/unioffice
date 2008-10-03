@@ -29,6 +29,7 @@ extern ITypeInfo *ti_workbooks;
 extern ITypeInfo *ti_workbook;
 extern ITypeInfo *ti_sheets;
 extern ITypeInfo *ti_worksheet;
+extern ITypeInfo *ti_range;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -52,6 +53,8 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
                 ti_excel->lpVtbl->Release(ti_sheets);
             if(ti_worksheet)
                 ti_excel->lpVtbl->Release(ti_worksheet);
+            if(ti_range)
+                ti_excel->lpVtbl->Release(ti_range);
             break;
     }
 
