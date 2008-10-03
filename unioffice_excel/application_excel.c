@@ -22,7 +22,7 @@
 #include "special_functions.h"
 #include <oleauto.h>
 
-ITypeInfo *ti_excel;
+ITypeInfo *ti_excel = NULL;
 
 HRESULT get_typeinfo(ITypeInfo **typeinfo)
 {
@@ -4325,7 +4325,6 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     ITypeInfo *typeinfo;
     HRESULT hres;
 
