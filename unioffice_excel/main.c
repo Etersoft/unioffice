@@ -27,6 +27,7 @@ extern ITypeInfo *ti_excel;
 extern ITypeInfo *ti_font;
 extern ITypeInfo *ti_workbooks;
 extern ITypeInfo *ti_workbook;
+extern ITypeInfo *ti_sheets;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -46,6 +47,8 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
                 ti_excel->lpVtbl->Release(ti_workbooks);
             if(ti_workbook)
                 ti_excel->lpVtbl->Release(ti_workbook);
+            if(ti_sheets)
+                ti_excel->lpVtbl->Release(ti_sheets);
             break;
     }
 

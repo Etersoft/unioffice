@@ -21,20 +21,31 @@
 #include "mso_to_oo_private.h"
 #include <oleauto.h>
 
-static WCHAR const str_default[] = {
-    '_','D','e','f','a','u','l','t',0};
-static WCHAR const str_count[] = {
-    'C','o','u','n','t',0};
-static WCHAR const str_application[] = {
-    'A','p','p','l','i','c','a','t','i','o','n',0};
-static WCHAR const str_parent[] = {
-    'P','a','r','e','n','t',0};
-static WCHAR const str_item[] = {
-    'I','t','e','m',0};
-static WCHAR const str_creator[] = {
-    'C','r','e','a','t','o','r',0};
-static WCHAR const str_add[] = {
-    'A','d','d',0};
+ITypeInfo *ti_sheets = NULL;
+
+HRESULT get_typeinfo_sheets(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if (ti_sheets) {
+        *typeinfo = ti_sheets;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Sheets, &ti_sheets);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_sheets;
+    return hres;
+}
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Sheets_AddRef(
@@ -565,38 +576,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_default)) {
-        *rgDispId = dispid_sheets__default;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_sheets(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_count)) {
-        *rgDispId = dispid_sheets_count;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = dispid_sheets_application;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = dispid_sheets_parent;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_item)) {
-        *rgDispId = dispid_sheets_item;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = dispid_sheets_creator;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_add)) {
-        *rgDispId = dispid_sheets_add;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L" NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
