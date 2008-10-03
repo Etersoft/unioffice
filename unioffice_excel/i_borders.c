@@ -20,26 +20,31 @@
 
 #include "mso_to_oo_private.h"
 
-static WCHAR const str_application[] = {
-    'A','p','p','l','i','c','a','t','i','o','n',0};
-static WCHAR const str_parent[] = {
-    'P','a','r','e','n','t',0};
-static WCHAR const str_color[] = {
-    'C','o','l','o','r',0};
-static WCHAR const str_colorindex[] = {
-    'C','o','l','o','r','I','n','d','e','x',0};
-static WCHAR const str_creator[] = {
-    'C','r','e','a','t','o','r',0};
-static WCHAR const str_linestyle[] = {
-    'L','i','n','e','S','t','y','l','e',0};
-static WCHAR const str_weight[] = {
-    'W','e','i','g','h','t',0};
-static WCHAR const str__default[] = {
-    '_','D','e','f','a','u','l','t',0};
-static WCHAR const str_item[] = {
-    'I','t','e','m',0};
-static WCHAR const str_value[] = {
-    'V','a','l','u','e',0};
+ITypeInfo *ti_borders = NULL;
+
+HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if (ti_borders) {
+        *typeinfo = ti_borders;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Borders, &ti_borders);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_borders;
+    return hres;
+}
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
@@ -428,51 +433,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = dispid_borders_application;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = dispid_borders_parent;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_color)) {
-        *rgDispId = dispid_borders_color;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_colorindex)) {
-        *rgDispId = dispid_borders_colorindex;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = dispid_borders_creator;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_linestyle)) {
-        *rgDispId = dispid_borders_linestyle;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_weight)) {
-        *rgDispId = dispid_borders_weight;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str__default)) {
-        *rgDispId = dispid_borders__default;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_item)) {
-        *rgDispId = dispid_borders_item;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_value)) {
-        *rgDispId = dispid_borders_value;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_borders(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
 
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L"%s NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
