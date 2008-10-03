@@ -5144,4 +5144,5 @@ library MSO_TO_OOLib
 	interface I_Worksheet;
 	interface I_Range;
 	interface I_Interior;
+	interface I_PageSetup;
 };

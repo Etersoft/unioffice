@@ -20,32 +20,31 @@
 
 #include "mso_to_oo_private.h"
 
-static WCHAR const str_leftmargin[] = {
-    'L','e','f','t','M','a','r','g','i','n',0};
-static WCHAR const str_rightmargin[] = {
-    'R','i','g','h','t','M','a','r','g','i','n',0};
-static WCHAR const str_topmargin[] = {
-    'T','o','p','M','a','r','g','i','n',0};
-static WCHAR const str_bottommargin[] = {
-    'B','o','t','t','o','m','M','a','r','g','i','n',0};
-static WCHAR const str_orientation[] = {
-    'O','r','i','e','n','t','a','t','i','o','n',0};
-static WCHAR const str_zoom[] = {
-    'Z','o','o','m',0};
-static WCHAR const str_fittopagestall[] = {
-    'F','i','t','T','o','P','a','g','e','s','T','a','l','l',0};
-static WCHAR const str_fittopageswide[] = {
-    'F','i','t','T','o','P','a','g','e','s','W','i','d','e',0};
-static WCHAR const str_headermargin[] = {
-    'H','e','a','d','e','r','M','a','r','g','i','n',0};
-static WCHAR const str_footermargin[] = {
-    'F','o','o','t','e','r','M','a','r','g','i','n',0};
-static WCHAR const str_centerhorizontally[] = {
-    'C','e','n','t','e','r','H','o','r','i','z','o','n','t','a','l','l','y',0};
-static WCHAR const str_centervertically[] = {
-    'C','e','n','t','e','r','V','e','r','t','i','c','a','l','l','y',0};
-static WCHAR const str_printtitlerows[] = {
-    'P','r','i','n','t','T','i','t','l','e','R','o','w','s',0};
+ITypeInfo *ti_pagesetup = NULL;
+
+HRESULT get_typeinfo_pagesetup(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if (ti_pagesetup) {
+        *typeinfo = ti_pagesetup;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_PageSetup, &ti_pagesetup);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_pagesetup;
+    return hres;
+}
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_PageSetup_AddRef(
@@ -2278,62 +2277,19 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_leftmargin)) {
-        *rgDispId = dispid_pagesetup_leftmargin;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_pagesetup(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_rightmargin)) {
-        *rgDispId = dispid_pagesetup_rightmargin;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_topmargin)) {
-        *rgDispId = dispid_pagesetup_topmargin;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_bottommargin)) {
-        *rgDispId = dispid_pagesetup_bottommargin;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_orientation)) {
-        *rgDispId = dispid_pagesetup_orientation;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_zoom)) {
-        *rgDispId = dispid_pagesetup_zoom;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_fittopagestall)) {
-        *rgDispId = dispid_pagesetup_fittopagestall;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_fittopageswide)) {
-        *rgDispId = dispid_pagesetup_fittopageswide;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_headermargin)) {
-        *rgDispId = dispid_pagesetup_headermargin;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_footermargin)) {
-        *rgDispId = dispid_pagesetup_footermargin;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_centerhorizontally)) {
-        *rgDispId = dispid_pagesetup_centerhorizontall;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_centervertically)) {
-        *rgDispId = dispid_pagesetup_centervertically;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_printtitlerows)) {
-        *rgDispId = dispid_pagesetup_printtitlerows;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L"%s NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
