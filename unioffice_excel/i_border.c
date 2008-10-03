@@ -1113,186 +1113,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
+    ITypeInfo *typeinfo;
     HRESULT hres;
-    IDispatch *dret;
-    VARIANT vval;
-    long ltmp;
-    TRACE(" dispIdMember = %i\n", dispIdMember);
 
-    VariantInit(&vval);
+    hres = get_typeinfo_border(&typeinfo);
+    if(FAILED(hres))
+        return hres;
 
-    if (iface==NULL) {
-        TRACE("ERROR Object is NULL \n");
-        return E_FAIL;
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
 
-    switch(dispIdMember)
-    {
-    case dispid_border_application://Application
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Border_get_Application(iface,&dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_border_parent://Parent
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Border_get_Parent(iface,&dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_border_color://Color
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
-            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
-
-            if (FAILED(hres)) {
-                TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
-                return E_FAIL;
-            }
-            ltmp = V_I4(&vval);
-            hres = MSO_TO_OO_I_Border_put_Color(iface,ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Border_get_Color(iface,&ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = ltmp;
-            }
-            return S_OK;
-        }
-    case dispid_border_colorindex://ColorIndex
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
-            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
-            if (FAILED(hres)) {
-                TRACE(" (case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
-                return E_FAIL;
-            }
-            ltmp = V_I4(&vval);
-            hres = MSO_TO_OO_I_Border_put_ColorIndex(iface,ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Border_get_ColorIndex(iface,&ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = ltmp;
-            }
-            return S_OK;
-        }
-    case dispid_border_creator://creator
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Border_get_Creator(iface, &vval);
-            if (pVarResult!=NULL){
-                *pVarResult = vval;
-            }
-            return hres;
-        }
-    case dispid_border_linestyle://linestyle
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
-            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
-
-            if (FAILED(hres)) {
-                TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
-                return E_FAIL;
-            }
-            ltmp = V_I4(&vval);
-            hres = MSO_TO_OO_I_Border_put_LineStyle(iface,ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Border_get_LineStyle(iface,(XlLineStyle*)&ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = ltmp;
-            }
-            return S_OK;
-        }
-
-    case dispid_border_weight://weight
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vval);
-            hres = VariantChangeTypeEx(&vval, &vval, 0, 0, VT_I4);
-
-            if (FAILED(hres)) {
-                TRACE(" (case 3) ERROR VariantChangeTypeEx   %08x   VT = %i\n",hres,V_VT(&(pDispParams->rgvarg[0])));
-                return E_FAIL;
-            }
-            ltmp = V_I4(&vval);
-            hres = MSO_TO_OO_I_Border_put_Weight(iface,ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Border_get_Weight(iface,(XlBorderWeight*)&ltmp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = ltmp;
-            }
-            return S_OK;
-        }
-
-    }
-
-    TRACE(" dispIdMember = %i NOT REALIZE\n",dispIdMember);
-    return E_NOTIMPL;
+    return hres;
 }
 
 
