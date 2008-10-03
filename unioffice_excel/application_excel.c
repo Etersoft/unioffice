@@ -24,7 +24,7 @@
 
 ITypeInfo *ti_excel = NULL;
 
-HRESULT get_typeinfo(ITypeInfo **typeinfo)
+HRESULT get_typeinfo_application(ITypeInfo **typeinfo)
 {
     ITypeLib *typelib;
     HRESULT hres;
@@ -4328,7 +4328,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
     ITypeInfo *typeinfo;
     HRESULT hres;
 
-    hres = get_typeinfo(&typeinfo);
+    hres = get_typeinfo_application(&typeinfo);
     if(FAILED(hres))
         return hres;
 

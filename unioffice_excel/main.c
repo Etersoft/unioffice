@@ -25,6 +25,7 @@ FILE *trace_file;
 
 extern ITypeInfo *ti_excel;
 extern ITypeInfo *ti_font;
+extern ITypeInfo *ti_workbooks;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -40,6 +41,8 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
                 ti_excel->lpVtbl->Release(ti_excel);
             if(ti_font)
                 ti_excel->lpVtbl->Release(ti_font);
+            if(ti_workbooks)
+                ti_excel->lpVtbl->Release(ti_workbooks);
             break;
     }
 

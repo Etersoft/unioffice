@@ -21,42 +21,31 @@
 #include "mso_to_oo_private.h"
 #include <oleauto.h>
 
-static WCHAR const str_add[] = {
-    'A','d','d',0};
-static WCHAR const str__open[] = {
-    '_','o','p','e','n',0};
-static WCHAR const str_close[] = {
-    'C','l','o','s','e',0};
-static WCHAR const str_count[] = {
-    'C','o','u','n','t',0};
-static WCHAR const str_application[] = {
-    'A','p','p','l','i','c','a','t','i','o','n',0};
-static WCHAR const str_parent[] = {
-    'P','a','r','e','n','t',0};
-static WCHAR const str_open[] = {
-    'O','p','e','n',0};
-static WCHAR const str_opentext[] = {
-    'O','p','e','n','T','e','x','t',0};
-static WCHAR const str__opentext[] = {
-    '_','O','p','e','n','T','e','x','t',0};
-static WCHAR const str_openxml[] = {
-    'O','p','e','n','X','M','L',0};
-static WCHAR const str__openxml[] = {
-    '_','O','p','e','n','X','M','L',0};
-static WCHAR const str_opendatabase[] = {
-    'O','p','e','n','D','a','t','a','b','a','s','e',0};
-static WCHAR const str_cancheckout[] = {
-    'C','a','n','C','h','e','c','k','O','u','t',0};
-static WCHAR const str_checkout[] = {
-    'C','h','e','c','k','O','u','t',0};
-static WCHAR const str_creator[] = {
-    'C','r','e','a','t','o','r',0};
-static WCHAR const str__default[] = {
-    '_','D','e','f','a','u','l','t',0};
-static WCHAR const str_item[] = {
-    'I','t','e','m',0};
-static WCHAR const str___opentext[] = {
-    '_','_','O','p','e','n','T','e','x','t',0};
+ITypeInfo *ti_workbooks = NULL;
+
+HRESULT get_typeinfo_workbooks(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if (ti_workbooks) {
+        *typeinfo = ti_workbooks;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Workbooks, &ti_workbooks);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_workbooks;
+    return hres;
+}
 
 static WCHAR const str_pusto[]= {0};
 
@@ -592,82 +581,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_add)) {
-        *rgDispId = dispid_workbooks_Add;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo_workbooks(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str__open)) {
-        *rgDispId = dispid_workbooks__Open;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_close)) {
-        *rgDispId = dispid_workbooks_Close;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_count)) {
-        *rgDispId = dispid_workbooks_Count;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = dispid_workbooks_application;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = dispid_workbooks_parent;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_open)) {
-        *rgDispId = dispid_workbooks_Open;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_opentext)) {
-        *rgDispId = dispid_workbooks_OpenText;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str__opentext)) {
-        *rgDispId = dispid_workbooks__OpenText;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_openxml)) {
-        *rgDispId = dispid_workbooks_OpenXML;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str__openxml)) {
-        *rgDispId = dispid_workbooks__OpenXML;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_opendatabase)) {
-        *rgDispId = dispid_workbooks_OpenDatabase;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_cancheckout)) {
-        *rgDispId = dispid_workbooks_CanCheckOut;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_checkout)) {
-        *rgDispId = dispid_workbooks_CheckOut;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = dispid_workbooks_creator;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str__default)) {
-        *rgDispId = dispid_workbooks__Default;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_item)) {
-        *rgDispId = dispid_workbooks_Item;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str___opentext)) {
-        *rgDispId = dispid_workbooks___OpenText;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L"%s NOT REALIZE\n", *rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
