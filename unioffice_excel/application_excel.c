@@ -22,52 +22,31 @@
 #include "special_functions.h"
 #include <oleauto.h>
 
-static WCHAR const str_usercontrol[] = {
-    'U','s','e','r','C','o','n','t','r','o','l',0};
-static WCHAR const str_displayalerts[] = {
-    'D','i','s','p','l','a','y','A','l','e','r','t','s',0};
-static WCHAR const str_windowstate[] = {
-    'W','i','n','d','o','w','S','t','a','t','e',0};
-static WCHAR const str_visible[] = {
-    'V','i','s','i','b','l','e',0};
-static WCHAR const str_workbooks[] = {
-    'W','o','r','k','b','o','o','k','s',0};
-static WCHAR const str_sheets[] = {
-    'S','h','e','e','t','s',0};
-static WCHAR const str_worksheets[] = {
-    'W','o','r','k','s','h','e','e','t','s',0};
-static WCHAR const str_cells[] = {
-    'C','e','l','l','s',0};
-static WCHAR const str_activesheet[] = {
-    'A','c','t','i','v','e','S','h','e','e','t',0};
-static WCHAR const str_version[] = {
-    'V','e','r','s','i','o','n',0};
-static WCHAR const str_convertformula[] = {
-    'C','o','n','v','e','r','t','F','o','r','m','u','l','a',0};
-static WCHAR const str_quit[] = {
-    'Q','u','i','t',0};
-static WCHAR const str_activecell[] = {
-    'A','c','t','i','v','e','C','e','l','l',0};
-static WCHAR const str_application[] = {
-    'A','p','p','l','i','c','a','t','i','o','n',0};
-static WCHAR const str_enableevents[] = {
-    'E','n','a','b','l','e','E','v','e','n','t','s',0};
-static WCHAR const str_screenupdating[] = {
-    'S','c','r','e','e','n','U','p','d','a','t','i','n','g',0};
-static WCHAR const str_caption[] = {
-    'C','a','p','t','i','o','n',0};
-static WCHAR const str_activeworkbook[] = {
-    'A','c','t','i','v','e','W','o','r','k','b','o','o','k',0};
-static WCHAR const str_range[] = {
-    'R','a','n','g','e',0};
-static WCHAR const str_columns[] = {
-    'C','o','l','u','m','n','s',0};
-static WCHAR const str_rows[] = {
-    'R','o','w','s',0};
-static WCHAR const str_selection[] = {
-    'S','e','l','e','c','t','i','o','n',0};
-static WCHAR const str_sheetsinnewworkbook[] = {
-    'S','h','e','e','t','s','I','n','N','e','w','W','o','r','k','b','o','o','k',0};
+ITypeInfo *ti_excel;
+
+HRESULT get_typeinfo(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if(ti_excel) {
+        *typeinfo = ti_excel;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_ApplicationExcel, &ti_excel);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_excel;
+    return hres;
+}
 
 #define DEFINE_THIS(class,ifild,iface) ((class*)((BYTE*)(iface)-offsetof(class,p ## ifild ## Vtbl)))
 
@@ -4346,102 +4325,20 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_usercontrol)) {
-        *rgDispId = dispid_application_usercontrol;
-        return S_OK;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    hres = get_typeinfo(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_displayalerts)) {
-        *rgDispId = dispid_application_displayalerts;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_windowstate)) {
-        *rgDispId = dispid_application_windowstate;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_visible)) {
-        *rgDispId = dispid_application_visible;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_workbooks)) {
-        *rgDispId = dispid_application_workbooks;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_sheets)) {
-        *rgDispId = dispid_application_sheets;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_worksheets)) {
-        *rgDispId = dispid_application_worksheets;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_cells)) {
-        *rgDispId = dispid_application_cells;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_activesheet)) {
-        *rgDispId = dispid_application_activesheet;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_version)) {
-        *rgDispId = dispid_application_version;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_convertformula)) {
-        *rgDispId = dispid_application_convertformula;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_quit)) {
-        *rgDispId = dispid_application_quit;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_activecell)) {
-        *rgDispId = dispid_application_activecell;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = dispid_application_application;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_enableevents)) {
-        *rgDispId = dispid_application_enableevents;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_screenupdating)) {
-        *rgDispId = dispid_application_screenupdating;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_caption)) {
-        *rgDispId = dispid_application_caption;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_activeworkbook)) {
-        *rgDispId = dispid_application_activeworkbook;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_range)) {
-        *rgDispId = dispid_application_range;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_columns)) {
-        *rgDispId = dispid_application_columns;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_rows)) {
-        *rgDispId = dispid_application_rows;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_selection)) {
-        *rgDispId = dispid_application_selection;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_sheetsinnewworkbook)) {
-        *rgDispId = dispid_application_sheetsinnewworkbook;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L" %s NOT REALIZE\n", *rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(

@@ -23,6 +23,8 @@
 LONG dll_ref = 0;
 FILE *trace_file;
 
+extern ITypeInfo *ti_excel;
+
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     TRACE("(%p, %d, %p)\n", hinstDLL, fdwReason, lpvReserved);
@@ -33,6 +35,8 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
             DisableThreadLibraryCalls(hinstDLL);
             break;
         case DLL_PROCESS_DETACH:
+            if(ti_excel)
+                ti_excel->lpVtbl->Release(ti_excel);
             break;
     }
 
