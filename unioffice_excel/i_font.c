@@ -21,37 +21,34 @@
 #include "mso_to_oo_private.h"
 #include <oleauto.h>
 
+ITypeInfo *ti_font = NULL;
 
-static WCHAR const str_bold[] = {
-    'B','o','l','d',0};
-static WCHAR const str_italic[] = {
-    'I','t','a','l','i','c',0};
-static WCHAR const str_underline[] = {
-    'U','n','d','e','r','l','i','n','e',0};
-static WCHAR const str_size[] = {
-    'S','i','z','e',0};
-static WCHAR const str_strikethrought[] = {
-    'S','t','r','i','k','e','t','h','r','o','u','g','h',0};
-static WCHAR const str_name[] = {
-    'N','a','m','e',0};
-static WCHAR const str_colorindex[] = {
-    'C','o','l','o','r','I','n','d','e','x',0};
-static WCHAR const str_color[] = {
-    'C','o','l','o','r',0};
-static WCHAR const str_application[] = {
-    'A','p','p','l','i','c','a','t','i','o','n',0};
-static WCHAR const str_parent[] = {
-    'P','a','r','e','n','t',0};
-static WCHAR const str_creator[] = {
-    'C','r','e','a','t','o','r',0};
-static WCHAR const str_shadow[] = {
-    'S','h','a','d','o','w',0};
-static WCHAR const str_subscript[] = {
-    'S','u','b','s','c','r','i','p','t',0};
-static WCHAR const str_superscript[] = {
-    'S','u','p','e','r','s','c','r','i','p','t',0};
-static WCHAR const str_outlinefont[] = {
-    'O','u','t','l','i','n','e','F','o','n','t',0};
+HRESULT get_typeinfo_font(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    TRACE("\n");
+
+    if(ti_font) {
+        *typeinfo = ti_font;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Font, &ti_font);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_font;
+    return hres;
+}
+
 
 #define usNONE 0
 #define usSINGLE 1
@@ -886,70 +883,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_bold)) {
-        *rgDispId = dispid_font_bold;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    hres = get_typeinfo_font(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_italic)) {
-        *rgDispId = dispid_font_italic;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_underline)) {
-        *rgDispId = dispid_font_underline;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_size)) {
-        *rgDispId = dispid_font_size;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_strikethrought)) {
-        *rgDispId = dispid_font_strikethrough;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_name)) {
-        *rgDispId = dispid_font_name;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_colorindex)) {
-        *rgDispId = dispid_font_colorindex;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_color)) {
-        *rgDispId = dispid_font_color;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = dispid_font_application;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = dispid_font_parent;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = dispid_font_creator;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_shadow)) {
-        *rgDispId = dispid_font_shadow;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_subscript)) {
-        *rgDispId = dispid_font_subscript;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_superscript)) {
-        *rgDispId = dispid_font_superscript;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_outlinefont)) {
-        *rgDispId = dispid_font_outlinefont;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L" %s NOT REALIZE \n",*rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(

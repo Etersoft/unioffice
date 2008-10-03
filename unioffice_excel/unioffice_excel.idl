@@ -5136,4 +5136,6 @@ library MSO_TO_OOLib
 	{
 		[default] interface I_ApplicationExcel;
 	};
+
+        interface I_Font;
 };

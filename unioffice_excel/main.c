@@ -24,6 +24,7 @@ LONG dll_ref = 0;
 FILE *trace_file;
 
 extern ITypeInfo *ti_excel;
+extern ITypeInfo *ti_font;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -37,6 +38,8 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
         case DLL_PROCESS_DETACH:
             if(ti_excel)
                 ti_excel->lpVtbl->Release(ti_excel);
+            if(ti_font)
+                ti_excel->lpVtbl->Release(ti_font);
             break;
     }
 
