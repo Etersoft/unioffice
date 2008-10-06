@@ -752,12 +752,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Application(
         I_ApplicationExcel* iface,
         IDispatch **value)
 {
-
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     TRACE(" \n");
 
     if (iface!=NULL) {
-        *value = (IDispatch*)iface;
-        MSO_TO_OO_I_ApplicationExcel_AddRef(iface);
+        *value = (IDispatch*)APPEXCEL(This);
+        MSO_TO_OO_I_ApplicationExcel_AddRef((I_ApplicationExcel*)*value);
     } else {
         return E_FAIL;
     }
