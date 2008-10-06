@@ -323,7 +323,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UserControl(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL vbDisplayAlerts)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -337,7 +337,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *vbDisplayAlerts)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -351,7 +351,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_WindowState(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlWindowState State)
 {
     TRACE("\n");
@@ -360,7 +360,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_WindowState(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_WindowState(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlWindowState *State)
 {
     TRACE("\n");
@@ -369,7 +369,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_WindowState(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Visible(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL vbVisible)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -389,7 +389,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Visible(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Visible(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *vbVisible)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -786,7 +786,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EnableEvents(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ScreenUpdating(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL vbscup)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -857,7 +857,7 @@ Document.OleFunction("addActionLock");
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ScreenUpdating(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *vbscup)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -1109,7 +1109,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActiveMenuBar(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActivePrinter(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -1118,7 +1118,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ActivePrinter(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ActivePrinter(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -1151,7 +1151,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Assistant(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Calculate(
         I_ApplicationExcel* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1175,7 +1175,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CommandBars(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DDEAppReturnCode(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -1186,7 +1186,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DDEExecute(
         I_ApplicationExcel* iface,
         long Channel,
         BSTR String,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1196,7 +1196,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DDEInitiate(
         I_ApplicationExcel* iface,
         BSTR App,
         BSTR Topic,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -1208,7 +1208,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DDEPoke(
         long Channel,
         VARIANT Item,
         VARIANT Data,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1218,7 +1218,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DDERequest(
         I_ApplicationExcel* iface,
         long Channel,
         BSTR Item,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -1228,7 +1228,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DDERequest(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DDETerminate(
         I_ApplicationExcel* iface,
         long Channel,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1245,7 +1245,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DialogSheets(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Evaluate(
         I_ApplicationExcel* iface,
         VARIANT Name,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -1255,7 +1255,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Evaluate(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__Evaluate(
         I_ApplicationExcel* iface,
         VARIANT Name,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -1265,7 +1265,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__Evaluate(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_ExecuteExcel4Macro(
         I_ApplicationExcel* iface,
         BSTR String,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -1304,7 +1304,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Intersect(
         VARIANT Arg28,
         VARIANT Arg29,
         VARIANT Arg30,
-        long lcid,
+        LCID lcid,
         IDispatch **RHS)
 {
     TRACE("\n");
@@ -1407,7 +1407,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__Run2(
         VARIANT Arg28,
         VARIANT Arg29,
         VARIANT Arg30,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -1418,7 +1418,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_SendKeys(
         I_ApplicationExcel* iface,
         VARIANT Keys,
         VARIANT Wait,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1435,7 +1435,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ShortcutMenus(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ThisWorkbook(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         IDispatch **RHS)
 {
     TRACE("\n");
@@ -1482,7 +1482,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Union(
         VARIANT Arg28,
         VARIANT Arg29,
         VARIANT Arg30,
-        long lcid,
+        LCID lcid,
         IDispatch **RHS)
 {
     TRACE("\n");
@@ -1528,7 +1528,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Excel4MacroSheets(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_ActivateMicrosoftApp(
         I_ApplicationExcel* iface,
         XlMSApplication Index,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1539,7 +1539,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_AddChartAutoFormat(
         VARIANT Chart,
         BSTR Name,
         VARIANT Description,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1549,7 +1549,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_AddCustomList(
         I_ApplicationExcel* iface,
         VARIANT ListArray,
         VARIANT ByRow,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -1557,7 +1557,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_AddCustomList(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_AlertBeforeOverwriting(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1566,7 +1566,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_AlertBeforeOverwriting(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_AlertBeforeOverwriting(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1575,7 +1575,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_AlertBeforeOverwriting(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_AltStartupPath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -1584,7 +1584,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_AltStartupPath(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_AltStartupPath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -1593,7 +1593,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_AltStartupPath(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_AskToUpdateLinks(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1602,7 +1602,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_AskToUpdateLinks(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_AskToUpdateLinks(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1611,7 +1611,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_AskToUpdateLinks(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EnableAnimations(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1620,7 +1620,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EnableAnimations(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EnableAnimations(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1637,7 +1637,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_AutoCorrect(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Build(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -1646,7 +1646,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Build(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CalculateBeforeSave(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1655,7 +1655,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CalculateBeforeSave(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CalculateBeforeSave(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1664,7 +1664,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CalculateBeforeSave(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Calculation(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlCalculation *RHS)
 {
     TRACE("\n");
@@ -1673,7 +1673,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Calculation(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Calculation(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlCalculation RHS)
 {
     TRACE("\n");
@@ -1683,7 +1683,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Calculation(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Caller(
         I_ApplicationExcel* iface,
         VARIANT Index,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -1692,7 +1692,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Caller(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CanPlaySounds(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1701,7 +1701,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CanPlaySounds(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CanRecordSounds(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1710,7 +1710,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CanRecordSounds(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CellDragAndDrop(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1719,7 +1719,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CellDragAndDrop(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CellDragAndDrop(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1729,7 +1729,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CellDragAndDrop(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_CentimetersToPoints(
         I_ApplicationExcel* iface,
         double Centimeters,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -1741,7 +1741,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_CheckSpelling(
         BSTR Word,
         VARIANT CustomDictionary,
         VARIANT IgnoreUppercase,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1751,7 +1751,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_CheckSpelling(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ClipboardFormats(
         I_ApplicationExcel* iface,
         VARIANT Index,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -1760,7 +1760,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ClipboardFormats(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayClipboardWindow(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1769,7 +1769,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayClipboardWindow(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayClipboardWindow(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1794,7 +1794,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ColorButtons(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CommandUnderlines(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlCommandUnderlines *RHS)
 {
     TRACE("\n");
@@ -1803,7 +1803,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CommandUnderlines(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CommandUnderlines(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlCommandUnderlines RHS)
 {
     TRACE("\n");
@@ -1812,7 +1812,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CommandUnderlines(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ConstrainNumeric(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1821,7 +1821,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ConstrainNumeric(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ConstrainNumeric(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1830,7 +1830,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ConstrainNumeric(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CopyObjectsWithCells(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -1839,7 +1839,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CopyObjectsWithCells(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CopyObjectsWithCells(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -1848,7 +1848,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CopyObjectsWithCells(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Cursor(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlMousePointer *RHS)
 {
     TRACE("\n");
@@ -1857,7 +1857,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Cursor(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Cursor(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlMousePointer RHS)
 {
     TRACE("\n");
@@ -1866,7 +1866,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Cursor(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CustomListCount(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -1875,7 +1875,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CustomListCount(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CutCopyMode(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlCutCopyMode *RHS)
 {
     TRACE("\n");
@@ -1884,7 +1884,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CutCopyMode(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CutCopyMode(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlCutCopyMode RHS)
 {
     TRACE("\n");
@@ -1892,7 +1892,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CutCopyMode(
 }
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DataEntryMode(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -1901,7 +1901,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DataEntryMode(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DataEntryMode(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     TRACE("\n");
@@ -2047,7 +2047,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get__Default(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DefaultFilePath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2056,7 +2056,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DefaultFilePath(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DefaultFilePath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -2066,7 +2066,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DefaultFilePath(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DeleteChartAutoFormat(
         I_ApplicationExcel* iface,
         BSTR Name,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2075,7 +2075,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DeleteChartAutoFormat(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DeleteCustomList(
         I_ApplicationExcel* iface,
         long ListNum,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2091,7 +2091,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Dialogs(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayFormulaBar(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2100,7 +2100,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayFormulaBar(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayFormulaBar(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2109,7 +2109,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayFormulaBar(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayFullScreen(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2118,7 +2118,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayFullScreen(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayFullScreen(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2159,7 +2159,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayCommentIndicator(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayExcel4Menus(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2168,7 +2168,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayExcel4Menus(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayExcel4Menus(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2193,7 +2193,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayRecentFiles(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayScrollBars(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2202,7 +2202,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayScrollBars(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayScrollBars(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2211,7 +2211,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayScrollBars(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayStatusBar(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2220,7 +2220,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DisplayStatusBar(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayStatusBar(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2229,7 +2229,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayStatusBar(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DoubleClick(
         I_ApplicationExcel* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2237,7 +2237,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_DoubleClick(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EditDirectlyInCell(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2246,7 +2246,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EditDirectlyInCell(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EditDirectlyInCell(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2270,7 +2270,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EnableAutoComplete(
 }
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EnableCancelKey(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlEnableCancelKey *RHS)
 {
     TRACE("\n");
@@ -2279,7 +2279,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EnableCancelKey(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EnableCancelKey(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlEnableCancelKey RHS)
 {
     TRACE("\n");
@@ -2304,7 +2304,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EnableSound(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EnableTipWizard(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2313,7 +2313,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_EnableTipWizard(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_EnableTipWizard(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2324,7 +2324,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_FileConverters(
         I_ApplicationExcel* iface,
         VARIANT Index1,
         VARIANT Index2,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -2349,7 +2349,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_FileFind(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__FindFile(
         I_ApplicationExcel* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2357,7 +2357,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__FindFile(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_FixedDecimal(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2366,7 +2366,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_FixedDecimal(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_FixedDecimal(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2375,7 +2375,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_FixedDecimal(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_FixedDecimalPlaces(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -2384,7 +2384,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_FixedDecimalPlaces(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_FixedDecimalPlaces(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     TRACE("\n");
@@ -2394,7 +2394,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_FixedDecimalPlaces(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetCustomListContents(
         I_ApplicationExcel* iface,
         long ListNum,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -2404,7 +2404,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetCustomListContents(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetCustomListNum(
         I_ApplicationExcel* iface,
         VARIANT ListArray,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -2418,7 +2418,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetOpenFilename(
         VARIANT Title,
         VARIANT ButtonText,
         VARIANT MultiSelect,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -2432,7 +2432,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetSaveAsFilename(
         VARIANT FilterIndex,
         VARIANT Title,
         VARIANT ButtonText,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -2443,7 +2443,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Goto(
         I_ApplicationExcel* iface,
         VARIANT Reference,
         VARIANT Scroll,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2451,7 +2451,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Goto(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Height(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -2460,7 +2460,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Height(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Height(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double RHS)
 {
     TRACE("\n");
@@ -2471,7 +2471,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Help(
         I_ApplicationExcel* iface,
         VARIANT HelpFile,
         VARIANT HelpContextID,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2479,7 +2479,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Help(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_IgnoreRemoteRequests(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2488,7 +2488,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_IgnoreRemoteRequests(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_IgnoreRemoteRequests(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2498,7 +2498,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_IgnoreRemoteRequests(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_InchesToPoints(
         I_ApplicationExcel* iface,
         double Inches,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -2515,7 +2515,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_InputBox(
         VARIANT HelpFile,
         VARIANT HelpContextID,
         VARIANT Type,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -2524,7 +2524,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_InputBox(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Interactive(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2533,7 +2533,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Interactive(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Interactive(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2543,7 +2543,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Interactive(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_International(
         I_ApplicationExcel* iface,
         VARIANT Index,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -2552,7 +2552,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_International(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Iteration(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2561,7 +2561,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Iteration(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Iteration(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2586,7 +2586,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_LargeButtons(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Left(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -2595,7 +2595,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Left(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Left(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double RHS)
 {
     TRACE("\n");
@@ -2604,7 +2604,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Left(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_LibraryPath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2623,7 +2623,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_MacroOptions(
         VARIANT StatusBar,
         VARIANT HelpContextID,
         VARIANT HelpFile,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2631,7 +2631,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_MacroOptions(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_MailLogoff(
         I_ApplicationExcel* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2642,7 +2642,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_MailLogon(
         VARIANT Name,
         VARIANT Password,
         VARIANT DownloadNewMail,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2650,7 +2650,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_MailLogon(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MailSession(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -2659,7 +2659,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MailSession(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MailSystem(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlMailSystem *RHS)
 {
     TRACE("\n");
@@ -2668,7 +2668,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MailSystem(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MathCoprocessorAvailable(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2677,7 +2677,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MathCoprocessorAvailable(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MaxChange(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -2686,7 +2686,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MaxChange(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_MaxChange(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double RHS)
 {
     TRACE("\n");
@@ -2695,7 +2695,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_MaxChange(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MaxIterations(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -2704,7 +2704,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MaxIterations(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_MaxIterations(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     TRACE("\n");
@@ -2713,7 +2713,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_MaxIterations(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MemoryFree(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -2722,7 +2722,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MemoryFree(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MemoryTotal(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -2731,7 +2731,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MemoryTotal(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MemoryUsed(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -2740,7 +2740,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MemoryUsed(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MouseAvailable(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2749,7 +2749,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MouseAvailable(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MoveAfterReturn(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -2758,7 +2758,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MoveAfterReturn(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_MoveAfterReturn(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -2767,7 +2767,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_MoveAfterReturn(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MoveAfterReturnDirection(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlDirection *RHS)
 {
     TRACE("\n");
@@ -2776,7 +2776,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_MoveAfterReturnDirection(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_MoveAfterReturnDirection(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlDirection RHS)
 {
     TRACE("\n");
@@ -2801,7 +2801,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Name(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_NextLetter(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         IDispatch **RHS)
 {
     TRACE("\n");
@@ -2810,7 +2810,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_NextLetter(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_NetworkTemplatesPath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2843,7 +2843,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ODBCTimeout(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnCalculate(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2852,7 +2852,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnCalculate(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnCalculate(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -2861,7 +2861,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnCalculate(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnData(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2870,7 +2870,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnData(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnData(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -2879,7 +2879,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnData(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnDoubleClick(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2888,7 +2888,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnDoubleClick(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnDoubleClick(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -2897,7 +2897,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnDoubleClick(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnEntry(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2906,7 +2906,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnEntry(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnEntry(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -2917,7 +2917,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_OnKey(
         I_ApplicationExcel* iface,
         BSTR Key,
         VARIANT Procedure,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2927,7 +2927,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_OnRepeat(
         I_ApplicationExcel* iface,
         BSTR Text,
         BSTR Procedure,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2935,7 +2935,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_OnRepeat(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnSheetActivate(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2944,7 +2944,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnSheetActivate(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnSheetActivate(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -2953,7 +2953,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnSheetActivate(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnSheetDeactivate(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -2962,7 +2962,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnSheetDeactivate(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnSheetDeactivate(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -2975,7 +2975,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_OnTime(
         BSTR Procedure,
         VARIANT LatestTime,
         VARIANT Schedule,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2985,7 +2985,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_OnUndo(
         I_ApplicationExcel* iface,
         BSTR Text,
         BSTR Procedure,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -2993,7 +2993,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_OnUndo(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnWindow(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3002,7 +3002,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OnWindow(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnWindow(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -3011,7 +3011,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_OnWindow(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OperatingSystem(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3020,7 +3020,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OperatingSystem(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OrganizationName(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3029,7 +3029,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_OrganizationName(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Path(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3038,7 +3038,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Path(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_PathSeparator(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3048,7 +3048,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_PathSeparator(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_PreviousSelections(
         I_ApplicationExcel* iface,
         VARIANT Index,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -3073,7 +3073,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_PivotTableSelection(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_PromptForSummaryInfo(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -3082,7 +3082,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_PromptForSummaryInfo(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_PromptForSummaryInfo(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -3093,7 +3093,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_RecordMacro(
         I_ApplicationExcel* iface,
         VARIANT BasicCode,
         VARIANT XlmCode,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3101,7 +3101,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_RecordMacro(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_RecordRelative(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -3110,7 +3110,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_RecordRelative(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ReferenceStyle(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlReferenceStyle *RHS)
 {
     TRACE("\n");
@@ -3119,7 +3119,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ReferenceStyle(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ReferenceStyle(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         XlReferenceStyle RHS)
 {
     TRACE("\n");
@@ -3130,7 +3130,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_RegisteredFunctions(
         I_ApplicationExcel* iface,
         VARIANT Index1,
         VARIANT Index2,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -3140,7 +3140,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_RegisteredFunctions(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_RegisterXLL(
         I_ApplicationExcel* iface,
         BSTR Filename,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -3149,7 +3149,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_RegisterXLL(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Repeat(
         I_ApplicationExcel* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3157,7 +3157,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Repeat(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_ResetTipWizard(
         I_ApplicationExcel* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3182,7 +3182,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_RollZoom(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Save(
         I_ApplicationExcel* iface,
         VARIANT Filename,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3191,7 +3191,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Save(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_SaveWorkspace(
         I_ApplicationExcel* iface,
         VARIANT Filename,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3208,7 +3208,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_SetDefaultChart(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_SheetsInNewWorkbook(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -3219,7 +3219,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_SheetsInNewWorkbook(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_SheetsInNewWorkbook(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
@@ -3262,7 +3262,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ShowChartTipValues(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StandardFont(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3271,7 +3271,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StandardFont(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_StandardFont(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -3280,7 +3280,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_StandardFont(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StandardFontSize(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -3289,7 +3289,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StandardFontSize(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_StandardFontSize(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double RHS)
 {
     TRACE("\n");
@@ -3298,7 +3298,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_StandardFontSize(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StartupPath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3307,7 +3307,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StartupPath(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StatusBar(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -3316,7 +3316,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_StatusBar(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_StatusBar(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT RHS)
 {
     TRACE("\n");
@@ -3325,7 +3325,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_StatusBar(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_TemplatesPath(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3350,7 +3350,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ShowToolTips(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Top(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -3359,7 +3359,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Top(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Top(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double RHS)
 {
     TRACE("\n");
@@ -3384,7 +3384,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DefaultSaveFormat(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_TransitionMenuKey(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3393,7 +3393,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_TransitionMenuKey(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_TransitionMenuKey(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -3402,7 +3402,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_TransitionMenuKey(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_TransitionMenuKeyAction(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -3411,7 +3411,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_TransitionMenuKeyAction(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_TransitionMenuKeyAction(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     TRACE("\n");
@@ -3420,7 +3420,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_TransitionMenuKeyAction(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_TransitionNavigKeys(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -3429,7 +3429,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_TransitionNavigKeys(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_TransitionNavigKeys(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -3438,7 +3438,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_TransitionNavigKeys(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Undo(
         I_ApplicationExcel* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3446,7 +3446,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Undo(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UsableHeight(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -3455,7 +3455,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UsableHeight(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UsableWidth(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -3464,7 +3464,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UsableWidth(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UserName(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE("\n");
@@ -3473,7 +3473,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UserName(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_UserName(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         BSTR RHS)
 {
     TRACE("\n");
@@ -3499,7 +3499,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_VBE(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Volatile(
         I_ApplicationExcel* iface,
         VARIANT Volatile,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3508,7 +3508,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Volatile(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__Wait(
         I_ApplicationExcel* iface,
         VARIANT Time,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -3516,7 +3516,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__Wait(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Width(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double *RHS)
 {
     TRACE("\n");
@@ -3525,7 +3525,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Width(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Width(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         double RHS)
 {
     TRACE("\n");
@@ -3534,7 +3534,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Width(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_WindowsForPens(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -3543,7 +3543,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_WindowsForPens(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UILanguage(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -3552,7 +3552,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_UILanguage(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_UILanguage(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     TRACE("\n");
@@ -3561,7 +3561,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_UILanguage(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DefaultSheetDirection(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -3570,7 +3570,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_DefaultSheetDirection(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DefaultSheetDirection(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     TRACE("\n");
@@ -3579,7 +3579,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DefaultSheetDirection(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CursorMovement(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long *RHS)
 {
     TRACE("\n");
@@ -3588,7 +3588,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_CursorMovement(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CursorMovement(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         long RHS)
 {
     TRACE("\n");
@@ -3597,7 +3597,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_CursorMovement(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ControlCharacters(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -3606,7 +3606,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_ControlCharacters(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_ControlCharacters(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL RHS)
 {
     TRACE("\n");
@@ -3645,7 +3645,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel__WSFunction(
         VARIANT Arg28,
         VARIANT Arg29,
         VARIANT Arg30,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -3671,7 +3671,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_DisplayInfoWindow(
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Wait(
         I_ApplicationExcel* iface,
         VARIANT Time,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");
@@ -3801,7 +3801,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_CalculateFull(
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_FindFile(
         I_ApplicationExcel* iface,
-        long lcid,
+        LCID lcid,
         VARIANT_BOOL *RHS)
 {
     TRACE("\n");

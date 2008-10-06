@@ -324,7 +324,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
         I_Range* iface,
         VARIANT varRangeValueDataType,
-        long lcid,
+        LCID lcid,
         VARIANT *pvarValue)
 {
     RangeImpl *This = (RangeImpl*)iface;
@@ -373,7 +373,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
         I_Range* iface,
         VARIANT varRangeValueDataType,
-        long lcid,
+        LCID lcid,
         VARIANT varValue)
 {
     RangeImpl *This = (RangeImpl*)iface;
@@ -2365,7 +2365,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Address(
         XlReferenceStyle ReferenceStyle,
         VARIANT External,
         VARIANT RelativeTo,
-        long lcid,
+        LCID lcid,
         BSTR *RHS)
 {
     TRACE(" \n");
@@ -2657,7 +2657,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put__Default(
         I_Range* iface,
         VARIANT varRowIndex,
         VARIANT varColumnIndex,
-        long lcid,
+        LCID lcid,
         VARIANT RHS)
 {
     TRACE(" \n");
@@ -2781,7 +2781,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_FindPrevious(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Formula(
         I_Range* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     RangeImpl *This = (RangeImpl*)iface;
@@ -2813,7 +2813,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Formula(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_Formula(
         I_Range* iface,
-        long lcid,
+        LCID lcid,
         VARIANT RHS)
 {
     VARIANT vNull;
@@ -2889,7 +2889,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaLocal(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1(
         I_Range* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     VARIANT tmp;
@@ -2903,7 +2903,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1(
         I_Range* iface,
-        long lcid,
+        LCID lcid,
         VARIANT RHS)
 {
     /* .uno:SheetUseR1C1 */
@@ -3006,7 +3006,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Item(
         I_Range* iface,
         VARIANT RowIndex,
         VARIANT ColumnIndex,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE(" \n");
@@ -3017,7 +3017,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Item(
         I_Range* iface,
         VARIANT RowIndex,
         VARIANT ColumnIndex,
-        long lcid,
+        LCID lcid,
         VARIANT RHS)
 {
     TRACE(" \n");
@@ -3675,7 +3675,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Validation(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value2(
         I_Range* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE(" \n");
@@ -3684,7 +3684,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value2(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value2(
         I_Range* iface,
-        long lcid,
+        LCID lcid,
         VARIANT RHS)
 {
     TRACE(" \n");

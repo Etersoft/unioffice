@@ -1033,7 +1033,7 @@ import "wtypes.idl";
 			[in,defaultvalue(1)] XlReferenceStyle ReferenceStyle,
 			[in,optional] VARIANT External,
 			[in,optional] VARIANT RelativeTo,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS); 
 //AddressLocal
 		[id(dispid_range_addresslocal),  propget,helpstring("property AddressLocal")] HRESULT AddressLocal(
@@ -1207,7 +1207,7 @@ import "wtypes.idl";
 		[propput,id(dispid_range__default), helpstring("property _Default")] HRESULT _Default(
 			[in] VARIANT varRowIndex, 
 			[in] VARIANT varColumnIndex, 
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //delete
 		[id(dispid_range_delete), helpstring("method Delete")] HRESULT Delete([in, optional] VARIANT param, [out, retval] IDispatch **value);
@@ -1267,10 +1267,10 @@ import "wtypes.idl";
 		[propget,id(dispid_range_font), helpstring("property Font")] HRESULT Font([out, retval] IDispatch **ppFont);
 //Formula
 		[id(dispid_range_formula),  propget,helpstring("property Formula")] HRESULT Formula(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 		[id(dispid_range_formula),  propput,helpstring("property Formula")] HRESULT Formula(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //FormulaArray
 		[id(dispid_range_formulaarray),  propget,helpstring("property FormulaArray")] HRESULT FormulaArray([out,retval] VARIANT* RHS);
@@ -1286,10 +1286,10 @@ import "wtypes.idl";
 		[id(dispid_range_formulalocal),  propput,helpstring("property FormulaLocal")] HRESULT FormulaLocal([in] VARIANT RHS);
 //FormulaR1C1
 		[id(dispid_range_formular1c1),  propget,helpstring("property FormulaR1C1")] HRESULT FormulaR1C1(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 		[id(dispid_range_formular1c1),  propput,helpstring("property FormulaR1C1")] HRESULT FormulaR1C1(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //FormulaR1C1Local
 		[id(dispid_range_formular1c1local),  propget,helpstring("property FormulaR1C1Local")] HRESULT FormulaR1C1Local([out,retval] VARIANT* RHS);
@@ -1337,12 +1337,12 @@ import "wtypes.idl";
 		[id(dispid_range_item),  propget,helpstring("property Item")] HRESULT Item(
 			[in] VARIANT RowIndex,
 			[in,optional] VARIANT ColumnIndex,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 		[id(dispid_range_item),  propput,helpstring("property Item")] HRESULT Item(
 			[in] VARIANT RowIndex,
 			[in,optional] VARIANT ColumnIndex,
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //Justify
 		[id(dispid_range_justify),  helpstring("method Justify")] HRESULT Justify([out,retval] VARIANT* RHS);
@@ -1629,18 +1629,18 @@ import "wtypes.idl";
 //Value
 		[propget,id(dispid_range_value), helpstring("property Value")] HRESULT Value(
 			[in, optional] VARIANT varRangeValueDataType,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT *pvarValue);
 		[propput,id(dispid_range_value), helpstring("property Value")] HRESULT Value(
 			[in, optional] VARIANT varRangeValueDataType,
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT varValue);
 //Value2
 		[id(dispid_range_value2),  propget,helpstring("property Value2")] HRESULT Value2(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 		[id(dispid_range_value2),  propput,helpstring("property Value2")] HRESULT Value2(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //VerticalAlignment
 		[propget,id(dispid_range_verticalalignment), helpstring("property VerticalAlignment")] HRESULT VerticalAlignment([out, retval] XlVAlign *valign);
@@ -1922,14 +1922,14 @@ import "wtypes.idl";
 //Parent
 		[id(dispid_worksheet_parent),propget,helpstring("property Parent")] HRESULT Parent([out,retval] IDispatch** RHS);
 //Activate
-		[id(dispid_worksheet_activate),helpstring("method Activate")] HRESULT Activate([in] long lcid);
+		[id(dispid_worksheet_activate),helpstring("method Activate")] HRESULT Activate([in] LCID lcid);
 //Copy
 		[id(dispid_worksheet_copy),helpstring("method Copy")] HRESULT Copy(
 			[in,optional] VARIANT Before,
 			[in,optional] VARIANT After,
-			[in] long lcid);
+			[in] LCID lcid);
 //Delete
-		[id(dispid_worksheet_delete),helpstring("method Delete")] HRESULT Delete([in] long lcid);
+		[id(dispid_worksheet_delete),helpstring("method Delete")] HRESULT Delete([in] LCID lcid);
 //CodeName
 		[id(dispid_worksheet_codename),propget,helpstring("property CodeName")] HRESULT CodeName([out,retval] BSTR* RHS);
 //_CodeName
@@ -1937,13 +1937,13 @@ import "wtypes.idl";
 		[id(dispid_worksheet__codename),propput,helpstring("property _CodeName")] HRESULT _CodeName([in] BSTR RHS);
 //Index
 		[id(dispid_worksheet_index),propget,helpstring("property Index")] HRESULT Index(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] long* RHS);
 //Move
 		[id(dispid_worksheet_move),helpstring("method Move")] HRESULT Move(
 			[in,optional] VARIANT Before,
 			[in,optional] VARIANT After,
-			[in] long lcid);
+			[in] LCID lcid);
 //Name
 		[id(dispid_worksheet_name),propget,helpstring("property Name")] HRESULT Name([out,retval] BSTR* RHS);
 		[id(dispid_worksheet_name),propput,helpstring("property Name")] HRESULT Name([in] BSTR RHS);
@@ -1951,24 +1951,24 @@ import "wtypes.idl";
 		[id(dispid_worksheet_next),propget,helpstring("property Next")] HRESULT Next([out,retval] IDispatch** RHS);
 //OnDoubleClick
 		[id(dispid_worksheet_ondoubleclick),propget,hidden,helpstring("property OnDoubleClick")] HRESULT OnDoubleClick(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_worksheet_ondoubleclick),propput,hidden,helpstring("property OnDoubleClick")] HRESULT OnDoubleClick(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnSheetActivate
 		[id(dispid_worksheet_onsheetactivate),propget,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_worksheet_onsheetactivate),propput,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnSheetDeactivate
 		[id(dispid_worksheet_onsheetdeactivate),propget,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_worksheet_onsheetdeactivate),propput,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //PageSetup
 		[id(dispid_worksheet_pagesetup),propget,helpstring("property PageSetup")] HRESULT PageSetup([out,retval] IDispatch** RHS);
@@ -1983,11 +1983,11 @@ import "wtypes.idl";
 			[in,optional] VARIANT ActivePrinter,
 			[in,optional] VARIANT PrintToFile,
 			[in,optional] VARIANT Collate,
-			[in] long lcid);
+			[in] LCID lcid);
 //PrintPreview
 		[id(dispid_worksheet_printpreview),helpstring("method PrintPreview")] HRESULT PrintPreview(
 			[in,optional] VARIANT EnableChanges,
-			[in] long lcid);
+			[in] LCID lcid);
 //_Protect
 		[id(dispid_worksheet__protect),hidden,helpstring("method _Protect")] HRESULT _Protect(
 			[in,optional] VARIANT Password,
@@ -1995,22 +1995,22 @@ import "wtypes.idl";
 			[in,optional] VARIANT Contents,
 			[in,optional] VARIANT Scenarios,
 			[in,optional] VARIANT UserInterfaceOnly,
-			[in] long lcid);
+			[in] LCID lcid);
 //ProtectContents
 		[id(dispid_worksheet_protectcontents),propget,helpstring("property ProtectContents")] HRESULT ProtectContents(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //ProtectDrawingObjects
 		[id(dispid_worksheet_protectdrawingobjects),propget,helpstring("property ProtectDrawingObjects")] HRESULT ProtectDrawingObjects(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //ProtectionMode
 		[id(dispid_worksheet_protectionmode),propget,helpstring("property ProtectionMode")] HRESULT ProtectionMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //ProtectScenarios
 		[id(dispid_worksheet_protectscenarios),propget,helpstring("property ProtectScenarios")] HRESULT ProtectScenarios(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //_SaveAs
 		[id(dispid_worksheet__saveas),hidden,helpstring("method _SaveAs")] HRESULT _SaveAs(
@@ -2023,52 +2023,52 @@ import "wtypes.idl";
 			[in,optional] VARIANT AddToMru,
 			[in,optional] VARIANT TextCodepage,
 			[in,optional] VARIANT TextVisualLayout,
-			[in] long lcid);
+			[in] LCID lcid);
 //Select
 		[id(dispid_worksheet_select),helpstring("method Select")] HRESULT Select(
 			[in,optional] VARIANT Replace,
-			[in] long lcid);
+			[in] LCID lcid);
 //Unprotect
 		[id(dispid_worksheet_unprotect),helpstring("method Unprotect")] HRESULT Unprotect(
 			[in,optional] VARIANT Password,
-			[in] long lcid);
+			[in] LCID lcid);
 //Visible
 		[id(dispid_worksheet_visible),propget,helpstring("property Visible")] HRESULT Visible(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] XlSheetVisibility* RHS);
 		[id(dispid_worksheet_visible),propput,helpstring("property Visible")] HRESULT Visible(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlSheetVisibility RHS);
 //Shapes
 		[id(dispid_worksheet_shapes),propget,helpstring("property Shapes")] HRESULT Shapes([out,retval] IDispatch** RHS);
 //TransitionExpEval
 		[id(dispid_worksheet_transitionexpeval),propget,helpstring("property TransitionExpEval")] HRESULT TransitionExpEval(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_transitionexpeval),propput,helpstring("property TransitionExpEval")] HRESULT TransitionExpEval(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Arcs
 		[id(dispid_worksheet_arcs),hidden,helpstring("method Arcs")] HRESULT Arcs(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //AutoFilterMode
 		[id(dispid_worksheet_autofiltermode),propget,helpstring("property AutoFilterMode")] HRESULT AutoFilterMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_autofiltermode),propput,helpstring("property AutoFilterMode")] HRESULT AutoFilterMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //SetBackgroundPicture
 		[id(dispid_worksheet_setbackgroundpicture),helpstring("method SetBackgroundPicture")] HRESULT SetBackgroundPicture([in] BSTR Filename);
 //Buttons
 		[id(dispid_worksheet_buttons),hidden,helpstring("Buttons")] HRESULT Buttons(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Calculate
-		[id(dispid_worksheet_calculate),helpstring("method Calculate")] HRESULT Calculate([in] long lcid);
+		[id(dispid_worksheet_calculate),helpstring("method Calculate")] HRESULT Calculate([in] LCID lcid);
 //EnableCalculation
 		[id(dispid_worksheet_enablecalculation),propget,helpstring("property EnableCalculation")] HRESULT EnableCalculation([out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_enablecalculation),propput,helpstring("property EnableCalculation")] HRESULT EnableCalculation([in] VARIANT_BOOL RHS);
@@ -2077,12 +2077,12 @@ import "wtypes.idl";
 //ChartObjects
 		[id(dispid_worksheet_chartobjects),helpstring("method ChartObjects")] HRESULT ChartObjects(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //CheckBoxes
 		[id(dispid_worksheet_checkboxes),hidden,helpstring("method CheckBoxes")] HRESULT CheckBoxes(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //CheckSpelling
 		[id(dispid_worksheet_checkspelling),helpstring("method CheckSpelling")] HRESULT CheckSpelling(
@@ -2090,161 +2090,161 @@ import "wtypes.idl";
 			[in,optional] VARIANT IgnoreUppercase,
 			[in,optional] VARIANT AlwaysSuggest,
 			[in,optional] VARIANT SpellLang,
-			[in] long lcid);
+			[in] LCID lcid);
 //CircularReference
 		[id(dispid_worksheet_circularreference),propget,helpstring("property CircularReference")] HRESULT CircularReference(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch**/*IRange***/ RHS);
 //ClearArrows
-		[id(dispid_worksheet_cleararrows),helpstring("method ClearArrows")] HRESULT ClearArrows([in] long lcid);
+		[id(dispid_worksheet_cleararrows),helpstring("method ClearArrows")] HRESULT ClearArrows([in] LCID lcid);
 //Columns
 		[id(dispid_worksheet_columns),propget,helpstring("property Columns")] HRESULT Columns(
 			[in]VARIANT Column,
 			[out,retval] IDispatch**/*IRange***/ RHS);
 //ConsolidationFunction
 		[id(dispid_worksheet_consolidationfunction),propget,helpstring("property ConsolidationFunction")] HRESULT ConsolidationFunction(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] XlConsolidationFunction* RHS);
 //ConsolidationOptions
 		[id(dispid_worksheet_consolidationoptions),propget,helpstring("property ConsolidationOptions")] HRESULT ConsolidationOptions(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 //ConsolidationSources
 		[id(dispid_worksheet_consolidationsources),propget,helpstring("property ConsolidationSources")] HRESULT ConsolidationSources(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 //DisplayAutomaticPageBreaks
 		[id(dispid_worksheet_displayautomaticpagebreaks),propget,hidden,helpstring("property DisplayAutomaticPageBreaks")] HRESULT DisplayAutomaticPageBreaks(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_displayautomaticpagebreaks),propput,hidden,helpstring("property DisplayAutomaticPageBreaks")] HRESULT DisplayAutomaticPageBreaks(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Drawings
 		[id(dispid_worksheet_drawings),hidden,helpstring("method Drawings")] HRESULT Drawings(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //DrawingObjects
 		[id(dispid_worksheet_drawingobjects),hidden,helpstring("method DrawingObjects")] HRESULT DrawingObjects(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //DropDowns
 		[id(dispid_worksheet_dropdowns),hidden,helpstring("method DropDowns")] HRESULT DropDowns(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //EnableAutoFilter
 		[id(dispid_worksheet_enableautofilter),propget,helpstring("property EnableAutoFilter")] HRESULT EnableAutoFilter(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_enableautofilter),propput,helpstring("property EnableAutoFilter")] HRESULT EnableAutoFilter(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //EnableSelection
 		[id(dispid_worksheet_enableselection),propget,helpstring("property EnableSelection")] HRESULT EnableSelection([out,retval] XlEnableSelection* RHS);
 		[id(dispid_worksheet_enableselection),propput,helpstring("property EnableSelection")] HRESULT EnableSelection([in] XlEnableSelection RHS);
 //EnableOutlining
 		[id(dispid_worksheet_enableoutlining),propget,helpstring("property EnableOutlining")] HRESULT EnableOutlining(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_enableoutlining),propput,helpstring("property EnableOutlining")] HRESULT EnableOutlining(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //EnablePivotTable
 		[id(dispid_worksheet_enablepivottable),propget,helpstring("property EnablePivotTable")] HRESULT EnablePivotTable(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_enablepivottable),propput,helpstring("property EnablePivotTable")] HRESULT EnablePivotTable(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Evaluate
 		[id(dispid_worksheet_evaluate),helpstring("method Evaluate")] HRESULT Evaluate(
 			[in] VARIANT Name,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 //_Evaluate
 		[id(dispid_worksheet__evaluate),helpstring("method _Evaluate")] HRESULT _Evaluate(
 			[in] VARIANT Name,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 //FilterMode
 		[id(dispid_worksheet_filtermode),propget,helpstring("property FilterMode")] HRESULT FilterMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //ResetAllPageBreaks
 		[id(dispid_worksheet_resetallpagebreaks),helpstring("method ResetAllPageBreaks")] HRESULT ResetAllPageBreaks();
 //GroupBoxes
 		[id(dispid_worksheet_groupboxes),hidden,helpstring("method GroupBoxes")] HRESULT GroupBoxes(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //GroupObjects
 		[id(dispid_worksheet_groupobjects),hidden,helpstring("method roupObjects")] HRESULT GroupObjects(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Labels
 		[id(dispid_worksheet_labels),hidden,helpstring("method Labels")] HRESULT Labels(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Lines
 		[id(dispid_worksheet_lines),hidden,helpstring("method Lines")] HRESULT Lines(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //ListBoxes
 		[id(dispid_worksheet_listboxes),hidden,helpstring("method ListBoxes")] HRESULT ListBoxes(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Names
 		[id(dispid_worksheet_names),propget,helpstring("property Names")] HRESULT Names([out,retval] IDispatch** RHS);
 //OLEObjects
 		[id(dispid_worksheet_oleobjects),helpstring("method OLEObjects")] HRESULT OLEObjects(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //OnCalculate
 		[id(dispid_worksheet_oncalculate),propget,hidden,helpstring("property OnCalculate")] HRESULT OnCalculate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_worksheet_oncalculate),propput,hidden,helpstring("property OnCalculate")] HRESULT OnCalculate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnData
 		[id(dispid_worksheet_ondata),propget,hidden,helpstring("property OnData")] HRESULT OnData(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_worksheet_ondata),propput,hidden,helpstring("property OnData")] HRESULT OnData(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnEntry
 		[id(dispid_worksheet_onentry),propget,hidden,helpstring("property OnEntry")] HRESULT OnEntry(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_worksheet_onentry),propput,hidden,helpstring("property OnEntry")] HRESULT OnEntry(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OptionButtons
 		[id(dispid_worksheet_optionbuttons),hidden,helpstring("method OptionButtons")] HRESULT OptionButtons(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Outline
 		[id(dispid_worksheet_outline),propget,helpstring("property Outline")] HRESULT Outline([out,retval] IDispatch**/*IOutline***/ RHS);
 //Ovals
 		[id(dispid_worksheet_ovals),hidden,helpstring("method Ovals")] HRESULT Ovals(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Paste
 		[id(dispid_worksheet_paste),helpstring("method Paste")] HRESULT Paste(
 			[in,optional] VARIANT Destination,
 			[in,optional] VARIANT Link,
-			[in] long lcid);
+			[in] LCID lcid);
 //_PasteSpecial
 		[id(dispid_worksheet__pastespecial),hidden,helpstring("method _PasteSpecial")] HRESULT _PasteSpecial(
 			[in,optional] VARIANT Format,
@@ -2253,16 +2253,16 @@ import "wtypes.idl";
 			[in,optional] VARIANT IconFileName,
 			[in,optional] VARIANT IconIndex,
 			[in,optional] VARIANT IconLabel,
-			[in] long lcid);
+			[in] LCID lcid);
 //Pictures
 		[id(dispid_worksheet_pictures),hidden,helpstring("method Pictures")] HRESULT Pictures(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //PivotTables
 		[id(dispid_worksheet_pivottables),helpstring("method PivotTables")] HRESULT PivotTables(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //PivotTableWizard
 		[id(dispid_worksheet_pivottablewizard),helpstring("method PivotTableWizard")] HRESULT PivotTableWizard(
@@ -2282,7 +2282,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT PageFieldWrapCount,
 			[in,optional] VARIANT ReadData,
 			[in,optional] VARIANT Connection,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Range
 		[id(dispid_worksheet_range),propget,helpstring("property Range")] HRESULT Range(
@@ -2292,7 +2292,7 @@ import "wtypes.idl";
 //Rectangles
 		[id(dispid_worksheet_rectangles),hidden,helpstring("method Rectangles")] HRESULT Rectangles(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //Rows
 		[id(dispid_worksheet_rows),propget,helpstring("property Rows")] HRESULT Rows(
@@ -2301,7 +2301,7 @@ import "wtypes.idl";
 //Scenarios
 		[id(dispid_worksheet_scenarios),helpstring("method Scenarios")] HRESULT Scenarios(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //ScrollArea
 		[id(dispid_worksheet_scrollarea),propget,helpstring("property ScrollArea")] HRESULT ScrollArea([out,retval] BSTR* RHS);
@@ -2309,47 +2309,47 @@ import "wtypes.idl";
 //ScrollBars
 		[id(dispid_worksheet_scrollbars),hidden,helpstring("method crollBars")] HRESULT ScrollBars(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //ShowAllData
-		[id(dispid_worksheet_showalldata),helpstring("method ShowAllData")] HRESULT ShowAllData([in] long lcid);
+		[id(dispid_worksheet_showalldata),helpstring("method ShowAllData")] HRESULT ShowAllData([in] LCID lcid);
 //ShowDataForm
-		[id(dispid_worksheet_showdataform),helpstring("method ShowDataForm")] HRESULT ShowDataForm([in] long lcid);
+		[id(dispid_worksheet_showdataform),helpstring("method ShowDataForm")] HRESULT ShowDataForm([in] LCID lcid);
 //Spinners
 		[id(dispid_worksheet_spinners),hidden,helpstring("method Spinners")] HRESULT Spinners(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //StandardHeight
 		[id(dispid_worksheet_standardheight),propget,helpstring("property StandardHeight")] HRESULT StandardHeight(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] double* RHS);
 //StandardWidth
 		[id(dispid_worksheet_standardwidth),propget,helpstring("property StandardWidth")] HRESULT StandardWidth(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] double* RHS);
 		[id(dispid_worksheet_standardwidth),propput,helpstring("property StandardWidth")] HRESULT StandardWidth(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] double RHS);
 //TextBoxes
 		[id(dispid_worksheet_textboxes),hidden,helpstring("method TextBoxes")] HRESULT TextBoxes(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //TransitionFormEntry
 		[id(dispid_worksheet_transitionformentry),propget,helpstring("property TransitionFormEntry")] HRESULT TransitionFormEntry(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_transitionformentry),propput,helpstring("property TransitionFormEntry")] HRESULT TransitionFormEntry(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Type
 		[id(dispid_worksheet_type),propget,helpstring("property Type")] HRESULT Type(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] XlSheetType* RHS);
 //UsedRange
 		[id(dispid_worksheet_usedrange),propget,helpstring("property UsedRange")] HRESULT UsedRange(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch**/*IRange***/ RHS);
 //HPageBreaks
 		[id(dispid_worksheet_hpagebreaks),propget,helpstring("property HPageBreaks")] HRESULT HPageBreaks([out,retval] IDispatch** RHS);
@@ -2370,19 +2370,19 @@ import "wtypes.idl";
 		[id(dispid_worksheet_circleinvalid),helpstring("method CircleInvalid")] HRESULT CircleInvalid();
 //_DisplayRightToLeft
 		[id(dispid_worksheet__displayrighttoleft),propget,hidden,helpstring("property _DisplayRightToLeft")] HRESULT _DisplayRightToLeft(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] long* RHS);
 		[id(dispid_worksheet__displayrighttoleft),propput,hidden,helpstring("property _DisplayRightToLeft")] HRESULT _DisplayRightToLeft(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //AutoFilter
 		[id(dispid_worksheet_autofilter),propget,helpstring("property AutoFilter")] HRESULT AutoFilter([out,retval] IDispatch** RHS);
 //DisplayRightToLeft
 		[id(dispid_worksheet_displayrighttoleft),propget,helpstring("property DisplayRightToLeft")] HRESULT DisplayRightToLeft(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_worksheet_displayrighttoleft),propput,helpstring("property DisplayRightToLeft")] HRESULT DisplayRightToLeft(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Scripts
 		[id(dispid_worksheet_scripts),propget,helpstring("property Scripts")] HRESULT Scripts([out,retval] IDispatch** RHS);
@@ -2396,7 +2396,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT PrintToFile,
 			[in,optional] VARIANT Collate,
 			[in,optional] VARIANT PrToFileName,
-			[in] long lcid);
+			[in] LCID lcid);
 //_CheckSpelling
 		[id(dispid_worksheet__checkspelling),hidden,helpstring("method _CheckSpelling")] HRESULT _CheckSpelling(
 			[in,optional] VARIANT CustomDictionary,
@@ -2405,7 +2405,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT SpellLang,
 			[in,optional] VARIANT IgnoreFinalYaa,
 			[in,optional] VARIANT SpellScript,
-			[in] long lcid);
+			[in] LCID lcid);
 //Tab
 		[id(dispid_worksheet_tab),propget,helpstring("property Tab")] HRESULT Tab([out,retval] IDispatch** RHS);
 //MailEnvelope
@@ -2437,7 +2437,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT IconIndex,
 			[in,optional] VARIANT IconLabel,
 			[in,optional] VARIANT NoHTMLFormatting,
-			[in] long lcid);
+			[in] LCID lcid);
 //Protect
 		[id(dispid_worksheet_protect),helpstring("method Protect")] HRESULT Protect(
 			[in,optional] VARIANT Password,
@@ -2498,16 +2498,16 @@ import "wtypes.idl";
 		[id(dispid_sheets_copy), helpstring("method Copy")] HRESULT Copy(
 			[in, optional] VARIANT Before,
 			[in, optional] VARIANT After,
-			[in] long lcid);
+			[in] LCID lcid);
 //Count
 		[propget,id(dispid_sheets_count), helpstring("property Count")] HRESULT Count([out, retval] int *count);
 //Delete
-		[id(dispid_sheets_delete), helpstring("method Delete")] HRESULT Delete([in] long lcid);
+		[id(dispid_sheets_delete), helpstring("method Delete")] HRESULT Delete([in] LCID lcid);
 //FillAcrossSheets
 		[id(dispid_sheets_fillacrosssheets), helpstring("method FillAcrossSheets")] HRESULT FillAcrossSheets(
 			[in] IDispatch*/*IRange**/ IRange,
 			[in] XlFillWith Type,
-			[in] long lcid);
+			[in] LCID lcid);
 //Item
 		[propget,id(dispid_sheets_item), helpstring("property Item")] HRESULT Item(
 			[in] VARIANT varIndex, 
@@ -2516,7 +2516,7 @@ import "wtypes.idl";
 		[id(dispid_sheets_move), helpstring("method move")] HRESULT Move(
 			[in, optional] VARIANT Before,
 			[in, optional] VARIANT After,
-			[in] long lcid);
+			[in] LCID lcid);
 //_NewEnum
 		[id(dispid_sheets__newenum), propget, helpstring("property _NewEnum")] HRESULT _NewEnum([out, retval] IUnknown** RHS);
 //_PrintOut
@@ -2528,25 +2528,25 @@ import "wtypes.idl";
 			[in, optional] VARIANT ActivePrinter,
 			[in, optional] VARIANT PrintToFile,
 			[in, optional] VARIANT Collate,
-			[in] long lcid);
+			[in] LCID lcid);
 //PrintPreview
 		[id(dispid_sheets_printpreview), helpstring("method PrintPreview")] HRESULT PrintPreview(
 			[in, optional] VARIANT EnableChanges,
-			[in] long lcid);
+			[in] LCID lcid);
 //Select
 		[id(dispid_sheets_select), helpstring("method Select")] HRESULT Select(
 			[in, optional] VARIANT Replace,
-			[in] long lcid);
+			[in] LCID lcid);
 //HPageBreaks
 		[id(dispid_sheets_hpagebreaks), propget, helpstring("property HPageBreaks")] HRESULT HPageBreaks([out, retval] IDispatch** RHS);
 //VPageBreaks
 		[id(dispid_sheets_vpagebreaks), propget, helpstring("property VPageBreaks")] HRESULT VPageBreaks([out, retval] IDispatch** RHS);
 //Visible
 		[id(dispid_sheets_visible), propget, helpstring("property Visible")] HRESULT Visible(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 		[id(dispid_sheets_visible), propput, helpstring("property Visible")] HRESULT Visible(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //_Default
 		[propget,id(dispid_sheets__default), helpstring("property _Default")] HRESULT _Default(
@@ -2563,7 +2563,7 @@ import "wtypes.idl";
             [in, optional] VARIANT PrintToFile,
             [in, optional] VARIANT Collate,
             [in, optional] VARIANT PrToFileName,
-            [in] long lcid);
+            [in] LCID lcid);
 	};
 
 	[
@@ -2585,17 +2585,17 @@ import "wtypes.idl";
 		[id(dispid_workbook_acceptlabelsinformulas),propget,helpstring("property AcceptLabelsInFormulas")] HRESULT AcceptLabelsInFormulas([out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_acceptlabelsinformulas),propput,helpstring("property AcceptLabelsInFormulas")] HRESULT AcceptLabelsInFormulas([in] VARIANT_BOOL RHS);
 //Activate
-		[id(dispid_workbook_activate),helpstring("method Activate")] HRESULT Activate([in] long lcid);
+		[id(dispid_workbook_activate),helpstring("method Activate")] HRESULT Activate([in] LCID lcid);
 //ActiveChart
 		[id(dispid_workbook_activeChart),propget,helpstring("property ActiveChart")] HRESULT ActiveChart([out,retval] IDispatch** RHS);
 //ActiveSheet
 		[id(dispid_workbook_activeSheet),propget,helpstring("property ActiveSheet")] HRESULT ActiveSheet([out,retval] IDispatch** RHS);
 //Author
 		[id(dispid_workbook_author),propget,hidden,helpstring("property Author")] HRESULT Author(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_author),propput,hidden,helpstring("property Author")] HRESULT Author(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //AutoUpdateFrequency
 		[id(dispid_workbook_autoupdatefrequency),propget,helpstring("property AutoUpdateFrequency")] HRESULT AutoUpdateFrequency([out,retval] long* RHS);
@@ -2613,13 +2613,13 @@ import "wtypes.idl";
 			[in] XlFileAccess Mode,
 			[in,optional] VARIANT WritePassword,
 			[in,optional] VARIANT Notify,
-			[in] long lcid);
+			[in] LCID lcid);
 //ChangeLink
 		[id(dispid_workbook_changelink),helpstring("method ChangeLink")] HRESULT ChangeLink(
 			[in] BSTR Name,
 			[in] BSTR NewName,
 			[in] XlLinkType Type,
-			[in] long lcid);
+			[in] LCID lcid);
 //Charts
 		[id(dispid_workbook_charts),propget,helpstring("property Charts")] HRESULT Charts([out,retval] IDispatch**/*ISheets***/ RHS);
 //Close
@@ -2627,7 +2627,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT SaveChanges,
 			[in,optional] VARIANT Filename,
 			[in,optional] VARIANT RouteWorkbook,
-			[in] long lcid);
+			[in] LCID lcid);
 //CodeName
 		[id(dispid_workbook_codename),propget,helpstring("property CodeName")] HRESULT CodeName([out,retval] BSTR* RHS);
 //_CodeName
@@ -2636,20 +2636,20 @@ import "wtypes.idl";
 //Colors
 		[id(dispid_workbook_colors),propget,helpstring("property Colors")] HRESULT Colors(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 		[id(dispid_workbook_colors),propput,helpstring("property Colors")] HRESULT Colors(
 			[in,optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //CommandBars
 		[id(dispid_workbook_commandbars),propget,helpstring("property CommandBars")] HRESULT CommandBars([out,retval] IDispatch**/*_CommandBars***/ RHS);
 //Comments
 		[id(dispid_workbook_comments),propget,hidden,helpstring("property Comments")] HRESULT Comments(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_comments),propput,hidden,helpstring(" property Comments")] HRESULT Comments(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //ConflictResolution
 		[id(dispid_workbook_conflictresolution),propget,helpstring("property ConflictResolution")]
@@ -2659,71 +2659,71 @@ import "wtypes.idl";
 		[id(dispid_workbook_container),propget,helpstring("property Container")] HRESULT Container([out,retval] IDispatch** RHS);
 //CreateBackup
 		[id(dispid_workbook_createbackup),propget,helpstring("property CreateBackup")] HRESULT CreateBackup(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //CustomDocumentProperties
 		[id(dispid_workbook_customdocumentproperties),propget,helpstring("property CustomDocumentProperties")] HRESULT CustomDocumentProperties([out,retval] IDispatch** RHS);
 //Date1904
 		[id(dispid_workbook_date1904),propget,helpstring("property Date1904")] HRESULT Date1904(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_date1904),propput,helpstring("property Date1904")] HRESULT Date1904(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //DeleteNumberFormat
 		[id(dispid_workbook_deletenumberformat),helpstring("method DeleteNumberFormat")] HRESULT DeleteNumberFormat(
 			[in] BSTR NumberFormat,
-			[in] long lcid);
+			[in] LCID lcid);
 //DialogSheets
 		[id(dispid_workbook_dialogsheets),propget,hidden,helpstring("property DialogSheets")] HRESULT DialogSheets([out,retval] IDispatch**/*ISheets***/ RHS);
 //DisplayDrawingObjects
 		[id(dispid_workbook_displaydrawingobjects),propget,helpstring("property DisplayDrawingObjects")] HRESULT DisplayDrawingObjects(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] XlDisplayDrawingObjects* RHS);
 		[id(dispid_workbook_displaydrawingobjects),propput,helpstring("property DisplayDrawingObjects")] HRESULT DisplayDrawingObjects(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlDisplayDrawingObjects RHS);
 //ExclusiveAccess
 		[id(dispid_workbook_exclusiveaccess),helpstring("method ExclusiveAccess")] HRESULT ExclusiveAccess(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //FileFormat
 		[id(dispid_workbook_fileformat),propget,helpstring("property FileFormat")] HRESULT FileFormat(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] XlFileFormat* RHS);
 //ForwardMailer
-		[id(dispid_workbook_forwardmailer),helpstring("method ForwardMailer")] HRESULT ForwardMailer([in] long lcid);
+		[id(dispid_workbook_forwardmailer),helpstring("method ForwardMailer")] HRESULT ForwardMailer([in] LCID lcid);
 //FullName
 		[id(dispid_workbook_fullname),propget,helpstring("property FullName")] HRESULT FullName(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 //HasMailer
 		[id(dispid_workbook_hasmailer),propget,hidden,helpstring("property HasMailer")] HRESULT HasMailer(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_hasmailer),propput,hidden,helpstring("property HasMailer")] HRESULT HasMailer(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //HasPassword
 		[id(dispid_workbook_haspassword),propget,helpstring("property HasPassword")] HRESULT HasPassword(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //HasRoutingSlip
 		[id(dispid_workbook_hasroutingslip),propget,helpstring("property HasRoutingSlip")] HRESULT HasRoutingSlip(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_hasroutingslip),propput,helpstring("property HasRoutingSlip")] HRESULT HasRoutingSlip(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //IsAddin
 		[id(dispid_workbook_isaddin),propget,helpstring("property IsAddin")] HRESULT IsAddin([out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_isaddin),propput,helpstring("property IsAddin")] HRESULT IsAddin([in] VARIANT_BOOL RHS);
 //Keywords
 		[id(dispid_workbook_keywords),propget,hidden,helpstring("property Keywords")] HRESULT Keywords(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_keywords),propput,hidden,helpstring("property Keywords")] HRESULT Keywords(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //LinkInfo
 		[id(dispid_workbook_linkinfo),helpstring("method LinkInfo")] HRESULT LinkInfo(
@@ -2731,12 +2731,12 @@ import "wtypes.idl";
 			[in] XlLinkInfo LinkInfo,
 			[in,optional] VARIANT Type,
 			[in,optional] VARIANT EditionRef,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 //LinkSources
 		[id(dispid_workbook_linksources),helpstring("method LinkSources")] HRESULT LinkSources(
 			[in,optional] VARIANT Type,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 //Mailer
 		[id(dispid_workbook_mailer),propget,helpstring("property Mailer")] HRESULT Mailer([out,retval] IDispatch** RHS);
@@ -2746,7 +2746,7 @@ import "wtypes.idl";
 		[id(dispid_workbook_modules),propget,hidden,helpstring("property Modules")] HRESULT Modules([out,retval] IDispatch**/*ISheets***/ RHS);
 //MultiUserEditing
 		[id(dispid_workbook_multiuserediting),propget,helpstring("property MultiUserEditing")] HRESULT MultiUserEditing(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //Name
 		[id(dispid_workbook_name),propget,helpstring("property Name")] HRESULT Name([out,retval] BSTR* RHS);
@@ -2754,38 +2754,38 @@ import "wtypes.idl";
 		[id(dispid_workbook_names),propget,helpstring("property Names")] HRESULT Names([out,retval] IDispatch** RHS);
 //NewWindow
 		[id(dispid_workbook_newwindow),helpstring("method NewWindow")] HRESULT NewWindow(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] IDispatch** RHS);
 //OnSave
 		[id(dispid_workbook_onsave),propget,hidden,helpstring("property OnSave")] HRESULT OnSave(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_onsave),propput,hidden,helpstring("property OnSave")] HRESULT OnSave(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnSheetActivate
 		[id(dispid_workbook_onsheetactivate),propget,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_onsheetactivate),propput,hidden,helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnSheetDeactivate
 		[id(dispid_workbook_onsheetdeactivate),propget,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_onsheetdeactivate),propput,hidden,helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OpenLinks
 		[id(dispid_workbook_openlinks),helpstring("method OpenLinks")] HRESULT OpenLinks(
 			[in] BSTR Name,
 			[in,optional] VARIANT ReadOnly,
 			[in,optional] VARIANT Type,
-			[in] long lcid);
+			[in] LCID lcid);
 //Path
 		[id(dispid_workbook_path),propget,helpstring("property Path")] HRESULT Path(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 //PersonalViewListSettings
 		[id(dispid_workbook_personalviewlistsettings),propget,helpstring("property PersonalViewListSettings")] HRESULT PersonalViewListSettings([out,retval] VARIANT_BOOL* RHS);
@@ -2798,13 +2798,13 @@ import "wtypes.idl";
 //Post
 		[id(dispid_workbook_post),helpstring("method Post")] HRESULT Post(
 			[in,optional] VARIANT DestName,
-			[in] long lcid);
+			[in] LCID lcid);
 //PrecisionAsDisplayed
 		[id(dispid_workbook_precisionasdisplayed),propget,helpstring("property PrecisionAsDisplayed")] HRESULT PrecisionAsDisplayed(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_precisionasdisplayed),propput,helpstring("property PrecisionAsDisplayed")] HRESULT PrecisionAsDisplayed(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //_PrintOut
 		[id(dispid_workbook__printout),hidden,helpstring("method _PrintOut")] HRESULT _PrintOut(
@@ -2815,11 +2815,11 @@ import "wtypes.idl";
 			[in,optional] VARIANT ActivePrinter,
 			[in,optional] VARIANT PrintToFile,
 			[in,optional] VARIANT Collate,
-			[in] long lcid);
+			[in] LCID lcid);
 //PrintPreview
 		[id(dispid_workbook_printpreview),helpstring("method PrintPreview")] HRESULT PrintPreview(
 			[in,optional] VARIANT EnableChanges,
-			[in] long lcid);
+			[in] LCID lcid);
 //_Protect
 		[id(dispid_workbook__protect),hidden,helpstring("method _Protect")] HRESULT _Protect(
 			[in,optional] VARIANT Password,
@@ -2839,38 +2839,38 @@ import "wtypes.idl";
 		[id(dispid_workbook_protectwindows),propget,helpstring("property ProtectWindows")] HRESULT ProtectWindows([out,retval] VARIANT_BOOL* RHS);
 //ReadOnly
 		[id(dispid_workbook_readonly),propget,helpstring("property ReadOnly")] HRESULT ReadOnly(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //_ReadOnlyRecommended
 		[id(dispid_workbook__readonlyrecommended),propget,hidden,helpstring("property _ReadOnlyRecommended")] HRESULT _ReadOnlyRecommended(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //RefreshAll
 		[id(dispid_workbook_refreshall),helpstring("method RefreshAll")] HRESULT RefreshAll();
 //Reply
-		[id(dispid_workbook_reply),helpstring("method Reply")] HRESULT Reply([in] long lcid);
+		[id(dispid_workbook_reply),helpstring("method Reply")] HRESULT Reply([in] LCID lcid);
 //ReplyAll
-		[id(dispid_workbook_replyall),helpstring("method ReplyAll")] HRESULT ReplyAll([in] long lcid);
+		[id(dispid_workbook_replyall),helpstring("method ReplyAll")] HRESULT ReplyAll([in] LCID lcid);
 //RemoveUser
 		[id(dispid_workbook_removeuser),helpstring("method RemoveUser")] HRESULT RemoveUser([in] long Index);
 //RevisionNumber
 		[id(dispid_workbook_revisionnumber),propget,helpstring("property RevisionNumber")] HRESULT RevisionNumber(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] long* RHS);
 //Route
-		[id(dispid_workbook_route),helpstring("method Route")] HRESULT Route([in] long lcid);
+		[id(dispid_workbook_route),helpstring("method Route")] HRESULT Route([in] LCID lcid);
 //Routed
 		[id(dispid_workbook_routed),propget,helpstring("property Routed")] HRESULT Routed(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //RoutingSlip
 		[id(dispid_workbook_routingslip),propget,helpstring("property RoutingSlip")] HRESULT RoutingSlip([out,retval] IDispatch** RHS);
 //RunAutoMacros
 		[id(dispid_workbook_runautomacros),helpstring("method RunAutoMacros")] HRESULT RunAutoMacros(
 			[in] XlRunAutoMacro Which,
-			[in] long lcid);
+			[in] LCID lcid);
 //Save
-		[id(dispid_workbook_save),helpstring("method Save")] HRESULT Save([in] long lcid);
+		[id(dispid_workbook_save),helpstring("method Save")] HRESULT Save([in] LCID lcid);
 //_SaveAs
 		[id(dispid_workbook__saveas),hidden,helpstring("method _SaveAs")] HRESULT _SaveAs(
 			[in,optional] VARIANT Filename,
@@ -2884,92 +2884,92 @@ import "wtypes.idl";
 			[in,optional] VARIANT AddToMru,
 			[in,optional] VARIANT TextCodepage,
 			[in,optional] VARIANT TextVisualLayout,
-			[in] long lcid);
+			[in] LCID lcid);
 //SaveCopyAs
 		[id(dispid_workbook_savecopyas),helpstring("method SaveCopyAs")] HRESULT SaveCopyAs(
 			[in,optional] VARIANT Filename,
-			[in] long lcid);
+			[in] LCID lcid);
 //Saved
 		[id(dispid_workbook_saved),propget,helpstring("property Saved")] HRESULT Saved(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_saved),propput,helpstring("property Saved")] HRESULT Saved(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //SaveLinkValues
 		[id(dispid_workbook_savelinkvalues),propget,helpstring("property SaveLinkValues")] HRESULT SaveLinkValues(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_savelinkvalues),propput,helpstring("property SaveLinkValues")] HRESULT SaveLinkValues(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //SendMail
 		[id(dispid_workbook_sendmail),helpstring("method SendMail")] HRESULT SendMail(
 			[in] VARIANT Recipients,
 			[in,optional] VARIANT Subject,
 			[in,optional] VARIANT ReturnReceipt,
-			[in] long lcid);
+			[in] LCID lcid);
 //SendMailer
 		[id(dispid_workbook_sendmailer),helpstring("method SendMailer")] HRESULT SendMailer(
 			[in,optional] VARIANT FileFormat,
 			[in,defaultvalue(-4143)] XlPriority Priority,
-			[in] long lcid);
+			[in] LCID lcid);
 //SetLinkOnData
 		[id(dispid_workbook_setLinkondata),helpstring("method SetLinkOnData")] HRESULT SetLinkOnData(
 			[in] BSTR Name,
 			[in,optional] VARIANT Procedure,
-			[in] long lcid);
+			[in] LCID lcid);
 //Sheets
 		[id(dispid_workbook_sheets),propget,helpstring("property Sheets")] HRESULT Sheets([out,retval] IDispatch**/*ISheets***/ RHS);
 //ShowConflictHistory
 		[id(dispid_workbook_showconflicthistory),propget,helpstring("property ShowConflictHistory")] HRESULT ShowConflictHistory(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_showconflicthistory),propput,helpstring("property ShowConflictHistory")] HRESULT ShowConflictHistory(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Styles
 		[id(dispid_workbook_styles),propget,helpstring("property Styles")] HRESULT Styles([out,retval] IDispatch** RHS);
 //Subject
 		[id(dispid_workbook_subject),propget,hidden,helpstring("property Subject")] HRESULT Subject(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_subject),propput,hidden,helpstring("property Subject")] HRESULT Subject(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //Title
 		[id(dispid_workbook_title),propget,hidden,helpstring("property Title")] HRESULT Title(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 		[id(dispid_workbook_title),propput,hidden,helpstring("property Title")] HRESULT Title(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //Unprotect
 		[id(dispid_workbook_unprotect),helpstring("method Unprotect")] HRESULT Unprotect(
 			[in,optional] VARIANT Password,
-			[in] long lcid);
+			[in] LCID lcid);
 //UnprotectSharing
 		[id(dispid_workbook_unprotectsharing),helpstring("method UnprotectSharing")] HRESULT UnprotectSharing([in,optional] VARIANT SharingPassword);
 //UpdateFromFile
-		[id(dispid_workbook_updatefromfile),helpstring("method UpdateFromFile")] HRESULT UpdateFromFile([in] long lcid);
+		[id(dispid_workbook_updatefromfile),helpstring("method UpdateFromFile")] HRESULT UpdateFromFile([in] LCID lcid);
 //UpdateLink
 		[id(dispid_workbook_updatelink),helpstring("method UpdateLink")] HRESULT UpdateLink(
 			[in,optional] VARIANT Name,
 			[in,optional] VARIANT Type,
-			[in] long lcid);
+			[in] LCID lcid);
 //UpdateRemoteReferences
 		[id(dispid_workbook_updateremotereferences),propget,helpstring("property UpdateRemoteReferences")] HRESULT UpdateRemoteReferences(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_updateremotereferences),propput,helpstring("property UpdateRemoteReferences")] HRESULT UpdateRemoteReferences(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //UserControl
 		[id(dispid_workbook_usercontrol),propget,hidden,helpstring("property UserControl")] HRESULT UserControl([out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_usercontrol),propput,hidden,helpstring("property UserControl")] HRESULT UserControl([in] VARIANT_BOOL RHS);
 //UserStatus
 		[id(dispid_workbook_userstatus),propget,helpstring("property UserStatus")] HRESULT UserStatus(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT* RHS);
 //CustomViews
 		[id(dispid_workbook_customviews),propget,helpstring("property CustomViews")] HRESULT CustomViews([out,retval] IDispatch** RHS);
@@ -2979,11 +2979,11 @@ import "wtypes.idl";
 		[id(dispid_workbook_worksheets),propget,helpstring("property Worksheets")] HRESULT Worksheets([out,retval] IDispatch**/*ISheets***/ RHS);
 //WriteReserved
 		[id(dispid_workbook_writereserved),propget,helpstring("property WriteReserved")] HRESULT WriteReserved(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 //WriteReservedBy
 		[id(dispid_workbook_writereservedby),propget,helpstring("property WriteReservedBy")] HRESULT WriteReservedBy(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 //Excel4IntlMacroSheets
 		[id(dispid_workbook_excel4intlmacrosheets),propget,helpstring("property Excel4IntlMacroSheets")] HRESULT Excel4IntlMacroSheets([out,retval] IDispatch**/*ISheets***/ RHS);
@@ -3038,7 +3038,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT PageFieldWrapCount,
 			[in,optional] VARIANT ReadData,
 			[in,optional] VARIANT Connection,
-			[in] long lcid);
+			[in] LCID lcid);
 //ResetColors
 		[id(dispid_workbook_resetcolors),helpstring("method ResetColors")] HRESULT ResetColors();
 //VBProject
@@ -3066,7 +3066,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT PrintToFile,
 			[in,optional] VARIANT Collate,
 			[in,optional] VARIANT PrToFileName,
-			[in] long lcid);
+			[in] LCID lcid);
 //WebPagePreview
 		[id(dispid_workbook_webpagepreview),helpstring("Wmethod ebPagePreview")] HRESULT WebPagePreview();
 //PublishObjects
@@ -3114,7 +3114,7 @@ import "wtypes.idl";
 			[in,optional] VARIANT TextCodepage,
 			[in,optional] VARIANT TextVisualLayout,
 			[in,optional] VARIANT Local,
-			[in] long lcid);
+			[in] LCID lcid);
 //EnableAutoRecover
 		[id(dispid_workbook_enableautorecover),propget,helpstring("property EnableAutoRecover")] HRESULT EnableAutoRecover([out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_enableautorecover),propput,helpstring("property EnableAutoRecover")] HRESULT EnableAutoRecover([in] VARIANT_BOOL RHS);
@@ -3123,7 +3123,7 @@ import "wtypes.idl";
 		[id(dispid_workbook_removepersonalinformation),propput,helpstring("property RemovePersonalInformation")] HRESULT RemovePersonalInformation([in] VARIANT_BOOL RHS);
 //FullNameURLEncoded
 		[id(dispid_workbook_fullnameurlencoded),propget,helpstring("property FullNameURLEncoded")] HRESULT FullNameURLEncoded(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out,retval] BSTR* RHS);
 //CheckIn
 		[id(dispid_workbook_checkin),helpstring("method CheckIn")] HRESULT CheckIn(
@@ -3243,10 +3243,10 @@ import "wtypes.idl";
 		[propget,id(dispid_name_index), helpstring("property Index")] HRESULT Index([out, retval] int *value);
 //Category
 		[propget,id(dispid_name_category), helpstring("property Category")] HRESULT Category(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR *value);
 		[propput,id(dispid_name_category), helpstring("property Category")] HRESULT Category(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR value);
 //CategoryLocal
 		[propget,id(dispid_name_categorylocal), helpstring("property CategoryLocal")] HRESULT CategoryLocal([out, retval] BSTR *value);
@@ -3258,17 +3258,17 @@ import "wtypes.idl";
 		[propput,id(dispid_name_macrotype), helpstring("property MacroType")] HRESULT MacroType([in] XlXLMMacroType value);
 //Name
 		[propget,id(dispid_name_name), helpstring("property Name")] HRESULT Name(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR *value);
 		[propput,id(dispid_name_name), helpstring("property Name")] HRESULT Name(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR value);
 //RefersTo
 		[propget,id(dispid_name_refersto), helpstring("property RefersTo")] HRESULT RefersTo(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT *value);
 		[propput,id(dispid_name_refersto), helpstring("property RefersTo")] HRESULT RefersTo(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT value);
 //ShortcutKey
 		[propget,id(dispid_name_shortcutkey), helpstring("property ShortcutKey")] HRESULT ShortcutKey([out, retval] BSTR *value);
@@ -3287,10 +3287,10 @@ import "wtypes.idl";
 		[propput,id(dispid_name_referstolocal), helpstring("property RefersToLocal")] HRESULT RefersToLocal([in] VARIANT value);
 //RefersToR1C1
 		[propget,id(dispid_name_referstor1c1), helpstring("property RefersToR1C1")] HRESULT RefersToR1C1(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT *value);
 		[propput,id(dispid_name_referstor1c1), helpstring("property RefersToR1C1")] HRESULT RefersToR1C1(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT value);
 //RefersToR1C1Local
 		[propget,id(dispid_name_referstor1c1local), helpstring("property RefersToR1C1Local")] HRESULT RefersToR1C1Local([out, retval] VARIANT *value);
@@ -3364,7 +3364,7 @@ import "wtypes.idl";
 //Add 	Creates a new workbook. The new workbook becomes the active workbook. Returns a Workbook object.
 		[id(dispid_workbooks_Add), helpstring("method Add")] HRESULT Add([in, optional] VARIANT varTemplate, [out, retval] IDispatch **ppWorkbook);
 //Close 	Closes the object. 
-		[id(dispid_workbooks_Close), helpstring("method Close")] HRESULT Close([in] long lcid);
+		[id(dispid_workbooks_Close), helpstring("method Close")] HRESULT Close([in] LCID lcid);
 //Count
 		[propget,id(dispid_workbooks_Count), helpstring("property Count")] HRESULT Count([out, retval] int *count);
 //Item
@@ -3761,10 +3761,10 @@ import "wtypes.idl";
 		[id(dispid_application_activemenubar), propget, hidden, helpstring("property ActiveMenuBar")]HRESULT ActiveMenuBar([out, retval] IDispatch** RHS);
 //ActivePrinter Returns or sets the name of the active printer.
 		[id(dispid_application_activeprinter), propget, helpstring("property ActivePrinter")] HRESULT ActivePrinter(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_activeprinter), propput, helpstring("property ActivePrinter")] HRESULT ActivePrinter(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //ActiveSheet 	Returns an object that represents the active sheet (the sheet on top) in the active workbook or in the specified window or workbook. Returns Nothing if no sheet is active.
 		[propget,id(dispid_application_activesheet),helpstring("property ActiveSheet")] HRESULT ActiveSheet([out, retval] IDispatch** RHS);
@@ -3777,7 +3777,7 @@ import "wtypes.idl";
 //Assistant 	Returns an Microsoft.Office.Core.Assistant object for Microsoft Excel.
 		[id(dispid_application_assistant), propget, helpstring("property Assistant")] HRESULT Assistant([out, retval] IDispatch** RHS);
 //Calculate 	Calculates all open workbooks 
-		[id(dispid_application_calculate), helpstring("method Calculate")] HRESULT Calculate([in] long lcid);
+		[id(dispid_application_calculate), helpstring("method Calculate")] HRESULT Calculate([in] LCID lcid);
 //Cells 	Returns a Range object that represents all the cells on the active worksheet. If the active document isn?t a worksheet, this property fails.
 		[propget,id(dispid_application_cells), helpstring("property Cells")] HRESULT Cells([out, retval] IDispatch **ppRange);
 //Charts 	Returns a Sheets collection that represents all the chart sheets in the active workbook.
@@ -3789,51 +3789,51 @@ import "wtypes.idl";
 		[id(dispid_application_commandbars), propget, helpstring("property CommandBars")] HRESULT CommandBars([out, retval] IDispatch** RHS);
 //DDEAppReturnCode 	Returns the application-specific DDE return code that was contained in the last DDE acknowledge message received by Microsoft Excel.
 		[id(dispid_application_ddeappreturncode), propget, helpstring("property DDEAppReturnCode")] HRESULT DDEAppReturnCode(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[out, retval] long* RHS);
 //DDEExecute 	Runs a command or performs some other action or actions in another application by way of the specified DDE channel. 
 		[id(dispid_application_ddeexecute), helpstring("method DDEExecute")] HRESULT DDEExecute(
 			[in] long Channel,
 			[in] BSTR String,
-			[in] long lcid);
+			[in] LCID lcid);
 //DDEInitiate 	Opens a DDE channel to an application. 
 		[id(dispid_application_ddeinitiate), helpstring("method DDEInitiate")] HRESULT DDEInitiate(
 			[in] BSTR App,
 			[in] BSTR Topic,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 //DDEPoke 	Sends data to an application. 
 		[id(dispid_application_ddepoke), helpstring("method DDEPoke")] HRESULT DDEPoke(
 			[in] long Channel,
 			[in] VARIANT Item,
 			[in] VARIANT Data,
-			[in] long lcid);
+			[in] LCID lcid);
 //DDERequest 	Requests information from the specified application. This method always returns an array. 
 		[id(dispid_application_dderequest), helpstring("method DDERequest")] HRESULT DDERequest(
 			[in] long Channel,
 			[in] BSTR Item,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //DDETerminate 	Closes a channel to another application. 
 		[id(dispid_application_ddeterminate), helpstring("method DDETerminate")] HRESULT DDETerminate(
 			[in] long Channel,
-			[in] long lcid);
+			[in] LCID lcid);
 //DialogSheets
 		[id(dispid_application_dialogsheets), propget, hidden, helpstring("property DialogSheets")] HRESULT DialogSheets([out, retval] IDispatch** RHS);
 //Evaluate	Converts a Microsoft Excel name to an object or a value.
 		[id(dispid_application_evaluate), helpstring("method Evaluate")] HRESULT Evaluate(
 			[in] VARIANT Name,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //_Evaluate
 		[id(dispid_application__evaluate), helpstring("method _Evaluate")] HRESULT _Evaluate(
 			[in] VARIANT Name,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //ExecuteExcel4Macro 	Runs a Microsoft Excel 4.0 macro function, and then returns the result of the function. The return type depends on the function. 
 		[id(dispid_application_evaluateexcel4macro), helpstring("method ExecuteExcel4Macro")] HRESULT ExecuteExcel4Macro(
 			[in] BSTR String,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //Intersect 	Returns a Range object that represents the rectangular intersection of two or more ranges. 
 		[id(dispid_application_intersect), helpstring("method Intersect")] HRESULT Intersect(
@@ -3867,7 +3867,7 @@ import "wtypes.idl";
 			[in, optional] VARIANT Arg28,
 			[in, optional] VARIANT Arg29,
 			[in, optional] VARIANT Arg30,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] /*IRange*/IDispatch** RHS);
 //MenuBars
 		[id(dispid_application_menubars), propget, hidden, helpstring("property MenuBars")] HRESULT MenuBars([out, retval] IDispatch** RHS);
@@ -3947,7 +3947,7 @@ import "wtypes.idl";
 			[in, optional] VARIANT Arg28,
 			[in, optional] VARIANT Arg29,
 			[in, optional] VARIANT Arg30,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //Selection 	Returns the selected object in the active window.
 		[propget,id(dispid_application_selection), helpstring("property Selection")] HRESULT Selection([out, retval] IDispatch **ppRange);
@@ -3955,7 +3955,7 @@ import "wtypes.idl";
 		[id(dispid_application_sendkeys), helpstring("method SendKeys")] HRESULT SendKeys(
 			[in] VARIANT Keys,
 			[in, optional] VARIANT Wait,
-			[in] long lcid);
+			[in] LCID lcid);
 //Sheets 	Returns a Sheets collection that represents all the worksheets in the active workbook.
 		[propget,id(dispid_application_sheets), helpstring("property Sheets")] HRESULT Sheets([out, retval] IDispatch **ppSheets);
 //ShortcutMenus
@@ -3964,7 +3964,7 @@ import "wtypes.idl";
 			[out, retval] IDispatch** RHS);
 //ThisWorkbook 	Returns a Workbook object that represents the workbook where the current macro code is running.
 		[id(dispid_application_thisworkbook), propget, helpstring("property ThisWorkbook")] HRESULT ThisWorkbook(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] /*IWorkbook*/IDispatch** RHS);
 //Toolbars
 		[id(dispid_application_toolbars), propget, hidden, helpstring("property Toolbars")] HRESULT Toolbars([out, retval] IDispatch** RHS);
@@ -4000,7 +4000,7 @@ import "wtypes.idl";
 			[in, optional] VARIANT Arg28,
 			[in, optional] VARIANT Arg29,
 			[in, optional] VARIANT Arg30,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] /*IRange*/IDispatch** RHS);
 //Windows 	Returns a Windows collection that represents all the windows in all the workbooks.
 		[id(dispid_application_windows), propget, helpstring("property Windows")] HRESULT Windows([out, retval] IDispatch** RHS);
@@ -4017,112 +4017,112 @@ import "wtypes.idl";
 //ActivateMicrosoftApp 	Activates a Microsoft application. If the application is already running, this method activates the running application. If the application isn't running, this method starts a new instance of the application. 
 		[id(dispid_application_activatemicrosoftapp), helpstring("method ActivateMicrosoftApp")] HRESULT ActivateMicrosoftApp(
 			[in] XlMSApplication Index,
-			[in] long lcid);
+			[in] LCID lcid);
 //AddChartAutoFormat 	Adds a custom chart autoformat to the list of available chart autoformats. 
 		[id(dispid_application_addchartautoformat), helpstring("method AddChartAutoFormat")] HRESULT AddChartAutoFormat(
 			[in] VARIANT Chart,
 			[in] BSTR Name,
 			[in, optional] VARIANT Description,
-			[in] long lcid);
+			[in] LCID lcid);
 //AddCustomList 	Adds a custom list for custom autofill and/or custom sort. 
 		[id(dispid_application_addcustomlist), helpstring("method AddCustomList")] HRESULT AddCustomList(
 			[in] VARIANT ListArray,
 			[in, optional] VARIANT ByRow,
-			[in] long lcid);
+			[in] LCID lcid);
 //AlertBeforeOverwriting 	True if Microsoft Excel displays a message before overwriting nonblank cells during a drag-and-drop editing operation.
 		[id(dispid_application_alertbeforeoverwriting), propget, helpstring("property AlertBeforeOverwriting")] HRESULT AlertBeforeOverwriting(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_alertbeforeoverwriting), propput, helpstring("property AlertBeforeOverwriting")] HRESULT AlertBeforeOverwriting(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //AltStartupPath 	Returns or sets the name of the alternate startup folder.
 		[id(dispid_application_altstartuppath), propget, helpstring("property AltStartupPath")] HRESULT AltStartupPath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_altstartuppath), propput, helpstring("property AltStartupPath")] HRESULT AltStartupPath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //AskToUpdateLinks 	True if Microsoft Excel asks the user to update links when opening files with links. False if links are automatically updated with no dialog box.
 		[id(dispid_application_asktoupdatelinks), propget, helpstring("property AskToUpdateLinks")] HRESULT AskToUpdateLinks(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_asktoupdatelinks), propput, helpstring("property AskToUpdateLinks")] HRESULT AskToUpdateLinks(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //EnableAnimations 	True if animated insertion and deletion is enabled.
 		[id(dispid_application_enableanimation), propget, helpstring("property EnableAnimation")] HRESULT EnableAnimations(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_enableanimation), propput, helpstring("property EnableAnimation")] HRESULT EnableAnimations(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //AutoCorrect 	Returns an AutoCorrect object that represents the Microsoft Excel AutoCorrect attributes.
 		[id(dispid_application_autocorrect), propget, helpstring("property AutoCorrect")] HRESULT AutoCorrect([out, retval] IDispatch** RHS);
 //Build 	Returns the Microsoft Excel build number.
 		[id(dispid_application_build), propget, helpstring("property Build")] HRESULT Build(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 //CalculateBeforeSave 	True if workbooks are calculated before they're saved to disk (if the Calculation property is set to xlManual). This property is preserved even if you change the Calculation property.
 		[id(dispid_application_calculatebeforesave), propget, helpstring("property CalculateBeforeSave")] HRESULT CalculateBeforeSave(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_calculatebeforesave), propput, helpstring("property CalculateBeforeSave")] HRESULT CalculateBeforeSave(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Calculation 	Returns or sets the calculation mode. Read/write XlCalculation.
 		[id(dispid_application_calculation), propget, helpstring("property Calculation")] HRESULT Calculation(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlCalculation* RHS);
 		[id(dispid_application_calculation), propput, helpstring("property Calculation")] HRESULT Calculation(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlCalculation RHS);
 //Caller 	Returns information about how Visual Basic was called (for more information, see the Remarks section).
 		[id(dispid_application_caller), propget, helpstring("property Caller")] HRESULT Caller(
 			[in, optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //CanPlaySounds 	This property should not be used. Sound notes have been removed from Microsoft Excel.
 		[id(dispid_application_canplaysounds), propget, helpstring("property CanPlaySounds")] HRESULT CanPlaySounds(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //CanRecordSounds 	This property should not be used. Sound notes have been removed from Microsoft Excel.
 		[id(dispid_application_canrecordsounds), propget, helpstring("property CanRecordSounds")] HRESULT CanRecordSounds(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //Caption 	The name that appears in the title bar of the main Microsoft Excel window. If you don't set a name, or if you set the name to Empty, this property returns "Microsoft Excel".
 		[propget,id(dispid_application_caption), helpstring("property Caption")] HRESULT Caption([out, retval] VARIANT *vName);
 		[propput,id(dispid_application_caption), helpstring("property Caption")] HRESULT Caption([in] VARIANT vName);
 //CellDragAndDrop 	True if dragging and dropping cells is enabled.
 		[id(dispid_application_celldraganddrop), propget, helpstring("property CellDragAndDrop")] HRESULT CellDragAndDrop(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_celldraganddrop), propput, helpstring("property CellDragAndDrop")] HRESULT CellDragAndDrop(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //CentimetersToPoints 	Converts a measurement from centimeters to points (one point equals 0.035 centimeters). 
 		[id(dispid_application_centimeterstopoints), helpstring("method CentimetersToPoints")] HRESULT CentimetersToPoints(
 			[in] double Centimeters,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 //CheckSpelling 	Checks the spelling of a single word. Returns True if the word is found in one of the dictionaries; returns False if the word isn't found. 
 		[id(dispid_application_checkspelling), helpstring("method CheckSpelling")] HRESULT CheckSpelling(
 			[in] BSTR Word,
 			[in, optional] VARIANT CustomDictionary,
 			[in, optional] VARIANT IgnoreUppercase,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //ClipboardFormats 	Returns the formats that are currently on the Clipboard as an array of numeric values. To determine whether a particular format is on the Clipboard, compare each element in the array with the appropriate constant listed in the Remarks section.
 		[id(dispid_application_clipboardformats), propget, helpstring("property ClipboardFormats")] HRESULT ClipboardFormats(
 			[in, optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //DisplayClipboardWindow 	Returns True if the Microsoft Office Clipboard can be displayed.
 		[id(dispid_application_displayclipboardwindow), propget, helpstring("property DisplayClipboardWindow")] HRESULT DisplayClipboardWindow(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_displayclipboardwindow), propput, helpstring("property DisplayClipboardWindow")] HRESULT DisplayClipboardWindow(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //ColorButtons 	 
         [id(dispid_application_colorbuttons), propget, hidden, helpstring("property ColorButtons")]
@@ -4131,17 +4131,17 @@ import "wtypes.idl";
         HRESULT ColorButtons([in] VARIANT_BOOL RHS);
 //CommandUnderlines 	Returns or sets the state of the command underlines in Microsoft Excel for the Macintosh.
 		[id(dispid_application_commandunderlines), propget, helpstring("property CommandUnderlines")] HRESULT CommandUnderlines(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlCommandUnderlines* RHS);
 		[id(dispid_application_commandunderlines), propput, helpstring("property CommandUnderlines")] HRESULT CommandUnderlines(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlCommandUnderlines RHS);
 //ConstrainNumeric 	True if handwriting recognition is limited to numbers and punctuation only.
 		[id(dispid_application_constrainnumeric), propget, helpstring("property ConstrainNumeric")] HRESULT ConstrainNumeric(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_constrainnumeric), propput, helpstring("property ConstrainNumeric")] HRESULT ConstrainNumeric(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //ConvertFormula 	Converts cell references in a formula between the A1 and R1C1 reference styles, between relative and absolute references, or both.
 		[id(dispid_application_convertformula), helpstring("method ConvertFormula")] HRESULT ConvertFormula(
@@ -4154,35 +4154,35 @@ import "wtypes.idl";
 			[out, retval]  VARIANT         *pResult);
 //CopyObjectsWithCells 	True if objects are cut, copied, extracted, and sorted with cells.
 		[id(dispid_application_copyobjectswithcells), propget, helpstring("property CopyObjectsWithCells")] HRESULT CopyObjectsWithCells(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_copyobjectswithcells), propput, helpstring("property CopyObjectsWithCells")] HRESULT CopyObjectsWithCells(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Cursor 	Returns or sets the appearance of the mouse pointer in Microsoft Excel.
 		[id(dispid_application_cursor), propget, helpstring("property Cursor")] HRESULT Cursor(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlMousePointer* RHS);
 		[id(dispid_application_cursor), propput, helpstring("property Cursor")] HRESULT Cursor(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlMousePointer RHS);
 //CustomListCount 	Returns the number of defined custom lists (including built-in lists).
 		[id(dispid_application_customlistcount), propget, helpstring("property CustomListCount")] HRESULT CustomListCount(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 //CutCopyMode 	Returns or sets the status of Cut or Copy mode.
 		[id(dispid_application_cutcopymode), propget, helpstring("property CutCopyMode")] HRESULT CutCopyMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlCutCopyMode* RHS);
 		[id(dispid_application_cutcopymode), propput, helpstring("property CutCopyMode")] HRESULT CutCopyMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlCutCopyMode RHS);
 //DataEntryMode 	Returns or sets Data Entry mode, as shown in the table below. When in Data Entry mode, you can enter data only in the unlocked cells in the currently selected range.
 		[id(dispid_application_dataentrymode), propget, helpstring("property DataEntryMode")] HRESULT DataEntryMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 		[id(dispid_application_dataentrymode), propput, helpstring("property DataEntryMode")] HRESULT DataEntryMode(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //Dummy1 	 
 		[id(dispid_application_dummy1), hidden, helpstring("method Dummy1")] HRESULT Dummy1(
@@ -4258,41 +4258,41 @@ import "wtypes.idl";
 		[id(dispid_application__default), propget, helpstring("property _Default")] HRESULT _Default([out, retval] BSTR* RHS);
 //DefaultFilePath 	Returns or sets the default path that Microsoft Excel uses when it opens files.
 		[id(dispid_application_defaultfilepath), propget, helpstring("property DefaultFilePath")] HRESULT DefaultFilePath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_defaultfilepath), propput, helpstring("property DefaultFilePath")] HRESULT DefaultFilePath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //DeleteChartAutoFormat 	Removes a custom chart autoformat from the list of available chart autoformats. 
 		[id(dispid_application_deletechartautoformat), helpstring("method DeleteChartAutoFormat")] HRESULT DeleteChartAutoFormat(
 			[in] BSTR Name,
-			[in] long lcid);
+			[in] LCID lcid);
 //DeleteCustomList 	Deletes a custom list.
 		[id(dispid_application_deletecustomlist), helpstring("method DeleteCustomList")] HRESULT DeleteCustomList(
 			[in] long ListNum,
-			[in] long lcid);
+			[in] LCID lcid);
 //Dialogs 	Returns a Dialogs collection that represents all built-in dialog boxes.
         [id(dispid_application_dialogs), propget, helpstring("property Dialogs")] HRESULT Dialogs([out, retval] IDispatch ** RHS);
 //DisplayAlerts 	True if Microsoft Excel displays certain alerts and messages while a macro is running.
 		[propput,id(dispid_application_displayalerts)] HRESULT DisplayAlerts(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL vbDisplayAlerts);
 		[propget,id(dispid_application_displayalerts)] HRESULT DisplayAlerts(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL *vbDisplayAlerts);
 //DisplayFormulaBar 	True if the formula bar is displayed.
 		[id(dispid_application_displayformulabar), propget, helpstring("property DisplayFormulaBar")] HRESULT DisplayFormulaBar(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_displayformulabar), propput, helpstring("property DisplayFormulaBar")] HRESULT DisplayFormulaBar(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //DisplayFullScreen 	True if Microsoft Excel is in full-screen mode.
 		[id(dispid_application_displayfullscreen), propget, helpstring("property DisplayFullScreen")] HRESULT DisplayFullScreen(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_displayfullscreen), propput, helpstring("property DisplayFullScreen")] HRESULT DisplayFullScreen(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //DisplayNoteIndicator 	True if cells containing notes display cell tips and contain note indicators (small dots in their upper-right corners).
 		[id(dispid_application_displaynoteindicator), propget, helpstring("property DisplayNoteIndicator")] HRESULT DisplayNoteIndicator([out, retval] VARIANT_BOOL* RHS);
@@ -4302,62 +4302,62 @@ import "wtypes.idl";
 		[id(dispid_application_displaycommentindicator), propput, helpstring("property DisplayCommentIndicator")] HRESULT DisplayCommentIndicator([in] XlCommentDisplayMode RHS);
 //DisplayExcel4Menus 	True if Microsoft Excel displays version 4.0 menu bars.
 		[id(dispid_application_displayexcel4menus), propget, helpstring("property DisplayExcel4Menus")] HRESULT DisplayExcel4Menus(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_displayexcel4menus), propput, helpstring("property DisplayExcel4Menus")] HRESULT DisplayExcel4Menus(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[in] VARIANT_BOOL RHS);
 //DisplayRecentFiles 	True if the list of recently used files is displayed on the File menu.
 		[id(dispid_application_displayrecentfiles), propget, helpstring("property DisplayRecentFiles")] HRESULT DisplayRecentFiles([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_displayrecentfiles), propput, helpstring("property DisplayRecentFiles")] HRESULT DisplayRecentFiles([in] VARIANT_BOOL RHS);
 //DisplayScrollBars 	True if scroll bars are visible for all workbooks.
 		[id(dispid_application_displayscrollbars), propget, helpstring("property DisplayScrollBars")] HRESULT DisplayScrollBars(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_displayscrollbars), propput, helpstring("property DisplayScrollBars")] HRESULT DisplayScrollBars(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //DisplayStatusBar 	True if the status bar is displayed.
 		[id(dispid_application_displaystatusbar), propget, helpstring("property DisplayStatusBar")] HRESULT DisplayStatusBar(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_displaystatusbar), propput, helpstring("property DisplayStatusBar")] HRESULT DisplayStatusBar(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //DoubleClick 	Equivalent to double-clicking the active cell. 
-		[id(dispid_application_doubleclick), helpstring("method DoubleClick")] HRESULT DoubleClick([in] long lcid);
+		[id(dispid_application_doubleclick), helpstring("method DoubleClick")] HRESULT DoubleClick([in] LCID lcid);
 //EditDirectlyInCell 	True if Microsoft Excel allows editing in cells.
 		[id(dispid_application_editdirectlyincell), propget, helpstring("property EditDirectlyInCell")] HRESULT EditDirectlyInCell(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_editdirectlyincell), propput, helpstring("property EditDirectlyInCell")] HRESULT EditDirectlyInCell(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //EnableAutoComplete 	True if the AutoComplete feature is enabled.
 		[id(dispid_application_enableautocomplete), propget, helpstring("property EnableAutoComplete")] HRESULT EnableAutoComplete([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_enableautocomplete), propput, helpstring("property EnableAutoComplete")] HRESULT EnableAutoComplete([in] VARIANT_BOOL RHS);
 //EnableCancelKey 	Controls how Microsoft Excel handles CTRL+BREAK (or ESC or COMMAND+PERIOD) user interruptions to the running procedure. Read/write XlEnableCancelKey.
 		[id(dispid_application_enablecancelkey), propget, helpstring("property EnableCancelKey")] HRESULT EnableCancelKey(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlEnableCancelKey* RHS);
 		[id(dispid_application_enablecancelkey), propput, helpstring("property EnableCancelKey")] HRESULT EnableCancelKey(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlEnableCancelKey RHS);
 //EnableSound 	True if sound is enabled for Microsoft Office.
 		[id(dispid_application_enablesound), propget, helpstring("property EnableSound")] HRESULT EnableSound([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_enablesound), propput, helpstring("property EnableSound")] HRESULT EnableSound([in] VARIANT_BOOL RHS);
 //EnableTipWizard
 		[id(dispid_application_enabletipwizard), propget, hidden, helpstring("property EnableTipWizard")] HRESULT EnableTipWizard(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_enabletipwizard), propput, hidden, helpstring("property EnableTipWizard")] HRESULT EnableTipWizard(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //FileConverters 	Returns information about installed file converters. Returns Null if there are no converters installed.
 		[id(dispid_application_fileconverters), propget, helpstring("property FileConverters")] HRESULT FileConverters(
 			[in, optional] VARIANT Index1,
 			[in, optional] VARIANT Index2,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //FileSearch 	Returns a Microsoft.Office.Core.FileSearch object for use with file searches. This property is available only in Microsoft Windows.
 		[id(dispid_application_filesearch), propget, helpstring("property FileSearch")] HRESULT FileSearch([out, retval] IDispatch** RHS);
@@ -4365,30 +4365,30 @@ import "wtypes.idl";
 		[id(dispid_application_filefind), propget, helpstring("property FileFind")] HRESULT FileFind([out, retval] IDispatch** RHS);
 //_FindFile 	 
         [id(dispid_application__findfile), hidden, helpstring("method _FindFile")]
-        HRESULT _FindFile([in] long lcid);
+        HRESULT _FindFile([in] LCID lcid);
 //FixedDecimal 	All data entered after this property is set to True will be formatted with the number of fixed decimal places set by the FixedDecimalPlaces property.
 		[id(dispid_application_fixeddecimal), propget, helpstring("property FixedDecimal")] HRESULT FixedDecimal(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_fixeddecimal), propput, helpstring("property FixedDecimal")] HRESULT FixedDecimal(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //FixedDecimalPlaces 	Returns or sets the number of fixed decimal places used when the FixedDecimal property is set to True.
 		[id(dispid_application_fixeddecimalplaces), propget, helpstring("property FixedDecimalPlaces")] HRESULT FixedDecimalPlaces(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[out, retval] long* RHS);
 		[id(dispid_application_fixeddecimalplaces), propput, helpstring("property FixedDecimalPlaces")] HRESULT FixedDecimalPlaces(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[in] long RHS);
 //GetCustomListContents 	Returns a custom list (an array of strings). 
 		[id(dispid_application_getcustomlistcontents), helpstring("method GetCustomListContents")] HRESULT GetCustomListContents(
 			[in] long ListNum,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //GetCustomListNum 	Returns the custom list number for an array of strings. You can use this method to match both built-in lists and custom-defined lists. 
 		[id(dispid_application_getcustomlistnum), helpstring("method GetCustomListNum")] HRESULT GetCustomListNum(
 			[in] VARIANT ListArray,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 //GetOpenFilename 	Displays the standard Open dialog box and gets a file name from the user without actually opening any files. 
 		[id(dispid_application_getopenfilename), helpstring("method GetOpenFilename")] HRESULT GetOpenFilename(
@@ -4397,7 +4397,7 @@ import "wtypes.idl";
 			[in, optional] VARIANT Title,
 			[in, optional] VARIANT ButtonText,
 			[in, optional] VARIANT MultiSelect,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //GetSaveAsFilename 	Displays the standard Save As dialog box and gets a file name from the user without actually saving any files. 
 		[id(dispid_application_getsaveasfilename), helpstring("method GetSaveAsFilename")] HRESULT GetSaveAsFilename(
@@ -4406,36 +4406,36 @@ import "wtypes.idl";
 			[in, optional] VARIANT FilterIndex,
 			[in, optional] VARIANT Title,
 			[in, optional] VARIANT ButtonText,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //Goto 	Selects any range or Visual Basic procedure in any workbook and activates that workbook if it?s not already active. 
 		[id(dispid_application_goto), helpstring("method Goto")] HRESULT Goto(
 			[in, optional] VARIANT Reference,
 			[in, optional] VARIANT Scroll,
-			[in] long lcid);
+			[in] LCID lcid);
 //Height 	The height, in points, of the main application window. If the window is minimized, this property is read-only and refers to the height of the icon. If the window is maximized, this property cannot be set. Use the WindowState property to determine the window state.
 		[id(dispid_application_height), propget, helpstring("property Height")] HRESULT Height(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 		[id(dispid_application_height), propput, helpstring("property Height")] HRESULT Height(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] double RHS);
 //Help 	Displays a Help topic. 
 		[id(dispid_application_help), helpstring("method Help")] HRESULT Help(
 			[in, optional] VARIANT HelpFile, 
 			[in, optional] VARIANT HelpContextID, 
-			[in] long lcid);
+			[in] LCID lcid);
 //IgnoreRemoteRequests 	True if remote DDE requests are ignored.
 		[id(dispid_application_ignoreremoterequests), propget, helpstring("property IgnoreRemoteRequests")] HRESULT IgnoreRemoteRequests(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_ignoreremoterequests), propput, helpstring("property IgnoreRemoteRequests")] HRESULT IgnoreRemoteRequests(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //InchesToPoints 	Converts a measurement from inches to points. 
 		[id(dispid_application_inchestopoints), helpstring("method InchesToPoints")] HRESULT InchesToPoints(
 			[in] double Inches,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 //InputBox 	Displays a dialog box for user input. Returns the information entered in the dialog box. 
 		[id(dispid_application_inputbox), helpstring("method InputBox")] HRESULT InputBox(
@@ -4447,40 +4447,40 @@ import "wtypes.idl";
 			[in, optional] VARIANT HelpFile,
 			[in, optional] VARIANT HelpContextID,
 			[in, optional] VARIANT Type,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //Interactive 	True if Microsoft Excel is in interactive mode; this property is usually True. If you set this property to False, Microsoft Excel will block all input from the keyboard and mouse (except input to dialog boxes that are displayed by your code). Blocking user input will prevent the user from interfering with the code as it moves or activates Microsoft Excel objects.
 		[id(dispid_application_interactive), propget, helpstring("property Interactive")] HRESULT Interactive(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_interactive), propput, helpstring("property Interactive")] HRESULT Interactive(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //International 	Returns information about the current country/region and international settings.
 		[id(dispid_application_international), propget, helpstring("property International")] HRESULT International(
 			[in, optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //Iteration 	True if Microsoft Excel will use iteration to resolve circular references.
 		[id(dispid_application_iteration), propget, helpstring("property Iteration")] HRESULT Iteration(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_iteration), propput, helpstring("property Iteration")] HRESULT Iteration(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //LargeButtons
 		[id(dispid_application_largebuttons), propget, hidden, helpstring("property LargeButtons")] HRESULT LargeButtons([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_largebuttons), propput, hidden, helpstring("property LargeButtons")] HRESULT LargeButtons([in] VARIANT_BOOL RHS);
 //Left 	The distance, in points, from the left edge of the screen to the left edge of the main Microsoft Excel window.
 		[id(dispid_application_left), propget, helpstring("property Left")] HRESULT Left(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 		[id(dispid_application_left), propput, helpstring("property Left")] HRESULT Left(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] double RHS);
 //LibraryPath 	Returns the path to the Library folder but without the final separator.
 		[id(dispid_application_librarypath), propget, helpstring("property LibraryPath")] HRESULT LibraryPath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 //MacroOptions 	Corresponds to options in the Macro Options dialog box. You can also use this method to display a user defined function (UDF) in a built-in or new category within the Insert Function dialog box. 
 		[id(dispid_application_macrooption), helpstring("method MacroOptions")] HRESULT MacroOptions(
@@ -4494,70 +4494,70 @@ import "wtypes.idl";
 			[in, optional] VARIANT StatusBar,
 			[in, optional] VARIANT HelpContextID,
 			[in, optional] VARIANT HelpFile,
-			[in] long lcid);
+			[in] LCID lcid);
 //MailLogoff 	Closes a MAPI mail session established by Microsoft Excel. 
-		[id(dispid_application_maillogoff), helpstring("method MailLogoff")] HRESULT MailLogoff([in] long lcid);
+		[id(dispid_application_maillogoff), helpstring("method MailLogoff")] HRESULT MailLogoff([in] LCID lcid);
 //MailLogon 	Logs in to MAPI Mail or Microsoft Exchange and establishes a mail session. If Microsoft Mail isn't already running, you must use this method to establish a mail session before mail or document routing functions can be used. 
 		[id(dispid_application_maillogon), helpstring("method MailLogon")] HRESULT MailLogon(
 			[in, optional] VARIANT Name,
 			[in, optional] VARIANT Password,
 			[in, optional] VARIANT DownloadNewMail,
-			[in] long lcid);
+			[in] LCID lcid);
 //MailSession 	Returns the MAPI mail session number as a hexadecimal string (if there's an active session), or returns Null if there's no session.
 		[id(dispid_application_mailsession), propget, helpstring("property MailSession")] HRESULT MailSession(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //MailSystem 	Returns the mail system that's installed on the host machine. Read-only XlMailSystem.
 		[id(dispid_application_mailsystem), propget, helpstring("property MailSystem")] HRESULT MailSystem(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlMailSystem* RHS);
 //MathCoprocessorAvailable 	True if a math coprocessor is available.
 		[id(dispid_application_mathcoprocessoravailable), propget, helpstring("property MathCoprocessorAvailable")] HRESULT MathCoprocessorAvailable(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //MaxChange 	Returns or sets the maximum amount of change between each iteration as Microsoft Excel resolves circular references.
 		[id(dispid_application_maxchange), propget, helpstring("property MaxChange")] HRESULT MaxChange(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 		[id(dispid_application_maxchange), propput, helpstring("property MaxChange")] HRESULT MaxChange(
-		[in] long lcid,
+		[in] LCID lcid,
 		[in] double RHS);
 //MaxIterations 	Returns or sets the maximum number of iterations that Microsoft Excel can use to resolve a circular reference.
 		[id(dispid_application_maxiterations), propget, helpstring("property MaxIterations")] HRESULT MaxIterations(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 		[id(dispid_application_maxiterations), propput, helpstring("property MaxIterations")] HRESULT MaxIterations(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //MemoryFree 	Returns the amount of memory that's still available for Microsoft Excel to use, in bytes.
 		[id(dispid_application_memoryfree), propget, hidden, helpstring("property MemoryFree")] HRESULT MemoryFree(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 //MemoryTotal 	 
 		[id(dispid_application_memorytotal), propget, hidden, helpstring("property MemoryTotal")] HRESULT MemoryTotal(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 //MemoryUsed 	 
 		[id(dispid_application_memoryused), propget, hidden, helpstring("property MemoryUsed")] HRESULT MemoryUsed(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 //MouseAvailable 	True if a mouse is available.
 		[id(dispid_application_mouseavailable), propget, helpstring("property MouseAvailable")] HRESULT MouseAvailable(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //MoveAfterReturn 	True if the active cell will be moved as soon as the ENTER (RETURN) key is pressed.
 		[id(dispid_application_moveafterreturn), propget, helpstring("property MoveAfterReturn")] HRESULT MoveAfterReturn(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_moveafterreturn), propput, helpstring("property MoveAfterReturn")] HRESULT MoveAfterReturn(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //MoveAfterReturnDirection 	Returns or sets the direction in which the active cell is moved when the user presses ENTER. Read/write XlDirection.
 		[id(dispid_application_moveafterreturndirection), propget, helpstring("property MoveAfterReturnDirection")] HRESULT MoveAfterReturnDirection(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlDirection* RHS);
 		[id(dispid_application_moveafterreturndirection), propput, helpstring("property MoveAfterReturnDirection")] HRESULT MoveAfterReturnDirection(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlDirection RHS);
 //RecentFiles 	Returns a RecentFiles collection that represents the list of recently used files.
 		[id(dispid_application_recentfiles), propget, helpstring("property RecentFiles")] HRESULT RecentFiles([out, retval] IDispatch** RHS);
@@ -4565,11 +4565,11 @@ import "wtypes.idl";
 		[id(dispid_application_name), propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR* RHS);
 //NextLetter 	You have requested Help for a Visual Basic keyword used only on the Macintosh. For information about this keyword, consult the language reference Help included with Microsoft Office Macintosh Edition. 
 		[id(dispid_application_nextletter), helpstring("property NextLetter")] HRESULT NextLetter(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] IDispatch** RHS);
 //NetworkTemplatesPath 	Returns the network path where templates are stored. If the network path doesn?t exist, this property returns an empty string.
 		[id(dispid_application_networktemplatespath), propget, helpstring("property NetworkTemplatesPath")]  HRESULT NetworkTemplatesPath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 //ODBCErrors 	Returns an ODBCErrors collection that contains all the ODBC errors generated by the most recent query table or PivotTable report operation.
 		[id(dispid_application_odbcerrors), propget, helpstring("property ODBCErrors")] HRESULT ODBCErrors([out, retval] IDispatch** RHS);
@@ -4578,55 +4578,55 @@ import "wtypes.idl";
 		[id(dispid_application_odbctimeout), propput, helpstring("property ODBCTimeout")] HRESULT ODBCTimeout([in] long RHS);
 //OnCalculate 	 
 		[id(dispid_application_oncalculate), propget, hidden, helpstring("property OnCalculate")] HRESULT OnCalculate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_oncalculate), propput, hidden, helpstring("property OnCalculate")] HRESULT OnCalculate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnData 	 
 		[id(dispid_application_ondata), propget, hidden, helpstring("property OnData")] HRESULT OnData(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_ondata), propput, hidden, helpstring("property OnData")] HRESULT OnData(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnDoubleClick 	 
 		[id(dispid_application_ondoubleclick), propget, hidden, helpstring("property OnDoubleClick")] HRESULT OnDoubleClick(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_ondoubleclick), propput, hidden, helpstring("property OnDoubleClick")] HRESULT OnDoubleClick(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnEntry 	 
 		[id(dispid_application_onentry), propget, hidden, helpstring("property OnEntry")] HRESULT OnEntry(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_onentry), propput, hidden, helpstring("property OnEntry")] HRESULT OnEntry(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnKey 	Runs a specified procedure when a particular key or key combination is pressed. 
 		[id(dispid_application_onkey), helpstring("method OnKey")] HRESULT OnKey(
 			[in] BSTR Key,
 			[in, optional] VARIANT Procedure,
-			[in] long lcid);
+			[in] LCID lcid);
 //OnRepeat 	Sets the Repeat menu item and the name of the procedure that will run if you choose the Repeat command (Edit menu) after running the procedure that sets this property. 
 		[id(dispid_application_onrepeat), helpstring("method OnRepeat")] HRESULT OnRepeat(
 			[in] BSTR Text,
 			[in] BSTR Procedure,
-			[in] long lcid);
+			[in] LCID lcid);
 //OnSheetActivate 	 
 		[id(dispid_application_onsheetactivate), propget, hidden, helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_onsheetactivate), propput, hidden, helpstring("property OnSheetActivate")] HRESULT OnSheetActivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnSheetDeactivate 	 
 		[id(dispid_application_onsheetdeactivate), propget, hidden, helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_onsheetdeactivate), propput, hidden, helpstring("property OnSheetDeactivate")] HRESULT OnSheetDeactivate(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OnTime 	Schedules a procedure to be run at a specified time in the future (either at a specific time of day or after a specific amount of time has passed). 
 		[id(dispid_application_ontime), helpstring("method OnTime")] HRESULT OnTime(
@@ -4634,49 +4634,49 @@ import "wtypes.idl";
 			[in] BSTR Procedure,
 			[in, optional] VARIANT LatestTime,
 			[in, optional] VARIANT Schedule,
-			[in] long lcid);
+			[in] LCID lcid);
 //OnUndo 	Sets the text of the Undo and the name of the procedure that?s run if you choose the Undo command (Edit menu) after running the procedure that sets this property. 
 		[id(dispid_application_onundo), helpstring("method OnUndo")] HRESULT OnUndo(
 			[in] BSTR Text,
 			[in] BSTR Procedure,
-			[in] long lcid);
+			[in] LCID lcid);
 //OnWindow 	Returns or sets the name of the procedure that?s run whenever you activate a window.
 		[id(dispid_application_onwindow), propget, helpstring("property OnWindow")] HRESULT OnWindow(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_onwindow), propput, helpstring("property OnWindow")] HRESULT OnWindow(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //OperatingSystem 	Returns the name and version number of the current operating system, for example, "Windows (32-bit) 4.00" or "Macintosh 7.00".
 		[id(dispid_application_operatingsystem), propget, helpstring("property OperatingSystem")] HRESULT OperatingSystem(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 //OrganizationName 	Returns the registered organization name.
 		[id(dispid_application_organizationname), propget, helpstring("property OrganizationName")] HRESULT OrganizationName(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 //Path 	Returns the complete path to the application, excluding the final separator and name of the application.
 		[id(dispid_application_path), propget, helpstring("property Path")] HRESULT Path(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 //PathSeparator 	Returns the path separator character ("\").
 		[id(dispid_application_pathseparator), propget, helpstring("property PathSeparator")] HRESULT PathSeparator(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[out, retval] BSTR* RHS);
 //PreviousSelections 	Returns an array of the last four ranges or names selected. Each element in the array is a Range object.
 		[id(dispid_application_previousselections), propget, helpstring("property PreviousSelections")] HRESULT PreviousSelections(
 			[in, optional] VARIANT Index,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //PivotTableSelection 	True if PivotTable reports use structured selection.
 		[id(dispid_application_pivottableselection), propget, helpstring("property PivotTableSelection")] HRESULT PivotTableSelection([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_pivottableselection), propput, helpstring("property PivotTableSelection")] HRESULT PivotTableSelection([in] VARIANT_BOOL RHS);
 //PromptForSummaryInfo 	True if Microsoft Excel asks for summary information when files are first saved.
 		[id(dispid_application_promptforsummaryinfo), propget, helpstring("property PromptForSummaryInfo")] HRESULT PromptForSummaryInfo(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL *RHS);
 		[id(dispid_application_promptforsummaryinfo), propput, helpstring("property PromptForSummaryInfo")] HRESULT PromptForSummaryInfo(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Quit 	Quits Microsoft Excel.
 		[id(dispid_application_quit)] HRESULT Quit();
@@ -4684,50 +4684,50 @@ import "wtypes.idl";
 		[id(dispid_application_recordmacro), helpstring("method RecordMacro")] HRESULT RecordMacro(
 			[in, optional] VARIANT BasicCode,
 			[in, optional] VARIANT XlmCode,
-			[in] long lcid);
+			[in] LCID lcid);
 //RecordRelative 	True if macros are recorded using relative references; False if recording is absolute.
 		[id(dispid_application_recordrelaytive), propget, helpstring("property RecordRelative")] HRESULT RecordRelative(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //ReferenceStyle 	Returns or sets how Microsoft Excel displays cell references and row and column headings in either A1 or R1C1 reference style. Read/write XlReferenceStyle.
 		[id(dispid_application_referencestyle), propget, helpstring("property ReferenceStyle")] HRESULT ReferenceStyle(
-			[in] long lcid, 
+			[in] LCID lcid, 
 			[out, retval] XlReferenceStyle* RHS);
 		[id(dispid_application_referencestyle), propput, helpstring("property ReferenceStyle")] HRESULT ReferenceStyle(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlReferenceStyle RHS);
 //RegisteredFunctions 	Returns information about functions in either dynamic-link libraries (DLLs) or code resources that were registered with the REGISTER or REGISTER.ID macro functions.
 		[id(dispid_application_registeredfunction), propget, helpstring("property RegisteredFunctions")] HRESULT RegisteredFunctions(
 			[in, optional] VARIANT Index1,
 			[in, optional] VARIANT Index2,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //RegisterXLL 	Loads an XLL code resource and automatically registers the functions and commands contained in the resource. 
 		[id(dispid_application_registerxll), helpstring("method RegisterXLL")] HRESULT RegisterXLL(
 			[in] BSTR Filename,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //Repeat 	Repeats the last user interface action. 
-		[id(dispid_application_repeat), helpstring("method Repeat")] HRESULT Repeat([in] long lcid);
+		[id(dispid_application_repeat), helpstring("method Repeat")] HRESULT Repeat([in] LCID lcid);
 //ResetTipWizard 	
-		[id(dispid_application_resettipwizard), hidden, helpstring("method ResetTipWizard")] HRESULT ResetTipWizard([in] long lcid);
+		[id(dispid_application_resettipwizard), hidden, helpstring("method ResetTipWizard")] HRESULT ResetTipWizard([in] LCID lcid);
 //RollZoom 	True if the IntelliMouse zooms instead of scrolling.
 		[id(dispid_application_rollzoom), propget, helpstring("property RollZoom")] HRESULT RollZoom([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_rollzoom), propput, helpstring("property RollZoom")] HRESULT RollZoom([in] VARIANT_BOOL RHS);
 //Save
 		[id(dispid_application_save), hidden, helpstring("method Save")] HRESULT Save(
 			[in, optional] VARIANT Filename,
-			[in] long lcid);
+			[in] LCID lcid);
 //SaveWorkspace 	Saves the current workspace.
 		[id(dispid_application_saveworkspace), helpstring("method SaveWorkspace")] HRESULT SaveWorkspace(
 			[in, optional] VARIANT Filename,
-			[in] long lcid);
+			[in] LCID lcid);
 //ScreenUpdating 	True if screen updating is turned on.
 		[id(dispid_application_screenupdating), propget, helpstring("property ScreenUpdating")] HRESULT ScreenUpdating(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_screenupdating), propput, helpstring("property ScreenUpdating")] HRESULT ScreenUpdating(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //SetDefaultChart 	Specifies the name of the chart template that Microsoft Excel will use when creating new charts. 
 		[id(dispid_application_setdefaultchart), helpstring("method SetDefaultChart")] HRESULT SetDefaultChart(
@@ -4735,10 +4735,10 @@ import "wtypes.idl";
 			[in, optional] VARIANT Gallery);
 //SheetsInNewWorkbook 	Returns or sets the number of sheets that Microsoft Excel automatically inserts into new workbooks.	 
 		[id(dispid_application_sheetsinnewworkbook), propget, helpstring("property SheetsInNewWorkbook")] HRESULT SheetsInNewWorkbook(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 		[id(dispid_application_sheetsinnewworkbook), propput, helpstring("property SheetsInNewWorkbook")] HRESULT SheetsInNewWorkbook(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //ShowChartTipNames 	True if charts show chart tip names. The default value is True.
 		[id(dispid_application_showcharttipnames), propget, helpstring("property ShowChartTipNames")] HRESULT ShowChartTipNames([out, retval] VARIANT_BOOL* RHS);
@@ -4748,42 +4748,42 @@ import "wtypes.idl";
 		[id(dispid_application_showcharttipvalues), propput, helpstring("property ShowChartTipValues")] HRESULT ShowChartTipValues([in] VARIANT_BOOL RHS);
 //StandardFont 	Returns or sets the name of the standard font.
 		[id(dispid_application_standartfont), propget, helpstring("property StandardFont")] HRESULT StandardFont(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_standartfont), propput, helpstring("property StandardFont")] HRESULT StandardFont(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //StandardFontSize 	Returns or sets the standard font size, in points.
 		[id(dispid_application_standartfontsize), propget, helpstring("property StandardFontSize")] HRESULT StandardFontSize(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 		[id(dispid_application_standartfontsize), propput, helpstring("property StandardFontSize")] HRESULT StandardFontSize(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] double RHS);
 //StartupPath 	Returns the complete path of the startup folder excluding the final separator.
 		[id(dispid_application_startuppath), propget, helpstring("property StartupPath")] HRESULT StartupPath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 //StatusBar 	Returns or sets the text in the status bar.
 		[id(dispid_application_statusbar), propget, helpstring("property StatusBar")] HRESULT StatusBar(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 		[id(dispid_application_statusbar), propput, helpstring("property StatusBar")] HRESULT StatusBar(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT RHS);
 //TemplatesPath 	Returns the local path where templates are stored.
 		[id(dispid_application_templatespath), propget, helpstring("property TemplatesPath")] HRESULT TemplatesPath(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 //ShowToolTips 	True if ToolTips are turned on.
 		[id(dispid_application_showtooltips), propget, helpstring("property ShowToolTips")] HRESULT ShowToolTips([out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_showtooltips), propput, helpstring("property ShowToolTips")] HRESULT ShowToolTips([in] VARIANT_BOOL RHS);
 //Top 	The distance, in points, from the top edge of the screen to the top edge of the main Microsoft Excel window. If the application window is minimized, this property controls the position of the window icon (anywhere on the screen).
 		[id(dispid_application_top), propget, helpstring("property Top")] HRESULT Top(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 		[id(dispid_application_top), propput, helpstring("property Top")] HRESULT Top(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] double RHS);
 //DefaultSaveFormat 	Returns or sets the default format for saving files.
         [id(dispid_application_defaultsaveformat), propget, helpstring("property DefaultSaveFormat")]
@@ -4792,45 +4792,45 @@ import "wtypes.idl";
         HRESULT DefaultSaveFormat([in] XlFileFormat RHS);
 //TransitionMenuKey 	Returns or sets the Microsoft Excel menu or help key, which is usually "/".
 		[id(dispid_application_transitionmenukey), propget, helpstring("property TransitionMenuKey")] HRESULT TransitionMenuKey(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_transitionmenukey), propput, helpstring("property TransitionMenuKey")] HRESULT TransitionMenuKey(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //TransitionMenuKeyAction 	Returns or sets the action taken when the Microsoft Excel menu key is pressed. Can be either xlExcelMenus or xlLotusHelp.
 		[id(dispid_application_transitionmenukeyaction), propget, helpstring("property TransitionMenuKeyAction")] HRESULT TransitionMenuKeyAction(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 		[id(dispid_application_transitionmenukeyaction), propput, helpstring("property TransitionMenuKeyAction")] HRESULT TransitionMenuKeyAction(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //TransitionNavigKeys 	True if transition navigation keys are active.
 		[id(dispid_application_transitionnavigkeys), propget, helpstring("property TransitionNavigKeys")] HRESULT TransitionNavigKeys(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_transitionnavigkeys), propput, helpstring("property TransitionNavigKeys")] HRESULT TransitionNavigKeys(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //Undo 	Cancels the last user interface action. 
         [id(dispid_application_undo), helpstring("method Undo")]
-        HRESULT Undo([in] long lcid);
+        HRESULT Undo([in] LCID lcid);
 //UsableHeight 	Returns the maximum height of the space that a window can occupy in the application window area, in points.
 		[id(dispid_application_usableheight), propget, helpstring("property UsableHeight")] HRESULT UsableHeight(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 //UsableWidth 	Returns the maximum width of the space that a window can occupy in the application window area in points.
 		[id(dispid_application_usablewidth), propget, helpstring("property UsableWidth")] HRESULT UsableWidth(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 //UserControl 	True if the application is visible or if it was created or started by the user. False if you created or started the application programmatically by using the CreateObject or GetObject functions and the application is hidden.
 		[propput,id(dispid_application_usercontrol)] HRESULT UserControl([in] VARIANT_BOOL vbUserControl);
 		[propget,id(dispid_application_usercontrol)] HRESULT UserControl([out, retval] VARIANT_BOOL *vbUserControl);
 //UserName 	Returns or sets the name of the current user.
 		[id(dispid_application_username), propget, helpstring("property UserName")] HRESULT UserName(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] BSTR* RHS);
 		[id(dispid_application_username), propput, helpstring("property UserName")] HRESULT UserName(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] BSTR RHS);
 //Value 	Returns "Microsoft Excel".
 		[id(0x00000006), propget, helpstring("property Value")] HRESULT Value([out, retval] BSTR* RHS);
@@ -4840,65 +4840,65 @@ import "wtypes.idl";
 		[propget,id(dispid_application_version)] HRESULT Version([in] long Lcid, [out, retval] BSTR *pVersion);
 //Visible 	Determines whether the object is visible.
 		[propget,id(dispid_application_visible)] HRESULT Visible(
-			[in] long Lcid,
+			[in] LCID Lcid,
 			[out, retval] VARIANT_BOOL *vbVisible);
 		[propput,id(dispid_application_visible)] HRESULT Visible(
-			[in] long Lcid,
+			[in] LCID Lcid,
 			[in] VARIANT_BOOL vbVisible);
 //Volatile 	Marks a user-defined function as volatile. A volatile function must be recalculated whenever calculation occurs in any cells on the worksheet. A nonvolatile function is recalculated only when the input variables change. This method has no effect if it's not inside a user-defined function used to calculate a worksheet cell. 
 		[id(dispid_application_volatile), helpstring("method Volatile")] HRESULT Volatile(
 			[in, optional] VARIANT Volatile,
-			[in] long lcid);
+			[in] LCID lcid);
 //_Wait 	 
 		[id(dispid_application__wait), hidden, helpstring("method _Wait")] HRESULT _Wait(
 			[in] VARIANT Time,
-			[in] long lcid);
+			[in] LCID lcid);
 //Width 	The distance, in points, from the left edge of the application window to its right edge. If the window is minimized, this property is read-only and returns the width of the window icon.
 		[id(dispid_application_width), propget, helpstring("property Width")] HRESULT Width(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] double* RHS);
 		[id(dispid_application_width), propput, helpstring("property Width")] HRESULT Width(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] double RHS);
 //WindowsForPens 	True if the computer is running under Microsoft Windows for Pen Computing.
         [id(dispid_application_windowsforpens), propget, helpstring("property WindowsForPens")]
         HRESULT WindowsForPens(
-            [in] long lcid,
+            [in] LCID lcid,
             [out, retval] VARIANT_BOOL* RHS);
 //WindowState 	Returns or sets the state of the window. Read/write XlWindowState.
 		[propput,id(dispid_application_windowstate)] HRESULT WindowState(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] XlWindowState State);
 		[propget,id(dispid_application_windowstate)] HRESULT WindowState(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] XlWindowState *State);
 //UILanguage 	 
 		[id(dispid_application_uilanguage), propget, hidden, helpstring("property UILanguage")] HRESULT UILanguage(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 		[id(dispid_application_uilanguage), propput, hidden, helpstring("property UILanguage")] HRESULT UILanguage(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //DefaultSheetDirection 	Returns or sets the default direction in which Microsoft Excel displays new windows and worksheets. Can be one of the following constants: xlRTL (right to left) or xlLTR (left to right).
 		[id(dispid_application_defaultsheetdirection), propget, helpstring("property DefaultSheetDirection")] HRESULT DefaultSheetDirection(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 		[id(dispid_application_defaultsheetdirection), propput, helpstring("property DefaultSheetDirection")] HRESULT DefaultSheetDirection(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //CursorMovement 	Returns or sets a value that indicates whether a visual cursor or a logical cursor is used. Can be one of the following constants: xlVisualCursor or xlLogicalCursor.
 		[id(dispid_application_cursormovement), propget, helpstring("property CursorMovement")] HRESULT CursorMovement(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] long* RHS);
 		[id(dispid_application_cursormovement), propput, helpstring("property CursorMovement")] HRESULT CursorMovement(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] long RHS);
 //ControlCharacters 	True if Microsoft Excel displays control characters for right-to-left languages.
 		[id(dispid_application_controlcharacters), propget, helpstring("property ControlCharacters")] HRESULT ControlCharacters(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_controlcharacters), propput, helpstring("property ControlCharacters")] HRESULT ControlCharacters(
-			[in] long lcid,
+			[in] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //_WSFunction 	 
 		[id(dispid_application__wsfunction), hidden, helpstring("method _WSFunction")] HRESULT _WSFunction(
@@ -4932,7 +4932,7 @@ import "wtypes.idl";
 			[in, optional] VARIANT Arg28,
 			[in, optional] VARIANT Arg29,
 			[in, optional] VARIANT Arg30,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT* RHS);
 //EnableEvents 	True if events are enabled for the specified object.
 		[propget,id(dispid_application_enableevents), helpstring("property EnableEvents")] HRESULT EnableEvents([out, retval] VARIANT_BOOL *pvbee);
@@ -4943,7 +4943,7 @@ import "wtypes.idl";
 //Wait 	Pauses a running macro until a specified time. Returns True if the specified time has arrived.
 		[id(dispid_application_wait), helpstring("method Wait")] HRESULT Wait(
 			[in] VARIANT Time,
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //ExtendList 	True if Microsoft Excel automatically extends formatting and formulas to new data that is added to a list.
 		[id(dispid_application_extendlist), propget, helpstring("property ExtendList")] HRESULT ExtendList([out, retval] VARIANT_BOOL* RHS);
@@ -4979,7 +4979,7 @@ import "wtypes.idl";
 		[id(dispid_application_calculatefull), helpstring("method CalculateFull")] HRESULT CalculateFull();
 //FindFile 	Displays the Open dialog box. 
 		[id(dispid_application_findfile), helpstring("method FindFile")] HRESULT FindFile(
-			[in] long lcid,
+			[in] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 //CalculationVersion 	Returns a number whose rightmost four digits are the minor calculation engine version number, and whose other digits (on the left) are the major version of Microsoft Excel.
 		[id(dispid_application_calculationversion), propget, helpstring("property CalculationVersion")] HRESULT CalculationVersion([out, retval] long* RHS);

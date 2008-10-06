@@ -160,7 +160,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Index(
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_Category(
         Name* iface,
-        long lcid,
+        LCID lcid,
         BSTR *value)
 {
     TRACE("\n");
@@ -169,7 +169,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Category(
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_Category(
         Name* iface,
-        long lcid,
+        LCID lcid,
         BSTR value)
 {
     TRACE("\n");
@@ -217,7 +217,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_MacroType(
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
         Name* iface,
-        long lcid,
+        LCID lcid,
         BSTR *value)
 {
     NameImpl *This = (NameImpl*)iface;
@@ -241,7 +241,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
         Name* iface,
-        long lcid,
+        LCID lcid,
         BSTR value)
 {
     NameImpl *This = (NameImpl*)iface;
@@ -267,7 +267,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_RefersTo(
         Name* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *value)
 {
     TRACE("\n");
@@ -276,7 +276,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersTo(
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_RefersTo(
         Name* iface,
-        long lcid,
+        LCID lcid,
         VARIANT value)
 {
     TRACE("\n");
@@ -365,7 +365,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToLocal(
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1(
         Name* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *value)
 {
     TRACE("\n");
@@ -374,7 +374,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1(
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1(
         Name* iface,
-        long lcid,
+        LCID lcid,
         VARIANT value)
 {
     TRACE("\n");

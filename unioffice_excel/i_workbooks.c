@@ -219,7 +219,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__Open(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Close(
         I_Workbooks* iface,
-        long lcid)
+        LCID lcid)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     int i;

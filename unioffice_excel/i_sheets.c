@@ -423,7 +423,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Copy(
         I_Sheets* iface,
         VARIANT Before,
         VARIANT After,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -431,7 +431,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Copy(
 
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_Delete(
         I_Sheets* iface,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -441,7 +441,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_FillAcrossSheets(
         I_Sheets* iface,
         IDispatch *IRange,
         XlFillWith Type,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -451,7 +451,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Move(
         I_Sheets* iface,
         VARIANT Before,
         VARIANT After,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -474,7 +474,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets__PrintOut(
         VARIANT ActivePrinter,
         VARIANT PrintToFile,
         VARIANT Collate,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -483,7 +483,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets__PrintOut(
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintPreview(
         I_Sheets* iface,
         VARIANT EnableChanges,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -492,7 +492,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintPreview(
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_Select(
         I_Sheets* iface,
         VARIANT Replace,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
@@ -516,7 +516,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_VPageBreaks(
 
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Visible(
         I_Sheets* iface,
-        long lcid,
+        LCID lcid,
         VARIANT *RHS)
 {
     TRACE("\n");
@@ -525,7 +525,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Visible(
 
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_put_Visible(
         I_Sheets* iface,
-        long lcid,
+        LCID lcid,
         VARIANT RHS)
 {
     TRACE("\n");
@@ -542,7 +542,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintOut(
         VARIANT PrintToFile,
         VARIANT Collate,
         VARIANT PrToFileName,
-        long lcid)
+        LCID lcid)
 {
     TRACE("\n");
     return E_NOTIMPL;
