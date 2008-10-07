@@ -5120,9 +5120,9 @@ import "wtypes.idl";
 	};
 
 [
-	uuid(4CB175C6-200B-407f-9456-1FF61F03252C),
+	uuid(00020813-0000-0000-C000-000000000046),
 	version(1.0),
-	helpstring("mso_to_oo 1.0 Type Library")
+	helpstring("unioffice_excel 1.0 Type Library")
 ]
 library MSO_TO_OOLib
 {
