@@ -47,6 +47,7 @@ struct regsvr_coclass
     LPCSTR ips;                 /* can be NULL to omit */
     LPCSTR ips32;               /* can be NULL to omit */
     LPCSTR ips32_tmodel;        /* can be NULL to omit */
+    CLSID const *typelib_name;  /* can be NULL to omit */
 };
 
 static HRESULT register_coclasses(struct regsvr_coclass const *list);
@@ -75,6 +76,8 @@ static WCHAR const ips_keyname[13] = {
     'I', 'n', 'P', 'r', 'o', 'c', 'S', 'e', 'r', 'v', 'e', 'r', 0 };
 static WCHAR const ips32_keyname[15] = {
     'I', 'n', 'P', 'r', 'o', 'c', 'S', 'e', 'r', 'v', 'e', 'r', '3', '2', 0 };
+static WCHAR const typelib_keyname[8] = {
+    'T','y','p','e','L','i','b',0};
 static char const tmodel_valuename[] = "ThreadingModel";
 
 
@@ -294,6 +297,12 @@ static HRESULT register_coclasses(struct regsvr_coclass const *list)
             if (res != ERROR_SUCCESS) goto error_close_clsid_key;
         }
 
+        if (list->typelib_name) {
+            StringFromGUID2(list->typelib_name, buf, 39);
+            res = register_key_defvalueW(clsid_key, typelib_keyname, buf);
+            if (res != ERROR_SUCCESS) goto error_close_clsid_key;
+        }
+
 error_close_clsid_key:
         RegCloseKey(clsid_key);
     }
@@ -510,7 +519,8 @@ static struct regsvr_coclass const coclass_list[] = {
         "Excel.Application",
         NULL,
         "unioffice_excel.dll",
-        "Both"
+        "Both",
+        &LIBID_MSO_TO_OOLib
     },
     { NULL }            /* list terminator */
 };
@@ -532,6 +542,8 @@ static struct regsvr_interface const interface_list[] = {
 __declspec(dllexport) STDAPI DllRegisterServer(void)
 {
     HRESULT hr;
+    ITypeLib *typelib;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
 
     TRACE("\n");
 
@@ -540,6 +552,15 @@ __declspec(dllexport) STDAPI DllRegisterServer(void)
         hr = register_interfaces(interface_list);
     if (SUCCEEDED(hr))
         hr = register_classes();
+
+    hr = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hr)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hr);
+        return hr;
+    }
+
+    hr = RegisterTypeLib(typelib, file_name, NULL);
+
     return hr;
 }
 
@@ -554,6 +575,9 @@ __declspec(dllexport) STDAPI DllUnregisterServer(void)
         hr = unregister_interfaces(interface_list);
     if (SUCCEEDED(hr))
         hr = unregister_classes();
+
+    hr = UnRegisterTypeLib(&LIBID_MSO_TO_OOLib, 1, 0, 0, SYS_WIN32);
+
     return hr;
 }
 
