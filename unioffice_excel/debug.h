@@ -19,20 +19,38 @@
  */
 #include <stdio.h>
 
+extern char buf[MAX_PATH+50];
+extern write_log;
 extern FILE *trace_file;
 
 #define DEBUG 1
 
 #ifdef DEBUG
 #define TRACE(args...) \
-do { if (trace_file) {fprintf(trace_file,"%s:%s:",__FILE__,__FUNCTION__);fprintf(trace_file, args);} } while(0)
+do { if (write_log) { \
+trace_file = fopen(buf,"a");\
+if (trace_file) { \
+fprintf(trace_file,"%s:%s:",__FILE__,__FUNCTION__);\
+fprintf(trace_file, args); \
+if (trace_file) fclose(trace_file);\
+} \
+} \
+} while(0)
 #else
 #define TRACE(n,...)
 #endif
 
 #ifdef DEBUG
 #define WTRACE(args...) \
-do { if (trace_file) {fprintf(trace_file,"%s:%s:",__FILE__,__FUNCTION__);fwprintf(trace_file, args);} } while(0)
+do { if (write_log) { \
+trace_file = fopen(buf,"a");\
+if (trace_file) { \
+fprintf(trace_file,"%s:%s:",__FILE__,__FUNCTION__);\
+fwprintf(trace_file, args); \
+if (trace_file) fclose(trace_file);\
+} \
+} \
+} while(0)
 #else
 #define WTRACE(n,...)
 #endif
