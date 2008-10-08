@@ -981,6 +981,12 @@ HRESULT MSO_TO_OO_GetActiveWorkbook(
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     TRACE_IN;
 
+    if (This->current_workbook<0) {
+        TRACE("ERROR No active Workbook \n");
+        *wb = NULL;
+        return E_FAIL;
+    }
+
     *wb = (I_Workbook*)This->pworkbook[This->current_workbook];
     I_Workbook_AddRef(*wb);
 
