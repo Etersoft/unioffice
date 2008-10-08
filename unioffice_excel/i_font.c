@@ -911,7 +911,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    _FontImpl *This = (_FontImpl*)iface;
     ITypeInfo *typeinfo;
     HRESULT hres;
 
