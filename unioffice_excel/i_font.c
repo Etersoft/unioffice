@@ -28,8 +28,7 @@ HRESULT get_typeinfo_font(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-
-    TRACE("\n");
+    TRACE_IN;
 
     if(ti_font) {
         *typeinfo = ti_font;
@@ -46,6 +45,7 @@ HRESULT get_typeinfo_font(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_font;
+    TRACE_OUT;
     return hres;
 }
 
@@ -76,7 +76,7 @@ static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
 {
     _FontImpl *This = (_FontImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -85,6 +85,7 @@ static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -94,8 +95,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_QueryInterface(
         void **ppvObject)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -106,7 +106,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_QueryInterface(
         MSO_TO_OO_I_Font_AddRef(iface);
         return S_OK;
     }
-
+    TRACE_OUT;
     return E_NOINTERFACE;
 }
 
@@ -116,7 +116,7 @@ static ULONG WINAPI MSO_TO_OO_I_Font_Release(
 {
     _FontImpl *This = (_FontImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -130,6 +130,7 @@ static ULONG WINAPI MSO_TO_OO_I_Font_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -143,9 +144,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Bold(
 
     /*In OO bold is specified as weight of the character*/
     VARIANT vBoldState;
-    VariantInit (&vBoldState);
+    TRACE_IN;
 
-    TRACE("\n");
+    VariantInit (&vBoldState);
 
     RangeImpl *range = (RangeImpl*)This->prange;
 
@@ -159,6 +160,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Bold(
     else
         *pvbBold = VARIANT_FALSE;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -167,8 +169,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Bold(
         VARIANT_BOOL vbBold)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vBoldState;
     VariantInit (&vBoldState);
@@ -185,6 +186,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Bold(
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharWeight", 1, vBoldState);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -193,8 +195,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Italic(
         VARIANT_BOOL *pvbItalic)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vItalicState;
     VariantInit (&vItalicState);
@@ -208,6 +209,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Italic(
         *pvbItalic = VARIANT_TRUE;
     else
         *pvbItalic = VARIANT_FALSE;
+
+    TRACE_OUT;
     return S_OK;
 
 }
@@ -217,8 +220,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Italic(
         VARIANT_BOOL vbItalic)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vItalicState;
     VariantInit (&vItalicState);
@@ -235,6 +237,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Italic(
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharPosture", 1, vItalicState);
 
+    TRACE_OUT;
     return S_OK;
 }
 /* TODO 1 - нет подчеркивания 2-есть подчеркивание*/
@@ -243,8 +246,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Underline(
         VARIANT *pvbUnderline)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -279,6 +281,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Underline(
             return E_FAIL;
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 /* TODO 1 - нет подчеркивания 2-есть подчеркивание*/
@@ -288,8 +291,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
 {
     _FontImpl *This = (_FontImpl*)iface;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -325,6 +327,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharUnderline", 1, vUnderlineState);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -333,8 +336,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
         long *plsize)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vsize;
     VariantInit (&vsize);
@@ -351,6 +353,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
         TRACE("Error when VariantChangeTypeEx\n");
     }
     *plsize = V_I4(&vsize);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -359,7 +363,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Size(
         long lsize)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
+    TRACE_IN;
     TRACE(" %i \n",lsize);
 
     VARIANT vsize;
@@ -374,6 +378,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Size(
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharHeight", 1, vsize);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -382,8 +387,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Strikethrough(
         VARIANT_BOOL *pvbUnderline)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -396,6 +400,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Strikethrough(
         return hres;
     *pvbUnderline = V_BOOL(&vUnderlineState);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -404,8 +409,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Strikethrough(
         VARIANT_BOOL vbUnderline)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -419,6 +423,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Strikethrough(
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharStrikeout", 1, vUnderlineState);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -427,13 +432,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Name(
         VARIANT *vName)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     RangeImpl *range = (RangeImpl*)This->prange;
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, vName, range->pOORange, L"CharFontName", 0);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -442,8 +447,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Name(
         VARIANT vName)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT res;
 
@@ -451,6 +455,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Name(
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharFontName", 1, vName);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -462,8 +467,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Color(
     HRESULT hres;
     VARIANT vret;
     VariantInit(&vret);
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -483,6 +487,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Color(
     }
     *plcolor = V_I4(&vret);
     TRACE(" lcolor=%i\n",*plcolor);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -493,7 +499,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Color(
     _FontImpl *This = (_FontImpl*)iface;
     HRESULT hres;
     VARIANT vret,param1;
-
+    TRACE_IN;
     TRACE(" lcolor = %i\n",lcolor);
 
     if (This==NULL) return E_POINTER;
@@ -508,7 +514,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Color(
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"CharColor", 1, param1);
 
     if (FAILED(hres)) TRACE("ERROR when CharColor");
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -520,7 +526,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_ColorIndex(
     long tmpcolor;
     int i;
     HRESULT hres;
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -538,6 +544,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_ColorIndex(
     TRACE("ERROR Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -547,13 +554,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_ColorIndex(
 {
     _FontImpl *This = (_FontImpl*)iface;
     long tmpcolor;
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
     if (lcolorindex==xlColorIndexNone) lcolorindex = 2;
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
 
+    TRACE_OUT;
     if ((lcolorindex<1)||(lcolorindex>56)) {
         TRACE("ERROR Incorrect colorindex \n");
         return S_OK;
@@ -566,12 +574,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Application(
         IDispatch **value)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
-
+    TRACE_OUT;
     return I_Range_get_Application((I_Range*)(This->prange),value);
 }
 
@@ -580,8 +587,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Parent(
         IDispatch **value)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -591,6 +597,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Parent(
     *value = This->prange;
     I_Range_AddRef(This->prange);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -598,9 +605,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Creator(
         I_Font* iface,
         VARIANT *result)
 {
-    TRACE("\n");
+    TRACE_IN;
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -609,8 +617,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Shadow(
         VARIANT_BOOL *pvbshadow)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -623,6 +630,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Shadow(
         return hres;
     *pvbshadow = V_BOOL(&vUnderlineState);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -631,8 +639,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Shadow(
         VARIANT_BOOL vbshadow)
 {
     _FontImpl *This = (_FontImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
@@ -646,6 +653,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Shadow(
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, range->pOORange, L"CharShadowed", 1, vUnderlineState);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -685,9 +693,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_OutlineFont(
         I_Font* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_IN;
     V_VT(RHS) = VT_BOOL;
     V_BOOL(RHS) = VARIANT_FALSE;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -885,8 +894,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     hres = get_typeinfo_font(&typeinfo);
     if(FAILED(hres))
@@ -896,7 +904,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -913,6 +921,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
+    TRACE_IN;
 
     hres = get_typeinfo_font(&typeinfo);
     if(FAILED(hres))
@@ -923,7 +932,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_Invoke(
     if (FAILED(hres)) {
         TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -973,9 +982,9 @@ const I_FontVtbl MSO_TO_OO_I_Font_Vtbl =
 HRESULT _I_FontConstructor(LPVOID *ppObj)
 {
     _FontImpl *_font;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
-    
+
     _font = HeapAlloc(GetProcessHeap(), 0, sizeof(*_font));
     if (!_font)
     {
@@ -987,7 +996,7 @@ HRESULT _I_FontConstructor(LPVOID *ppObj)
     _font->prange = NULL;
 
     *ppObj = &_font->_ifontVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }
 

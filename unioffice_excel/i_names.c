@@ -27,6 +27,7 @@ HRESULT get_typeinfo_name(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+    TRACE_IN;
 
     if (ti_name) {
         *typeinfo = ti_name;
@@ -43,6 +44,7 @@ HRESULT get_typeinfo_name(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_name;
+    TRACE_OUT;
     return hres;
 }
 
@@ -53,7 +55,7 @@ static ULONG WINAPI MSO_TO_OO_Name_AddRef(
 {
     NameImpl *This = (NameImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -62,6 +64,7 @@ static ULONG WINAPI MSO_TO_OO_Name_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -71,8 +74,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
         void **ppvObject)
 {
     NameImpl *This = (NameImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -81,6 +83,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
             IsEqualGUID(riid, &IID_Name)) {
         *ppvObject = &This->nameVtbl;
         MSO_TO_OO_Name_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -92,7 +95,7 @@ static ULONG WINAPI MSO_TO_OO_Name_Release(
 {
     NameImpl *This = (NameImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -114,6 +117,7 @@ static ULONG WINAPI MSO_TO_OO_Name_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -223,8 +227,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
     NameImpl *This = (NameImpl*)iface;
     HRESULT hres;
     VARIANT vres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&vres);
 
@@ -236,6 +239,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
     *value = SysAllocString(V_BSTR(&vres));
     VariantClear(&vres);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -247,8 +251,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
     NameImpl *This = (NameImpl*)iface;
     HRESULT hres;
     VARIANT vres, param1;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&vres);
     VariantInit(&param1);
@@ -262,6 +265,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
     }
     VariantClear(&param1);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -409,8 +413,8 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
     VARIANT index,vNull, vname;
     BSTR tmpname;
     HRESULT hres;
+    TRACE_IN;
 
-    TRACE("\n");
     VariantInit(&index);
     VariantInit(&vNull);
     V_VT(&vNull) = VT_NULL;
@@ -457,6 +461,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
          if (!FAILED(hres)) {
              I_Sheets_Release(shs);
              VariantClear(&vname);
+             TRACE_OUT;
              return S_OK;
          }
     }
@@ -497,7 +502,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_name(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -506,7 +511,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -628,7 +633,7 @@ const NameVtbl MSO_TO_OO_NameVtbl =
 extern HRESULT _NameConstructor(LPVOID *ppObj)
 {
     NameImpl *name;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     name = HeapAlloc(GetProcessHeap(), 0, sizeof(*name));
@@ -644,7 +649,7 @@ extern HRESULT _NameConstructor(LPVOID *ppObj)
     name->pOOName = NULL;
 
     *ppObj = &name->nameVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -657,7 +662,7 @@ HRESULT get_typeinfo_names(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-
+    TRACE_IN;
     if (ti_names) {
         *typeinfo = ti_names;
         return S_OK;
@@ -673,6 +678,7 @@ HRESULT get_typeinfo_names(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_names;
+    TRACE_OUT;
     return hres;
 }
 
@@ -683,7 +689,7 @@ static ULONG WINAPI MSO_TO_OO_Names_AddRef(
 {
     NamesImpl *This = (NamesImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -692,6 +698,7 @@ static ULONG WINAPI MSO_TO_OO_Names_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -702,8 +709,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_QueryInterface(
         void **ppvObject)
 {
     NamesImpl *This = (NamesImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -712,6 +718,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_QueryInterface(
             IsEqualGUID(riid, &IID_Names)) {
         *ppvObject = &This->namesVtbl;
         MSO_TO_OO_Names_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -724,7 +731,7 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
 {
     NamesImpl *This = (NamesImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -746,6 +753,7 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -755,8 +763,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Application(
         IDispatch **value)
 {
     NamesImpl *This = (NamesImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -766,6 +773,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Application(
     *value = This->pApplication;
     IDispatch_AddRef(This->pApplication);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -776,8 +784,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Count(
     NamesImpl *This = (NamesImpl*)iface;
     VARIANT vret;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&vret);
 
@@ -795,6 +802,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Count(
 
     *count = V_I2(&vret);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -802,9 +810,10 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Creator(
         Names* iface,
         VARIANT *result)
 {
-    TRACE("\n");
+    TRACE_IN;
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -813,8 +822,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Parent(
         IDispatch **value)
 {
     NamesImpl *This = (NamesImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -824,6 +832,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Parent(
     *value = This->pwb;
     IDispatch_AddRef(This->pwb);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -839,8 +848,7 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
     HRESULT hres;
     IUnknown *punk = NULL;
     IDispatch *pname;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -875,6 +883,7 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
             return E_FAIL;
         }
     }
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -901,7 +910,8 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetEnumerator(
         Names* iface,
         IDispatch **value)
 {
-
+    TRACE("\n");
+    return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_Item(
@@ -921,7 +931,8 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfoCount(
         Names* iface,
         UINT *pctinfo)
 {
-
+    TRACE("\n");
+    return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfo(
@@ -944,7 +955,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_names(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -953,7 +964,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -1104,7 +1115,7 @@ const NamesVtbl MSO_TO_OO_NamesVtbl =
 extern HRESULT _NamesConstructor(LPVOID *ppObj)
 {
     NamesImpl *names;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     names = HeapAlloc(GetProcessHeap(), 0, sizeof(*names));
@@ -1120,6 +1131,6 @@ extern HRESULT _NamesConstructor(LPVOID *ppObj)
     names->pOONames = NULL;
 
     *ppObj = &names->namesVtbl;
-
+    TRACE_IN;
     return S_OK;
 }

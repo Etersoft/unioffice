@@ -28,6 +28,7 @@ HRESULT get_typeinfo_workbooks(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+    TRACE_IN;
 
     if (ti_workbooks) {
         *typeinfo = ti_workbooks;
@@ -44,6 +45,7 @@ HRESULT get_typeinfo_workbooks(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_workbooks;
+    TRACE_OUT;
     return hres;
 }
 
@@ -56,7 +58,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_AddRef(
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -66,6 +68,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -76,8 +79,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_QueryInterface(
         void **ppvObject)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -86,6 +88,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_QueryInterface(
             IsEqualGUID(riid, &IID_I_Workbooks)) {
         *ppvObject = &This->_workbooksVtbl;
         MSO_TO_OO_I_Workbooks_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -99,6 +102,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     ULONG ref;
     int i;
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -117,6 +121,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -130,11 +135,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
 /*TODO подумать как добавить поддержку шаблонов*/
 
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-
     IUnknown *punk = NULL;
     HRESULT hres;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR Object is NULL \n");
@@ -192,6 +195,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
         return hres;
     }
     I_Workbook_AddRef(*ppWorkbook);
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -224,8 +228,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Close(
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     int i;
     BSTR filename;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -247,6 +250,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Close(
     This->current_workbook = -1;
     This->pworkbook = NULL;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -255,13 +259,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Count(
         int *count)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
     *count = This->count_workbooks;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -270,8 +274,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Application(
         IDispatch **value)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -281,6 +284,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Application(
     if (value==NULL)
         return E_POINTER;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -289,8 +293,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Parent(
         IDispatch **value)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -300,6 +303,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Parent(
     if (value==NULL)
         return E_POINTER;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -327,11 +331,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
 в данный момент используется только имя файла*/
 
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-
     IUnknown *punk = NULL;
     HRESULT hres;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -372,6 +374,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     }
     SysFreeString(filenametmp);
     I_Workbook_AddRef(*ppWorkbook);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -469,10 +473,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_CanCheckOut(
         BSTR Filename,
         VARIANT_BOOL *result)
 {
-    TRACE("\n");
+    TRACE_IN;
     /*всегда возвращаем - нельзя получить*/
     *result = VARIANT_FALSE;
-    
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -498,9 +502,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Creator(
         I_Workbooks* iface,
         VARIANT *result)
 {
-    TRACE("\n");
+    TRACE_IN;
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -583,6 +588,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
+    TRACE_IN;
 
     hres = get_typeinfo_workbooks(&typeinfo);
     if(FAILED(hres))
@@ -593,6 +599,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetIDsOfNames(
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -847,7 +854,7 @@ const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl =
 extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj)
 {
     WorkbooksImpl *workbooks;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     workbooks = HeapAlloc(GetProcessHeap(), 0, sizeof(*workbooks));
@@ -863,7 +870,7 @@ extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj)
     workbooks->current_workbook = -1;
 
     *ppObj = &workbooks->_workbooksVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }
 

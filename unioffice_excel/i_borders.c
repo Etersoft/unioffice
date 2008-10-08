@@ -27,6 +27,7 @@ HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+    TRACE_IN;
 
     if (ti_borders) {
         *typeinfo = ti_borders;
@@ -43,6 +44,8 @@ HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_borders;
+
+    TRACE_OUT;
     return hres;
 }
 
@@ -52,7 +55,7 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
 {
     BordersImpl *This = (BordersImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -61,6 +64,7 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -70,8 +74,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
         void **ppvObject)
 {
     BordersImpl *This = (BordersImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -80,6 +83,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
             IsEqualGUID(riid, &IID_I_Borders)) {
         *ppvObject = &This->_bordersVtbl;
         MSO_TO_OO_I_Borders_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -91,7 +95,7 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_Release(
 {
     BordersImpl *This = (BordersImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -105,6 +109,7 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -114,12 +119,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Application(
         IDispatch **value)
 {
     BordersImpl *This = (BordersImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
 
+    TRACE_OUT;
     return I_Range_get_Application((I_Range*)(This->prange),value);
 }
 
@@ -128,8 +133,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Parent(
         IDispatch **value)
 {
     BordersImpl *This = (BordersImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -139,6 +143,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Parent(
     if (value==NULL)
         return E_POINTER;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -149,13 +154,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Color(
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     I_Borders_get_Item(iface, xlEdgeTop, &border_tmp);
     I_Border_get_Color((I_Border*)border_tmp, plcolor);
     IDispatch_Release(border_tmp);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -167,7 +172,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
     HRESULT hres;
     IDispatch *border_tmp;
     int i;
-
+    TRACE_IN;
     TRACE(" lcolor = %i\n",lcolor);
 
     if (This==NULL) return E_POINTER;
@@ -178,7 +183,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
         I_Border_put_Color((I_Border*)border_tmp, lcolor);
         IDispatch_Release(border_tmp);
     }
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -190,7 +195,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_ColorIndex(
     long tmpcolor;
     int i;
     HRESULT hres;
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -201,12 +206,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_ColorIndex(
     for (i=0;i<56;i++)
         if (color[i]==tmpcolor) {
             *plcolorindex = i+1;
+            TRACE_OUT;
             return S_OK;
         }
 
     TRACE("ERROR Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -216,13 +223,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_ColorIndex(
 {
     BordersImpl *This = (BordersImpl*)iface;
     long tmpcolor;
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
     if (lcolorindex==xlColorIndexNone) lcolorindex = 2;
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
-
+    TRACE_OUT;
     if ((lcolorindex<1)||(lcolorindex>56)) {
         TRACE(" ERROR Incorrect colorindex %i\n", lcolorindex);
         return S_OK;
@@ -234,9 +241,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Creator(
         I_Borders* iface,
         VARIANT *result)
 {
-    TRACE("\n");
+    TRACE_IN;
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -247,8 +255,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_LineStyle(
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -256,6 +263,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_LineStyle(
     I_Border_get_LineStyle((I_Border*)border_tmp, plinestyle);
     IDispatch_Release(border_tmp);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -267,8 +275,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
     HRESULT hres;
     IDispatch *border_tmp;
     int i;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -278,7 +285,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
         I_Border_put_LineStyle((I_Border*)border_tmp, linestyle);
         IDispatch_Release(border_tmp);
     }
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -289,8 +296,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Weight(
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -298,6 +304,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Weight(
     I_Border_get_Weight((I_Border*)border_tmp, pweight);
     IDispatch_Release(border_tmp);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -310,8 +317,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
     HRESULT hres;
     IDispatch *border_tmp;
     int i;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -321,7 +327,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
         I_Border_put_Weight((I_Border*)border_tmp, weight);
         IDispatch_Release(border_tmp);
     }
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -334,7 +340,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
     IUnknown *punk = NULL;
     IDispatch *pborder;
     HRESULT hres;
-
+    TRACE_IN;
     TRACE("key=%08x\n",key);
 
     if (This==NULL) {
@@ -361,7 +367,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
     }
 
     *ppObject = pborder;
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -370,7 +376,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Item(
         XlBordersIndex key,
         IDispatch **ppObject)
 {
-    TRACE("\n");
+    TRACE("  ----> get__Default");
     return MSO_TO_OO_I_Borders_get__Default(iface, key, ppObject);
 }
 
@@ -378,7 +384,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Value(
         I_Borders* iface,
         XlLineStyle *plinestyle)
 {
-    TRACE("\n");
+    TRACE(" ----> get_LineStyle");
     return MSO_TO_OO_I_Borders_get_LineStyle(iface, plinestyle);
 }
 
@@ -386,7 +392,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Value(
         I_Borders* iface,
         XlLineStyle linestyle)
 {
-    TRACE("\n");
+    TRACE(" ----> put_LineStyle");
     return MSO_TO_OO_I_Borders_put_LineStyle(iface, linestyle);
 }
 
@@ -435,7 +441,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_borders(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -444,7 +450,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -461,7 +467,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_borders(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -471,7 +477,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
     if (FAILED(hres)) {
         TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -506,9 +512,9 @@ const I_BordersVtbl MSO_TO_OO_I_Borders_Vtbl =
 extern HRESULT _I_BordersConstructor(LPVOID *ppObj)
 {
     BordersImpl *borders;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
-    
+
     borders = HeapAlloc(GetProcessHeap(), 0, sizeof(*borders));
     if (!borders)
     {
@@ -520,6 +526,6 @@ extern HRESULT _I_BordersConstructor(LPVOID *ppObj)
     borders->prange = NULL;
 
     *ppObj = &borders->_bordersVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }

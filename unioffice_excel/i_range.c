@@ -29,7 +29,7 @@ HRESULT get_typeinfo_range(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-
+    TRACE_IN;
     if (ti_range) {
         *typeinfo = ti_range;
         return S_OK;
@@ -45,6 +45,7 @@ HRESULT get_typeinfo_range(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_range;
+    TRACE_OUT;
     return hres;
 }
 
@@ -74,7 +75,7 @@ static ULONG WINAPI MSO_TO_OO_I_Range_AddRef(
 {
     RangeImpl *This = (RangeImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -83,6 +84,7 @@ static ULONG WINAPI MSO_TO_OO_I_Range_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -92,8 +94,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_QueryInterface(
         void **ppvObject)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -102,6 +103,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_QueryInterface(
             IsEqualGUID(riid, &IID_I_Range)) {
         *ppvObject = &This->_rangeVtbl;
         MSO_TO_OO_I_Range_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -113,7 +115,7 @@ static ULONG WINAPI MSO_TO_OO_I_Range_Release(
 {
     RangeImpl *This = (RangeImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -135,6 +137,7 @@ static ULONG WINAPI MSO_TO_OO_I_Range_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -149,8 +152,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
     I_Range *pCell;
     IUnknown *punk = NULL;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -176,6 +178,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         *ppObject = (IDispatch*)pCell;
         I_Range_AddRef((I_Range*)*ppObject);
         I_Range_Release(pCell);
+        TRACE_OUT;
         return S_OK;
     } else {
         /*преобразовываем любой тип к I4*/
@@ -213,7 +216,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         *ppObject = (IDispatch*)pCell;
         I_Range_AddRef((I_Range*)*ppObject);
         I_Range_Release(pCell);
-
+        TRACE_OUT;
         return S_OK;
     }
 }
@@ -223,8 +226,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_ColumnWidth(
         long *pnColumnWidth)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -244,6 +246,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_ColumnWidth(
     IDispatch_Release(V_DISPATCH(&columns));
     *pnColumnWidth = V_I2(&vColWidth)/200;
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -252,8 +255,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_ColumnWidth(
         long nColumnWidth)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -281,6 +283,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_ColumnWidth(
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, V_DISPATCH(&columns), L"Width", 1, vColWidth);
     IDispatch_Release(V_DISPATCH(&columns));
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -289,12 +292,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
         IDispatch **ppFont)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
     HRESULT hr;
     IUnknown *punk = NULL;
     IDispatch *pFont;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -318,6 +319,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
 
     *ppFont = pFont;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -328,8 +330,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
         VARIANT *pvarValue)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -367,6 +368,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
         hres = AutoWrap(DISPATCH_METHOD, pvarValue, V_DISPATCH(&resultCell), L"getFormula", 0);
     } 
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -377,8 +379,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
         VARIANT varValue)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -456,6 +457,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
         return hres;
     }
     /*Если не равно ни 1 ни 2, то ничего не делаем*/
+    TRACE_OUT;
     return S_OK;
     } else {
 
@@ -501,6 +503,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
             return hres;
         }
     }
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -509,8 +512,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Select(
         VARIANT *pvarResult)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
     if (This->pOORange == NULL) {
@@ -551,6 +553,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Select(
     VariantClear(&vRes);
     VariantClear(&vRet);
     VariantClear(&param);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -562,8 +566,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_NoteText(
         BSTR *pText)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -672,6 +675,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_NoteText(
         return hres;
 
 */
+    TRACE_OUT;
     return E_NOTIMPL;
 }
 
@@ -679,15 +683,13 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearContents(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
-
     VARIANT result,param,vRes;
     VariantInit(&result);
     VariantInit(&param);
     VariantInit(&vRes);
     V_VT(&result) = VT_NULL;
     HRESULT hres;
+    TRACE_IN;
 
     if (This == NULL) return result;
 
@@ -701,6 +703,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearContents(
         return result;
     }
 
+    TRACE_OUT;
     return result;
 }
 
@@ -708,8 +711,7 @@ static long WINAPI MSO_TO_OO_I_Range_get_Column(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -740,6 +742,8 @@ static long WINAPI MSO_TO_OO_I_Range_get_Column(
         return E_FAIL;
     }
     lres = V_I4(&vtmp);
+
+    TRACE_OUT;
     return lres + 1;
 }
 
@@ -747,8 +751,7 @@ static long WINAPI MSO_TO_OO_I_Range_get_Row(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -781,6 +784,7 @@ static long WINAPI MSO_TO_OO_I_Range_get_Row(
     }
     lres = V_I4(&vtmp);
 
+    TRACE_OUT;
     return lres + 1;
 }
 
@@ -789,8 +793,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_HorizontalAlignment(
         XlHAlign *halign)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -818,6 +821,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_HorizontalAlignment(
     default:*halign=xlHAlignGeneral;break;
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -826,8 +830,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_HorizontalAlignment(
         XlHAlign halign)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -851,6 +854,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_HorizontalAlignment(
        return hres;
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -859,8 +863,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_VerticalAlignment(
         XlVAlign *valign)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -885,7 +888,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_VerticalAlignment(
     case 3:*valign=xlVAlignBottom ;break;
     default:*valign=xlVAlignDistributed;break;
     }
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -894,8 +897,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_VerticalAlignment(
         XlVAlign valign)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -915,7 +917,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_VerticalAlignment(
     if (hres != S_OK)  {
        return hres;
     }
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -924,8 +926,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Merge(
         VARIANT_BOOL flag)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -938,6 +939,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Merge(
 
     if (flag == VARIANT_FALSE) {
         hres = AutoWrap(DISPATCH_METHOD, &vRes, This->pOORange, L"Merge", 1, param);
+        TRACE_OUT;
         return hres;
     } else {
         /*надо пробежаться по всем рядам и объеденить их все отдельно*/
@@ -978,6 +980,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Merge(
             hres = AutoWrap(DISPATCH_METHOD, &vRes, newrange, L"Merge", 1, param);
             IDispatch_Release(newrange);
         }
+    TRACE_OUT;
     return S_OK;
     }
 }
@@ -986,8 +989,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_UnMerge(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1000,6 +1002,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_UnMerge(
 
     hres = AutoWrap(DISPATCH_METHOD, &vRes, This->pOORange, L"Merge", 1, param);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -1008,8 +1011,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_WrapText(
         VARIANT_BOOL *pvbwraptext)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1023,6 +1025,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_WrapText(
     }
     *pvbwraptext = V_BOOL(&vRes);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -1031,8 +1034,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_WrapText(
         VARIANT_BOOL pvbwraptext)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1045,6 +1047,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_WrapText(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, This->pOORange, L"isTextWrapped", 1, param);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -1053,8 +1056,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Application(
         IDispatch **value)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1064,6 +1066,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Application(
     if (value==NULL)
         return E_POINTER;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1072,8 +1075,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Parent(
         IDispatch **value)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1083,6 +1085,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Parent(
     if (value==NULL)
         return E_POINTER;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1091,8 +1094,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Worksheet(
         IDispatch **value)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1102,6 +1104,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Worksheet(
     if (value==NULL)
         return E_POINTER;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1109,8 +1112,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Clear(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT result;
     VariantInit(&result);
@@ -1134,6 +1136,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_Clear(
         return result;
     }
 
+    TRACE_OUT;
     return result;
 }
 
@@ -1141,8 +1144,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_ClearComments(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT param,vRes;
     VariantInit(&param);
@@ -1161,6 +1163,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_ClearComments(
         return hres;
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1168,8 +1171,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearFormats(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT result;
     VariantInit(&result);
@@ -1192,6 +1194,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearFormats(
         return result;
     }
 
+    TRACE_OUT;
     return result;
 }
 
@@ -1199,8 +1202,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearNotes(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT result;
     VariantInit(&result);
@@ -1223,6 +1225,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearNotes(
         return result;
     }
 
+    TRACE_OUT;
     return result;
 }
 
@@ -1230,8 +1233,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearOutline(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VARIANT result;
     VariantInit(&result);
@@ -1254,6 +1256,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearOutline(
         return result;
     }
 
+    TRACE_OUT;
     return result;
 }
 
@@ -1266,8 +1269,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Interior(
     HRESULT hr;
     IUnknown *punk = NULL;
     IDispatch *pInterior;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1291,6 +1293,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Interior(
 
     *value = pInterior;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1303,8 +1306,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Borders(
     HRESULT hr;
     IUnknown *punk = NULL;
     IDispatch *pBorders;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1329,6 +1331,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Borders(
 
     *value = pBorders;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1338,8 +1341,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Count(
 {
     HRESULT hres;
     long startrow, startcolumn, endrow, endcolumn,w,h;
+    TRACE_IN;
 
-    TRACE("\n");
     hres = MSO_TO_OO_GetRangeAddress(iface, &startrow, &startcolumn, &endrow, &endcolumn);
     if (FAILED(hres)) {
         TRACE("ERROR when GetRangeAddress\n");
@@ -1350,6 +1353,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Count(
 
     *lcount = w*h;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1362,8 +1366,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Delete(
     XlDeleteShiftDirection action;
     HRESULT hres;
     long startrow, startcolumn, endrow, endcolumn;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
     *value = NULL;
@@ -1438,6 +1441,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Delete(
         break;
     }
     I_Range_AddRef(*value);
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1446,8 +1450,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_RowHeight(
         long *pnrowheight)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1467,6 +1470,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_RowHeight(
     IDispatch_Release(V_DISPATCH(&rows));
     *pnrowheight = V_I2(&vRowHeight)/100;
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -1475,8 +1479,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_RowHeight(
         long nrowheight)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1499,6 +1502,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_RowHeight(
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, V_DISPATCH(&rows), L"Height", 1, vRowHeight);
     IDispatch_Release(V_DISPATCH(&rows));
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -1516,8 +1520,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
     VARIANT param;
     WorksheetImpl *wsh = (WorksheetImpl*)This->pwsheet;
     WorkbookImpl *parent_wb = (WorkbookImpl*)wsh->pwb;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
     if (This->pOORange == NULL)
@@ -1545,6 +1548,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
         TRACE("(To Clipboard)\n");
         *value = (IDispatch*)iface;
         IDispatch_AddRef(*value);
+        TRACE_OUT;
         return S_OK;
     } else {
         TRACE("(To another range)\n");
@@ -1575,6 +1579,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
 
         *value = (V_DISPATCH(&RangeTo));
         IDispatch_AddRef(*value);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -1586,9 +1591,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_NumberFormat(
         VARIANT *pnumbformat)
 {
 /*TODO*/
-    TRACE(" \n");
+    TRACE_IN;
     V_VT(pnumbformat) = VT_BSTR;
     V_BSTR(pnumbformat) = SysAllocString(L"");
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1606,9 +1612,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_NumberFormatLocal(
         VARIANT *pnumbformat)
 {
 /*TODO*/
-    TRACE("\n");
+    TRACE_IN;
     V_VT(pnumbformat) = VT_BSTR;
     V_BSTR(pnumbformat) = SysAllocString(L"");
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1628,10 +1635,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Height(
     RangeImpl *This = (RangeImpl*)iface;
     HRESULT hres;
     VARIANT vsize;
+    TRACE_IN;
 
     VariantInit(&vsize);
-
-    TRACE("\n");
 
     if (value==NULL) return E_FAIL;
 
@@ -1656,6 +1662,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Height(
 
     VariantClear(&vsize);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1666,10 +1673,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Width(
     RangeImpl *This = (RangeImpl*)iface;
     HRESULT hres;
     VARIANT vsize;
+    TRACE_IN;
 
     VariantInit(&vsize);
-
-    TRACE("\n");
 
     if (value==NULL) return E_FAIL;
 
@@ -1694,6 +1700,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Width(
 
     VariantClear(&vsize);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1704,10 +1711,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Left(
     RangeImpl *This = (RangeImpl*)iface;
     HRESULT hres;
     VARIANT vsize;
+    TRACE_IN;
 
     VariantInit(&vsize);
-
-    TRACE(" \n");
 
     if (value==NULL) return E_FAIL;
 
@@ -1732,6 +1738,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Left(
 
     VariantClear(&vsize);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1744,8 +1751,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Top(
     VARIANT vsize;
 
     VariantInit(&vsize);
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (value==NULL) return E_FAIL;
 
@@ -1770,6 +1776,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Top(
 
     VariantClear(&vsize);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1782,8 +1789,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_ShrinkToFit(
     VARIANT vRes,vtmp;
     VariantInit(&vRes);
     VariantInit(&vtmp);
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1796,6 +1802,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_ShrinkToFit(
     }
     *pparam = vtmp;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1806,8 +1813,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_ShrinkToFit(
     RangeImpl *This = (RangeImpl*)iface;
     VARIANT vRes;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1817,6 +1823,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_ShrinkToFit(
        return hres;
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1828,8 +1835,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeCells(
     VARIANT vRes,vtmp;
     VariantInit(&vRes);
     VariantInit(&vtmp);
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1842,6 +1848,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeCells(
     }
     *pparam = vtmp;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1851,6 +1858,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_MergeCells(
 {
     HRESULT hres;
     VARIANT vtmp;
+    TRACE_IN;
 
     VariantInit(&vtmp);
 
@@ -1865,6 +1873,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_MergeCells(
         hres = MSO_TO_OO_I_Range_Merge(iface, VARIANT_TRUE);
     }
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -1878,8 +1887,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Locked(
     VariantInit(&vRes);
     VariantInit(&vCellProt);
     VariantInit(&vtmp);
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1902,6 +1910,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Locked(
     }
     *pparam = vtmp;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1915,8 +1924,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Locked(
     VariantInit(&vRes);
     VariantInit(&vCellProt);
     VariantInit(&vtmp);
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1938,6 +1946,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Locked(
        return hres;
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1951,8 +1960,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Hidden(
     VariantInit(&vRes);
     VariantInit(&vCellProt);
     VariantInit(&vtmp);
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -1975,6 +1983,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Hidden(
     }
     *pparam = vtmp;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1988,8 +1997,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Hidden(
     VariantInit(&vRes);
     VariantInit(&vCellProt);
     VariantInit(&vtmp);
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -2011,6 +2019,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Hidden(
        return hres;
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -2021,8 +2030,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeArea(
     RangeImpl *This = (RangeImpl*)iface;
     HRESULT hres;
     long left, right,top,bottom;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     hres = MSO_TO_OO_GetRangeAddress(iface, &left, &top, &right, &bottom);
     if (FAILED(hres)) {
@@ -2035,6 +2043,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeArea(
     *value = (IDispatch*)This;
     IDispatch_AddRef(*value);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -2047,8 +2056,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
     VARIANT range;
     VARIANT param;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&result);
     VariantInit(&res);
@@ -2087,6 +2095,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_AutoFit(
     VariantClear(&res);
     VariantClear(&param);
 
+    TRACE_OUT;
     return result;
 }
 
@@ -2102,8 +2111,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Insert(
     CellInsertMode insert_mode;
     WorksheetImpl* wsh = (WorksheetImpl*)(This->pwsheet);
     long startrow=0, startcolumn=0, endrow=0, endcolumn=0;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&result);
     VariantInit(&shift);
@@ -2161,6 +2169,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Insert(
     VariantClear(&param2);
     VariantClear(&res);
     *RHS = result;
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -2174,8 +2184,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireColumn(
     HRESULT hres;
     WCHAR str[10];
     long start,end;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&range);
     VariantInit(&vcount);
@@ -2254,6 +2263,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireColumn(
     VariantClear(&vname1);
     VariantClear(&vname2);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -2268,7 +2278,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireRow(
     WCHAR str[10];
     long start,end;
     long startrow=0, startcolumn=0, endrow=0, endcolumn=0;
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&range);
     VariantInit(&vcount);
@@ -2323,6 +2333,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireRow(
     VariantClear(&vname1);
     VariantClear(&vname2);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -2785,8 +2796,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Formula(
         VARIANT *RHS)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -2808,6 +2818,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Formula(
 
     hres = AutoWrap(DISPATCH_METHOD, RHS, V_DISPATCH(&resultCell), L"getFormula", 0);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -2817,9 +2828,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Formula(
         VARIANT RHS)
 {
     VARIANT vNull;
-    TRACE(" \n");
+    TRACE_IN;
     VariantInit(&vNull);
     V_VT(&vNull) = VT_NULL;
+    TRACE_OUT;
     return I_Range_put_Value(iface, vNull, 0, RHS);
 }
 
@@ -2893,11 +2905,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1(
         VARIANT *RHS)
 {
     VARIANT tmp;
-
-    TRACE(" \n");
-
+    TRACE_IN;
     VariantInit(&tmp);
-
+    TRACE_OUT;
     return I_Range_get_Value(iface, tmp, lcid, RHS);
 }
 
@@ -2908,11 +2918,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1(
 {
     /* .uno:SheetUseR1C1 */
     VARIANT tmp;
-
-    TRACE(" \n");
-
+    TRACE_IN;
     VariantInit(&tmp);
-
+    TRACE_OUT;
     return I_Range_put_Value(iface, tmp, lcid, RHS);
 }
 
@@ -3113,8 +3121,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
     struct CELL_COORD lefttop, rightbottom;
     IDispatch *pCell;
     IUnknown *punk;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if ((V_VT(&RowOffset)!=VT_EMPTY)&&(V_VT(&RowOffset)!=VT_NULL)) {
          hres = VariantChangeTypeEx(&RowOffset, &RowOffset, 0, 0, VT_I4);
@@ -3171,6 +3178,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
         }
     *RHS = pCell;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -3901,7 +3909,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_range(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -3910,7 +3918,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -5131,7 +5139,7 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
 extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
 {
     RangeImpl *range;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     range = HeapAlloc(GetProcessHeap(), 0, sizeof(*range));
@@ -5148,6 +5156,6 @@ extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
     range->is_release = 1;
 
     *ppObj = &range->_rangeVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }

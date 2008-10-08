@@ -27,7 +27,7 @@ HRESULT get_typeinfo_pagesetup(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-
+    TRACE_IN;
     if (ti_pagesetup) {
         *typeinfo = ti_pagesetup;
         return S_OK;
@@ -43,6 +43,7 @@ HRESULT get_typeinfo_pagesetup(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_pagesetup;
+    TRACE_OUT;
     return hres;
 }
 
@@ -52,7 +53,7 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_AddRef(
 {
     PageSetupImpl *This = (PageSetupImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -61,6 +62,7 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -70,8 +72,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_QueryInterface(
         void **ppvObject)
 {
     PageSetupImpl *This = (PageSetupImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -80,6 +81,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_QueryInterface(
             IsEqualGUID(riid, &IID_I_PageSetup)) {
         *ppvObject = &This->_pagesetupVtbl;
         MSO_TO_OO_I_PageSetup_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -91,7 +93,7 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_Release(
 {
     PageSetupImpl *This = (PageSetupImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -109,6 +111,7 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -123,6 +126,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -130,7 +134,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -184,7 +187,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -197,6 +200,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -204,7 +208,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -260,7 +263,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -273,6 +276,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -280,7 +284,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -334,7 +337,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -347,6 +350,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -354,7 +358,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -409,7 +412,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -422,6 +425,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_TopMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -429,7 +433,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_TopMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -483,7 +486,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_TopMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -496,6 +499,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -503,7 +507,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -558,7 +561,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -571,6 +574,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BottomMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -578,7 +582,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BottomMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -632,7 +635,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BottomMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -645,6 +648,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -652,7 +656,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -707,7 +710,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -720,6 +723,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -727,7 +731,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -781,7 +784,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -794,6 +797,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -801,7 +805,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -860,7 +863,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -873,6 +876,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Zoom(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -880,7 +884,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Zoom(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -927,7 +930,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Zoom(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -940,6 +943,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Zoom(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -947,7 +951,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Zoom(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -992,7 +995,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Zoom(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1005,6 +1008,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesTall(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1012,7 +1016,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesTall(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1059,7 +1062,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesTall(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1072,6 +1075,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesTall(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1079,7 +1083,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesTall(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1130,7 +1133,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesTall(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1143,6 +1146,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesWide(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1150,7 +1154,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesWide(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1197,7 +1200,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesWide(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1210,6 +1213,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesWide(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1217,7 +1221,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesWide(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1262,7 +1265,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesWide(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1275,6 +1278,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_HeaderMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1282,7 +1286,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_HeaderMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1336,7 +1339,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_HeaderMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1349,6 +1352,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1356,7 +1360,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1411,7 +1414,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1424,6 +1427,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FooterMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1431,7 +1435,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FooterMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1485,7 +1488,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FooterMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1498,6 +1501,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1505,7 +1509,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1560,7 +1563,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1573,6 +1576,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHorizontally(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1580,7 +1584,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHorizontally(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1627,7 +1630,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHorizontally(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1640,6 +1643,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHorizontally(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1647,7 +1651,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHorizontally(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1696,7 +1699,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHorizontally(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1709,6 +1712,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterVertically(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1716,7 +1720,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterVertically(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1763,7 +1766,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterVertically(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1776,6 +1779,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
+    TRACE_IN;
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1783,7 +1787,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
     VariantInit(&param1);
     VariantInit(&vstyle);
     VariantInit(&vres);
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL");
@@ -1832,7 +1835,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
     VariantClear(&param1);
     VariantClear(&vstyle);
     VariantClear(&vres);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1841,8 +1844,10 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintTitleRows(
         I_PageSetup* iface,
         BSTR *value)
 {
+    TRACE_IN;
     TRACE("NEED to implement but return S_OK and empty string \n");
     *value = SysAllocString(L"");
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -2279,7 +2284,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_pagesetup(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -2288,7 +2293,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -2305,7 +2310,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_pagesetup(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -2315,7 +2320,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
     if (FAILED(hres)) {
         TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -2409,7 +2414,7 @@ const I_PageSetupVtbl MSO_TO_OO_I_PageSetupVtbl =
 extern HRESULT _I_PageSetupConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
 {
     PageSetupImpl *pagesetup;
-
+    TRACE_IN;
     TRACE("(%p,%p)\n", pUnkOuter, ppObj);
 
     pagesetup = HeapAlloc(GetProcessHeap(), 0, sizeof(*pagesetup));
@@ -2424,6 +2429,6 @@ extern HRESULT _I_PageSetupConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
     pagesetup->pApplication = NULL;
 
     *ppObj = &pagesetup->_pagesetupVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }

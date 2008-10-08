@@ -30,8 +30,7 @@ HRESULT get_typeinfo_outline(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-
-    TRACE("\n");
+    TRACE_IN;
 
     if(ti_outline) {
         *typeinfo = ti_outline;
@@ -48,6 +47,7 @@ HRESULT get_typeinfo_outline(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_outline;
+    TRACE_OUT;
     return hres;
 }
 
@@ -57,7 +57,7 @@ static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
 {
     OutlineImpl *This = (OutlineImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -66,6 +66,7 @@ static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -75,8 +76,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_QueryInterface(
         void **ppvObject)
 {
     OutlineImpl *This = (OutlineImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -85,6 +85,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_QueryInterface(
             IsEqualGUID(riid, &IID_I_Outline)) {
         *ppvObject = &This->_outlineVtbl;
         MSO_TO_OO_I_Outline_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -96,7 +97,7 @@ static ULONG WINAPI MSO_TO_OO_I_Outline_Release(
 {
     OutlineImpl *This = (OutlineImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -110,6 +111,7 @@ static ULONG WINAPI MSO_TO_OO_I_Outline_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -119,8 +121,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Application(
         IDispatch **RHS)
 {
     OutlineImpl *This = (OutlineImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -129,6 +130,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Application(
 
     I_Worksheet_get_Application((I_Worksheet*)(This->pwsh),RHS);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -136,8 +138,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Creator(
         I_Outline* iface,
         XlCreator *RHS)
 {
-    TRACE("\n");
+    TRACE_IN;
     *RHS = xlCreatorCode;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -146,8 +149,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Parent(
         IDispatch **RHS)
 {
     OutlineImpl *This = (OutlineImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -157,6 +159,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Parent(
     *RHS = This->pwsh;
     I_Worksheet_AddRef((I_Worksheet*)(This->pwsh));
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -164,9 +167,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_AutomaticStyles(
         I_Outline* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_IN;
     /*Always return VARIANT_FALSE*/
     *RHS = VARIANT_FALSE;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -179,8 +183,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
     HRESULT hres;
     VARIANT param1, cols, vret;
     IDispatch *tmp_range;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantClear(&param1);
     VariantClear(&cols);
@@ -208,6 +211,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
 
     VariantClear(&vret);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -221,8 +225,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
     WorksheetImpl *wsh = (WorksheetImpl*)This->pwsh;
     HRESULT hres;
     VARIANT param1, param2, vret;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&param1);
     VariantInit(&param2);
@@ -256,6 +259,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
     VariantClear(&param2);
     VariantClear(&vret);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -263,8 +267,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryColumn(
         I_Outline* iface,
         XlSummaryColumn *RHS)
 {
-    TRACE("\n");
+    TRACE_IN;
     *RHS = xlSummaryOnLeft;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -280,8 +285,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryRow(
         I_Outline* iface,
         XlSummaryRow *RHS)
 {
-    TRACE("\n");
+    TRACE_IN;
     *RHS = xlSummaryAbove;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -323,8 +329,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     hres = get_typeinfo_outline(&typeinfo);
     if(FAILED(hres))
@@ -334,7 +339,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -351,6 +356,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
+    TRACE_IN;
 
     hres = get_typeinfo_outline(&typeinfo);
     if(FAILED(hres))
@@ -362,6 +368,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
         TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -390,7 +397,7 @@ const I_OutlineVtbl MSO_TO_OO_I_Outline_Vtbl =
 extern HRESULT _I_OutlineConstructor(LPVOID *ppObj)
 {
     OutlineImpl *outline;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     outline = HeapAlloc(GetProcessHeap(), 0, sizeof(*outline));
@@ -404,6 +411,6 @@ extern HRESULT _I_OutlineConstructor(LPVOID *ppObj)
     outline->pwsh = NULL;
 
     *ppObj = &outline->_outlineVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }

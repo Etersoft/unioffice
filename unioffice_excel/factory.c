@@ -26,8 +26,7 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_AddRef(LPCLASSFACTORY iface)
 {
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
     ULONG ref;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -35,6 +34,7 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_AddRef(LPCLASSFACTORY iface)
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -44,8 +44,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
         LPVOID *ppvObj)
 {
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
 
@@ -53,6 +52,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
             IsEqualGUID(riid, &IID_IClassFactory)) {
         *ppvObj = (LPVOID)iface;
         MSO_TO_OO_IClassFactory_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -63,8 +63,7 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_Release(LPCLASSFACTORY iface)
 {
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
     ULONG ref;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -73,6 +72,7 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_Release(LPCLASSFACTORY iface)
         HeapFree(GetProcessHeap(), 0, This);
         InterlockedDecrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -85,8 +85,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
     HRESULT res;
     IUnknown *punk = NULL;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
 
@@ -103,7 +102,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
         TRACE("ERROR when ApplicationExcel_QueryInterface \n");
         return res;
     }
-
+    TRACE_OUT;
     return res;
 }
 
@@ -111,13 +110,14 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_LockServer(
         LPCLASSFACTORY iface,
         BOOL fLock)
 {
-    TRACE("\n");
+    TRACE_IN;
 
     if (fLock != FALSE) {
         IClassFactory_AddRef(iface);
     } else {
         IClassFactory_Release(iface);
     }
+    TRACE_OUT;
     return S_OK;
 }
 

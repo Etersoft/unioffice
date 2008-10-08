@@ -185,7 +185,7 @@ const I_WindowsVtbl MSO_TO_OO_I_WindowsVtbl =
 extern HRESULT _I_WindowsConstructor(LPVOID *ppObj)
 {
     WindowsImpl *windows;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     windows = HeapAlloc(GetProcessHeap(), 0, sizeof(*windows));
@@ -199,7 +199,7 @@ extern HRESULT _I_WindowsConstructor(LPVOID *ppObj)
     windows->pApplication = NULL;
 
     *ppObj = &windows->_windowsVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1177,7 +1177,7 @@ const I_WindowVtbl MSO_TO_OO_I_WindowVtbl =
 extern HRESULT _I_WindowConstructor(LPVOID *ppObj)
 {
     WindowImpl *window;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     window = HeapAlloc(GetProcessHeap(), 0, sizeof(*window));
@@ -1192,6 +1192,7 @@ extern HRESULT _I_WindowConstructor(LPVOID *ppObj)
 
     *ppObj = &window->_windowVtbl;
 
+    TRACE_OUT;
     return S_OK;
 }
 

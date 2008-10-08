@@ -28,6 +28,7 @@ HRESULT get_typeinfo_sheets(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+    TRACE_IN;
 
     if (ti_sheets) {
         *typeinfo = ti_sheets;
@@ -44,6 +45,7 @@ HRESULT get_typeinfo_sheets(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_sheets;
+    TRACE_OUT;
     return hres;
 }
 
@@ -53,7 +55,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_AddRef(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -62,6 +64,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -71,8 +74,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_QueryInterface(
         void **ppvObject)
 {
     SheetsImpl *This = (SheetsImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -81,6 +83,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_QueryInterface(
             IsEqualGUID(riid, &IID_I_Sheets)) {
         *ppvObject = &This->_sheetsVtbl;
         MSO_TO_OO_I_Sheets_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -92,7 +95,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -110,6 +113,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -120,8 +124,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
         IDispatch **ppSheet)
 {
     SheetsImpl *This = (SheetsImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -154,6 +157,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
         MSO_TO_OO_I_Worksheet_Initialize(pSheet,(I_Workbook*)(This->pwb), V_DISPATCH(&resultSheet));
 
         *ppSheet = (IDispatch*)pSheet;
+        TRACE_OUT;
         return S_OK;
     } else 
         if (V_VT(&varIndex) == VT_BSTR) {
@@ -176,11 +180,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
             MSO_TO_OO_I_Worksheet_Initialize(pSheet,(I_Workbook*)(This->pwb), V_DISPATCH(&resultSheet));
 
             *ppSheet = (IDispatch*)pSheet;
+            TRACE_OUT;
             return S_OK;
         } else {
             *ppSheet = NULL;
             return E_FAIL;
         }
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -191,8 +197,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Count(
     SheetsImpl *This = (SheetsImpl*)iface;
     VARIANT res;
     VariantInit(&res);
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -205,6 +210,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Count(
     }
     *count = V_I4(&res);
     TRACE("return = %i \n",*count);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -213,8 +220,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Application(
         IDispatch **value)
 {
     SheetsImpl *This = (SheetsImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR: This Object is NULL\n");
@@ -234,6 +240,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Application(
     *value = wb->pApplication;
     IDispatch_AddRef(wb->pApplication);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -242,8 +249,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Parent(
         IDispatch **value)
 {
     SheetsImpl *This = (SheetsImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR: This Object is NULL\n");
@@ -257,6 +263,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Parent(
     *value = This->pwb;
     IDispatch_AddRef(This->pwb);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -265,7 +272,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Item(
         VARIANT varIndex,
         IDispatch **ppSheet)
 {
-    TRACE("\n");
+    TRACE(" ----> get__Default");
     return MSO_TO_OO_I_Sheets_get__Default(iface,varIndex,ppSheet);
 }
 
@@ -273,9 +280,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Creator(
         I_Sheets* iface,
         VARIANT *result)
 {
-    TRACE("\n");
+    TRACE_IN;
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -294,12 +302,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
     VARIANT par1,par2,res;
     BSTR tmp;
     IDispatch *wsh = NULL;
+    TRACE_IN;
 
     VariantInit(&par1);
     VariantInit(&par2);
     VariantInit(&res);
-
-    TRACE("\n");
 
     if (This == NULL) {
         TRACE("ERROR: This Object is NULL\n");
@@ -416,6 +423,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
     VariantClear(&par1);
     VariantClear(&par2);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -578,7 +586,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_sheets(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -587,7 +595,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -781,7 +789,7 @@ const I_SheetsVtbl MSO_TO_OO_I_SheetsVtbl =
 extern HRESULT _I_SheetsConstructor(LPVOID *ppObj)
 {
     SheetsImpl *sheets;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     sheets = HeapAlloc(GetProcessHeap(), 0, sizeof(*sheets));
@@ -796,7 +804,7 @@ extern HRESULT _I_SheetsConstructor(LPVOID *ppObj)
     IDispatch *pOOSheets =NULL;
 
     *ppObj = &sheets->_sheetsVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }
 

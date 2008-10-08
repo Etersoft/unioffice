@@ -26,8 +26,7 @@ HRESULT MSO_TO_OO_I_Workbooks_Initialize(
         I_ApplicationExcel *app)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     This->pApplication = (IDispatch*)app;
 /*    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);*/
@@ -35,6 +34,7 @@ HRESULT MSO_TO_OO_I_Workbooks_Initialize(
     This->current_workbook = -1;
     This->pworkbook = NULL;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -44,6 +44,7 @@ HRESULT MSO_TO_OO_I_Font_Initialize(
         I_Range *range)
 {
     _FontImpl *This = (_FontImpl*)iface;
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR THIS = NULL \n");
@@ -57,6 +58,7 @@ HRESULT MSO_TO_OO_I_Font_Initialize(
     This->prange = (IDispatch*)range;
     if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -65,6 +67,7 @@ HRESULT MSO_TO_OO_I_Interior_Initialize(
         I_Range *range)
 {
     InteriorImpl *This = (InteriorImpl*)iface;
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR THIS = NULL \n");
@@ -78,6 +81,7 @@ HRESULT MSO_TO_OO_I_Interior_Initialize(
     This->prange = (IDispatch*)range;
     if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -86,6 +90,7 @@ HRESULT MSO_TO_OO_I_Borders_Initialize(
         I_Range *range)
 {
     BordersImpl *This = (BordersImpl*)iface;
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR THIS = NULL \n");
@@ -99,6 +104,7 @@ HRESULT MSO_TO_OO_I_Borders_Initialize(
     This->prange = (IDispatch*)range;
     if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -108,6 +114,7 @@ HRESULT MSO_TO_OO_I_Border_Initialize(
         XlBordersIndex key)
 {
     BorderImpl *This = (BorderImpl*)iface;
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR THIS = NULL \n");
@@ -123,6 +130,7 @@ HRESULT MSO_TO_OO_I_Border_Initialize(
 
     This->key = key;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -133,6 +141,7 @@ HRESULT MSO_TO_OO_I_PageSetup_Initialize(
     PageSetupImpl *this = (PageSetupImpl*) pPageSetup;
     WorksheetImpl *parent_wsh = (WorksheetImpl*) wsh;
     WorkbookImpl *wb = (WorkbookImpl*) parent_wsh->pwb;
+    TRACE_IN;
 
     if (this->pwsheet!=NULL) {
         I_Worksheet_Release((I_Worksheet*)this->pwsheet);
@@ -149,8 +158,8 @@ HRESULT MSO_TO_OO_I_PageSetup_Initialize(
     if (this->pApplication!=NULL) {
         I_ApplicationExcel_AddRef((I_ApplicationExcel*)this->pApplication);
     }
-
-
+    TRACE_OUT;
+    return S_OK;
 }
 
 HRESULT MSO_TO_OO_I_Workbook_Initialize(
@@ -168,8 +177,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     HRESULT hres;
     IUnknown *punk = NULL;
     int count_list,delta_list;
-
-    TRACE("\n");
+    TRACE_IN;
 
     This->pApplication = (IDispatch*)app;
  /*   if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);*/
@@ -282,6 +290,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     VariantClear(&param3);
     VariantClear(&resultDoc);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -291,8 +300,7 @@ HRESULT MSO_TO_OO_I_Sheets_Initialize(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
     VARIANT resultSheets;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) {
         TRACE("Object is NULL \n");
@@ -313,6 +321,8 @@ HRESULT MSO_TO_OO_I_Sheets_Initialize(
     }
     IDispatch_AddRef(This->pOOSheets);
     VariantClear(&resultSheets);
+
+    TRACE_OUT;
     return hres;
 }
 
@@ -326,12 +336,11 @@ HRESULT MSO_TO_OO_GetActiveSheet(
     I_Worksheet *pworksheet = NULL;
     IUnknown *punk = NULL;
     WorkbookImpl *wb = (WorkbookImpl*)This->pwb;
-    TRACE("\n");
     VARIANT res;
     HRESULT hres;
     VariantInit(&resultSheet);
+    TRACE_IN;
 
-/*TODO GET THE ACTIVE SHEET*/
     hres = AutoWrap(DISPATCH_METHOD, &res, wb->pDoc, L"getCurrentController",0);
     if (FAILED(hres)) {
         TRACE("ERROR when getCurrentController \n");
@@ -361,6 +370,7 @@ HRESULT MSO_TO_OO_GetActiveSheet(
     VariantClear(&res);
     VariantClear(&resultSheet);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -372,8 +382,7 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
     WorksheetImpl *This = (WorksheetImpl*)iface;
     IUnknown *punk = NULL;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     This->pwb = (IDispatch*)wb;
     IDispatch_AddRef(This->pwb);
@@ -406,6 +415,7 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
 
     MSO_TO_OO_I_Range_Initialize2((I_Range*)This->pAllRange, This->pOOSheet);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -418,8 +428,7 @@ HRESULT MSO_TO_OO_GetDispatchPropertyValue(
     HRESULT hres;
     VARIANT res;
     VARIANT objstr;
-
-    TRACE("\n");
+    TRACE_IN;
 
     _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)app;
 
@@ -434,6 +443,8 @@ HRESULT MSO_TO_OO_GetDispatchPropertyValue(
     }
     VariantInit(&res);
     SysFreeString(V_BSTR(&objstr));
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -446,8 +457,7 @@ HRESULT MSO_TO_OO_GetDispatchHelper(
     HRESULT hres;
     VARIANT res;
     VARIANT objstr;
-
-    TRACE("\n");
+    TRACE_IN;
 
     _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)app;
     if (This==NULL) {
@@ -465,6 +475,8 @@ HRESULT MSO_TO_OO_GetDispatchHelper(
     }
     VariantInit(&res);
     SysFreeString(V_BSTR(&objstr));
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -476,8 +488,8 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
     _ApplicationExcelImpl *This = (_ApplicationExcelImpl*)app;
     HRESULT hres;
     VARIANT res;
+    TRACE_IN;
 
-    TRACE("\n");
     if (This==NULL) {
         return E_POINTER;
     }
@@ -529,6 +541,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
     VariantClear(&param3);
     VariantClear(&param4);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -545,8 +558,8 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_WB(
     _ApplicationExcelImpl *This_app = (_ApplicationExcelImpl*)(This_wb->pApplication);
     HRESULT hres;
     VARIANT res;
+    TRACE_IN;
 
-    TRACE("\n");
     if (This_wb==NULL) {
         return E_POINTER;
     }
@@ -591,6 +604,7 @@ HRESULT MSO_TO_OO_ExecuteDispatchHelper_WB(
     VariantClear(&param3);
     VariantClear(&param4);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -607,8 +621,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
     HRESULT hres;
     V_VT(&p2) = VT_BOOL;
     V_BOOL(&p2) = VARIANT_TRUE;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) {
         TRACE("ERROR Object if NULL \n");
@@ -664,6 +677,8 @@ HRESULT MSO_TO_OO_CloseWorkbook(
     This->pDoc = NULL;
     IDispatch_Release(dpv);
     VariantClear(&res);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -682,8 +697,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     IDispatch *dpv = NULL,*dpv2 = NULL;
     long ix=0;
     VARIANT p1,p2;
-
-    TRACE("\n");
+    TRACE_IN;
 
     This->pApplication = (IDispatch*)app;
 /*    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);*/
@@ -790,6 +804,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     VariantClear(&param3);
     VariantClear(&resultDoc);
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -801,6 +816,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize(
 {
     RangeImpl *This = (RangeImpl*)iface;
     RangeImpl *This_parent = (RangeImpl*)pParentRange;
+    TRACE_IN;
 
     if (This_parent->pOORange == NULL) {
        return E_POINTER;
@@ -822,8 +838,6 @@ HRESULT MSO_TO_OO_I_Range_Initialize(
     V_VT(&vBottom) = VT_I4;
     V_I4(&vBottom) = bottomRight.y - 1;
 
-    TRACE("\n");
-
     HRESULT hres = AutoWrap(DISPATCH_METHOD, &resRange, This_parent->pOORange, L"getCellRangeByPosition", 4, vBottom, vRight, vTop, vLeft);
     if (FAILED(hres)) {
        This->pOORange = NULL;
@@ -839,6 +853,8 @@ HRESULT MSO_TO_OO_I_Range_Initialize(
     This->pOORange = V_DISPATCH(&resRange);
     IDispatch_AddRef(V_DISPATCH(&resRange));
     VariantClear(&resRange);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -847,8 +863,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize2(
         IDispatch *oosheet)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR THIS = NULL \n");
@@ -862,6 +877,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize2(
     This->pOORange = oosheet;
     if (This->pOORange != NULL) {
         IDispatch_AddRef(This->pOORange);
+        TRACE_OUT;
         return S_OK;
     }
     return E_POINTER;
@@ -874,8 +890,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
         IDispatch *pApp)
 {
     RangeImpl *This = (RangeImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL) {
         TRACE("ERROR THIS = NULL \n");
@@ -889,6 +904,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
     This->pOORange = oosheet;
     if (This->pOORange != NULL) {
         IDispatch_AddRef(This->pOORange);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -908,6 +924,7 @@ HRESULT MSO_TO_OO_GetRangeAddress(
         long *lBottom)
 {
     RangeImpl *This = (RangeImpl*)iface;
+    TRACE_IN;
 
     if (This==NULL) {
         TRACE("Error = Object is NULL \n");
@@ -952,6 +969,8 @@ HRESULT MSO_TO_OO_GetRangeAddress(
     *lBottom = vRes.intVal;
 
     IDispatch_Release(pdRangeAddress);
+
+    TRACE_OUT;
     return hres;
 }
 
@@ -960,10 +979,12 @@ HRESULT MSO_TO_OO_GetActiveWorkbook(
         I_Workbook **wb)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    TRACE_IN;
 
     *wb = (I_Workbook*)This->pworkbook[This->current_workbook];
     I_Workbook_AddRef(*wb);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -973,6 +994,7 @@ HRESULT MSO_TO_OO_GetActiveCells(
 {
     IDispatch *pWorkbook;
     HRESULT hres;
+    TRACE_IN;
 
     hres = MSO_TO_OO_GetActiveWorkbook(iface,(I_Workbook**) &pWorkbook);
 
@@ -1057,6 +1079,8 @@ HRESULT MSO_TO_OO_GetActiveCells(
     IDispatch_Release(pCurrentCell);
     I_Sheets_Release(pSheets);
     I_Worksheet_Release(pworksheet);
+
+    TRACE_OUT;
     return hres;
 }
 
@@ -1067,7 +1091,8 @@ HRESULT MSO_TO_OO_I_Range_Initialize_ByName(
 {
     RangeImpl *This = (RangeImpl*)iface;
     RangeImpl *This_parent = (RangeImpl*)pParentRange;
-    TRACE("\n");
+    TRACE_IN;
+
     if (This_parent->pOORange == NULL) {
        return E_POINTER;
     }
@@ -1091,6 +1116,8 @@ HRESULT MSO_TO_OO_I_Range_Initialize_ByName(
     This->pOORange = V_DISPATCH(&resRange);
     IDispatch_AddRef(This->pOORange);
     VariantClear(&resRange);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1098,6 +1125,7 @@ HRESULT MSO_TO_OO_CorrectArg(
          VARIANT value,
          VARIANT *retval)
 {
+TRACE_IN;
 VariantInit(retval);
 if (V_ISBYREF(&value)) {
     switch(V_VT(&value) - VT_BYREF) {
@@ -1189,6 +1217,7 @@ if (V_ISBYREF(&value)) {
 } else {
     *retval = value; 
 }
+TRACE_OUT;
 return S_OK;
 }
 
@@ -1197,6 +1226,7 @@ WCHAR* insert(WCHAR* src,WCHAR* dst,unsigned int index)
     WCHAR* res;
     int len;
     unsigned int i,j,k;
+    TRACE_IN;
 
     len = lstrlenW(src);
     len = len + lstrlenW(dst) + 1;
@@ -1213,6 +1243,8 @@ WCHAR* insert(WCHAR* src,WCHAR* dst,unsigned int index)
         j++;
     }
     *(res+len-1)=0;
+
+    TRACE_OUT;
     return res;
 }
 
@@ -1238,6 +1270,7 @@ HRESULT MSO_TO_OO_MakeURLFromFilename(
     WCHAR http[] = {'h','t','t','p',0};
     WCHAR https[] = {'h','t','t','p','s',0};
     WCHAR ftp[] = {'f','t','p',0};
+    TRACE_IN;
 
     ptr = SysAllocString(value);
     TRACE("%i \n", strcmpnW(ptr, http));
@@ -1261,6 +1294,7 @@ HRESULT MSO_TO_OO_MakeURLFromFilename(
 
     *retval = ptr;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1277,8 +1311,8 @@ long MSO_TO_OO_FindIndexWorksheetByName(
     IDispatch *wsh;
     VARIANT par_tmp;
     BSTR tmp_name;
+    TRACE_IN;
 
-    TRACE("\n");
     if (This==NULL) {
         return E_POINTER;
     }
@@ -1309,6 +1343,7 @@ long MSO_TO_OO_FindIndexWorksheetByName(
                 if (!lstrcmpiW(tmp_name, name)) {
                     SysFreeString(tmp_name);
                     IDispatch_Release(wsh);
+                    TRACE_OUT;
                     return i - 1;
                 }
                 SysFreeString(tmp_name);
@@ -1318,6 +1353,7 @@ long MSO_TO_OO_FindIndexWorksheetByName(
         }
         i++;
     }
+    TRACE_OUT;
     return -1;
 }
 
@@ -1332,6 +1368,8 @@ long MSO_TO_OO_GlobalFindIndexWorksheetByName(
     WorkbooksImpl *wbs = (WorkbooksImpl*)This_app->pdWorkbooks;
     SheetsImpl *wsheets;
     WorkbookImpl *wb;
+    TRACE_IN;
+
     for (i=0;i<wbs->count_workbooks;i++){
         if (wbs->pworkbook[i]!=NULL) {
             wb = (WorkbookImpl*)(wbs->pworkbook[i]);
@@ -1339,11 +1377,13 @@ long MSO_TO_OO_GlobalFindIndexWorksheetByName(
             id = MSO_TO_OO_FindIndexWorksheetByName((I_Sheets*)wsheets, name);
             if (id>=0) {
                *retval = (IDispatch*)wb;
+               TRACE_OUT;
                return id;
             }
         }
     }
-return -1;
+    TRACE_OUT;
+    return -1;
 }
 
 HRESULT MSO_TO_OO_I_Shapes_Initialize(
@@ -1355,8 +1395,7 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     HRESULT hres;
     VARIANT vframe, param1, vRet;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&vframe);
     VariantInit(&vRet);
@@ -1404,6 +1443,8 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
     VariantClear(&vframe);
     VariantClear(&vRet);
     VariantClear(&param1);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1418,8 +1459,7 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     VARIANT vline, param1, size, position, vRet;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&vline);
     VariantInit(&param1);
@@ -1531,6 +1571,8 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     VariantClear(&position);
     VariantClear(&size);
     VariantClear(&vRet);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1542,8 +1584,7 @@ HRESULT MSO_TO_OO_Names_Initialize(
     WorkbookImpl *wbi = (WorkbookImpl*)wb;
     VARIANT vRet;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&vRet);
 
@@ -1581,6 +1622,7 @@ HRESULT MSO_TO_OO_Names_Initialize(
 
     VariantClear(&vRet);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1591,8 +1633,7 @@ HRESULT MSO_TO_OO_Workbook_SetVisible(
     WorkbookImpl *This = (WorkbookImpl*)wb;
     HRESULT hres;
     VARIANT oocontr, ooframe, oocontwindow, param, res;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&oocontr);
     VariantInit(&ooframe);
@@ -1648,6 +1689,7 @@ HRESULT MSO_TO_OO_Workbook_SetVisible(
     VariantClear(&param);
     VariantClear(&res);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1656,6 +1698,7 @@ HRESULT MSO_TO_OO_I_Outline_Initialize(
         I_Worksheet *iwsh)
 {
     OutlineImpl *This = (OutlineImpl*)iface;
+    TRACE_IN;
 
     if (This->pwsh!=NULL) {
         I_Worksheet_Release((I_Worksheet*)This->pwsh);
@@ -1663,6 +1706,7 @@ HRESULT MSO_TO_OO_I_Outline_Initialize(
     This->pwsh = (IDispatch*)iwsh;
     I_Worksheet_AddRef((I_Worksheet*)This->pwsh);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1676,8 +1720,7 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
     WorkbookImpl *wbi = (WorkbookImpl*)(onames->pwb);
     VARIANT vRet,vRet2;
     HRESULT hres;
-
-    TRACE("\n");
+    TRACE_IN;
 
     VariantInit(&vRet);
 
@@ -1723,5 +1766,6 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
 
     VariantClear(&vRet);
 
+    TRACE_OUT;
     return S_OK;
 }

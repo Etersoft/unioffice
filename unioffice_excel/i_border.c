@@ -27,6 +27,7 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+    TRACE_IN;
 
     if (ti_border) {
         *typeinfo = ti_border;
@@ -43,6 +44,7 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_border;
+    TRACE_OUT;
     return hres;
 }
 
@@ -53,7 +55,7 @@ static ULONG WINAPI MSO_TO_OO_I_Border_AddRef(
 {
     BorderImpl *This = (BorderImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -62,6 +64,7 @@ static ULONG WINAPI MSO_TO_OO_I_Border_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -71,8 +74,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
         void **ppvObject)
 {
     BorderImpl *This = (BorderImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -81,6 +83,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
             IsEqualGUID(riid, &IID_I_Border)) {
         *ppvObject = &This->_borderVtbl;
         MSO_TO_OO_I_Border_AddRef(iface);
+
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -92,7 +96,7 @@ static ULONG WINAPI MSO_TO_OO_I_Border_Release(
 {
     BorderImpl *This = (BorderImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -106,6 +110,7 @@ static ULONG WINAPI MSO_TO_OO_I_Border_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -115,6 +120,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Application(
         IDispatch **value)
 {
     BorderImpl *This = (BorderImpl*)iface;
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -123,7 +129,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Application(
 
     if (borders==NULL) return E_POINTER;
     if (borders->prange==NULL) return E_POINTER;
-
+    TRACE_OUT;
     return I_Range_get_Application((I_Range*)(borders->prange),value);
 }
 
@@ -132,8 +138,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Parent(
         IDispatch **value)
 {
     BorderImpl *This = (BorderImpl*)iface;
-
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -143,6 +148,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Parent(
     if (value==NULL)
         return E_POINTER;
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -156,12 +162,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
     VARIANT X,Y;
     BordersImpl *borders = (BordersImpl*)(This->pborders);
     RangeImpl *cur_range = (RangeImpl*)borders->prange;
+    TRACE_IN;
 
     VariantInit(&vret);
     VariantInit(&X);
     VariantInit(&Y);
-
-    TRACE(" \n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL \n");
@@ -277,7 +282,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
     VariantClear(&vret);
     VariantClear(&X);
     VariantClear(&Y);
-
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -291,13 +296,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     VARIANT X,Y,param1;
     BordersImpl *borders = (BordersImpl*)(This->pborders);
     RangeImpl *cur_range = (RangeImpl*)borders->prange;
+    TRACE_IN;
 
     VariantInit(&vret);
     VariantInit(&X);
     VariantInit(&Y);
     VariantInit(&param1);
-
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL \n");
@@ -530,6 +534,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     VariantClear(&Y);
     VariantClear(&param1);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -541,7 +546,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_ColorIndex(
     long tmpcolor;
     int i;
     HRESULT hres;
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -558,6 +563,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_ColorIndex(
     TRACE("ERROR Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -567,7 +573,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_ColorIndex(
 {
     BorderImpl *This = (BorderImpl*)iface;
     long tmpcolor;
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -576,18 +582,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_ColorIndex(
 
     if ((lcolorindex<1)||(lcolorindex>56)) {
         TRACE("ERROR Incorrect colorindex %i\n", lcolorindex);
+        TRACE_OUT;
         return S_OK;
-    } else 
+    } else {
+        TRACE_OUT;
         return MSO_TO_OO_I_Border_put_Color(iface,color[lcolorindex-1]);
+    }
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_get_Creator(
         I_Border* iface,
         VARIANT *result)
 {
-    TRACE(" \n");
+    TRACE_IN;
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -602,12 +612,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     long in,out,l;
     BordersImpl *borders = (BordersImpl*)(This->pborders);
     RangeImpl *cur_range = (RangeImpl*)borders->prange;
+    TRACE_IN;
 
     VariantInit(&vret);
     VariantInit(&X);
     VariantInit(&Y);
-
-    TRACE("\n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL \n");
@@ -745,6 +754,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     VariantClear(&X);
     VariantClear(&Y);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -758,14 +768,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     VARIANT X,Y,param1;
     BordersImpl *borders = (BordersImpl*)(This->pborders);
     RangeImpl *cur_range = (RangeImpl*)borders->prange;
+    TRACE_IN;
 
     VariantInit(&vret);
     VariantInit(&X);
     VariantInit(&Y);
     VariantInit(&param1);
     long in,out,l;
-
-    TRACE(" \n");
 
     if (This==NULL) {
         TRACE("ERROR Object is NULL \n");
@@ -1039,6 +1048,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     VariantClear(&Y);
     VariantClear(&param1);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1089,6 +1099,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
+    TRACE_IN;
 
     hres = get_typeinfo_border(&typeinfo);
     if(FAILED(hres))
@@ -1098,7 +1109,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -1115,6 +1126,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
+    TRACE_IN;
 
     hres = get_typeinfo_border(&typeinfo);
     if(FAILED(hres))
@@ -1126,6 +1138,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
         TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -1155,7 +1168,7 @@ const I_BorderVtbl MSO_TO_OO_I_Border_Vtbl =
 extern HRESULT _I_BorderConstructor(LPVOID *ppObj)
 {
     BorderImpl *border;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
 
     border = HeapAlloc(GetProcessHeap(), 0, sizeof(*border));
@@ -1170,7 +1183,7 @@ extern HRESULT _I_BorderConstructor(LPVOID *ppObj)
     border->pborders = NULL;
 
     *ppObj = &border->_borderVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }
 

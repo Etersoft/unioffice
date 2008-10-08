@@ -42,6 +42,7 @@ extern ITypeInfo *ti_outline;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
+    TRACE_IN;
     TRACE("(%p, %d, %p)\n", hinstDLL, fdwReason, lpvReserved);
     fprintf(stderr,"WE ARE THERE \n");
     switch (fdwReason)
@@ -80,7 +81,7 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
                 ti_excel->lpVtbl->Release(ti_outline);
             break;
     }
-
+    TRACE_OUT;
     return TRUE;
 }
 
@@ -89,6 +90,7 @@ __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVO
     *ppv = NULL;
     char file_name[]= {'\\','u','n','i','o','f','f','i','c','e','.','l','o','g',0};
     int len,i=0;
+    TRACE_IN;
 
     if (IsEqualGUID(rclsid, &CLSID__ApplicationExcel)) {
         /*Начинаем запись лога если файл существует*/
@@ -101,18 +103,16 @@ __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVO
                 if (trace_file) fclose(trace_file);
             }
         }
-        TRACE(" \n ");
+        TRACE_OUT;
         return IClassFactory_QueryInterface((LPCLASSFACTORY)&OOFFICE_ClassFactory, iid, ppv);
     }
-
+    TRACE_OUT;
     return CLASS_E_CLASSNOTAVAILABLE;
 }
 
 __declspec(dllexport) STDAPI DllCanUnloadNow(void)
 {
-    /*закрываем файл лога*/
     TRACE("GLOBAL REF = %i \n",dll_ref);
-
     return dll_ref != 0 ? S_FALSE : S_OK;
 }
 

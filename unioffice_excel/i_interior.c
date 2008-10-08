@@ -28,6 +28,7 @@ HRESULT get_typeinfo_interrior(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+    TRACE_IN;
 
     if (ti_interrior) {
         *typeinfo = ti_interrior;
@@ -44,6 +45,8 @@ HRESULT get_typeinfo_interrior(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_interrior;
+
+    TRACE_OUT;
     return hres;
 }
 
@@ -53,7 +56,7 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_AddRef(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -62,6 +65,7 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -71,8 +75,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_QueryInterface(
         void **ppvObject)
 {
     InteriorImpl *This = (InteriorImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -81,6 +84,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_QueryInterface(
             IsEqualGUID(riid, &IID_I_Interior)) {
         *ppvObject = &This->_interiorVtbl;
         MSO_TO_OO_I_Interior_AddRef(iface);
+        TRACE_OUT;
         return S_OK;
     }
 
@@ -92,7 +96,7 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_Release(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
     ULONG ref;
-
+    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -106,6 +110,7 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
+    TRACE_OUT;
     return ref;
 }
 
@@ -118,8 +123,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Color(
     HRESULT hres;
     VARIANT vret;
     VariantInit(&vret);
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
@@ -139,6 +143,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Color(
     }
     *plcolor = V_I4(&vret);
     TRACE("lcolor=%i\n",*plcolor);
+
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -149,7 +155,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Color(
     InteriorImpl *This = (InteriorImpl*)iface;
     HRESULT hres;
     VARIANT vret,param1;
-
+    TRACE_IN;
     TRACE(" lcolor = %i\n",lcolor);
 
     if (This==NULL) return E_POINTER;
@@ -173,6 +179,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Color(
 
     if (FAILED(hres)) TRACE("ERROR when cellBackColor");
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -184,7 +191,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_ColorIndex(
     long tmpcolor;
     int i;
     HRESULT hres;
-    TRACE(" \n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -196,12 +203,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_ColorIndex(
     for (i=0;i<56;i++)
         if (color[i]==tmpcolor) {
             *plcolorindex = i+1;
+            TRACE_OUT;
             return S_OK;
         }
 
     TRACE("ERROR Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -211,13 +220,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_ColorIndex(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
     long tmpcolor;
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
     if (lcolorindex==xlColorIndexNone) lcolorindex = 2;
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
-
+    TRACE_OUT;
     if ((lcolorindex<1)||(lcolorindex>56)) {
         TRACE("ERROR Incorrect colorindex %i\n", lcolorindex);
         return S_OK;
@@ -230,12 +239,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Application(
         IDispatch **value)
 {
     InteriorImpl *This = (InteriorImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
     if (This->prange==NULL) return E_POINTER;
-
+    TRACE_OUT;
     return I_Range_get_Application((I_Range*)(This->prange),value);
 }
 
@@ -244,8 +252,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Parent(
         IDispatch **value)
 {
     InteriorImpl *This = (InteriorImpl*)iface;
-
-    TRACE("\n");
+    TRACE_IN;
 
     if (This==NULL) return E_POINTER;
 
@@ -256,6 +263,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Parent(
 
     I_Range_AddRef((I_Range*)*value);
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -263,9 +271,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Creator(
         I_Interior* iface,
         VARIANT *result)
 {
-    TRACE(" \n");
+    TRACE_IN;
     V_VT(result) = VT_I4;
     V_I4(result) = 1480803660;
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -362,7 +371,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetIDsOfNames(
 {
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_interrior(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -371,7 +380,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetIDsOfNames(
     if (FAILED(hres)) {
         WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -386,10 +395,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    InteriorImpl *This = (InteriorImpl*)iface;
     ITypeInfo *typeinfo;
     HRESULT hres;
-
+    TRACE_IN;
     hres = get_typeinfo_interrior(&typeinfo);
     if(FAILED(hres))
         return hres;
@@ -399,7 +407,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_Invoke(
     if (FAILED(hres)) {
         TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
-
+    TRACE_OUT;
     return hres;
 }
 
@@ -432,7 +440,7 @@ const I_InteriorVtbl MSO_TO_OO_I_Interior_Vtbl =
 extern HRESULT _I_InteriorConstructor(LPVOID *ppObj)
 {
     InteriorImpl *interior;
-
+    TRACE_IN;
     TRACE("(%p)\n", ppObj);
     
     interior = HeapAlloc(GetProcessHeap(), 0, sizeof(*interior));
@@ -446,6 +454,6 @@ extern HRESULT _I_InteriorConstructor(LPVOID *ppObj)
     interior->prange = NULL;
 
     *ppObj = &interior->_interiorVtbl;
-
+    TRACE_OUT;
     return S_OK;
 }

@@ -544,8 +544,7 @@ __declspec(dllexport) STDAPI DllRegisterServer(void)
     HRESULT hr;
     ITypeLib *typelib;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-
-    TRACE("\n");
+    TRACE_IN;
 
     hr = register_coclasses(coclass_list);
     if (SUCCEEDED(hr))
@@ -561,14 +560,14 @@ __declspec(dllexport) STDAPI DllRegisterServer(void)
 
     hr = RegisterTypeLib(typelib, file_name, NULL);
 
+    TRACE_OUT;
     return hr;
 }
 
 __declspec(dllexport) STDAPI DllUnregisterServer(void)
 {
     HRESULT hr;
-
-    TRACE("\n");
+    TRACE_IN;
 
     hr = unregister_coclasses(coclass_list);
     if (SUCCEEDED(hr))
@@ -578,6 +577,7 @@ __declspec(dllexport) STDAPI DllUnregisterServer(void)
 
     hr = UnRegisterTypeLib(&LIBID_MSO_TO_OOLib, 1, 0, 0, SYS_WIN32);
 
+    TRACE_OUT;
     return hr;
 }
 

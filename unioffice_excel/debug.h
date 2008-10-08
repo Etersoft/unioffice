@@ -54,3 +54,6 @@ if (trace_file) fclose(trace_file);\
 #else
 #define WTRACE(n,...)
 #endif
+
+#define TRACE_IN TRACE(" IN \n")
+#define TRACE_OUT TRACE(" OUT \n")
