@@ -3372,8 +3372,72 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Resize(
         VARIANT ColumnSize,
         IDispatch **RHS)
 {
-    TRACE(" \n");
-    return E_NOTIMPL;
+    RangeImpl* This = (RangeImpl*)iface;
+    WorksheetImpl* wsh = (WorksheetImpl*)This->pwsheet;
+    HRESULT hres;
+    long left, top, right, bottom;
+    long drow = 0, dcol = 0;
+    struct CELL_COORD lefttop, rightbottom;
+    IDispatch *pCell;
+    IUnknown *punk;
+    TRACE_IN;
+
+    if ((V_VT(&RowSize)!=VT_EMPTY)&&(V_VT(&RowSize)!=VT_NULL)) {
+         hres = VariantChangeTypeEx(&RowSize, &RowSize, 0, 0, VT_I4);
+         if (FAILED(hres)) {
+             TRACE("ERROR when VariantChangeTypeEx\n");
+         }
+         drow = V_I4(&RowSize);
+    } else drow = 0;
+
+    if ((V_VT(&ColumnSize)!=VT_EMPTY)&&(V_VT(&ColumnSize)!=VT_NULL)) {
+         hres = VariantChangeTypeEx(&ColumnSize, &ColumnSize, 0, 0, VT_I4);
+         if (FAILED(hres)) {
+             TRACE("ERROR when VariantChangeTypeEx\n");
+         }
+         dcol = V_I4(&ColumnSize);
+    } else dcol = 0;
+
+    hres = MSO_TO_OO_GetRangeAddress(iface, &left, &top, &right, &bottom);
+    if (FAILED(hres)) {
+        TRACE("ERROR when GetRangeAddress \n");
+        return E_FAIL;
+    }
+    TRACE("drow = %i , dcol = %i \n", drow, dcol);
+    TRACE("StartRow = %i, StartColumn = %i, EndRow = %i, EndColumn = %i \n", left, top, right, bottom);
+    /*В OpenOffice оси направлены наоборот*/
+    if (drow) right = left + drow - 1;
+    if (dcol) bottom = top + dcol - 1;
+
+    TRACE("StartRow = %i, StartColumn = %i, EndRow = %i, EndColumn = %i \n", left, top, right, bottom);
+    /*создаем новый */
+    lefttop.x = top+1;
+    lefttop.y = left+1;
+    rightbottom.x = bottom+1;
+    rightbottom.y = right+1;
+
+
+    hres = _I_RangeConstructor((LPVOID*) &punk);
+
+    if (FAILED(hres)) return E_NOINTERFACE;
+
+    hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
+
+    if (pCell == NULL) {
+        TRACE("ERROR when QueryInterface\n");
+        return E_FAIL;
+    }
+
+    hres = MSO_TO_OO_I_Range_Initialize((I_Range*)pCell, (I_Range*)wsh->pAllRange, lefttop, rightbottom);
+        if (FAILED(hres)){
+            TRACE("ERROR when initialize\n");
+            I_Range_Release(pCell);
+            return hres;
+        }
+    *RHS = pCell;
+
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_RowDifferences(
@@ -4902,6 +4966,40 @@ TRACE("Parametr 1\n");
             return E_NOTIMPL;
         } else {
             hres = MSO_TO_OO_I_Range_get_Rows(iface, &dret);
+            if (FAILED(hres)) {
+                pExcepInfo->bstrDescription=SysAllocString(str_error);
+                return hres;
+            }
+            if (pVarResult!=NULL){
+                V_VT(pVarResult)=VT_DISPATCH;
+                V_DISPATCH(pVarResult)=dret;
+                return hres;
+            } else {
+                IDispatch_Release(dret);
+            }
+            TRACE("pVarResult = NULL \n");
+            return E_FAIL;
+        }
+    case dispid_range_resize://Resize
+        if (wFlags==DISPATCH_PROPERTYPUT) {
+            TRACE("\n");
+            return E_NOTIMPL;
+        } else {
+            V_VT(&var1) = VT_NULL;
+            V_VT(&var2) = VT_NULL;
+            switch (pDispParams->cArgs) {
+            case 1:
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
+                break;
+            case 2:
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
+                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
+                break;
+            default:
+                TRACE("Error invalide number of parameters\n");
+                return E_FAIL;
+            }
+            hres = MSO_TO_OO_I_Range_get_Resize(iface, var1, var2, &dret);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
