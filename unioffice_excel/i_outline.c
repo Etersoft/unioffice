@@ -23,20 +23,33 @@
 #define toCOLUMNS 0
 #define toROWS 1
 
-static WCHAR const str_showlevels[] = {
-    'S','h','o','w','L','e','v','e','l','s',0};
-static WCHAR const str_summarycolumn[] = {
-    'S','u','m','m','a','r','y','C','o','l','u','m','n',0};
-static WCHAR const str_summaryrow[] = {
-    'S','u','m','m','a','r','y','R','o','w',0};
-static WCHAR const str_automaticstyles[] = {
-    'A','u','t','o','m','a','t','i','c','S','t','y','l','e','s',0};
-static WCHAR const str_creator[] = {
-    'C','r','e','a','t','o','r',0};
-static WCHAR const str_parent[] = {
-    'P','a','r','e','n','t',0};
-static WCHAR const str_application[] = {
-    'A','p','p','l','i','c','a','t','i','o','n',0};
+ITypeInfo *ti_outline = NULL;
+
+HRESULT get_typeinfo_outline(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    TRACE("\n");
+
+    if(ti_outline) {
+        *typeinfo = ti_outline;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Outline, &ti_outline);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_outline;
+    return hres;
+}
 
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
@@ -308,38 +321,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_showlevels)) {
-        *rgDispId = dispid_outline_showlevels;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+
+    TRACE("\n");
+
+    hres = get_typeinfo_outline(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    if (!lstrcmpiW(*rgszNames, str_summarycolumn)) {
-        *rgDispId = dispid_outline_summarycolumn;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_summaryrow)) {
-        *rgDispId = dispid_outline_summaryrow;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_automaticstyles)) {
-        *rgDispId = dispid_outline_automaticstyles;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_creator)) {
-        *rgDispId = dispid_outline_creator;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_parent)) {
-        *rgDispId = dispid_outline_parent;
-        return S_OK;
-    }
-    if (!lstrcmpiW(*rgszNames, str_application)) {
-        *rgDispId = dispid_outline_application;
-        return S_OK;
-    }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L" NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
@@ -353,167 +349,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    VARIANT param1, param2, vNull;
+    ITypeInfo *typeinfo;
     HRESULT hres;
-    long lret = 0;
-    VARIANT_BOOL vbret;
-    XlCreator xlret;
-    IDispatch *dret;
 
-    TRACE("\n");
+    hres = get_typeinfo_outline(&typeinfo);
+    if(FAILED(hres))
+        return hres;
 
-    VariantInit(&param1);
-    VariantInit(&param2);
-    VariantInit(&vNull);
-    V_VT(&vNull) = VT_NULL;
-
-    switch (dispIdMember) {
-        case dispid_outline_showlevels:
-            switch (pDispParams->cArgs) {
-                case 1:
-                    MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
-                    hres = MSO_TO_OO_I_Outline_ShowLevels(iface, param1, vNull, pVarResult);
-                    if (FAILED(hres)) {
-                        pExcepInfo->bstrDescription=SysAllocString(str_error);
-                        TRACE("(case 2) ERROR ShowLevels hres = %08x\n",hres);
-                    }
-                    return hres;
-                case 2:
-                    MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &param1);
-                    MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param2);
-                    hres = MSO_TO_OO_I_Outline_ShowLevels(iface, param1, param2, pVarResult);
-                    if (FAILED(hres)) {
-                        pExcepInfo->bstrDescription=SysAllocString(str_error);
-                        TRACE("(case 2) ERROR ShowLevels hres = %08x\n",hres);
-                    }
-                    return hres;
-                default:
-                    TRACE("Error parameters \n");
-                    return E_FAIL;
-            }
-            break;
-        case dispid_outline_summarycolumn:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                if (pDispParams->cArgs!=1) return E_FAIL;
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
-                hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
-                if (FAILED(hres)) {
-                    TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
-                    return hres;
-                }
-                lret = V_I4(&param1);
-                return MSO_TO_OO_I_Outline_put_SummaryColumn(iface, (XlSummaryColumn)lret);
-            } else {
-                hres = MSO_TO_OO_I_Outline_get_SummaryColumn(iface,(XlSummaryColumn*)&lret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_I4;
-                    V_I4(pVarResult) = lret;
-                }
-                return S_OK;
-            }
-            break;
-        case dispid_outline_summaryrow:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                if (pDispParams->cArgs!=1) return E_FAIL;
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
-                hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
-                if (FAILED(hres)) {
-                    TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
-                    return hres;
-                }
-                lret = V_I4(&param1);
-                return MSO_TO_OO_I_Outline_put_SummaryRow(iface, (XlSummaryRow)lret);
-            } else {
-                hres = MSO_TO_OO_I_Outline_get_SummaryRow(iface,(XlSummaryRow*)&lret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_I4;
-                    V_I4(pVarResult) = lret;
-                }
-                return S_OK;
-            }
-            break;
-        case dispid_outline_automaticstyles:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                if (pDispParams->cArgs!=1) return E_FAIL;
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &param1);
-                hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_BOOL);
-                if (FAILED(hres)) {
-                    TRACE("(case 4) ERROR VariantChangeTypeEx   %08x\n",hres);
-                    return hres;
-                }
-                return MSO_TO_OO_I_Outline_put_AutomaticStyles(iface, V_BOOL(&param1));
-            } else {
-                hres = MSO_TO_OO_I_Outline_get_AutomaticStyles(iface,&vbret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_BOOL;
-                    V_BOOL(pVarResult) = vbret;
-                }
-                return S_OK;
-            }
-            break;
-        case dispid_outline_creator:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return E_NOTIMPL;
-            } else {
-                hres = MSO_TO_OO_I_Outline_get_Creator(iface, &xlret);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_I4;
-                    V_I4(pVarResult) = (long) xlret;
-                }
-                return hres;
-            }
-            break;
-        case dispid_outline_parent:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return E_NOTIMPL;
-            } else {
-                hres = MSO_TO_OO_I_Outline_get_Parent(iface,&dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            }
-            break;
-        case dispid_outline_application:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return E_NOTIMPL;
-            } else {
-                hres = MSO_TO_OO_I_Outline_get_Application(iface,&dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            }
-            break;
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
-    TRACE("dispid ( %i ) Not realized\n");
-    return E_NOTIMPL;
+
+    return hres;
 }
 
 

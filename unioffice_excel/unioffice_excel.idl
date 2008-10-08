@@ -1895,8 +1895,8 @@ import "wtypes.idl";
 		[id(dispid_outline_automaticstyles),propput,helpstring("property AutomaticStyles")] HRESULT AutomaticStyles([in] VARIANT_BOOL RHS);
 //ShowLevels
 		[id(dispid_outline_showlevels),helpstring("method ShowLevels")] HRESULT ShowLevels(
-			[in] VARIANT RowLevels,
-			[in] VARIANT ColumnLevels,
+			[in, optional] VARIANT RowLevels,
+			[in, optional] VARIANT ColumnLevels,
 			[out] VARIANT *RHS);
 //SummaryColumn
 		[id(dispid_outline_summarycolumn),propget, helpstring("property SummaryColumn")] HRESULT SummaryColumn([out, retval] XlSummaryColumn* RHS);
@@ -5149,4 +5149,5 @@ library MSO_TO_OOLib
 	interface I_Border;
 	interface Name;
 	interface Names;
+	interface I_Outline;
 };
