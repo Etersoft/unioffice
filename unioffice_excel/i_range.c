@@ -335,6 +335,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(varRangeValueDataType, &varRangeValueDataType);
+
     if (This == NULL) return E_POINTER;
 
     VARIANT resultCell;
@@ -573,6 +575,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_NoteText(
 {
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(Text, &Text);
+    MSO_TO_OO_CorrectArg(Start, &Start);
+    MSO_TO_OO_CorrectArg(Length, &Length);
 
     if (This == NULL) return E_POINTER;
 
@@ -1374,6 +1380,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Delete(
     long startrow, startcolumn, endrow, endcolumn;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(param, &param);
+
     if (This == NULL) return E_POINTER;
     *value = NULL;
 
@@ -1527,6 +1535,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
     WorksheetImpl *wsh = (WorksheetImpl*)This->pwsheet;
     WorkbookImpl *parent_wb = (WorkbookImpl*)wsh->pwb;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(RangeTo, &RangeTo);
 
     if (This == NULL) return E_POINTER;
     if (This->pOORange == NULL)
@@ -1821,6 +1831,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_ShrinkToFit(
     HRESULT hres;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(param, &param);
+
     if (This == NULL) return E_POINTER;
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, This->pOORange, L"ShrinkToFit", 1, param);
@@ -1867,6 +1879,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_MergeCells(
     TRACE_IN;
 
     VariantInit(&vtmp);
+
+    MSO_TO_OO_CorrectArg(param, &param);
 
     hres = VariantChangeTypeEx(&vtmp, &param, 0, 0, VT_BOOL);
     if (FAILED(hres)) {
@@ -1931,6 +1945,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Locked(
     VariantInit(&vCellProt);
     VariantInit(&vtmp);
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(param, &param);
 
     if (This == NULL) return E_POINTER;
 
@@ -2004,6 +2020,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Hidden(
     VariantInit(&vCellProt);
     VariantInit(&vtmp);
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(param, &param);
 
     if (This == NULL) return E_POINTER;
 
@@ -2118,6 +2136,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Insert(
     WorksheetImpl* wsh = (WorksheetImpl*)(This->pwsheet);
     long startrow=0, startcolumn=0, endrow=0, endcolumn=0;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(Shift, &Shift);
+    MSO_TO_OO_CorrectArg(CopyOrigin, &CopyOrigin);
 
     VariantInit(&result);
     VariantInit(&shift);
@@ -3129,7 +3150,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
     IUnknown *punk;
     TRACE_IN;
 
-    if ((V_VT(&RowOffset)!=VT_EMPTY)&&(V_VT(&RowOffset)!=VT_NULL)) {
+    MSO_TO_OO_CorrectArg(RowOffset, &RowOffset);
+    MSO_TO_OO_CorrectArg(ColumnOffset, &ColumnOffset);
+
+    if (!Is_Variant_Null(RowOffset)) {
          hres = VariantChangeTypeEx(&RowOffset, &RowOffset, 0, 0, VT_I4);
          if (FAILED(hres)) {
              TRACE("ERROR when VariantChangeTypeEx\n");
@@ -3137,7 +3161,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
          drow = V_I4(&RowOffset);
     }
 
-    if ((V_VT(&ColumnOffset)!=VT_EMPTY)&&(V_VT(&ColumnOffset)!=VT_NULL)) {
+    if (!Is_Variant_Null(ColumnOffset)) {
          hres = VariantChangeTypeEx(&ColumnOffset, &ColumnOffset, 0, 0, VT_I4);
          if (FAILED(hres)) {
              TRACE("ERROR when VariantChangeTypeEx\n");
@@ -3388,7 +3412,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Resize(
     IUnknown *punk;
     TRACE_IN;
 
-    if ((V_VT(&RowSize)!=VT_EMPTY)&&(V_VT(&RowSize)!=VT_NULL)) {
+    MSO_TO_OO_CorrectArg(RowSize, &RowSize);
+    MSO_TO_OO_CorrectArg(ColumnSize, &ColumnSize);
+
+    if (!Is_Variant_Null(RowSize)) {
          hres = VariantChangeTypeEx(&RowSize, &RowSize, 0, 0, VT_I4);
          if (FAILED(hres)) {
              TRACE("ERROR when VariantChangeTypeEx\n");
@@ -3396,7 +3423,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Resize(
          drow = V_I4(&RowSize);
     } else drow = 0;
 
-    if ((V_VT(&ColumnSize)!=VT_EMPTY)&&(V_VT(&ColumnSize)!=VT_NULL)) {
+    if (!Is_Variant_Null(ColumnSize)) {
          hres = VariantChangeTypeEx(&ColumnSize, &ColumnSize, 0, 0, VT_I4);
          if (FAILED(hres)) {
              TRACE("ERROR when VariantChangeTypeEx\n");
@@ -4013,6 +4040,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
     VARIANT_BOOL vbin;
     VARIANT vRet,vtmp;
     VARIANT var1,var2;
+    ITypeInfo *typeinfo;
 
     VariantInit(&vtmp);
     VariantInit(&vRet);
@@ -4026,90 +4054,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
 
     switch(dispIdMember)
     {
-    case dispid_range__default:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var2);
-            if (pDispParams->cArgs!=2) return E_FAIL;
-            hres = MSO_TO_OO_I_Range_get__Default(iface, var2, var1, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_range_columnwidth:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            lret=1;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            /*преобразовываем любой тип к I4*/
-            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
-            if (FAILED(hres)) {
-                TRACE("(case 2) ERROR when VariantChangeTypeEx\n");
-              return E_FAIL;
-            }
-            lret = V_I4(&vtmp);
-            hres = MSO_TO_OO_I_Range_put_ColumnWidth(iface, lret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_ColumnWidth(iface, &lret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = lret;
-            }
-            return S_OK;
-        }
-    case dispid_range_font:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            if (pDispParams->cArgs!=0) return E_FAIL;
-
-            hres = MSO_TO_OO_I_Range_get_Font(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
     case dispid_range_value:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if ((pDispParams->cArgs>2)||(pDispParams->cArgs==0)) return E_FAIL;
             if (pDispParams->cArgs==1) {
-TRACE("VT = %i\n",V_VT(&(pDispParams->rgvarg[0])));
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-TRACE("VT = %i\n",V_VT(&var2));
-                hres = MSO_TO_OO_I_Range_put_Value(iface, vNull, 0,  var2);
+                hres = MSO_TO_OO_I_Range_put_Value(iface, vNull, 0,  pDispParams->rgvarg[0]);
             }
             if (pDispParams->cArgs==2) {
-                /*Привести параметры к типу VARIANT если они переданы по ссылке*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-
-                hres = MSO_TO_OO_I_Range_put_Value(iface, var1, 0, var2);
+                hres = MSO_TO_OO_I_Range_put_Value(iface, pDispParams->rgvarg[1], 0, pDispParams->rgvarg[0]);
             }
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -4125,112 +4077,6 @@ TRACE("VT = %i\n",V_VT(&var2));
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
-            }
-            return S_OK;
-        }
-    case dispid_range_select:
-        hres = MSO_TO_OO_I_Range_Select(iface, &vRet);
-        if (FAILED(hres)) {
-            pExcepInfo->bstrDescription=SysAllocString(str_error);
-            return hres;
-        }
-        if (pVarResult!=NULL) 
-            *pVarResult = vRet;
-
-        return S_OK;
-    case dispid_range_notetext:
-        /*MSO_TO_OO_I_Range_NoteText*/
-        TRACE("NoteText not implement \n");
-        return E_NOTIMPL;
-    case dispid_range_clearcontents:
-        vRet = MSO_TO_OO_I_Range_ClearContents(iface);
-        if (pVarResult!=NULL)
-            *pVarResult = vRet;
-
-        return S_OK;
-    case dispid_range_column:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            lret = MSO_TO_OO_I_Range_get_Column(iface);
-            if (lret<1) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return E_FAIL;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = lret;
-            }
-            return S_OK;
-        }
-    case dispid_range_row:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            lret = MSO_TO_OO_I_Range_get_Row(iface);
-            if (lret<1) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return E_FAIL;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = lret;
-            }
-            return S_OK;
-        }
-    case dispid_range_horizontalalignment:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
-            if (FAILED(hres)) {
-                TRACE("(case 10) ERROR when VariantChangeTypeEx\n");
-              return E_FAIL;
-            }
-            lret = V_I4(&vtmp);
-            hres = MSO_TO_OO_I_Range_put_HorizontalAlignment(iface, lret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_HorizontalAlignment(iface, &halign);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = halign;
-            }
-            return S_OK;
-        }
-    case dispid_range_verticalalignment:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
-            if (FAILED(hres)) {
-                TRACE("(case 11) ERROR when VariantChangeTypeEx\n");
-              return E_FAIL;
-            }
-            lret = V_I4(&vtmp);
-            hres = MSO_TO_OO_I_Range_put_VerticalAlignment(iface, lret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_VerticalAlignment(iface, &valign);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = valign;
             }
             return S_OK;
         }
@@ -4251,132 +4097,42 @@ TRACE("VT = %i\n",V_VT(&var2));
             return hres;
         }
         return S_OK;
-    case dispid_range_unmerge:
-        hres = MSO_TO_OO_I_Range_UnMerge(iface);
-        if (FAILED(hres)) {
-            pExcepInfo->bstrDescription=SysAllocString(str_error);
-            return hres;
-        }
-        return S_OK;
-    case dispid_range_wraptext:
+    case dispid_range_formular1c1:
         if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_BOOL);
-            if (FAILED(hres)) {
-                TRACE("(case 14) ERROR when VariantChangeTypeEx\n");
-              return E_FAIL;
+            if ((pDispParams->cArgs>2)||(pDispParams->cArgs==0)) return E_FAIL;
+            if (pDispParams->cArgs==1) {
+                hres = MSO_TO_OO_I_Range_put_FormulaR1C1(iface, 0,  pDispParams->rgvarg[0]);
             }
-            vbin = V_BOOL(&vtmp);
-            hres = MSO_TO_OO_I_Range_put_WrapText(iface, vbin);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
             }
             return S_OK;
         } else {
-            hres = MSO_TO_OO_I_Range_get_WrapText(iface, &vbin);
+            hres = MSO_TO_OO_I_Range_get_FormulaR1C1(iface, 0,  pVarResult);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_BOOL;
-                V_BOOL(pVarResult) = vbin;
             }
             return S_OK;
         }
-    case dispid_range_application:
+    case dispid_range_formula:
         if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Application(iface,&dret);
+            if ((pDispParams->cArgs>1)||(pDispParams->cArgs==0)) return E_FAIL;
+            if (pDispParams->cArgs==1) {
+                hres = MSO_TO_OO_I_Range_put_Formula(iface, 0,  pDispParams->rgvarg[0]);
+            }
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
             }
             return S_OK;
-        }
-    case dispid_range_parent:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
         } else {
-            hres = MSO_TO_OO_I_Range_get_Parent(iface,&dret);
+            if (pDispParams->cArgs!=0) return E_FAIL;
+            hres = MSO_TO_OO_I_Range_get_Formula(iface, 0,  pVarResult);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_range_worksheet:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Worksheet(iface,&dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_range_clear:
-        vRet = MSO_TO_OO_I_Range_Clear(iface);
-        if (pVarResult!=NULL)
-            *pVarResult = vRet;
-
-        return S_OK;
-    case dispid_range_clearcomments:
-        return MSO_TO_OO_I_Range_ClearComments(iface);
-    case dispid_range_clearformats:
-        vRet = MSO_TO_OO_I_Range_ClearFormats(iface);
-        if (pVarResult!=NULL)
-            *pVarResult = vRet;
-
-        return S_OK;
-    case dispid_range_clearnotes:
-        vRet = MSO_TO_OO_I_Range_ClearNotes(iface);
-        if (pVarResult!=NULL)
-            *pVarResult = vRet;
-
-        return S_OK;
-    case dispid_range_clearoutline:
-        vRet = MSO_TO_OO_I_Range_ClearOutline(iface);
-        if (pVarResult!=NULL)
-            *pVarResult = vRet;
-
-        return S_OK;
-    case dispid_range_interior:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Interior(iface,&dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
             }
             return S_OK;
         }
@@ -4395,11 +4151,10 @@ TRACE("VT = %i\n",V_VT(&var2));
                     V_DISPATCH(pVarResult)=dret;
                 } else {
                     IDispatch_Release(dret);
+
                 }
             } else {
-            /*Привести параметры к типу VARIANT если они переданы по ссылке*/
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
-
             hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
             if (FAILED(hres)) {
                 TRACE("(24) ERROR when VariantChangeType \n");
@@ -4407,6 +4162,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             lval = V_I4(&vtmp);
             hres = I_Borders_get__Default((I_Borders*)dret,lval, &pretdisp);
+
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -4414,6 +4170,7 @@ TRACE("VT = %i\n",V_VT(&var2));
             if (pVarResult!=NULL){
                     V_VT(pVarResult)=VT_DISPATCH;
                     V_DISPATCH(pVarResult)=pretdisp;
+
                     IDispatch_Release(dret);
                 } else {
                     IDispatch_Release(dret);
@@ -4422,604 +4179,17 @@ TRACE("VT = %i\n",V_VT(&var2));
             }
             return S_OK;
         }
-    case dispid_range_count:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Count(iface,&lret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_I4;
-                V_I4(pVarResult)=lret;
-            }
-            return S_OK;
-        }
-    case dispid_range_delete://Delete
-        switch (pDispParams->cArgs) {
-        case 0:
-            TRACE("DELETE - NUMBER OF PARAMETERS 0\n");
-            VariantInit(&var1);
-            VariantClear(&var1);
-            V_VT(&var1) = VT_EMPTY;
-            hres = MSO_TO_OO_I_Range_Delete(iface, var1, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        case 1:
-            VariantInit(&var1);
-            TRACE("DELETE - NUMBER OF PARAMETERS 1\n");
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_Delete(iface, var1, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        default:
-            TRACE(" (case 26) ERROR Parameters\n");
-            return E_FAIL;
-        }
-        return S_OK;
-    case dispid_range_rowheight:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            lret=1;
-            /*преобразовываем любой тип к I4*/
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = VariantChangeTypeEx(&vtmp, &var1, 0, 0, VT_I4);
-            if (FAILED(hres)) {
-                TRACE("(case 27) ERROR when VariantChangeTypeEx\n");
-              return E_FAIL;
-            }
-            lret = V_I4(&vtmp);
-            hres = MSO_TO_OO_I_Range_put_RowHeight(iface, lret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_RowHeight(iface, &lret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = lret;
-            }
-            return S_OK;
-        }
-    case dispid_range_copy:
-        switch (pDispParams->cArgs) {
-        case 0:
-TRACE("Parametr 0\n");
-            VariantInit(&var1);
-            VariantClear(&var1);
-            hres = MSO_TO_OO_I_Range_Copy(iface, var1, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        case 1:
-TRACE("Parametr 1\n");
-            VariantInit(&var1);
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_Copy(iface, var1, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        default:
-            TRACE("(case 28) ERROR Parameters\n");
-            return E_FAIL;
-        }
-        return S_OK;
-    case dispid_range_numberformat://NumberFormat
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_put_NumberFormat(iface, var1);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pDispParams->cArgs!=0) return E_FAIL;
-
-            hres = MSO_TO_OO_I_Range_get_NumberFormat(iface, &vRet);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_BSTR;
-                V_BSTR(pVarResult) = SysAllocString(V_BSTR(&vRet));
-            }
-            VariantClear(&vRet);
-            return S_OK;
-        }
-    case dispid_range_numberformatlocal://NumberFormatLocal
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_put_NumberFormatLocal(iface, var1);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pDispParams->cArgs!=0) return E_FAIL;
-
-            hres = MSO_TO_OO_I_Range_get_NumberFormatLocal(iface, &vRet);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_BSTR;
-                V_BSTR(pVarResult) = SysAllocString(V_BSTR(&vRet));
-            }
-            VariantClear(&vRet);
-            return S_OK;
-        }
-    case dispid_range_height://height
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Height(iface, pVarResult);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
+    default:
+        /*For default*/
+        hres = get_typeinfo_range(&typeinfo);
+        if(FAILED(hres))
             return hres;
-        }
-    case dispid_range_width://width
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Width(iface, pVarResult);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return hres;
-        }
-    case dispid_range_left://left
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Left(iface, pVarResult);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return hres;
-        }
-    case dispid_range_top://top
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Top(iface, pVarResult);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return hres;
-        }
-    case dispid_range_shrinktofit://ShrinkToFit
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) {
-                TRACE("ERROR INVALID ARGUMENT \n");
-                return E_INVALIDARG;
-            }
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_put_ShrinkToFit(iface, var1);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pVarResult!=NULL){
-                hres = MSO_TO_OO_I_Range_get_ShrinkToFit(iface, pVarResult);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                return hres;
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_mergecells://MergeCells
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) {
-                TRACE("ERROR INVALID ARGUMENT \n");
-                return E_INVALIDARG;
-            }
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_put_MergeCells(iface, var1);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pVarResult!=NULL){
-                hres = MSO_TO_OO_I_Range_get_MergeCells(iface, pVarResult);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                return hres;
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_locked://Locked
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) {
-                TRACE("ERROR INVALID ARGUMENT \n");
-                return E_INVALIDARG;
-            }
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_put_Locked(iface, var1);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pVarResult!=NULL){
-                hres = MSO_TO_OO_I_Range_get_Locked(iface, pVarResult);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                return hres;
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_hidden://Hidden
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) {
-                TRACE("ERROR INVALID ARGUMENT \n");
-                return E_INVALIDARG;
-            }
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            hres = MSO_TO_OO_I_Range_put_Hidden(iface, var1);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pVarResult!=NULL){
-                hres = MSO_TO_OO_I_Range_get_Hidden(iface, pVarResult);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                return hres;
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_mergearea://MergeArea
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_MergeArea(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_autofit:
-        vRet = MSO_TO_OO_I_Range_AutoFit(iface);
-        if (pVarResult!=NULL)
-            *pVarResult = vRet;
 
-        return S_OK;
-    case dispid_range_insert:
-        V_VT(&var1) = VT_NULL;
-        V_VT(&var2) = VT_NULL;
-        switch (pDispParams->cArgs) {
-        case 0:
-            break;
-        case 1:
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-            break;
-        case 2:
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-            break;
-        default:
-            TRACE("Error invalide number of parameters\n");
-            break;
+        hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+        if (FAILED(hres)) {
+            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
         }
-        hres = MSO_TO_OO_I_Range_Insert(iface, var1, var2, &vRet);
-        if (pVarResult!=NULL)
-            *pVarResult = vRet;
-
-        return S_OK;
-    case dispid_range_entirecolumn://EntireColumn
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_EntireColumn(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_entirerow://EntireColumn
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_EntireRow(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_formular1c1:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if ((pDispParams->cArgs>2)||(pDispParams->cArgs==0)) return E_FAIL;
-            if (pDispParams->cArgs==1) {
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-                hres = MSO_TO_OO_I_Range_put_FormulaR1C1(iface, 0,  var2);
-            }
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_FormulaR1C1(iface, 0,  pVarResult);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        }
-    case dispid_range_cells://Cells
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Cells(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            switch (pDispParams->cArgs) {
-            case 0:
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=dret;
-                    return hres;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                TRACE("pVarResult = NULL \n");
-                return E_FAIL;
-            case 1:
-                TRACE("ERROR One parameter not realizes \n");
-                return E_FAIL;
-            case 2:
-                /*необходимо получить ячейку с нужными координатами*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-                hres = I_Range_get__Default(iface, var1, var2, &dret);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=dret;
-                    return hres;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                TRACE("pVarResult = NULL \n");
-                return E_FAIL;
-            default:
-                TRACE("Error number of parameter \n");
-            }
-            return E_FAIL;
-        }
-    case dispid_range_formula:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if ((pDispParams->cArgs>1)||(pDispParams->cArgs==0)) return E_FAIL;
-            if (pDispParams->cArgs==1) {
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-                hres = MSO_TO_OO_I_Range_put_Formula(iface, 0,  var2);
-            }
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pDispParams->cArgs!=0) return E_FAIL;
-            hres = MSO_TO_OO_I_Range_get_Formula(iface, 0,  pVarResult);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        }
-    case dispid_range_offset://Offset
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            V_VT(&var1) = VT_NULL;
-            V_VT(&var2) = VT_NULL;
-            switch (pDispParams->cArgs) {
-            case 1:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-                break;
-            case 2:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-                break;
-            default:
-                TRACE("Error invalide number of parameters\n");
-                return E_FAIL;
-            }
-            hres = MSO_TO_OO_I_Range_get_Offset(iface, var1, var2, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_columns://Columns
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Columns(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_rows://Columns
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Rows(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
-    case dispid_range_resize://Resize
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            V_VT(&var1) = VT_NULL;
-            V_VT(&var2) = VT_NULL;
-            switch (pDispParams->cArgs) {
-            case 1:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var1);
-                break;
-            case 2:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &var1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &var2);
-                break;
-            default:
-                TRACE("Error invalide number of parameters\n");
-                return E_FAIL;
-            }
-            hres = MSO_TO_OO_I_Range_get_Resize(iface, var1, var2, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            } else {
-                IDispatch_Release(dret);
-            }
-            TRACE("pVarResult = NULL \n");
-            return E_FAIL;
-        }
+        return hres;
     }
     WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
     return E_NOTIMPL;
