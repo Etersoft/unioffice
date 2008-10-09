@@ -147,7 +147,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WorkSheets(
         IDispatch **ppSheets)
 {
     TRACE(" ----> get_Sheets \n");
-    return MSO_TO_OO_I_Workbook_get_Sheets(iface, ppSheets)
+    return MSO_TO_OO_I_Workbook_get_Sheets(iface, ppSheets);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(

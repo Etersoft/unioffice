@@ -980,117 +980,21 @@ static HRESULT WINAPI MSO_TO_OO_Names_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
+    ITypeInfo *typeinfo;
     HRESULT hres;
-    int i;
-    IDispatch *dret;
-    VARIANT vresult;
-    VARIANT vmas[param_count];
-    int iret;
+    TRACE_IN;
 
-    TRACE("\n");
-
-    VariantInit(&vresult);
-    for (i=0;i<param_count;i++) {
-         VariantInit(&vmas[i]);
-         V_VT(&vmas[i])=VT_EMPTY;
-    }
-
-    if (iface == NULL) {
-        TRACE("ERROR Object is NULL\n");
-       return E_POINTER;
-    }
-
-    switch(dispIdMember)
-    {
-    case dispid_names_application:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_Names_get_Application(iface,&dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_names_creator:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_Names_get_Creator(iface, &vresult);
-            if (pVarResult!=NULL){
-                *pVarResult = vresult;
-            }
-            return hres;
-        }
-    case dispid_names_parent:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_Names_get_Parent(iface,&dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_names_add:
-        TRACE("NOT realize \n");
-        return E_NOTIMPL;
-    case dispid_names__default: /*the same as item*/
-    case dispid_names_item:
-        if (pDispParams->cArgs>3) {
-            TRACE("ERROR Parameters (dispid_names_item) \n");
-            return E_FAIL;
-        }
-        /*необходимо перевернуть параметры*/
-        for (i=0;i<pDispParams->cArgs;i++) {
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) {
-                TRACE("Error when MSO_TO_OO_CorrectArg\n");
-                return E_FAIL;
-            }
-        }
-        hres = MSO_TO_OO_Names_Item(iface, vmas[0], vmas[1], vmas[2], &dret);
-        if (FAILED(hres)) {
-            pExcepInfo->bstrDescription=SysAllocString(str_error);
-            return hres;
-        }
-        if (pVarResult!=NULL){
-            V_VT(pVarResult)=VT_DISPATCH;
-            V_DISPATCH(pVarResult)=dret;
-        } else {
-            IDispatch_Release(dret);
-        }
+    hres = get_typeinfo_names(&typeinfo);
+    if(FAILED(hres))
         return hres;
-    case dispid_names_count:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_Names_get_Count(iface, &iret);
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I2;
-                V_I2(pVarResult) = iret;
-            }
-            return hres;
-        }
-    case dispid_names_getenumerator:
-        TRACE("NOT realize \n");
-        return E_NOTIMPL;
+
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
-    TRACE("Unknown dispid =  \n",dispIdMember);
-    return E_NOTIMPL;
+    TRACE_OUT;
+    return hres;
 }
 
 const NamesVtbl MSO_TO_OO_NamesVtbl =
