@@ -710,7 +710,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearContents(
 
     hres = AutoWrap(DISPATCH_METHOD, &vRes, This->pOORange, L"clearContents", 1, param);
 
-    if (hres != S_OK) {
+    if (FAILED(hres)) {
         TRACE("ERROR when clearContents \n");
         return result;
     }
@@ -4179,6 +4179,33 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             }
             return S_OK;
         }
+    case dispid_range_clearcontents:
+        vRet = MSO_TO_OO_I_Range_ClearContents(iface);
+        if (pVarResult!=NULL)
+            *pVarResult = vRet;
+        return S_OK;
+    case dispid_range_clear:
+        vRet = MSO_TO_OO_I_Range_Clear(iface);
+        if (pVarResult!=NULL)
+            *pVarResult = vRet;
+        return S_OK;
+    case dispid_range_clearcomments:
+        return MSO_TO_OO_I_Range_ClearComments(iface);
+    case dispid_range_clearformats:
+        vRet = MSO_TO_OO_I_Range_ClearFormats(iface);
+        if (pVarResult!=NULL)
+            *pVarResult = vRet;
+        return S_OK;
+    case dispid_range_clearnotes:
+        vRet = MSO_TO_OO_I_Range_ClearNotes(iface);
+        if (pVarResult!=NULL)
+            *pVarResult = vRet;
+        return S_OK;
+    case dispid_range_clearoutline:
+        vRet = MSO_TO_OO_I_Range_ClearOutline(iface);
+        if (pVarResult!=NULL)
+            *pVarResult = vRet;
+        return S_OK;
     default:
         /*For default*/
         hres = get_typeinfo_range(&typeinfo);
@@ -4186,6 +4213,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             return hres;
 
         hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+
         if (FAILED(hres)) {
             TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
         }
