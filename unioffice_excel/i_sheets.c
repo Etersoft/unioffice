@@ -126,6 +126,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
     SheetsImpl *This = (SheetsImpl*)iface;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(varIndex, &varIndex);
+
     if (This == NULL) return E_POINTER;
 
     if ((This->pwb == NULL) && (This->pOOSheets == NULL)){
@@ -308,12 +310,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
     VariantInit(&par2);
     VariantInit(&res);
 
+    MSO_TO_OO_CorrectArg(Before, &Before);
+    MSO_TO_OO_CorrectArg(After, &After);
+    MSO_TO_OO_CorrectArg(Count, &Count);
+    MSO_TO_OO_CorrectArg(Type, &Type);
+
     if (This == NULL) {
         TRACE("ERROR: This Object is NULL\n");
         return E_POINTER;
     }
     /*Приводим все значения к необходимому виду.*/
-    if ((V_VT(&Before)==VT_EMPTY) || (V_VT(&Before)==VT_NULL)) {
+    if (Is_Variant_Null(Before)) {
         VariantClear(&Before);
     } else {
         /*преобразовываем любой тип к I4*/
@@ -321,7 +328,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         /*или останется текст*/
         ftype_add = 1;
     }
-    if ((V_VT(&After)==VT_EMPTY) || (V_VT(&After)==VT_NULL)) {
+    if (Is_Variant_Null(After)) {
         VariantClear(&After);
     } else {
         /*преобразовываем любой тип к I4*/
@@ -329,26 +336,32 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         /*или останется текст*/
         ftype_add = 2;
     }
-    if ((V_VT(&Count)==VT_EMPTY) || (V_VT(&Count)==VT_NULL)) {
+    if (Is_Variant_Null(Count)) {
         VariantClear(&Count);
         V_VT(&Count) = VT_I4;
         V_I4(&Count) = 1;
     } else {
         /*преобразовываем любой тип к I4*/
         hres = VariantChangeTypeEx(&Count, &Count, 0, 0, VT_I4);
+        if (FAILED(hres)) {
+            TRACE("ERROR when VariantChangeTypeEx -Count-\n");
+        }
     }
-    if ((V_VT(&Type)==VT_EMPTY) || (V_VT(&Type)==VT_NULL)) {
+    if (Is_Variant_Null(Type)) {
         VariantClear(&Type);
         V_VT(&Type) = VT_I4;
-        V_I4(&Type) = 1;
+        V_I4(&Type) = xlWorksheet;
     } else {
         /*преобразовываем любой тип к I4*/
         hres = VariantChangeTypeEx(&Type, &Type, 0, 0, VT_I4);
+        if (FAILED(hres)) {
+            TRACE("ERROR when VariantChangeTypeEx -Type-\n");
+        }
         /*Поддерживается только xlWorksheet*/
         switch (V_I4(&Type)) {
         case xlWorksheet:break;
         default :
-            TRACE("ERROR: This Type not implemented \n");
+            TRACE("ERROR: This Type not implemented type = %i \n", V_I4(&Type));
             return E_FAIL;
         }
     }
@@ -610,148 +623,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
     HRESULT hres;
-    IDispatch *dret;
-    int ret;
-    VARIANT vresult, par1;
-    VARIANT vmas[4];
-    int i;
+    ITypeInfo *typeinfo;
 
-    VariantInit(&par1);
-    VariantInit(&vresult);
-
-    if (This == NULL) return E_POINTER;
+    if (iface == NULL) return E_POINTER;
 
     switch (dispIdMember)
     {
-    case dispid_sheets__default:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            //если переданы по ссылке, исправляем.
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1);
-
-            hres = MSO_TO_OO_I_Sheets_get__Default(iface, par1, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_sheets_count:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Sheets_get_Count(iface, &ret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_I4;
-                V_I4(pVarResult) = ret;
-            }
-            return S_OK;
-        }
-    case dispid_sheets_application:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Sheets_get_Application(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_sheets_parent:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Sheets_get_Parent(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_sheets_item:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            //если переданы по ссылке, исправляем.
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par1);
-
-            hres = MSO_TO_OO_I_Sheets_get_Item(iface, par1, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_sheets_creator:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Sheets_get_Creator(iface, &vresult);
-            *pVarResult = vresult;
+    case dispid_sheets_visible:
+    case dispid_sheets__printout:
+        break;
+    default:
+        /*For default*/
+        hres = get_typeinfo_sheets(&typeinfo);
+        if(FAILED(hres))
             return hres;
-        }
-    case dispid_sheets_add:
-        if (pDispParams->cArgs>4) {
-            TRACE(" (7) Error number of parameters \n");
-            return E_FAIL;
-        }
-        for (i=0;i<4;i++) {
-            VariantInit(&vmas[i]);
-            V_VT(&vmas[i])=VT_EMPTY;
-        }
-        /*необходимо перевернуть параметры*/
-        for (i=0;i<pDispParams->cArgs;i++) {
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
-        }
-        hres = MSO_TO_OO_I_Sheets_Add(iface, vmas[0], vmas[1], vmas[2], vmas[3], &dret);
+
+        hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
         if (FAILED(hres)) {
-            pExcepInfo->bstrDescription=SysAllocString(str_error);
-            return hres;
-        }
-
-        if (pVarResult!=NULL) {
-            V_VT(pVarResult) = VT_DISPATCH;
-            V_DISPATCH(pVarResult) = dret;
-        } else {
-            IDispatch_Release(dret);
+            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
         }
         return hres;
     }
-
+    TRACE("NOT IMPL \n");
     return E_NOTIMPL;
 }
 
