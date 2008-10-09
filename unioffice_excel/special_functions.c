@@ -1775,3 +1775,10 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
     TRACE_OUT;
     return S_OK;
 }
+
+BOOL    Is_Variant_Null(
+        VARIANT var)
+{
+if ((V_VT(&var)==VT_EMPTY) || (V_VT(&var)==VT_NULL) || (V_VT(&var)==VT_ERROR)) return 1;
+return 0;
+}

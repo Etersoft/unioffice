@@ -170,5 +170,6 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
         Names *pnames,
         VARIANT varname);
 
-
+BOOL    Is_Variant_Null(
+        VARIANT var);
 
