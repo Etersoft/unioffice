@@ -146,17 +146,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WorkSheets(
         I_Workbook* iface,
         IDispatch **ppSheets)
 {
-    WorkbookImpl *This = (WorkbookImpl*)iface;
-    TRACE_IN;
-
-    if (This->pSheets == NULL) 
-        return E_FAIL;
-
-    *ppSheets = This->pSheets;
-    IDispatch_AddRef(This->pSheets);
-
-    TRACE_OUT;
-    return S_OK;
+    TRACE(" ----> get_Sheets \n");
+    return MSO_TO_OO_I_Workbook_get_Sheets(iface, ppSheets)
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
@@ -2275,44 +2266,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
 
     switch (dispIdMember) 
     {
+    case dispid_workbook_worksheets:
     case dispid_workbook_sheets:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
             hr = MSO_TO_OO_I_Workbook_get_Sheets(iface,&drets);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pDispParams->cArgs==1) {
-                hr = I_Sheets_get__Default((I_Sheets*)drets, pDispParams->rgvarg[0], &dret);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    I_Sheets_Release((I_Sheets*)drets);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)dret;
-                    I_Sheets_Release((I_Sheets*)drets);
-                } else {
-                    IDispatch_Release(dret);
-                }
-            } else {
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)drets;
-                } else {
-                    IDispatch_Release(drets);
-                }
-            }
-            return hr;
-        }
-    case dispid_workbook_worksheets:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_Workbook_get_WorkSheets(iface,&drets);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hr;
