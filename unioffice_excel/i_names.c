@@ -530,6 +530,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
     IDispatch *dret;
     BSTR tmpbstr;
     VARIANT vparam1;
+    ITypeInfo *typeinfo;
 
     TRACE("\n");
     VariantInit(&vparam1);
@@ -541,24 +542,6 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
 
     switch(dispIdMember)
     {
-    case dispid_name_referstorange:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("NOT_IMPL \n");
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_Name_get_RefersToRange(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
     case dispid_name_name:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs>1) {
@@ -582,6 +565,18 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
             SysFreeString(tmpbstr);
             return S_OK;
         }
+    default:
+        hres = get_typeinfo_name(&typeinfo);
+        if(FAILED(hres))
+           return hres;
+
+        hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+        if (FAILED(hres)) {
+            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+        }
+
+        return hres;
     }
 
     TRACE(" dispIdMember = %i NOT REALIZE\n",dispIdMember);
