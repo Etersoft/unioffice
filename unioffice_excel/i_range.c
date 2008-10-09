@@ -1391,7 +1391,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Delete(
         return hres;
     }
 
-    if ((V_VT(&param)==VT_NULL)||(V_VT(&param)==VT_EMPTY)) {
+    if (Is_Variant_Null(param)) {
         if ((endcolumn-startcolumn)>(endrow-startrow)) action = xlShiftUp; else action = xlShiftToLeft;
     } else {
         /*преобразовываем любой тип к I4*/
@@ -1560,7 +1560,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
         return hres;
     }
 
-    if ((V_VT(&RangeTo)==VT_NULL)||(V_VT(&RangeTo)==VT_EMPTY)) {
+    if (Is_Variant_Null(RangeTo)) {
         TRACE("(To Clipboard)\n");
         *value = (IDispatch*)iface;
         IDispatch_AddRef(*value);
@@ -2149,7 +2149,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Insert(
 
     //CopyOrigin is ignore now
 
-    if ((V_VT(&Shift)==VT_NULL)||(V_VT(&Shift)==VT_EMPTY)) {
+    if (Is_Variant_Null(Shift)) {
         hres = MSO_TO_OO_GetRangeAddress(iface, &startrow, &startcolumn, &endrow, &endcolumn);
         if (FAILED(hres)) {
             TRACE("ERROR when GetRangeAddress\n");

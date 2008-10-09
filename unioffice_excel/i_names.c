@@ -874,7 +874,7 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
         *ppvalue = pname;
         return S_OK;
     } else {
-        if ((V_VT(&Index)==VT_EMPTY)||(V_VT(&Index)==VT_NULL)) {
+        if (Is_Variant_Null(Index)) {
             TRACE("ERROR Empty param \n ");
             return E_FAIL;
         } else {

@@ -205,7 +205,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     MSO_TO_OO_CorrectArg(Cell1, &Cell1);
     MSO_TO_OO_CorrectArg(Cell2, &Cell2);
 
-    if ((V_VT(&Cell2)==VT_NULL)||(V_VT(&Cell2)==VT_EMPTY)) {
+    if (Is_Variant_Null(Cell2)) {
         hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &pRange);
         if (FAILED(hres)) {
             TRACE("ERROR when get_Cells\n");
@@ -433,7 +433,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
 
     if (This==NULL) return E_POINTER;
 
-    if ((V_VT(&Row)==VT_NULL)||(V_VT(&Row)==VT_EMPTY)) {
+    if (Is_Variant_Null(Row)) {
         TRACE("PARAMETER IS NULL\n",V_I4(&Row));
         /*Без параметра*/
         /*Возвращаем всю таблицу*/
@@ -560,7 +560,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
 
     if (This==NULL) return E_POINTER;
 
-    if ((V_VT(&Column)==VT_NULL)||(V_VT(&Column)==VT_EMPTY)) {
+    if (Is_Variant_Null(Column)) {
         TRACE("PARAMETER IS NULL\n",V_I4(&Column));
         /*Без параметра*/
         /*Возвращаем всю таблицу*/
@@ -705,13 +705,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
     if (This==NULL) return E_POINTER;
 
     /*Приводим все значения к необходимому виду.*/
-    if ((V_VT(&Before)==VT_EMPTY) || (V_VT(&Before)==VT_NULL)) {
+    if (Is_Variant_Null(Before)) {
         VariantClear(&Before);
     } else {
         tmp_wsh =(WorksheetImpl*)V_DISPATCH(&Before);
         ftype_add = 1;
     }
-    if ((V_VT(&After)==VT_EMPTY) || (V_VT(&After)==VT_NULL)) {
+    if (Is_Variant_Null(After)) {
         VariantClear(&After);
     } else {
         tmp_wsh =(WorksheetImpl*)V_DISPATCH(&After);
@@ -945,7 +945,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Protect(
 
     VariantInit(&res);
     VariantInit(&param);
-    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+    if (Is_Variant_Null(Password)) {
         V_VT(&param) = VT_BSTR;
         V_BSTR(&param) = SysAllocString(L"");
         hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheet, L"protect", 1, param);
@@ -981,7 +981,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Unprotect(
 
     VariantInit(&res);
     VariantInit(&param);
-    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+    if (Is_Variant_Null(Password)) {
         V_VT(&param) = VT_BSTR;
         V_BSTR(&param) = SysAllocString(L"");
         hres = AutoWrap(DISPATCH_METHOD, &res, This->pOOSheet, L"unprotect", 1, param);

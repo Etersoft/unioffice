@@ -313,7 +313,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Protect(
 
     VariantInit(&res);
     VariantInit(&param);
-    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+    if (Is_Variant_Null(Password)) {
         V_VT(&param) = VT_BSTR;
         V_BSTR(&param) = SysAllocString(L"");
         hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"protect", 1, param);
@@ -346,7 +346,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Unprotect(
 
     VariantInit(&res);
     VariantInit(&param);
-    if ((V_VT(&Password)==VT_EMPTY)||(V_VT(&Password)==VT_NULL)) {
+    if (Is_Variant_Null(Password)) {
         V_VT(&param) = VT_BSTR;
         V_BSTR(&param) = SysAllocString(L"");
         hres = AutoWrap(DISPATCH_METHOD, &res, This->pDoc, L"unprotect", 1, param);

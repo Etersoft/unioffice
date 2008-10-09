@@ -231,7 +231,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
     VariantInit(&param2);
     VariantInit(&vret);
 
-    if ((V_VT(&RowLevels)!=VT_NULL) && (V_VT(&ColumnLevels)!=VT_EMPTY)) {
+    if (!Is_Variant_Null(RowLevels)) {
         hres = VariantChangeTypeEx(&param1, &RowLevels, 0, 0, VT_I4);
         if (FAILED(hres)) {
             TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
