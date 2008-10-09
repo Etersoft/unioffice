@@ -202,6 +202,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
     VariantInit(&vNull);
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Cell1, &Cell1);
+    MSO_TO_OO_CorrectArg(Cell2, &Cell2);
+
     if ((V_VT(&Cell2)==VT_NULL)||(V_VT(&Cell2)==VT_EMPTY)) {
         hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &pRange);
         if (FAILED(hres)) {
@@ -426,6 +429,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
     IDispatch *tmp_range;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Row, &Row);
+
     if (This==NULL) return E_POINTER;
 
     if ((V_VT(&Row)==VT_NULL)||(V_VT(&Row)==VT_EMPTY)) {
@@ -550,6 +555,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
     HRESULT hres;
     IDispatch *tmp_range;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(Column, &Column);
 
     if (This==NULL) return E_POINTER;
 
@@ -691,6 +698,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
     IDispatch *range1,*range2, *range3;
     VARIANT cols,torange;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(Before, &Before);
+    MSO_TO_OO_CorrectArg(After, &After);
 
     if (This==NULL) return E_POINTER;
 
@@ -914,6 +924,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Protect(
     HRESULT hres;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Password, &Password);
+    MSO_TO_OO_CorrectArg(DrawingObjects, &DrawingObjects);
+    MSO_TO_OO_CorrectArg(Contents, &Contents);
+    MSO_TO_OO_CorrectArg(Scenarios, &Scenarios);
+    MSO_TO_OO_CorrectArg(UserInterfaceOnly, &UserInterfaceOnly);
+    MSO_TO_OO_CorrectArg(AllowFormattingCells, &AllowFormattingCells);
+    MSO_TO_OO_CorrectArg(AllowFormattingColumns, &AllowFormattingColumns);
+    MSO_TO_OO_CorrectArg(AllowFormattingRows, &AllowFormattingRows);
+    MSO_TO_OO_CorrectArg(AllowInsertingColumns, &AllowInsertingColumns);
+    MSO_TO_OO_CorrectArg(AllowInsertingRows, &AllowInsertingRows);
+    MSO_TO_OO_CorrectArg(AllowInsertingHyperlinks, &AllowInsertingHyperlinks);
+    MSO_TO_OO_CorrectArg(AllowDeletingColumns, &AllowDeletingColumns);
+    MSO_TO_OO_CorrectArg(AllowDeletingRows, &AllowDeletingRows);
+    MSO_TO_OO_CorrectArg(AllowSorting, &AllowSorting);
+    MSO_TO_OO_CorrectArg(AllowFiltering, &AllowFiltering);
+    MSO_TO_OO_CorrectArg(AllowUsingPivotTables, &AllowUsingPivotTables);
+
     if (This == NULL) return E_POINTER;
 
     VariantInit(&res);
@@ -947,6 +974,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Unprotect(
     VARIANT param, res;
     HRESULT hres;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(Password, &Password);
 
     if (This == NULL) return E_POINTER;
 
@@ -1236,6 +1265,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Select(
 {
     WorksheetImpl *This = (WorksheetImpl*)(iface);
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(Replace, &Replace);
 
     if (This == NULL) return E_POINTER;
     if (This->pOOSheet == NULL) {
@@ -2368,6 +2399,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     VARIANT vmas[16];
     int i;
     long ltmp;
+    ITypeInfo *typeinfo;
 
     VariantInit(&vNull);
     VariantInit(&cell1);
@@ -2381,221 +2413,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
         return E_POINTER;
     }
 
-    switch (dispIdMember)
-    {
-    case dispid_worksheet_name:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &tmpval);
-            hres = MSO_TO_OO_I_Worksheet_put_Name(iface, V_BSTR(&tmpval));
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            return S_OK;
-        } else {
-            if (pDispParams->cArgs!=0) return E_FAIL;
-
-            hres = MSO_TO_OO_I_Worksheet_get_Name(iface, &res);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_BSTR;
-                V_BSTR(pVarResult) = res;
-            }
-            return S_OK;
-        }
-    case dispid_worksheet_cells:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            switch (pDispParams->cArgs) {
-            case 3:
+    /*special operation*/
+    if ((dispIdMember == dispid_worksheet_cells) && (wFlags == DISPATCH_PROPERTYPUT)) {
+            if (pDispParams->cArgs == 3) {
                 hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &dret);
                 if (FAILED(hres)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
                     TRACE("(case 2) ERROR get_cells hres = %08x\n",hres);
                     return hres;
                 }
-                /*необходимо привести к значению , т.к. иногда присылаются ссылки*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &cell1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell2);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &tmpval);
-                I_Range_get__Default((I_Range*)dret,cell1, cell2,&pretdisp);
-                I_Range_put_Value((I_Range*)pretdisp, vNull, 0, tmpval);
+                I_Range_get__Default((I_Range*)dret,pDispParams->rgvarg[2], pDispParams->rgvarg[1],&pretdisp);
+                I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
                 IDispatch_Release(dret);
                 IDispatch_Release(pretdisp);
                 return S_OK;
             }
-            TRACE("(case 2) (PUT) only realized with 3 parameters \n");
-            return E_NOTIMPL;
-        } else {
+    }
 
-            hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                TRACE("(case 2) ERROR get_cells hres = %08x\n",hres);
-                return hres;
-            }
-
-            /*здесь надо проверить параметры если они есть, то вызвать метод Range->_Default.*/
-            switch(pDispParams->cArgs) {
-            case 0:
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                break;
-            case 1:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2);
-                I_Range_get__Default((I_Range*)dret,cell2, vNull, &pretdisp);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=pretdisp;
-                } else {
-                    IDispatch_Release(pretdisp);
-                }
-                I_Range_Release((I_Range*)dret);
-               break;
-            case 2:
-                /*необходимо привести к значению , т.к. иногда присылаются ссылки*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2);
-
-                I_Range_get__Default((I_Range*)dret,cell1, cell2,&pretdisp);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=pretdisp;
-                } else {
-                    IDispatch_Release(pretdisp);
-                }
-                I_Range_Release((I_Range*)dret);
-               break;
-            }
-            return S_OK;
-        }
-    case dispid_worksheet_range:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 1:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
-                hres = MSO_TO_OO_I_Worksheet_get_Range(iface, cell1, vNull, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            case 2:
-            /*Привести параметры к типу VARIANT если они переданы по ссылке*/
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell1);
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2);
-            hres = MSO_TO_OO_I_Worksheet_get_Range(iface, cell1, cell2, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-            default:
-                TRACE("(case 3) ERROR PARAMETR IS SEND\n");
-                return E_FAIL;
-            }
-        }
+    switch (dispIdMember)
+    {
     case dispid_worksheet_paste:
         /*method paste   MSO_TO_OO_I_Worksheet_Paste*/
-
        return E_NOTIMPL;
     case dispid_worksheet_activate:
        return MSO_TO_OO_I_Worksheet_Activate(iface, 0);
-    case dispid_worksheet_rows://Rows
-       if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 0:
-                TRACE("(case 6) 0 Parameter\n");
-                hres = MSO_TO_OO_I_Worksheet_get_Rows(iface, vNull, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            case 1:
-                TRACE("(case 6) 1 Parameter\n");
-                /*Привести параметры к типу VARIANT если они переданы по ссылке*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
-                hres = MSO_TO_OO_I_Worksheet_get_Rows(iface, cell1, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            }
-        }
-    case dispid_worksheet_columns://Columns
-       if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 0:
-                TRACE("(case 7) 0 Parameter\n");
-                hres = MSO_TO_OO_I_Worksheet_get_Columns(iface, vNull, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            case 1:
-                TRACE("(case 7) 1 Parameter\n");
-                /*Привести параметры к типу VARIANT если они переданы по ссылке*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
-                hres = MSO_TO_OO_I_Worksheet_get_Columns(iface, cell1, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            }
-        }
     case dispid_worksheet_copy:
         switch (pDispParams->cArgs) {
         case 0:
@@ -2608,9 +2449,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             return S_OK;
         case 1:
             TRACE("(case 8) 1 Parameter\n");
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2))) return E_FAIL;
 
-            hres = MSO_TO_OO_I_Worksheet_Copy(iface, cell2, vNull, 0);
+            hres = MSO_TO_OO_I_Worksheet_Copy(iface, pDispParams->rgvarg[0], vNull, 0);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -2618,10 +2458,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             return S_OK;
         case 2:
             TRACE("(case 8) 2 Parameter\n");
-            /*Привести параметры к типу VARIANT если они переданы по ссылке*/
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell1))) return E_FAIL;
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2))) return E_FAIL;
-            hres = MSO_TO_OO_I_Worksheet_Copy(iface, cell1, cell2, 0);
+
+            hres = MSO_TO_OO_I_Worksheet_Copy(iface, pDispParams->rgvarg[1], pDispParams->rgvarg[0], 0);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -2630,35 +2468,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
         }
     case dispid_worksheet_delete:
         return MSO_TO_OO_I_Worksheet_Delete(iface, 0);
-    case dispid_worksheet_pagesetup:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            if (pDispParams->cArgs!=0) return E_FAIL;
-
-            hres = MSO_TO_OO_I_Worksheet_get_PageSetup(iface, &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            } else {
-                IDispatch_Release(dret);
-            }
-            return S_OK;
-        }
-    case dispid_worksheet_protect://Protect
-        for (i=0;i<16;i++) {
-            VariantInit(&vmas[i]);
-            V_VT(&vmas[i])=VT_EMPTY;
-        }
-        /*необходимо перевернуть параметры*/
-        for (i=0;i<pDispParams->cArgs;i++) {
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
-        }
-        return MSO_TO_OO_I_Worksheet_Protect(iface, vmas[0], vmas[1], vmas[2], vmas[3], vmas[4], vmas[5], vmas[6], vmas[7], vmas[8], vmas[9], vmas[10], vmas[11], vmas[12], vmas[13], vmas[14], vmas[15]);
     case dispid_worksheet_unprotect://UnProtect
         switch (pDispParams->cArgs) {
         case 0:
@@ -2673,69 +2482,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             return E_INVALIDARG;
         }
         return MSO_TO_OO_I_Worksheet_Unprotect(iface,cell1, 0);
-    case dispid_worksheet_shapes:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 0:
-                TRACE("(case 13) 0 Parameter\n");
-                hres = MSO_TO_OO_I_Worksheet_get_Shapes(iface, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            case 1:
-                TRACE("(case 13) 1 Parameter\n");
-                if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2))) return E_FAIL;
-
-                hres = MSO_TO_OO_I_Worksheet_get_Shapes(iface, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                /*TODO use parameters*/
-
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            }
-        }
-    case dispid_worksheet_outline:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 0:
-                TRACE("0 Parameter\n");
-                hres = MSO_TO_OO_I_Worksheet_get_Outline(iface, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = dret;
-                } else {
-                    IDispatch_Release(dret);
-                }
-                return S_OK;
-            default:
-                TRACE("ERROR parameters \n");
-                return E_FAIL;
-            }
-        }
     case dispid_worksheet_visible:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
@@ -2781,6 +2527,17 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
             break;
         }
         return MSO_TO_OO_I_Worksheet_Select(iface, cell2, 0);
+    default:
+        /*For default*/
+        hres = get_typeinfo_worksheet(&typeinfo);
+        if(FAILED(hres))
+            return hres;
+
+        hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+        if (FAILED(hres)) {
+            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+        }
+        return hres;
     }
 
     return E_NOTIMPL;

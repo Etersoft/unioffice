@@ -154,6 +154,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
     HRESULT hres;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(varRowIndex, &varRowIndex);
+    MSO_TO_OO_CorrectArg(varColumnIndex, &varColumnIndex);
+
     if (This == NULL) return E_POINTER;
 
     *ppObject = NULL;
@@ -380,6 +383,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
 {
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(varRangeValueDataType, &varRangeValueDataType);
+    MSO_TO_OO_CorrectArg(varValue, &varValue);
 
     if (This == NULL) return E_POINTER;
 
