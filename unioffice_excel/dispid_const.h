@@ -335,7 +335,7 @@
 #define dispid_borders_getenumerator                             9
 #define dispid_borders_value                                     10
 #define dispid_borders_weight                                    11
-#define dispid_borders__default                                  12
+#define dispid_borders__default                                  0
 
 /*IBorder*/
 #define dispid_border_application                                1
@@ -396,7 +396,7 @@
 #define dispid_names_parent                                      3
 #define dispid_names_add                                         4
 #define dispid_names_item                                        5
-#define dispid_names__default                                    6
+#define dispid_names__default                                    0
 #define dispid_names_count                                       7
 #define dispid_names_getenumerator                               8
 
@@ -902,7 +902,7 @@
 #define dispid_name_application                                 1
 #define dispid_name_creator                                     2
 #define dispid_name_parent                                      3
-#define dispid_name__default                                    4
+#define dispid_name__default                                    0
 #define dispid_name_index                                       5
 #define dispid_name_category                                    6
 #define dispid_name_categorylocal                               7
@@ -936,7 +936,7 @@
 #define dispid_windows_count                                    2
 #define dispid_windows_item                                     3
 #define dispid_windows__newenum                                 4
-#define dispid_windows__default                                 5
+#define dispid_windows__default                                 0
 
 
 /*IWindow*/
