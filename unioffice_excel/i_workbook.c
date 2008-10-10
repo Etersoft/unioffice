@@ -208,6 +208,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     BSTR FilenameURL;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Filename, &Filename);
+    MSO_TO_OO_CorrectArg(FileFormat, &FileFormat);
+    MSO_TO_OO_CorrectArg(Password, &Password);
+    MSO_TO_OO_CorrectArg(WriteResPassword, &WriteResPassword);
+    MSO_TO_OO_CorrectArg(ReadOnlyRecommended, &ReadOnlyRecommended);
+    MSO_TO_OO_CorrectArg(CreateBackup, &CreateBackup);
+    MSO_TO_OO_CorrectArg(ConflictResolution, &ConflictResolution);
+    MSO_TO_OO_CorrectArg(AddToMru, &AddToMru);
+    MSO_TO_OO_CorrectArg(TextCodepage, &TextCodepage);
+    MSO_TO_OO_CorrectArg(TextVisualLayout, &TextVisualLayout);
+    MSO_TO_OO_CorrectArg(Local, &Local);
+
     if (This==NULL) {
         TRACE("ERROR objetct is NULL \n");
         return E_FAIL;
@@ -300,6 +312,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Protect(
     HRESULT hres;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Password, &Password);
+    MSO_TO_OO_CorrectArg(Structure, &Structure);
+    MSO_TO_OO_CorrectArg(Windows, &Windows);
+
     if (This == NULL) return E_POINTER;
 
     VariantInit(&res);
@@ -332,6 +348,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Unprotect(
     VARIANT param, res;
     HRESULT hres;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(Password, &Password);
 
     if (This == NULL) return E_POINTER;
 
@@ -2244,7 +2262,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
         UINT *puArgErr)
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
-    HRESULT hr;
+    HRESULT hres;
     IDispatch *drets;
     IDispatch *dret;
     VARIANT vmas[12];
@@ -2252,6 +2270,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
     int i;
     VARIANT vtmp;
     BSTR bret;
+    ITypeInfo *typeinfo;
 
     for (i=0;i<12;i++) {
          VariantInit(&vmas[i]);
@@ -2266,40 +2285,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
 
     switch (dispIdMember) 
     {
-    case dispid_workbook_worksheets:
-    case dispid_workbook_sheets:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_Workbook_get_Sheets(iface,&drets);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pDispParams->cArgs==1) {
-                hr = I_Sheets_get__Default((I_Sheets*)drets, pDispParams->rgvarg[0], &dret);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    I_Sheets_Release((I_Sheets*)drets);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)dret;
-                    I_Sheets_Release((I_Sheets*)drets);
-                } else {
-                    IDispatch_Release(dret);
-                }
-            } else {
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)drets;
-                } else {
-                    IDispatch_Release(drets);
-                }
-            }
-            return hr;
-        }
     case dispid_workbook_close:
         if (pDispParams->cArgs>3) {
             TRACE(" (3) ERROR Parameters");
@@ -2309,12 +2294,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
         for (i=0;i<pDispParams->cArgs;i++) {
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
         }
-        hr = MSO_TO_OO_I_Workbook_Close(iface, vmas[0], vmas[1], vmas[2], 0);
-        if (FAILED(hr)) {
+        hres = MSO_TO_OO_I_Workbook_Close(iface, vmas[0], vmas[1], vmas[2], 0);
+        if (FAILED(hres)) {
             pExcepInfo->bstrDescription=SysAllocString(str_error);
-            return hr;
+            return hres;
         }
-        return hr;
+        return hres;
     case dispid_workbook_saveas:
         if (pDispParams->cArgs>12) {
             TRACE(" (4) ERROR Parameters");
@@ -2325,24 +2310,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
         }
         VariantChangeTypeEx(&vmas[6], &vmas[6], 0, 0, VT_I4);
-        hr = MSO_TO_OO_I_Workbook_SaveAs(iface, vmas[0], vmas[1], vmas[2], vmas[3], vmas[4], vmas[5], V_I4(&vmas[6]), vmas[7], vmas[8], vmas[9], vmas[10], vmas[11], 0);
-        if (FAILED(hr)) {
+        hres = MSO_TO_OO_I_Workbook_SaveAs(iface, vmas[0], vmas[1], vmas[2], vmas[3], vmas[4], vmas[5], V_I4(&vmas[6]), vmas[7], vmas[8], vmas[9], vmas[10], vmas[11], 0);
+        if (FAILED(hres)) {
             pExcepInfo->bstrDescription=SysAllocString(str_error);
-            return hr;
+            return hres;
         }
-        return hr;
+        return hres;
     case dispid_workbook_save:
         return MSO_TO_OO_I_Workbook_Save(iface, 0);
-    case dispid_workbook_protect://Protect
-        for (i=0;i<12;i++) {
-            VariantInit(&vmas[i]);
-            V_VT(&vmas[i])=VT_EMPTY;
-        }
-        /*необходимо перевернуть параметры*/
-        for (i=0;i<pDispParams->cArgs;i++) {
-            if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
-        }
-        return MSO_TO_OO_I_Workbook_Protect(iface, vmas[0], vmas[1], vmas[2]);
     case dispid_workbook_unprotect://UnProtect
         switch (pDispParams->cArgs) {
         case 0:
@@ -2357,29 +2332,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             return E_INVALIDARG;
         }
         return MSO_TO_OO_I_Workbook_Unprotect(iface,vtmp, 0);
-    case dispid_workbook_name:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_Workbook_get_Name(iface, &bret);
-            if (FAILED(hr)) {
-                TRACE("Error get Name \n");
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_BSTR;
-                    V_BSTR(pVarResult)=bret;
-            }
-            return S_OK;
-        }
     case dispid_workbook_names:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_Workbook_get_Names(iface, &drets);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_Workbook_get_Names(iface, &drets);
+            if (FAILED(hres)) {
                 TRACE("Error get Names \n");
-                return hr;
+                return hres;
             }
             if (pDispParams->cArgs==0) {
                 if (pVarResult!=NULL){
@@ -2394,10 +2354,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
                     if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
                 }
 
-                hr = Names_Item((Names*)drets, vmas[0], vmas[1], vmas[2], &dret);
-                if (FAILED(hr)) {
+                hres = Names_Item((Names*)drets, vmas[0], vmas[1], vmas[2], &dret);
+                if (FAILED(hres)) {
                     TRACE("Error get Name \n");
-                    return hr;
+                    return hres;
                 }
 
                 if (pVarResult!=NULL){
@@ -2410,23 +2370,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             }
             return S_OK;
         }
-    case dispid_workbook_activeSheet:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_Workbook_get_ActiveSheet(iface, &drets);
-            if (FAILED(hr)) {
-                TRACE("Error get ActiveSheet \n");
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)drets;
-            } else {
-                IDispatch_Release(drets);
-            }
-            return S_OK;
+    default:
+        hres = get_typeinfo_workbook(&typeinfo);
+        if(FAILED(hres))
+            return hres;
+
+        hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+        if (FAILED(hres)) {
+            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
         }
+
+        return hres;
     }
 
     return E_NOTIMPL;

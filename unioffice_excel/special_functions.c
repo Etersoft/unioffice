@@ -1131,7 +1131,6 @@ HRESULT MSO_TO_OO_CorrectArg(
          VARIANT value,
          VARIANT *retval)
 {
-TRACE_IN;
 VariantInit(retval);
 if (V_ISBYREF(&value)) {
     switch(V_VT(&value) - VT_BYREF) {
@@ -1223,7 +1222,6 @@ if (V_ISBYREF(&value)) {
 } else {
     *retval = value; 
 }
-TRACE_OUT;
 return S_OK;
 }
 
