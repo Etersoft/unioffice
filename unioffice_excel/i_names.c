@@ -845,6 +845,10 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
     IDispatch *pname;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Index, &Index);
+    MSO_TO_OO_CorrectArg(IndexLocal, &IndexLocal);
+    MSO_TO_OO_CorrectArg(RefersTo, &RefersTo);
+
     if (This == NULL) return E_POINTER;
 
     *ppvalue = NULL;

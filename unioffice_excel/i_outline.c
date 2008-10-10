@@ -231,6 +231,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
     VariantInit(&param2);
     VariantInit(&vret);
 
+    MSO_TO_OO_CorrectArg(RowLevels, &RowLevels);
+    MSO_TO_OO_CorrectArg(ColumnLevels, &ColumnLevels);
+
     if (!Is_Variant_Null(RowLevels)) {
         hres = VariantChangeTypeEx(&param1, &RowLevels, 0, 0, VT_I4);
         if (FAILED(hres)) {

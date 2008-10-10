@@ -296,6 +296,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
     VARIANT vUnderlineState;
     VariantInit (&vUnderlineState);
 
+    MSO_TO_OO_CorrectArg(vbUnderline, &vbUnderline);
+
     hres = VariantChangeTypeEx(&vbUnderline, &vbUnderline, 0, 0, VT_I4);
     if (FAILED(hres)) {
         TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
@@ -450,6 +452,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Name(
     TRACE_IN;
 
     VARIANT res;
+
+    MSO_TO_OO_CorrectArg(vName, &vName);
 
     RangeImpl *range = (RangeImpl*)This->prange;
 
@@ -759,6 +763,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
 
     TRACE(" \n");
 
+    MSO_TO_OO_CorrectArg(RHS, &RHS);
+
     VariantInit (&vsubscript);
     VariantInit (&res);
 
@@ -836,6 +842,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
     VARIANT vsubscript;
 
     TRACE(" \n");
+
+    MSO_TO_OO_CorrectArg(RHS, &RHS);
 
     VariantInit (&vsubscript);
     VariantInit (&res);

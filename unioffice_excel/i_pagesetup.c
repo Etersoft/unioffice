@@ -945,6 +945,8 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Zoom(
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(value, &value);
+
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
     VariantInit(&vpagestyles);
@@ -1076,6 +1078,8 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesTall(
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(value, &value);
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
@@ -1214,6 +1218,8 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesWide(
     WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
     WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(value, &value);
 
     VariantInit(&name_of_style);
     VariantInit(&vstyles);
