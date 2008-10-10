@@ -2332,44 +2332,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Invoke(
             return E_INVALIDARG;
         }
         return MSO_TO_OO_I_Workbook_Unprotect(iface,vtmp, 0);
-    case dispid_workbook_names:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Workbook_get_Names(iface, &drets);
-            if (FAILED(hres)) {
-                TRACE("Error get Names \n");
-                return hres;
-            }
-            if (pDispParams->cArgs==0) {
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)drets;
-                } else {
-                    IDispatch_Release(drets);
-                }
-            } else {
-                /*необходимо перевернуть параметры*/
-                for (i=0;i<pDispParams->cArgs;i++) {
-                    if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-i-1], &vmas[i]))) return E_FAIL;
-                }
-
-                hres = Names_Item((Names*)drets, vmas[0], vmas[1], vmas[2], &dret);
-                if (FAILED(hres)) {
-                    TRACE("Error get Name \n");
-                    return hres;
-                }
-
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)dret;
-                    IDispatch_Release(drets);
-                } else {
-                    IDispatch_Release(dret);
-                }
-            }
-            return S_OK;
-        }
     default:
         hres = get_typeinfo_workbook(&typeinfo);
         if(FAILED(hres))
