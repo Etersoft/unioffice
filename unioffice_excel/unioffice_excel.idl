@@ -5153,4 +5153,5 @@ library MSO_TO_OOLib
 	interface I_Windows;
 	interface I_Window;
 	interface I_Shapes;
+	interface I_Shape;
 };

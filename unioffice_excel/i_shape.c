@@ -20,6 +20,33 @@
 
 #include "mso_to_oo_private.h"
 
+ITypeInfo *ti_shape = NULL;
+
+HRESULT get_typeinfo_shape(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if(ti_shape) {
+        *typeinfo = ti_shape;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Shape, &ti_shape);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_shape;
+    return hres;
+}
+
+
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Shape_AddRef(
         I_Shape* iface)
@@ -115,8 +142,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = get_typeinfo_shape(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
+    }
+    TRACE_OUT;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Shape_Invoke(
@@ -130,8 +169,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = get_typeinfo_shape(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+    }
+    TRACE_OUT;
+    return hres;
 }
 
 const I_ShapeVtbl MSO_TO_OO_I_ShapeVtbl =

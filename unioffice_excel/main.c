@@ -42,6 +42,7 @@ extern ITypeInfo *ti_outline;
 extern ITypeInfo *ti_window;
 extern ITypeInfo *ti_windows;
 extern ITypeInfo *ti_shapes;
+extern ITypeInfo *ti_shape;
 
 __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -88,6 +89,8 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
                 ti_excel->lpVtbl->Release(ti_windows);
             if(ti_shapes)
                 ti_excel->lpVtbl->Release(ti_shapes);
+            if(ti_shape)
+                ti_excel->lpVtbl->Release(ti_shape);
             break;
     }
     TRACE_OUT;
