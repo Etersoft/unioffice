@@ -4136,49 +4136,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             }
             return S_OK;
         }
-    case dispid_range_borders:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hres = MSO_TO_OO_I_Range_get_Borders(iface,&dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pDispParams->cArgs!=1) {
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=dret;
-                } else {
-                    IDispatch_Release(dret);
-
-                }
-            } else {
-            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
-            hres = VariantChangeTypeEx(&vtmp, &vtmp, 0, 0, VT_I4);
-            if (FAILED(hres)) {
-                TRACE("(24) ERROR when VariantChangeType \n");
-                return hres;
-            }
-            lval = V_I4(&vtmp);
-            hres = I_Borders_get__Default((I_Borders*)dret,lval, &pretdisp);
-
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-            if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=pretdisp;
-
-                    IDispatch_Release(dret);
-                } else {
-                    IDispatch_Release(dret);
-                    IDispatch_Release(pretdisp);
-                }
-            }
-            return S_OK;
-        }
     case dispid_range_clearcontents:
         vRet = MSO_TO_OO_I_Range_ClearContents(iface);
         if (pVarResult!=NULL)
