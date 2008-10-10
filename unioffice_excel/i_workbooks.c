@@ -646,7 +646,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             if (pDispParams->cArgs==0) return E_FAIL;
             /*Используем только имя файла*/
             VariantInit(&vnull);
-            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&(pDispParams->rgvarg[pDispParams->cArgs-1])), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, l, &iapp);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-1], &astemp);
+            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&astemp), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, l, &iapp);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -666,7 +667,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             if (pDispParams->cArgs==0) return E_FAIL;
             /*Используем только имя файла*/
             VariantInit(&vnull);
-            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&(pDispParams->rgvarg[pDispParams->cArgs-1])), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull,l, &iapp);
+            MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-1], &astemp);
+            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&astemp), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull,l, &iapp);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
