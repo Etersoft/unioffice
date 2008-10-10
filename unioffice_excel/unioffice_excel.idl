@@ -5152,4 +5152,5 @@ library MSO_TO_OOLib
 	interface I_Outline;
 	interface I_Windows;
 	interface I_Window;
+	interface I_Shapes;
 };

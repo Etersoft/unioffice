@@ -20,8 +20,31 @@
 
 #include "mso_to_oo_private.h"
 
-static WCHAR const str_addline[] = {
-    'A','d','d','L','i','n','e',0};
+ITypeInfo *ti_shapes = NULL;
+
+HRESULT get_typeinfo_shapes(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if(ti_shapes) {
+        *typeinfo = ti_shapes;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Shapes, &ti_shapes);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_shapes;
+    return hres;
+}
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Shapes_AddRef(
@@ -155,14 +178,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    if (!lstrcmpiW(*rgszNames, str_addline)) {
-        *rgDispId = 1;
-        return S_OK;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = get_typeinfo_shapes(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
     }
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L" %s NOT REALIZE\n",*rgszNames);
-    return E_NOTIMPL;
+    TRACE_OUT;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Shapes_Invoke(
@@ -176,87 +205,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
+    ITypeInfo *typeinfo;
     HRESULT hres;
-    VARIANT par1,par2,par3,par4;
-    IDispatch *dret;
+    TRACE_IN;
 
-    TRACE("\n");
+    hres = get_typeinfo_shapes(&typeinfo);
+    if(FAILED(hres))
+        return hres;
 
-    VariantInit(&par1);
-    VariantInit(&par2);
-    VariantInit(&par3);
-    VariantInit(&par4);
-
-    if (iface == NULL) return E_POINTER;
-
-    switch(dispIdMember) 
-    {
-    case 1://AddLine
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("NOTIMPL\n");
-            return E_NOTIMPL;
-        } else {
-            if (pDispParams->cArgs!=4) {
-                TRACE("ERROR parameters\n");
-                return E_FAIL;
-            }
-            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[3], &par1);
-            if (FAILED(hres)) {
-                TRACE("ERROR when CorrectArg par1 \n");
-                return E_FAIL;
-            }
-            hres = VariantChangeTypeEx(&par1, &par1, 0, 0, VT_R4);
-            if (FAILED(hres)) {
-                TRACE("ERROR when VariantChangeTypeEx par1 \n");
-                return E_FAIL;
-            }
-            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &par2);
-            if (FAILED(hres)) {
-                TRACE("ERROR when CorrectArg par1 \n");
-                return E_FAIL;
-            }
-            hres = VariantChangeTypeEx(&par2, &par2, 0, 0, VT_R4);
-            if (FAILED(hres)) {
-                TRACE("ERROR when VariantChangeTypeEx par1 \n");
-                return E_FAIL;
-            }
-            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &par3);
-            if (FAILED(hres)) {
-                TRACE("ERROR when CorrectArg par1 \n");
-                return E_FAIL;
-            }
-            hres = VariantChangeTypeEx(&par3, &par3, 0, 0, VT_R4);
-            if (FAILED(hres)) {
-                TRACE("ERROR when VariantChangeTypeEx par1 \n");
-                return E_FAIL;
-            }
-            hres = MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &par4);
-            if (FAILED(hres)) {
-                TRACE("ERROR when CorrectArg par1 \n");
-                return E_FAIL;
-            }
-            hres = VariantChangeTypeEx(&par4, &par4, 0, 0, VT_R4);
-            if (FAILED(hres)) {
-                TRACE("ERROR when VariantChangeTypeEx par1 \n");
-                return E_FAIL;
-            }
-
-            hres = MSO_TO_OO_I_Shapes_AddLine(iface, V_R4(&par1), V_R4(&par2), V_R4(&par3), V_R4(&par4), &dret);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=dret;
-                return hres;
-            }
-            IDispatch_Release(dret);
-            return E_FAIL;
-        }
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
-
-    TRACE("%i not supported\n");
-    return E_NOTIMPL;
+    TRACE_OUT;
+    return hres;
 }
 
 const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl =
