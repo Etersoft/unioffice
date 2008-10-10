@@ -139,6 +139,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
     HRESULT hres;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(varTemplate, &varTemplate);
+
     if (This == NULL) {
         TRACE("ERROR Object is NULL \n");
         return E_POINTER;
@@ -174,9 +176,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
         *ppWorkbook = This->pworkbook[This->current_workbook];
     }
 
-    if ((V_VT(&varTemplate)==VT_EMPTY)||
-        (V_VT(&varTemplate)==VT_NULL) ||
-        (lstrlenW(V_BSTR(&varTemplate))==0)) {
+    if ((Is_Variant_Null(varTemplate)) || (lstrlenW(V_BSTR(&varTemplate)) == 0)) {
         hres = MSO_TO_OO_I_Workbook_Initialize( This->pworkbook[This->current_workbook], This->pApplication);
     } else {
        /* Необходимо преобразовать путь+имя в нужную форму
@@ -334,6 +334,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     IUnknown *punk = NULL;
     HRESULT hres;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(UpdateLinks, &UpdateLinks);
+    MSO_TO_OO_CorrectArg(ReadOnly, &ReadOnly);
+    MSO_TO_OO_CorrectArg(Format, &Format);
+    MSO_TO_OO_CorrectArg(Password, &Password);
+    MSO_TO_OO_CorrectArg(WriteResPassword, &WriteResPassword);
+    MSO_TO_OO_CorrectArg(IgnoreReadOnlyRecommended, &IgnoreReadOnlyRecommended);
+    MSO_TO_OO_CorrectArg(Origin, &Origin);
+    MSO_TO_OO_CorrectArg(Delimiter, &Delimiter);
+    MSO_TO_OO_CorrectArg(Editable, &Editable);
+    MSO_TO_OO_CorrectArg(Notify, &Notify);
+    MSO_TO_OO_CorrectArg(Converter, &Converter);
+    MSO_TO_OO_CorrectArg(AddToMru, &AddToMru);
+    MSO_TO_OO_CorrectArg(Local, &Local);
+    MSO_TO_OO_CorrectArg(CorruptLoad, &CorruptLoad);
 
     if (This == NULL) return E_POINTER;
 
@@ -615,7 +630,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
         UINT *puArgErr)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-    HRESULT hr;
+    HRESULT hres;
     int iresult;
     IDispatch* iapp;
     VARIANT_BOOL vbool;
@@ -623,6 +638,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
     VARIANT astemp;
     VARIANT vnull;
     long l;
+    ITypeInfo *typeinfo;
 
     TRACE("\n");
 
@@ -633,7 +649,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
     if (This == NULL) return E_POINTER;
 
     switch (dispIdMember) {
-        case dispid_workbooks_Add:
+ /*       case dispid_workbooks_Add:
             if (pDispParams->cArgs==1) {
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &astemp);
                 if (V_VT(&astemp)!=VT_BSTR) {
@@ -647,7 +663,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             } else {
                 V_VT(&astemp) = VT_EMPTY;
             }
-            /*MSO_TO_OO_I_Workbooks_Add */
+            // MSO_TO_OO_I_Workbooks_Add 
             hr = MSO_TO_OO_I_Workbooks_Add(iface,astemp,&iapp);
             if (FAILED(hr)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
@@ -660,16 +676,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             } else {
                 IDispatch_Release(iapp);
             }
-            return S_OK;
+            return S_OK;*/
         case dispid_workbooks__Open:
             /*Зависит от кол-ва посланных параметров*/
             if (pDispParams->cArgs==0) return E_FAIL;
             /*Используем только имя файла*/
             VariantInit(&vnull);
-            hr = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&(pDispParams->rgvarg[pDispParams->cArgs-1])), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, l, &iapp);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&(pDispParams->rgvarg[pDispParams->cArgs-1])), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, l, &iapp);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
             if (pVarResult!=NULL){
                 V_VT(pVarResult)=VT_DISPATCH;
@@ -681,7 +697,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
         case dispid_workbooks_Close:
             MSO_TO_OO_I_Workbooks_Close(iface, l);
             return S_OK;
-        case dispid_workbooks_Count:
+ /*       case dispid_workbooks_Count:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
@@ -696,8 +712,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                     V_I2(pVarResult) = iresult;
                 }
                 return hr;
-            }
-        case dispid_workbooks_application:
+            }*/
+ /*       case dispid_workbooks_application:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
@@ -713,8 +729,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                     IDispatch_Release(iapp);
                 }
                 return S_OK;
-            }
-        case dispid_workbooks_parent:
+            }*/
+  /*      case dispid_workbooks_parent:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
@@ -730,16 +746,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                     IDispatch_Release(iapp);
                 }
                 return S_OK;
-            }
+            }*/
         case dispid_workbooks_Open:
             /*Зависит от кол-ва посланных параметров*/
             if (pDispParams->cArgs==0) return E_FAIL;
             /*Используем только имя файла*/
             VariantInit(&vnull);
-            hr = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&(pDispParams->rgvarg[pDispParams->cArgs-1])), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull,l, &iapp);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&(pDispParams->rgvarg[pDispParams->cArgs-1])), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull,l, &iapp);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
             if (pVarResult!=NULL){
                 V_VT(pVarResult)=VT_DISPATCH;
@@ -768,7 +784,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             /*MSO_TO_OO_I_Workbooks_OpenDatabase*/
             TRACE("Stub: METHOD OpenDatabase \n");
             return S_OK;
-        case dispid_workbooks_CanCheckOut:
+  /*      case dispid_workbooks_CanCheckOut:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 if (pDispParams->cArgs!=2) return E_FAIL;
                 hr = MSO_TO_OO_I_Workbooks_put_CanCheckOut(iface, V_BSTR(&(pDispParams->rgvarg[1])), V_BOOL(&(pDispParams->rgvarg[0])));
@@ -781,42 +797,54 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
                     V_BOOL(pVarResult) = vbool;
                 }
                 return hr;
-            }
-        case dispid_workbooks_CheckOut:
+            }*/
+  /*      case dispid_workbooks_CheckOut:
             if (pDispParams->cArgs!=1) return E_FAIL;
             hr = MSO_TO_OO_I_Workbooks_CheckOut(iface, V_BSTR(&(pDispParams->rgvarg[0])));
-            return hr;
-        case dispid_workbooks_creator:
+            return hr;*/
+  /*      case dispid_workbooks_creator:
             if (wFlags==DISPATCH_PROPERTYPUT) {
-                /*это свойство только для чтения*/
+                //это свойство только для чтения
                 return E_NOTIMPL;
             } else {
                hr = MSO_TO_OO_I_Workbooks_get_Creator(iface, &vresult);
                *pVarResult = vresult;
                return hr;
-            }
-        case dispid_workbooks__Default:
+            }*/
+ /*       case dispid_workbooks__Default:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return E_NOTIMPL;
             } else {
-                /*MSO_TO_OO_I_Workbooks_get__Default*/
+                //MSO_TO_OO_I_Workbooks_get__Default
                 TRACE("Stub: PPROPERTY _Default \n");
                 return S_OK;
-            }
-        case dispid_workbooks_Item:
+            }*/
+  /*      case dispid_workbooks_Item:
             if (wFlags==DISPATCH_PROPERTYPUT) {
                 return S_OK;
             } else {
-                /*MSO_TO_OO_I_Workbooks_get_Item*/
+                //MSO_TO_OO_I_Workbooks_get_Item
                 TRACE("Stub: PROPERTY Item \n");
                 return S_OK;
-            }
+            }*/
         case dispid_workbooks___OpenText:
             /*MSO_TO_OO_I_Workbooks___OpenText*/
             TRACE("Stub: METHOD __OpenText \n");
             return S_OK;
+        default:
+            hres = get_typeinfo_workbooks(&typeinfo);
+            if (FAILED(hres))
+                return hres;
+
+            hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+            if (FAILED(hres)) {
+                TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+            }
+
+            return hres;
     }
-    
+
     return E_NOTIMPL;
 }
 
