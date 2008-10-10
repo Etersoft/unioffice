@@ -569,6 +569,11 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_ConvertFormula(
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Formula, &Formula);
+    MSO_TO_OO_CorrectArg(ToReferenceStyle, &ToReferenceStyle);
+    MSO_TO_OO_CorrectArg(ToAbsolute, &ToAbsolute);
+    MSO_TO_OO_CorrectArg(RelativeTo, &RelativeTo);
+
     if (This == NULL) return E_POINTER;
 /*
 RelativeTo и ToAbsolute - пока игнорируются
@@ -901,6 +906,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_put_Caption(
         VARIANT vName)
 {
     TRACE_NOTIMPL;
+    MSO_TO_OO_CorrectArg(vName, &vName);
     return S_OK;
 }
 
@@ -942,6 +948,9 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Range(
     I_Worksheet *wsh;
     TRACE_IN;
 
+    MSO_TO_OO_CorrectArg(Cell1, &Cell1);
+    MSO_TO_OO_CorrectArg(Cell2, &Cell2);
+
     hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, (IDispatch**) &wsh);
 
     hres = I_Worksheet_get_Range(wsh,Cell1, Cell2, ppRange);
@@ -960,6 +969,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Columns(
     HRESULT hres;
     IDispatch *active_sheet;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(param, &param);
 
     hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &active_sheet);
 
@@ -988,6 +999,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Rows(
     HRESULT hres;
     IDispatch *active_sheet;
     TRACE_IN;
+
+    MSO_TO_OO_CorrectArg(param, &param);
 
     hres = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &active_sheet);
 
@@ -4378,7 +4391,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         UINT *puArgErr)
 {
     _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
-    HRESULT hr;
+    HRESULT hres;
     BSTR pVersion;
     IDispatch *pdisp;
     IDispatch *pretdisp;
@@ -4386,6 +4399,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
     VARIANT vNull;
     VARIANT vRet,vtmp,cell1,cell2;
     VARIANT_BOOL vbin;
+    ITypeInfo *typeinfo;
 
     VariantInit(&vNull);
     VariantInit(&vtmp);
@@ -4399,34 +4413,21 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
 
     switch (dispIdMember)
     {
-    case dispid_application_usercontrol:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
-            if (FAILED(hr)) {
-                TRACE(" (case 1) ERROR when VariantChangeTypeEx\n");
-              return E_FAIL;
-            }
-            vbin = V_BOOL(&vtmp);
-            return MSO_TO_OO_I_ApplicationExcel_put_UserControl(iface,vbin);
-        } else {
-            return E_NOTIMPL;
-        }
     case dispid_application_displayalerts:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
-            if (FAILED(hr)) {
+            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            if (FAILED(hres)) {
                 TRACE(" (case 2) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
             return MSO_TO_OO_I_ApplicationExcel_put_DisplayAlerts(iface, 0, vbin);
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(iface, 0, &vbin);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_ApplicationExcel_get_DisplayAlerts(iface, 0, &vbin);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
             if (pVarResult!=NULL){
                 V_VT(pVarResult) = VT_BOOL;
@@ -4438,8 +4439,8 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             /*преобразовываем любой тип к I4*/
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
-            if (FAILED(hr)) {
+            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            if (FAILED(hres)) {
                 TRACE(" (case 3) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
@@ -4453,18 +4454,18 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
     case dispid_application_visible:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
-            if (FAILED(hr)) {
+            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            if (FAILED(hres)) {
                 TRACE(" (case 4) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
             return MSO_TO_OO_I_ApplicationExcel_put_Visible(iface, 0, vbin);
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Visible(iface, 0, &vbin);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_ApplicationExcel_get_Visible(iface, 0, &vbin);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
             if (pVarResult!=NULL){
                 V_VT(pVarResult) = VT_BOOL;
@@ -4472,79 +4473,14 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case dispid_application_workbooks:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Workbooks(iface,&pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-            }
-            return hr;
-        }
-    case dispid_application_sheets:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Sheets(iface,&pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-               }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-            }
-            if (pDispParams->cArgs==1) {
-                I_Sheets_get__Default((I_Sheets*)pdisp, pDispParams->rgvarg[0], &pretdisp);
-                I_Sheets_Release((I_Sheets*)pdisp);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)pretdisp;
-                } else {
-                    I_Worksheet_Release((I_Worksheet*)pretdisp);
-                }
-            }
-            return S_OK;
-        }
-    case dispid_application_worksheets:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Sheets(iface,&pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-            }
-            if (pDispParams->cArgs==1) {
-                I_Sheets_get__Default((I_Sheets*)pdisp, pDispParams->rgvarg[0], &pretdisp);
-                I_Sheets_Release((I_Sheets*)pdisp);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)pretdisp;
-                } else {
-                    I_Worksheet_Release((I_Worksheet*)pretdisp);
-                }
-            }
-            return S_OK;
-        }
     case dispid_application_cells:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             switch (pDispParams->cArgs) {
             case 3:
-                hr = MSO_TO_OO_I_ApplicationExcel_get_Cells(iface,&pdisp);
-                if (FAILED(hr)) {
+                hres = MSO_TO_OO_I_ApplicationExcel_get_Cells(iface,&pdisp);
+                if (FAILED(hres)) {
                     pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
+                    return hres;
                 }
                 /*необходимо привести к значению , т.к. иногда присылаются ссылки*/
                 MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &cell1);
@@ -4560,10 +4496,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             return E_NOTIMPL;
         } else {
             TRACE(" (case 8 (cells))\n");
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Cells(iface,&pdisp);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_ApplicationExcel_get_Cells(iface,&pdisp);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
 	    /*здесь надо проверить параметры если они есть, то вызвать метод Range->_Default.*/
             switch(pDispParams->cArgs) {
@@ -4597,111 +4533,60 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
                 I_Range_Release((I_Range*)pdisp);
                 break;
             }
-            return hr;
-        }
-    case dispid_application_activesheet:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_ActiveSheet(iface, &pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-            } else {
-                I_Worksheet_Release((I_Worksheet*)pdisp);
-            }
-            return S_OK;
+            return hres;
         }
     case dispid_application_version:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Version(iface,0,&pVersion);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_ApplicationExcel_get_Version(iface,0,&pVersion);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
             if (pVarResult!=NULL){
                 V_VT(pVarResult)=VT_BSTR;
                 V_BSTR(pVarResult)=pVersion;
             }
-            return hr;
+            return hres;
         }
     case dispid_application_convertformula:
         /*MSO_TO_OO_I_ApplicationExcel_ConvertFormula*/
         if (pDispParams->cArgs<3) return E_FAIL;
 
         /*преобразовываем любой тип к I4*/
-        hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[pDispParams->cArgs-2]), 0, 0, VT_I4);
-        if (FAILED(hr)) {
+        hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[pDispParams->cArgs-2]), 0, 0, VT_I4);
+        if (FAILED(hres)) {
             TRACE(" (case 11) ERROR when VariantChangeTypeEx\n");
             return E_FAIL;
         }
         tmp = V_I4(&vtmp);
 
-        hr = MSO_TO_OO_I_ApplicationExcel_ConvertFormula(iface, pDispParams->rgvarg[pDispParams->cArgs-1], tmp, pDispParams->rgvarg[pDispParams->cArgs-3], vNull, vNull, tmp, &vRet);
-        if (FAILED(hr)) {
+        hres = MSO_TO_OO_I_ApplicationExcel_ConvertFormula(iface, pDispParams->rgvarg[pDispParams->cArgs-1], tmp, pDispParams->rgvarg[pDispParams->cArgs-3], vNull, vNull, tmp, &vRet);
+        if (FAILED(hres)) {
             pExcepInfo->bstrDescription=SysAllocString(str_error);
-            return hr;
+            return hres;
         }
         if (pVarResult!=NULL){
             V_VT(pVarResult)=VT_BSTR;
             V_BSTR(pVarResult)=V_BSTR(&vRet);
         }
         return S_OK;
-    case dispid_application_quit:
-        return MSO_TO_OO_I_ApplicationExcel_Quit(iface);
-    case dispid_application_activecell:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_ActiveCell(iface, &pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-            } else {
-                I_Range_Release((I_Range*)pdisp);
-            }
-            return hr;
-        }
-    case dispid_application_application:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Application(iface,&pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-            }
-            return S_OK;
-        }
     case dispid_application_enableevents:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
-            if (FAILED(hr)) {
+            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            if (FAILED(hres)) {
                 TRACE(" (case 15) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
            return MSO_TO_OO_I_ApplicationExcel_put_EnableEvents(iface, vbin);
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_EnableEvents(iface,&vbin);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_ApplicationExcel_get_EnableEvents(iface,&vbin);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
             if (pVarResult!=NULL){
                 V_VT(pVarResult) = VT_BOOL;
@@ -4712,18 +4597,18 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
     case dispid_application_screenupdating:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
-            if (FAILED(hr)) {
+            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BOOL);
+            if (FAILED(hres)) {
                 TRACE(" (case 16) ERROR when VariantChangeTypeEx\n");
               return E_FAIL;
             }
             vbin = V_BOOL(&vtmp);
             return MSO_TO_OO_I_ApplicationExcel_put_ScreenUpdating(iface, 0, vbin);
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_ScreenUpdating(iface, 0, &vbin);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_ApplicationExcel_get_ScreenUpdating(iface, 0, &vbin);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
+                return hres;
             }
             if (pVarResult!=NULL){
                 V_VT(pVarResult) = VT_BOOL;
@@ -4731,175 +4616,20 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
-    case dispid_application_caption:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_BSTR);
-            if (FAILED(hr)) {
-                TRACE(" (case 17) ERROR when VariantChangeTypeEx\n");
-              return E_FAIL;
-            }
-            hr = MSO_TO_OO_I_ApplicationExcel_put_Caption(iface, vtmp);
-            return hr;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Caption(iface, pVarResult);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-            }
-            return hr;
-        }
-    case dispid_application_activeworkbook:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE(" (case 18) ERROR when (PUT)\n");
-            return E_NOTIMPL;
-        } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_ActiveWorkbook(iface, &pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-            }
-            return hr;
-        }
-    case dispid_application_range:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE(" (case 19) ERROR when (PUT)\n");
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 1:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2);
-
-                hr = MSO_TO_OO_I_ApplicationExcel_get_Range(iface, cell2, vNull, &pdisp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-                }
-                return S_OK;
-            case 2:
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell2);
-
-                hr = MSO_TO_OO_I_ApplicationExcel_get_Range(iface, cell1, cell2, &pdisp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-                }
-                return S_OK;
-            default :
-                TRACE(" (case 3) ERROR PARAMETR IS SEND\n");
-                return E_FAIL;
-            }
-        }
-    case dispid_application_columns:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE(" (case 20) ERROR when (PUT)\n");
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 0:
-                TRACE("(case 20) 0 Parameter\n");
-                hr = MSO_TO_OO_I_ApplicationExcel_get_Columns(iface, vNull, &pdisp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = pdisp;
-                }
-                return S_OK;
-            case 1:
-                TRACE("(case 20) 1 Parameter\n");
-                /*Привести параметры к типу VARIANT если они переданы по ссылке*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
-                hr = MSO_TO_OO_I_ApplicationExcel_get_Columns(iface, cell1, &pdisp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = pdisp;
-                }
-                return S_OK;
-            }
-        }
-    case dispid_application_rows:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE(" (case 21) ERROR when (PUT)\n");
-            return E_NOTIMPL;
-        } else {
-            switch (pDispParams->cArgs) {
-            case 0:
-                TRACE("(case 21) 0 Parameter\n");
-                hr = MSO_TO_OO_I_ApplicationExcel_get_Rows(iface, vNull, &pdisp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = pdisp;
-                }
-                return S_OK;
-            case 1:
-                TRACE("(case 21) 1 Parameter\n");
-                /*Привести параметры к типу VARIANT если они переданы по ссылке*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1);
-                hr = MSO_TO_OO_I_ApplicationExcel_get_Rows(iface, cell1, &pdisp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_DISPATCH;
-                    V_DISPATCH(pVarResult) = pdisp;
-                }
-                return S_OK;
-            }
-        }
-    case dispid_application_selection://Selection
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            TRACE("\n");
-            return E_NOTIMPL;
-        } else {
-            TRACE("(case 22) 0 Parameter\n");
-            hr = MSO_TO_OO_I_ApplicationExcel_get_Selection(iface, &pdisp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (pVarResult!=NULL){
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = pdisp;
-            }
-            return S_OK;
-        }
     case dispid_application_sheetsinnewworkbook:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs!=1) return E_FAIL;
             /*преобразовываем любой тип к I4*/
-            hr = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
-            if (FAILED(hr)) {
+            hres = VariantChangeTypeEx(&vtmp, &(pDispParams->rgvarg[0]), 0, 0, VT_I4);
+            if (FAILED(hres)) {
                 TRACE("sheetsinnewworkbook ERROR when VariantChangeTypeEx\n");
                 return E_FAIL;
             }
             tmp = V_I4(&vtmp);
             return MSO_TO_OO_I_ApplicationExcel_put_SheetsInNewWorkbook(iface, 0, tmp);
         } else {
-            hr = MSO_TO_OO_I_ApplicationExcel_get_SheetsInNewWorkbook(iface, 0, &tmp);
-            if (FAILED(hr)) {
+            hres = MSO_TO_OO_I_ApplicationExcel_get_SheetsInNewWorkbook(iface, 0, &tmp);
+            if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return E_FAIL;
             }
@@ -4909,6 +4639,18 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
             }
             return S_OK;
         }
+    default:
+        hres = get_typeinfo_application(&typeinfo);
+        if (FAILED(hres))
+            return hres;
+
+        hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+        if (FAILED(hres)) {
+            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+        }
+
+        return hres;
     }
 
     return E_NOTIMPL;
