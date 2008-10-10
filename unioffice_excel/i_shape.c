@@ -26,7 +26,7 @@ static ULONG WINAPI MSO_TO_OO_I_Shape_AddRef(
 {
     ShapeImpl *This = (ShapeImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -35,7 +35,6 @@ static ULONG WINAPI MSO_TO_OO_I_Shape_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -45,7 +44,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_QueryInterface(
         void **ppvObject)
 {
     ShapeImpl *This = (ShapeImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -54,7 +52,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_QueryInterface(
             IsEqualGUID(riid, &IID_I_Shape)) {
         *ppvObject = &This->_shapeVtbl;
         MSO_TO_OO_I_Shape_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -66,7 +63,7 @@ static ULONG WINAPI MSO_TO_OO_I_Shape_Release(
 {
     ShapeImpl *This = (ShapeImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -84,7 +81,6 @@ static ULONG WINAPI MSO_TO_OO_I_Shape_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -97,7 +93,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_GetTypeInfoCount(
         I_Shape* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -107,7 +103,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -119,9 +115,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    /*Выводим название метода или свойства,
-    чтобы знать чего не хватает.*/
-    WTRACE(L" %s NOT REALIZE\n",*rgszNames);
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -136,7 +130,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    TRACE("%i not supported\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

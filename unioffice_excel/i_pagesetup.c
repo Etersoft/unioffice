@@ -27,7 +27,7 @@ HRESULT get_typeinfo_pagesetup(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
+
     if (ti_pagesetup) {
         *typeinfo = ti_pagesetup;
         return S_OK;
@@ -43,7 +43,6 @@ HRESULT get_typeinfo_pagesetup(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_pagesetup;
-    TRACE_OUT;
     return hres;
 }
 
@@ -53,7 +52,7 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_AddRef(
 {
     PageSetupImpl *This = (PageSetupImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -62,7 +61,6 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -72,7 +70,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_QueryInterface(
         void **ppvObject)
 {
     PageSetupImpl *This = (PageSetupImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -81,7 +78,6 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_QueryInterface(
             IsEqualGUID(riid, &IID_I_PageSetup)) {
         *ppvObject = &This->_pagesetupVtbl;
         MSO_TO_OO_I_PageSetup_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -93,7 +89,7 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_Release(
 {
     PageSetupImpl *This = (PageSetupImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -111,7 +107,6 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -1851,7 +1846,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintTitleRows(
         BSTR *value)
 {
     TRACE_IN;
-    TRACE("NEED to implement but return S_OK and empty string \n");
+    TRACE_NOTIMPL;
     *value = SysAllocString(L"");
     TRACE_OUT;
     return S_OK;
@@ -1861,7 +1856,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintTitleRows(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("NEED to implement but return S_OK\n");
+    TRACE_NOTIMPL;
     return S_OK;
 }
 
@@ -1869,7 +1864,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Application(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1877,7 +1872,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Creator(
         I_PageSetup* iface,
         VARIANT *result)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1885,7 +1880,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Parent(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1893,7 +1888,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BlackAndWhite(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1901,7 +1896,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BlackAndWhite(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1910,7 +1905,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterFooter(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1918,7 +1913,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterFooter(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1926,7 +1921,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHeader(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1934,7 +1929,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHeader(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1942,7 +1937,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_ChartSize(
         I_PageSetup* iface,
         XlObjectSize *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1950,7 +1945,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_ChartSize(
         I_PageSetup* iface,
         XlObjectSize value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1958,7 +1953,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Draft(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1966,7 +1961,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Draft(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1974,7 +1969,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FirstPageNumber(
         I_PageSetup* iface,
         long *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1982,7 +1977,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FirstPageNumber(
         I_PageSetup* iface,
         long value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1990,7 +1985,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftFooter(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1998,7 +1993,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftFooter(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2006,7 +2001,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftHeader(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2014,7 +2009,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftHeader(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2022,7 +2017,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Order(
         I_PageSetup* iface,
         XlOrder *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2030,7 +2025,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Order(
         I_PageSetup* iface,
         XlOrder value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2038,7 +2033,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PaperSize(
         I_PageSetup* iface,
         XlPaperSize *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2046,7 +2041,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PaperSize(
         I_PageSetup* iface,
         XlPaperSize value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2054,7 +2049,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintArea(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2062,7 +2057,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintArea(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2070,7 +2065,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintGridlines(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2078,7 +2073,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintGridlines(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2086,7 +2081,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintHeadings(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2094,7 +2089,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintHeadings(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2102,7 +2097,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintNotes(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2110,7 +2105,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintNotes(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2119,7 +2114,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintQuality(
         VARIANT index,
         VARIANT *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2128,7 +2123,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintQuality(
         VARIANT index,
         VARIANT *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2136,7 +2131,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintTitleColumns(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2144,7 +2139,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintTitleColumns(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2152,7 +2147,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightFooter(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2160,7 +2155,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightFooter(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2168,7 +2163,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightHeader(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2176,7 +2171,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightHeader(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2184,7 +2179,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintComments(
         I_PageSetup* iface,
         XlPrintLocation *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2192,7 +2187,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintComments(
         I_PageSetup* iface,
         XlPrintLocation value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2200,7 +2195,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintErrors(
         I_PageSetup* iface,
         XlPrintErrors *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2208,7 +2203,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintErrors(
         I_PageSetup* iface,
         XlPrintErrors value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2216,7 +2211,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHeaderPicture(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2224,7 +2219,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterFooterPicture(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2232,7 +2227,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftHeaderPicture(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2240,7 +2235,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftFooterPicture(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2248,7 +2243,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightHeaderPicture(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2256,7 +2251,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightFooterPicture(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2266,7 +2261,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetTypeInfoCount(
         I_PageSetup* iface,
         UINT *pctinfo)
 {
-    TRACE("NEED to implement \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2276,7 +2271,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

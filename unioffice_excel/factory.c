@@ -26,7 +26,6 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_AddRef(LPCLASSFACTORY iface)
 {
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
     ULONG ref;
-    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -34,7 +33,6 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_AddRef(LPCLASSFACTORY iface)
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -44,7 +42,6 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
         LPVOID *ppvObj)
 {
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
 
@@ -52,7 +49,6 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
             IsEqualGUID(riid, &IID_IClassFactory)) {
         *ppvObj = (LPVOID)iface;
         MSO_TO_OO_IClassFactory_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -63,7 +59,6 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_Release(LPCLASSFACTORY iface)
 {
     ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
     ULONG ref;
-    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -72,7 +67,6 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_Release(LPCLASSFACTORY iface)
         HeapFree(GetProcessHeap(), 0, This);
         InterlockedDecrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 

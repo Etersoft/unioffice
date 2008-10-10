@@ -28,7 +28,6 @@ HRESULT get_typeinfo_sheets(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if (ti_sheets) {
         *typeinfo = ti_sheets;
@@ -45,7 +44,6 @@ HRESULT get_typeinfo_sheets(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_sheets;
-    TRACE_OUT;
     return hres;
 }
 
@@ -55,7 +53,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_AddRef(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -64,7 +62,6 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -74,7 +71,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_QueryInterface(
         void **ppvObject)
 {
     SheetsImpl *This = (SheetsImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -83,7 +79,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_QueryInterface(
             IsEqualGUID(riid, &IID_I_Sheets)) {
         *ppvObject = &This->_sheetsVtbl;
         MSO_TO_OO_I_Sheets_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -95,7 +90,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
 {
     SheetsImpl *This = (SheetsImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -113,7 +108,6 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -446,7 +440,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Copy(
         VARIANT After,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -454,7 +448,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Delete(
         I_Sheets* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -464,7 +458,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_FillAcrossSheets(
         XlFillWith Type,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -474,7 +468,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Move(
         VARIANT After,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -482,7 +476,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__NewEnum(
         I_Sheets* iface,
         IUnknown **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -497,7 +491,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets__PrintOut(
         VARIANT Collate,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -506,7 +500,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintPreview(
         VARIANT EnableChanges,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -515,7 +509,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Select(
         VARIANT Replace,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -523,7 +517,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_HPageBreaks(
         I_Sheets* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -531,7 +525,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_VPageBreaks(
         I_Sheets* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -540,7 +534,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Visible(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -549,7 +543,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_put_Visible(
         LCID lcid,
         VARIANT RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -565,7 +559,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintOut(
         VARIANT PrToFileName,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -575,7 +569,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetTypeInfoCount(
         I_Sheets* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -585,7 +579,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

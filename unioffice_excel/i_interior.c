@@ -28,7 +28,6 @@ HRESULT get_typeinfo_interrior(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if (ti_interrior) {
         *typeinfo = ti_interrior;
@@ -46,7 +45,6 @@ HRESULT get_typeinfo_interrior(ITypeInfo **typeinfo)
 
     *typeinfo = ti_interrior;
 
-    TRACE_OUT;
     return hres;
 }
 
@@ -56,7 +54,6 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_AddRef(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -65,7 +62,6 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -75,7 +71,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_QueryInterface(
         void **ppvObject)
 {
     InteriorImpl *This = (InteriorImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -84,7 +79,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_QueryInterface(
             IsEqualGUID(riid, &IID_I_Interior)) {
         *ppvObject = &This->_interiorVtbl;
         MSO_TO_OO_I_Interior_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -96,7 +90,6 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_Release(
 {
     InteriorImpl *This = (InteriorImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -110,7 +103,6 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -282,7 +274,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_InvertIfNegative(
         I_Interior* iface,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -290,7 +282,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_InvertIfNegative(
         I_Interior* iface,
         VARIANT RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -298,7 +290,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Pattern(
         I_Interior* iface,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -306,7 +298,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Pattern(
         I_Interior* iface,
         VARIANT RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -314,7 +306,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_PatternColor(
         I_Interior* iface,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -322,7 +314,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_PatternColor(
         I_Interior* iface,
         VARIANT RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -330,7 +322,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_PatternColorIndex(
         I_Interior* iface,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -338,7 +330,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_PatternColorIndex(
         I_Interior* iface,
         VARIANT RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -347,7 +339,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfoCount(
         I_Interior* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -357,7 +349,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

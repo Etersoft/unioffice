@@ -28,7 +28,6 @@ HRESULT get_typeinfo_worksheet(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if (ti_worksheet) {
         *typeinfo = ti_worksheet;
@@ -46,7 +45,6 @@ HRESULT get_typeinfo_worksheet(ITypeInfo **typeinfo)
 
     *typeinfo = ti_worksheet;
 
-    TRACE_OUT;
     return hres;
 }
 
@@ -56,7 +54,6 @@ static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -65,7 +62,6 @@ static ULONG WINAPI MSO_TO_OO_I_Worksheet_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -75,7 +71,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_QueryInterface(
         void **ppvObject)
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -84,7 +79,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_QueryInterface(
             IsEqualGUID(riid, &IID_I_Worksheet)) {
         *ppvObject = &This->_worksheetVtbl;
         MSO_TO_OO_I_Worksheet_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -96,7 +90,6 @@ static ULONG WINAPI MSO_TO_OO_I_Worksheet_Release(
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -118,7 +111,6 @@ static ULONG WINAPI MSO_TO_OO_I_Worksheet_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -1035,7 +1027,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Application(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1043,7 +1035,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Creator(
         I_Worksheet* iface,
         XlCreator *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1051,7 +1043,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Parent(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1059,7 +1051,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_CodeName(
         I_Worksheet* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1067,7 +1059,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get__CodeName(
         I_Worksheet* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1075,7 +1067,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put__CodeName(
         I_Worksheet* iface,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1084,7 +1076,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Index(
         LCID lcid,
         long *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1094,7 +1086,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Move(
         VARIANT After,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1102,7 +1094,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Next(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1111,7 +1103,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_OnDoubleClick(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1120,7 +1112,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_OnDoubleClick(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1129,7 +1121,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_OnSheetActivate(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1138,7 +1130,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_OnSheetActivate(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1147,7 +1139,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_OnSheetDeactivate(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1156,7 +1148,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_OnSheetDeactivate(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1164,7 +1156,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Previous(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1179,7 +1171,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet__PrintOut(
         VARIANT Collate,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1188,7 +1180,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_PrintPreview(
         VARIANT EnableChanges,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1201,7 +1193,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet__Protect(
         VARIANT UserInterfaceOnly,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1210,7 +1202,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ProtectContents(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1219,7 +1211,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ProtectDrawingObjects(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1228,7 +1220,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ProtectionMode(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1237,7 +1229,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ProtectScenarios(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1254,7 +1246,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet__SaveAs(
         VARIANT TextVisualLayout,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1391,7 +1383,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_TransitionExpEval(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1400,7 +1392,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_TransitionExpEval(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1410,7 +1402,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Arcs(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1419,7 +1411,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_AutoFilterMode(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1428,7 +1420,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_AutoFilterMode(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1436,7 +1428,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_SetBackgroundPicture(
         I_Worksheet* iface,
         BSTR Filename)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1446,7 +1438,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Buttons(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1454,7 +1446,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Calculate(
         I_Worksheet* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1462,7 +1454,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_EnableCalculation(
         I_Worksheet* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1470,7 +1462,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_EnableCalculation(
         I_Worksheet* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1480,7 +1472,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ChartObjects(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1490,7 +1482,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_CheckBoxes(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1502,7 +1494,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_CheckSpelling(
         VARIANT SpellLang,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1511,7 +1503,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_CircularReference(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1519,7 +1511,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ClearArrows(
         I_Worksheet* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1528,7 +1520,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ConsolidationFunction(
         LCID lcid,
         XlConsolidationFunction *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1537,7 +1529,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ConsolidationOptions(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1546,7 +1538,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ConsolidationSources(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1555,7 +1547,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_DisplayAutomaticPageBreaks(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1564,7 +1556,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_DisplayAutomaticPageBreaks(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1574,7 +1566,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Drawings(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1584,7 +1576,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_DrawingObjects(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1594,7 +1586,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_DropDowns(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1603,7 +1595,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_EnableAutoFilter(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1612,7 +1604,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_EnableAutoFilter(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1620,7 +1612,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_EnableSelection(
         I_Worksheet* iface,
         XlEnableSelection *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1628,7 +1620,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_EnableSelection(
         I_Worksheet* iface,
         XlEnableSelection RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1637,7 +1629,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_EnableOutlining(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1646,7 +1638,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_EnableOutlining(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1655,7 +1647,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_EnablePivotTable(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1664,7 +1656,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_EnablePivotTable(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1674,7 +1666,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Evaluate(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1684,7 +1676,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet__Evaluate(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1693,14 +1685,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_FilterMode(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ResetAllPageBreaks(
         I_Worksheet* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1710,7 +1702,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GroupBoxes(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1720,7 +1712,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GroupObjects(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1730,7 +1722,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Labels(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1740,7 +1732,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Lines(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1750,7 +1742,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ListBoxes(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1758,7 +1750,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Names(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1768,7 +1760,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_OLEObjects(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1777,7 +1769,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_OnCalculate(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1786,7 +1778,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_OnCalculate(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1795,7 +1787,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_OnData(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1804,7 +1796,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_OnData(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1813,7 +1805,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_OnEntry(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1822,7 +1814,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_OnEntry(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1832,7 +1824,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_OptionButtons(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1872,7 +1864,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Ovals(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1886,7 +1878,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet__PasteSpecial(
         VARIANT IconLabel,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1896,7 +1888,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Pictures(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1906,7 +1898,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_PivotTables(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1931,7 +1923,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_PivotTableWizard(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1941,7 +1933,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Rectangles(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1951,7 +1943,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Scenarios(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1959,7 +1951,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ScrollArea(
         I_Worksheet* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1967,7 +1959,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_ScrollArea(
         I_Worksheet* iface,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1977,7 +1969,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ScrollBars(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1985,7 +1977,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ShowAllData(
         I_Worksheet* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1993,7 +1985,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ShowDataForm(
         I_Worksheet* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2003,7 +1995,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Spinners(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2012,7 +2004,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_StandardHeight(
         LCID lcid,
         double *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2021,7 +2013,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_StandardWidth(
         LCID lcid,
         double *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2030,7 +2022,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_StandardWidth(
         LCID lcid,
         double RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2040,7 +2032,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_TextBoxes(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2049,7 +2041,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_TransitionFormEntry(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2058,7 +2050,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_TransitionFormEntry(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2067,7 +2059,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Type(
         LCID lcid,
         XlSheetType *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2076,7 +2068,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_UsedRange(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2084,7 +2076,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_HPageBreaks(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2092,7 +2084,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_VPageBreaks(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2100,7 +2092,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_QueryTables(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2108,7 +2100,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_DisplayPageBreaks(
         I_Worksheet* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2116,7 +2108,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_DisplayPageBreaks(
         I_Worksheet* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2124,7 +2116,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Comments(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2132,21 +2124,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Hyperlinks(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_ClearCircles(
         I_Worksheet* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_CircleInvalid(
         I_Worksheet* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2155,7 +2147,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get__DisplayRightToLeft(
         LCID lcid,
         long *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2164,7 +2156,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put__DisplayRightToLeft(
         LCID lcid,
         long RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2172,7 +2164,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_AutoFilter(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2181,7 +2173,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_DisplayRightToLeft(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2190,7 +2182,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put_DisplayRightToLeft(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2198,7 +2190,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Scripts(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2214,7 +2206,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_PrintOut(
         VARIANT PrToFileName,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2228,7 +2220,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet__CheckSpelling(
         VARIANT SpellScript,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2236,7 +2228,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Tab(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2244,7 +2236,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_MailEnvelope(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2261,7 +2253,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_SaveAs(
         VARIANT TextVisualLayout,
         VARIANT Local)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2269,7 +2261,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_CustomProperties(
         I_Worksheet* iface,
         IDispatch     **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2277,7 +2269,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_SmartTags(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2285,7 +2277,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Protection(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2300,7 +2292,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_PasteSpecial(
         VARIANT NoHTMLFormatting,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2308,7 +2300,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_ListObjects(
         I_Worksheet* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2319,7 +2311,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_XmlDataQuery(
         VARIANT Map,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2330,7 +2322,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_XmlMapQuery(
         VARIANT Map,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2339,7 +2331,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetTypeInfoCount(
         I_Worksheet* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2349,7 +2341,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

@@ -27,7 +27,7 @@ HRESULT get_typeinfo_workbook(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
+
     if (ti_workbook) {
         *typeinfo = ti_workbook;
         return S_OK;
@@ -43,8 +43,6 @@ HRESULT get_typeinfo_workbook(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_workbook;
-
-    TRACE_OUT;
     return hres;
 }
 
@@ -54,7 +52,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -63,7 +61,6 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -74,7 +71,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_QueryInterface(
         void **ppvObject)
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -83,7 +79,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_QueryInterface(
             IsEqualGUID(riid, &IID_I_Workbook)) {
         *ppvObject = &This->_workbookVtbl;
         MSO_TO_OO_I_Workbook_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -96,7 +91,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -120,7 +115,6 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -457,7 +451,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Application(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -465,7 +459,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Creator(
         I_Workbook* iface,
         XlCreator *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -473,7 +467,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Parent(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -481,7 +475,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_AcceptLabelsInFormulas(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -489,7 +483,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_AcceptLabelsInFormulas(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -497,7 +491,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Activate(
         I_Workbook* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -505,7 +499,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ActiveChart(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -541,7 +535,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Author(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -550,7 +544,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Author(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -558,7 +552,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_AutoUpdateFrequency(
         I_Workbook* iface,
         long *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -566,7 +560,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_AutoUpdateFrequency(
         I_Workbook* iface,
         long RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -574,7 +568,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_AutoUpdateSaveChanges(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -582,7 +576,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_AutoUpdateSaveChanges(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -590,7 +584,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ChangeHistoryDuration(
         I_Workbook* iface,
         long *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -598,7 +592,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ChangeHistoryDuration(
         I_Workbook* iface,
         long RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -606,7 +600,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_BuiltinDocumentProperties(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -617,7 +611,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ChangeFileAccess(
         VARIANT Notify,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -628,7 +622,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ChangeLink(
         XlLinkType Type,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -636,7 +630,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Charts(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -644,7 +638,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CodeName(
         I_Workbook* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -652,7 +646,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get__CodeName(
         I_Workbook* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -660,7 +654,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put__CodeName(
         I_Workbook* iface,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -670,7 +664,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Colors(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -680,7 +674,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Colors(
         LCID lcid,
         VARIANT RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -688,7 +682,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CommandBars(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -697,7 +691,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Comments(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -706,7 +700,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Comments(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -714,7 +708,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ConflictResolution(
         I_Workbook* iface,
         XlSaveConflictResolution *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -722,7 +716,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ConflictResolution(
         I_Workbook* iface,
         XlSaveConflictResolution RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -730,7 +724,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Container(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -739,7 +733,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CreateBackup(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -747,7 +741,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CustomDocumentProperties(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -756,7 +750,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Date1904(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -765,7 +759,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Date1904(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -774,7 +768,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_DeleteNumberFormat(
         BSTR NumberFormat,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -782,7 +776,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_DialogSheets(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -791,7 +785,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_DisplayDrawingObjects(
         LCID lcid,
         XlDisplayDrawingObjects *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -800,7 +794,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_DisplayDrawingObjects(
         LCID lcid,
         XlDisplayDrawingObjects RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -809,7 +803,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ExclusiveAccess(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -818,7 +812,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_FileFormat(
         LCID lcid,
         XlFileFormat *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -826,7 +820,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ForwardMailer(
         I_Workbook* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -835,7 +829,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_FullName(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -844,7 +838,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_HasMailer(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -853,7 +847,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_HasMailer(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -862,7 +856,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_HasPassword(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -871,7 +865,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_HasRoutingSlip(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -880,7 +874,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_HasRoutingSlip(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -888,7 +882,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_IsAddin(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -896,7 +890,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_IsAddin(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -905,7 +899,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Keywords(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -914,7 +908,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Keywords(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -927,7 +921,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_LinkInfo(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -937,7 +931,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_LinkSources(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -945,7 +939,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Mailer(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -953,7 +947,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_MergeWorkbook(
         I_Workbook* iface,
         VARIANT Filename)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -961,7 +955,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Modules(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -970,7 +964,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_MultiUserEditing(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -979,7 +973,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_NewWindow(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -988,7 +982,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_OnSave(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -997,7 +991,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_OnSave(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1006,7 +1000,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_OnSheetActivate(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1015,7 +1009,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_OnSheetActivate(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1024,7 +1018,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_OnSheetDeactivate(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1033,7 +1027,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_OnSheetDeactivate(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1044,7 +1038,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_OpenLinks(
         VARIANT Type,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1053,7 +1047,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Path(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1061,7 +1055,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PersonalViewListSettings(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1069,7 +1063,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_PersonalViewListSettings(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1077,7 +1071,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PersonalViewPrintSettings(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1085,7 +1079,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_PersonalViewPrintSettings(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1093,7 +1087,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_PivotCaches(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1102,7 +1096,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Post(
         VARIANT DestName,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1111,7 +1105,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PrecisionAsDisplayed(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1120,7 +1114,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_PrecisionAsDisplayed(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1135,7 +1129,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook__PrintOut(
         VARIANT Collate,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1144,7 +1138,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_PrintPreview(
         VARIANT EnableChanges,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1154,7 +1148,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook__Protect(
         VARIANT Structure,
         VARIANT Windows)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1167,7 +1161,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ProtectSharing(
         VARIANT CreateBackup,
         VARIANT SharingPassword)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1175,7 +1169,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ProtectStructure(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1183,7 +1177,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ProtectWindows(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1192,7 +1186,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ReadOnly(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1201,14 +1195,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get__ReadOnlyRecommended(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_RefreshAll(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1216,7 +1210,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Reply(
         I_Workbook* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1224,7 +1218,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ReplyAll(
         I_Workbook* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1232,7 +1226,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_RemoveUser(
         I_Workbook* iface,
         long Index)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1241,7 +1235,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_RevisionNumber(
         LCID lcid,
         long *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1249,7 +1243,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Route(
         I_Workbook* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1258,7 +1252,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Routed(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1266,7 +1260,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_RoutingSlip(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1275,7 +1269,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_RunAutoMacros(
         XlRunAutoMacro Which,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1294,7 +1288,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook__SaveAs(
         VARIANT TextVisualLayout,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1303,7 +1297,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveCopyAs(
         VARIANT Filename,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1312,7 +1306,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Saved(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1321,7 +1315,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Saved(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1330,7 +1324,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_SaveLinkValues(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1339,7 +1333,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_SaveLinkValues(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1350,7 +1344,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SendMail(
         VARIANT ReturnReceipt,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1360,7 +1354,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SendMailer(
         XlPriority Priority,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1370,7 +1364,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SetLinkOnData(
         VARIANT Procedure,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1379,7 +1373,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ShowConflictHistory(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1388,7 +1382,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ShowConflictHistory(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1396,7 +1390,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Styles(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1405,7 +1399,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Subject(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1414,7 +1408,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Subject(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1423,7 +1417,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Title(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1432,7 +1426,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Title(
         LCID lcid,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1440,7 +1434,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_UnprotectSharing(
         I_Workbook* iface,
         VARIANT SharingPassword)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1448,7 +1442,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_UpdateFromFile(
         I_Workbook* iface,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1458,7 +1452,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_UpdateLink(
         VARIANT Type,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1467,7 +1461,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_UpdateRemoteReferences(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1476,7 +1470,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_UpdateRemoteReferences(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1484,7 +1478,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_UserControl(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1492,7 +1486,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_UserControl(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1501,7 +1495,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_UserStatus(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1509,7 +1503,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CustomViews(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1517,7 +1511,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Windows(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1526,7 +1520,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WriteReserved(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1535,7 +1529,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WriteReservedBy(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1543,7 +1537,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Excel4IntlMacroSheets(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1551,7 +1545,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Excel4MacroSheets(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1559,7 +1553,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_TemplateRemoveExtData(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1567,7 +1561,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_TemplateRemoveExtData(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1577,7 +1571,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_HighlightChangesOptions(
         VARIANT Who,
         VARIANT Where)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1585,7 +1579,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_HighlightChangesOnScreen(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1593,7 +1587,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_HighlightChangesOnScreen(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1601,7 +1595,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_KeepChangeHistory(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1609,7 +1603,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_KeepChangeHistory(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1617,7 +1611,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ListChangesOnNewSheet(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1625,7 +1619,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ListChangesOnNewSheet(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1634,7 +1628,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_PurgeChangeHistoryNow(
         long Days,
         VARIANT SharingPassword)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1644,7 +1638,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_AcceptAllChanges(
         VARIANT Who,
         VARIANT Where)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1654,7 +1648,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_RejectAllChanges(
         VARIANT Who,
         VARIANT Where)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1678,14 +1672,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_PivotTableWizard(
         VARIANT Connection,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_ResetColors(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1693,7 +1687,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_VBProject(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1707,14 +1701,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_FollowHyperlink(
         VARIANT Method,
         VARIANT HeaderInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_AddToFavorites(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1722,7 +1716,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_IsInplace(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1738,14 +1732,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_PrintOut(
         VARIANT PrToFileName,
         LCID lcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_WebPagePreview(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1753,7 +1747,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PublishObjects(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1761,7 +1755,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WebOptions(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1769,7 +1763,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ReloadAs(
         I_Workbook* iface,
         MsoEncoding Encoding)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1777,7 +1771,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_HTMLProject(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1785,7 +1779,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_EnvelopeVisible(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1793,7 +1787,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_EnvelopeVisible(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1801,7 +1795,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CalculationVersion(
         I_Workbook* iface,
         long *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1809,7 +1803,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Dummy17(
         I_Workbook* iface,
         long calcid)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1817,7 +1811,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_sblt(
         I_Workbook* iface,
         BSTR s)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1825,7 +1819,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_VBASigned(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1833,7 +1827,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ShowPivotTableFieldList(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1841,7 +1835,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ShowPivotTableFieldList(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1849,7 +1843,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_UpdateLinks(
         I_Workbook* iface,
         XlUpdateLinks *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1857,7 +1851,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_UpdateLinks(
         I_Workbook* iface,
         XlUpdateLinks RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1866,14 +1860,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_BreakLink(
         BSTR Name,
         XlLinkType Type)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_Dummy16(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1881,7 +1875,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_EnableAutoRecover(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1889,7 +1883,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_EnableAutoRecover(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1897,7 +1891,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_RemovePersonalInformation(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1905,7 +1899,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_RemovePersonalInformation(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1914,7 +1908,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_FullNameURLEncoded(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1924,7 +1918,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_CheckIn(
         VARIANT Comments,
         VARIANT MakePublic)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1932,7 +1926,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_CanCheckIn(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1943,7 +1937,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SendForReview(
         VARIANT ShowMessage,
         VARIANT IncludeAttachment)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1951,14 +1945,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ReplyWithChanges(
         I_Workbook* iface,
         VARIANT ShowMessage)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_EndReview(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1966,7 +1960,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Password(
         I_Workbook* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1974,7 +1968,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Password(
         I_Workbook* iface,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1982,7 +1976,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WritePassword(
         I_Workbook* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1990,7 +1984,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_WritePassword(
         I_Workbook* iface,
         BSTR RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1998,7 +1992,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PasswordEncryptionProvider(
         I_Workbook* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2006,7 +2000,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PasswordEncryptionAlgorithm(
         I_Workbook* iface,
         BSTR *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2014,7 +2008,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PasswordEncryptionKeyLength(
         I_Workbook* iface,
         long *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2025,7 +2019,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SetPasswordEncryptionOptions(
         VARIANT PasswordEncryptionKeyLength,
         VARIANT PasswordEncryptionFileProperties)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2033,7 +2027,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PasswordEncryptionFileProperties(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2041,7 +2035,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ReadOnlyRecommended(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2049,7 +2043,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ReadOnlyRecommended(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2057,14 +2051,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_SmartTagOptions(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_RecheckSmartTags(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2072,7 +2066,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Permission(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2080,7 +2074,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_SharedWorkspace(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2088,7 +2082,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Sync(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2098,7 +2092,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SendFaxOverInternet(
         VARIANT Subject,
         VARIANT ShowMessage)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2106,7 +2100,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_XmlNamespaces(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2114,7 +2108,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_XmlMaps(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2126,7 +2120,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_XmlImport(
         VARIANT Destination,
         XlXmlImportResult *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2134,7 +2128,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_SmartDocument(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2142,7 +2136,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_DocumentLibraryVersions(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2150,7 +2144,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_InactiveListBorderVisible(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2158,7 +2152,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_InactiveListBorderVisible(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2166,7 +2160,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_DisplayInkComments(
         I_Workbook* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2174,7 +2168,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_DisplayInkComments(
         I_Workbook* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2186,7 +2180,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_XmlImportXml(
         VARIANT Destination,
         XlXmlImportResult *RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2195,14 +2189,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAsXMLData(
         BSTR Filename,
         IDispatch *Map)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_ToggleFormsDesign(
         I_Workbook* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2212,7 +2206,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfoCount(
         I_Workbook* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -2223,7 +2217,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

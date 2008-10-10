@@ -28,7 +28,6 @@ HRESULT get_typeinfo_workbooks(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if (ti_workbooks) {
         *typeinfo = ti_workbooks;
@@ -45,7 +44,6 @@ HRESULT get_typeinfo_workbooks(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_workbooks;
-    TRACE_OUT;
     return hres;
 }
 
@@ -58,7 +56,6 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_AddRef(
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -68,7 +65,6 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -79,7 +75,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_QueryInterface(
         void **ppvObject)
 {
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -88,7 +83,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_QueryInterface(
             IsEqualGUID(riid, &IID_I_Workbooks)) {
         *ppvObject = &This->_workbooksVtbl;
         MSO_TO_OO_I_Workbooks_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -102,7 +96,6 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
     WorkbooksImpl *This = (WorkbooksImpl*)iface;
     ULONG ref;
     int i;
-    TRACE_IN;
 
     if (This == NULL) return E_POINTER;
 
@@ -121,7 +114,6 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -217,7 +209,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__Open(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -417,7 +409,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenText(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -442,7 +434,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__OpenText(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -454,7 +446,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenXML(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -465,7 +457,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__OpenXML(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -479,7 +471,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenDatabase(
         long Lcid,
         IDispatch **ppWorkboo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -500,7 +492,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_put_CanCheckOut(
         BSTR Filename,
         VARIANT_BOOL result)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return S_OK;
 }
 
@@ -508,7 +500,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_CheckOut(
         I_Workbooks* iface,
         BSTR Filename)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     /*Возвращаем S_OK на всякий случай*/
     return S_OK;
 }
@@ -529,7 +521,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__Default(
         VARIANT varIndex,
         IDispatch **ppSheet)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -539,7 +531,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Item(
         IDispatch **result)
 {
     /*Должны обрабатывать и имена и числовые значения*/
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -562,7 +554,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks___OpenText(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -570,7 +562,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__NewEnum(
         I_Workbooks* iface,
         IUnknown **RHS)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -579,7 +571,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetTypeInfoCount(
         I_Workbooks* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -589,7 +581,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -649,34 +641,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
     if (This == NULL) return E_POINTER;
 
     switch (dispIdMember) {
- /*       case dispid_workbooks_Add:
-            if (pDispParams->cArgs==1) {
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &astemp);
-                if (V_VT(&astemp)!=VT_BSTR) {
-                    VariantClear(&astemp);
-                    V_VT(&astemp) = VT_EMPTY;
-                } else 
-                    if (lstrlenW(V_BSTR(&astemp))==0) {
-                        VariantClear(&astemp);
-                        V_VT(&astemp) = VT_EMPTY;
-                    }
-            } else {
-                V_VT(&astemp) = VT_EMPTY;
-            }
-            // MSO_TO_OO_I_Workbooks_Add 
-            hr = MSO_TO_OO_I_Workbooks_Add(iface,astemp,&iapp);
-            if (FAILED(hr)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hr;
-            }
-            if (iapp==NULL) TRACE("ERROR iapp is NULL \n");
-            if (pVarResult!=NULL){
-                V_VT(pVarResult)=VT_DISPATCH;
-                V_DISPATCH(pVarResult)=(IDispatch *)iapp;
-            } else {
-                IDispatch_Release(iapp);
-            }
-            return S_OK;*/
         case dispid_workbooks__Open:
             /*Зависит от кол-ва посланных параметров*/
             if (pDispParams->cArgs==0) return E_FAIL;
@@ -697,56 +661,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
         case dispid_workbooks_Close:
             MSO_TO_OO_I_Workbooks_Close(iface, l);
             return S_OK;
- /*       case dispid_workbooks_Count:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return E_NOTIMPL;
-            } else {
-                iresult = -1;
-                hr = MSO_TO_OO_I_Workbooks_get_Count(iface, &iresult);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription = SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_I2;
-                    V_I2(pVarResult) = iresult;
-                }
-                return hr;
-            }*/
- /*       case dispid_workbooks_application:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return E_NOTIMPL;
-            } else {
-                hr = MSO_TO_OO_I_Workbooks_get_Application(iface,&iapp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)iapp;
-                } else {
-                    IDispatch_Release(iapp);
-                }
-                return S_OK;
-            }*/
-  /*      case dispid_workbooks_parent:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return E_NOTIMPL;
-            } else {
-                hr = MSO_TO_OO_I_Workbooks_get_Parent(iface,&iapp);
-                if (FAILED(hr)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hr;
-                }
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)iapp;
-                } else {
-                    IDispatch_Release(iapp);
-                }
-                return S_OK;
-            }*/
         case dispid_workbooks_Open:
             /*Зависит от кол-ва посланных параметров*/
             if (pDispParams->cArgs==0) return E_FAIL;
@@ -784,49 +698,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             /*MSO_TO_OO_I_Workbooks_OpenDatabase*/
             TRACE("Stub: METHOD OpenDatabase \n");
             return S_OK;
-  /*      case dispid_workbooks_CanCheckOut:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                if (pDispParams->cArgs!=2) return E_FAIL;
-                hr = MSO_TO_OO_I_Workbooks_put_CanCheckOut(iface, V_BSTR(&(pDispParams->rgvarg[1])), V_BOOL(&(pDispParams->rgvarg[0])));
-                return hr;
-            } else {
-                if (pDispParams->cArgs!=1) return E_FAIL;
-                hr = MSO_TO_OO_I_Workbooks_get_CanCheckOut(iface, V_BSTR(&(pDispParams->rgvarg[0])), &vbool);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult) = VT_BOOL;
-                    V_BOOL(pVarResult) = vbool;
-                }
-                return hr;
-            }*/
-  /*      case dispid_workbooks_CheckOut:
-            if (pDispParams->cArgs!=1) return E_FAIL;
-            hr = MSO_TO_OO_I_Workbooks_CheckOut(iface, V_BSTR(&(pDispParams->rgvarg[0])));
-            return hr;*/
-  /*      case dispid_workbooks_creator:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                //это свойство только для чтения
-                return E_NOTIMPL;
-            } else {
-               hr = MSO_TO_OO_I_Workbooks_get_Creator(iface, &vresult);
-               *pVarResult = vresult;
-               return hr;
-            }*/
- /*       case dispid_workbooks__Default:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return E_NOTIMPL;
-            } else {
-                //MSO_TO_OO_I_Workbooks_get__Default
-                TRACE("Stub: PPROPERTY _Default \n");
-                return S_OK;
-            }*/
-  /*      case dispid_workbooks_Item:
-            if (wFlags==DISPATCH_PROPERTYPUT) {
-                return S_OK;
-            } else {
-                //MSO_TO_OO_I_Workbooks_get_Item
-                TRACE("Stub: PROPERTY Item \n");
-                return S_OK;
-            }*/
         case dispid_workbooks___OpenText:
             /*MSO_TO_OO_I_Workbooks___OpenText*/
             TRACE("Stub: METHOD __OpenText \n");

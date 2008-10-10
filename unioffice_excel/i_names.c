@@ -27,7 +27,6 @@ HRESULT get_typeinfo_name(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if (ti_name) {
         *typeinfo = ti_name;
@@ -44,7 +43,6 @@ HRESULT get_typeinfo_name(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_name;
-    TRACE_OUT;
     return hres;
 }
 
@@ -55,7 +53,7 @@ static ULONG WINAPI MSO_TO_OO_Name_AddRef(
 {
     NameImpl *This = (NameImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -64,7 +62,6 @@ static ULONG WINAPI MSO_TO_OO_Name_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -74,7 +71,6 @@ static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
         void **ppvObject)
 {
     NameImpl *This = (NameImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -83,7 +79,6 @@ static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
             IsEqualGUID(riid, &IID_Name)) {
         *ppvObject = &This->nameVtbl;
         MSO_TO_OO_Name_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -95,7 +90,7 @@ static ULONG WINAPI MSO_TO_OO_Name_Release(
 {
     NameImpl *This = (NameImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -117,7 +112,6 @@ static ULONG WINAPI MSO_TO_OO_Name_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -126,7 +120,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Application(
         Name* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -134,7 +128,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Creator(
         Name* iface,
         VARIANT *result)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -142,7 +136,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Parent(
         Name* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -150,7 +144,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get__Default(
         Name* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -158,7 +152,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Index(
         Name* iface,
         int *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -167,7 +161,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Category(
         LCID lcid,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -176,7 +170,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Category(
         LCID lcid,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -184,7 +178,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_CategoryLocal(
         Name* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -192,14 +186,14 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_CategoryLocal(
         Name* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_Delete(
         Name* iface)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -207,7 +201,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_MacroType(
         Name* iface,
         XlXLMMacroType *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -215,7 +209,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_MacroType(
         Name* iface,
         XlXLMMacroType value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -274,7 +268,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersTo(
         LCID lcid,
         VARIANT *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -283,7 +277,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_RefersTo(
         LCID lcid,
         VARIANT value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -291,7 +285,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_ShortcutKey(
         Name* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -299,7 +293,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_ShortcutKey(
         Name* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -307,7 +301,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Value(
         Name* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -315,7 +309,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Value(
         Name* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -323,7 +317,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Visible(
         Name* iface,
         VARIANT_BOOL *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -331,7 +325,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Visible(
         Name* iface,
         VARIANT_BOOL value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -339,7 +333,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_NameLocal(
         Name* iface,
         BSTR *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -347,7 +341,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_NameLocal(
         Name* iface,
         BSTR value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -355,7 +349,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToLocal(
         Name* iface,
         VARIANT *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -363,7 +357,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToLocal(
         Name* iface,
         VARIANT value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -372,7 +366,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1(
         LCID lcid,
         VARIANT *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -381,7 +375,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1(
         LCID lcid,
         VARIANT value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -389,7 +383,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1Local(
         Name* iface,
         VARIANT *value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -397,7 +391,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1Local(
         Name* iface,
         VARIANT value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -478,7 +472,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfoCount(
         Name* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -488,7 +482,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -657,7 +651,7 @@ HRESULT get_typeinfo_names(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
+
     if (ti_names) {
         *typeinfo = ti_names;
         return S_OK;
@@ -673,7 +667,6 @@ HRESULT get_typeinfo_names(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_names;
-    TRACE_OUT;
     return hres;
 }
 
@@ -684,7 +677,7 @@ static ULONG WINAPI MSO_TO_OO_Names_AddRef(
 {
     NamesImpl *This = (NamesImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -693,7 +686,6 @@ static ULONG WINAPI MSO_TO_OO_Names_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -704,7 +696,6 @@ static HRESULT WINAPI MSO_TO_OO_Names_QueryInterface(
         void **ppvObject)
 {
     NamesImpl *This = (NamesImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -713,7 +704,6 @@ static HRESULT WINAPI MSO_TO_OO_Names_QueryInterface(
             IsEqualGUID(riid, &IID_Names)) {
         *ppvObject = &This->namesVtbl;
         MSO_TO_OO_Names_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -726,7 +716,7 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
 {
     NamesImpl *This = (NamesImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -748,7 +738,6 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -901,7 +890,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_Add(
         VARIANT RefersToR1C1Local,
         IDispatch **ppvalue)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -909,7 +898,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetEnumerator(
         Names* iface,
         IDispatch **value)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -920,7 +909,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_Item(
         VARIANT RefersTo,
         IDispatch **ppvalue)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return MSO_TO_OO_Names__Default(iface, Index, IndexLocal, RefersTo, ppvalue);
 }
 
@@ -930,7 +919,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfoCount(
         Names* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -940,7 +929,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

@@ -29,7 +29,7 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_AddRef(
 {
     ShapesImpl *This = (ShapesImpl*)iface;
     ULONG ref;
-    TRACE_IN;
+
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -38,7 +38,6 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -48,7 +47,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_QueryInterface(
         void **ppvObject)
 {
     ShapesImpl *This = (ShapesImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -57,7 +55,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_QueryInterface(
             IsEqualGUID(riid, &IID_I_Shapes)) {
         *ppvObject = &This->_shapesVtbl;
         MSO_TO_OO_I_Shapes_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -69,7 +66,6 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_Release(
 {
     ShapesImpl *This = (ShapesImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF=%i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -91,7 +87,6 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -138,7 +133,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_GetTypeInfoCount(
         I_Shapes* iface,
         UINT *pctinfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -148,7 +143,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

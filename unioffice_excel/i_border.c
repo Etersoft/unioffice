@@ -27,7 +27,6 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if (ti_border) {
         *typeinfo = ti_border;
@@ -44,7 +43,6 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_border;
-    TRACE_OUT;
     return hres;
 }
 
@@ -55,7 +53,6 @@ static ULONG WINAPI MSO_TO_OO_I_Border_AddRef(
 {
     BorderImpl *This = (BorderImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -64,7 +61,6 @@ static ULONG WINAPI MSO_TO_OO_I_Border_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -74,7 +70,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
         void **ppvObject)
 {
     BorderImpl *This = (BorderImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -84,7 +79,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
         *ppvObject = &This->_borderVtbl;
         MSO_TO_OO_I_Border_AddRef(iface);
 
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -96,7 +90,6 @@ static ULONG WINAPI MSO_TO_OO_I_Border_Release(
 {
     BorderImpl *This = (BorderImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -110,7 +103,6 @@ static ULONG WINAPI MSO_TO_OO_I_Border_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -1056,7 +1048,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Weight(
         I_Border* iface,
         XlBorderWeight *pweight)
 {
-    TRACE("NOT IMPL\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1064,7 +1056,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Weight(
         I_Border* iface,
         XlBorderWeight weight)
 {
-    TRACE("NOT IMPL \n");
+    TRACE_NOTIMPL;
     /*FIXME to realize*/
 //    I_Border_put_LineStyle(iface, xlContinuous);
     return S_OK;
@@ -1075,7 +1067,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_GetTypeInfoCount(
         I_Border* iface,
         UINT *pctinfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1085,7 +1077,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

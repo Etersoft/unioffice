@@ -27,7 +27,6 @@ HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if (ti_borders) {
         *typeinfo = ti_borders;
@@ -45,7 +44,6 @@ HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
 
     *typeinfo = ti_borders;
 
-    TRACE_OUT;
     return hres;
 }
 
@@ -55,7 +53,6 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
 {
     BordersImpl *This = (BordersImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -64,7 +61,6 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -74,7 +70,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
         void **ppvObject)
 {
     BordersImpl *This = (BordersImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -83,7 +78,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
             IsEqualGUID(riid, &IID_I_Borders)) {
         *ppvObject = &This->_bordersVtbl;
         MSO_TO_OO_I_Borders_AddRef(iface);
-        TRACE_OUT;
         return S_OK;
     }
 
@@ -95,7 +89,6 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_Release(
 {
     BordersImpl *This = (BordersImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -109,7 +102,6 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -312,7 +304,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
         I_Borders* iface,
         XlBorderWeight weight)
 {
-    TRACE(" \n");
     BordersImpl *This = (BordersImpl*)iface;
     HRESULT hres;
     IDispatch *border_tmp;
@@ -400,7 +391,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Count(
         I_Borders* iface,
         long *pretval)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -408,7 +399,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetEnumerator(
         I_Borders* iface,
         IDispatch **pdretval)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -417,7 +408,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetTypeInfoCount(
         I_Borders* iface,
         UINT *pctinfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -427,7 +418,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

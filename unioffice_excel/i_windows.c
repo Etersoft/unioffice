@@ -26,7 +26,7 @@
 static ULONG WINAPI MSO_TO_OO_I_Windows_AddRef(
         I_Windows* iface)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -35,14 +35,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static ULONG WINAPI MSO_TO_OO_I_Windows_Release(
         I_Windows* iface)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -51,7 +51,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_get_Application(
         I_Windows* iface,
         IDispatch **value)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -59,7 +59,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_get_Creator(
         I_Windows* iface,
         XlCreator *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -67,7 +67,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_get_Parent(
         I_Windows* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -79,7 +79,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_Arrange(
         VARIANT SyncVertical,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -87,7 +87,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_get_Count(
         I_Windows* iface,
         long *retval)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -96,7 +96,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_get_Item(
         VARIANT Index,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -104,7 +104,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_get__NewEnum(
         I_Windows* iface,
         IUnknown **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -113,7 +113,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_get__Default(
         VARIANT Index,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -122,7 +122,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_GetTypeInfoCount(
         I_Windows* iface,
         UINT *pctinfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -132,7 +132,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -144,7 +144,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -159,7 +159,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -211,7 +211,7 @@ IWindow interface
 static ULONG WINAPI MSO_TO_OO_I_Window_AddRef(
         I_Window* iface)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -220,14 +220,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
 static ULONG WINAPI MSO_TO_OO_I_Window_Release(
         I_Window* iface)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -236,7 +236,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Application(
         I_Window* iface,
         IDispatch **value)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -244,7 +244,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Creator(
         I_Window* iface,
         XlCreator *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -252,7 +252,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Parent(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -260,7 +260,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Activate(
         I_Window* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -268,7 +268,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ActivateNext(
         I_Window* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -276,7 +276,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ActivatePrevious(
         I_Window* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -284,7 +284,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ActiveCell(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -292,7 +292,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ActiveChart(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -300,7 +300,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ActivePane(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -308,7 +308,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ActiveSheet(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -316,7 +316,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Caption(
         I_Window* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -324,7 +324,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Caption(
         I_Window* iface,
         VARIANT RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -335,7 +335,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Close(
         VARIANT RouteWorkbook,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -343,7 +343,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayFormulas(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -351,7 +351,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayFormulas(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -359,7 +359,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayGridlines(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -367,7 +367,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayGridlines(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -375,7 +375,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayHeadings(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -383,7 +383,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayHeadings(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -391,7 +391,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayHorizontalScrollBar(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -399,7 +399,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayHorizontalScrollBar(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -407,7 +407,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayOutline(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -415,7 +415,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayOutline(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -423,7 +423,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get__DisplayRightToLeft(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -431,7 +431,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put__DisplayRightToLeft(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -439,7 +439,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayVerticalScrollBar(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -447,7 +447,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayVerticalScrollBar(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -455,7 +455,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayWorkbookTabs(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -463,7 +463,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayWorkbookTabs(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -471,7 +471,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayZeros(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -479,7 +479,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayZeros(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -487,7 +487,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_EnableResize(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -495,7 +495,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_EnableResize(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -503,7 +503,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_FreezePanes(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -511,7 +511,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_FreezePanes(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -519,7 +519,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_GridlineColor(
         I_Window* iface,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -527,7 +527,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_GridlineColor(
         I_Window* iface,
         long RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -535,7 +535,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_GridlineColorIndex(
         I_Window* iface,
         XlColorIndex *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -543,7 +543,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_GridlineColorIndex(
         I_Window* iface,
         XlColorIndex RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -551,7 +551,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Height(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -559,7 +559,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Height(
         I_Window* iface,
         double RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -567,7 +567,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Index(
         I_Window* iface,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -579,7 +579,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_LargeScroll(
         VARIANT toLeft,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -587,7 +587,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Left(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -595,7 +595,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Left(
         I_Window* iface,
         double RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -603,7 +603,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_NewWindow(
         I_Window* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -611,7 +611,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_OnWindow(
         I_Window* iface,
         BSTR *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -619,7 +619,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_OnWindow(
         I_Window* iface,
         BSTR RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -627,7 +627,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Panes(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -643,7 +643,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_PrintOut(
         VARIANT PrToFileName,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -652,7 +652,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_PrintPreview(
         VARIANT EnableChanges,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -660,7 +660,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_RangeSelection(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -668,7 +668,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ScrollColumn(
         I_Window* iface,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -676,7 +676,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_ScrollColumn(
         I_Window* iface,
         long RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -684,7 +684,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ScrollRow(
         I_Window* iface,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -692,7 +692,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_ScrollRow(
         I_Window* iface,
         long RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -702,7 +702,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_ScrollWorkbookTabs(
         VARIANT Position,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -710,7 +710,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_SelectedSheets(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -718,7 +718,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Selection(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -730,7 +730,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_SmallScroll(
         VARIANT toLeft,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -738,7 +738,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Split(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -746,7 +746,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Split(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -754,7 +754,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitColumn(
         I_Window* iface,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -762,7 +762,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_SplitColumn(
         I_Window* iface,
         long RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -770,7 +770,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitHorizontal(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -778,7 +778,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_SplitHorizontal(
         I_Window* iface,
         double RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -786,7 +786,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitRow(
         I_Window* iface,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -794,7 +794,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_SplitRow(
         I_Window* iface,
         long RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -802,7 +802,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitVertical(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -810,7 +810,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_SplitVertical(
         I_Window* iface,
         double RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -818,7 +818,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_TabRatio(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -826,7 +826,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_TabRatio(
         I_Window* iface,
         double RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -834,7 +834,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Top(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -842,7 +842,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Top(
         I_Window* iface,
         double RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -850,7 +850,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Type(
         I_Window* iface,
         XlWindowType *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -858,7 +858,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_UsableHeight(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -866,7 +866,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_UsableWidth(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -874,7 +874,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Visible(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -882,7 +882,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Visible(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -890,7 +890,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_VisibleRange(
         I_Window* iface,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -898,7 +898,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Width(
         I_Window* iface,
         double *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -906,7 +906,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Width(
         I_Window* iface,
         double RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -914,7 +914,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_WindowNumber(
         I_Window* iface,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -922,7 +922,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_WindowState(
         I_Window* iface,
         XlWindowState *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -930,7 +930,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_WindowState(
         I_Window* iface,
         XlWindowState RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -938,7 +938,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_Zoom(
         I_Window* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -946,7 +946,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Zoom(
         I_Window* iface,
         VARIANT RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -954,7 +954,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_View(
         I_Window* iface,
         XlWindowView *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -962,7 +962,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_View(
         I_Window* iface,
         XlWindowView RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -970,7 +970,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_DisplayRightToLeft(
         I_Window* iface,
         VARIANT_BOOL *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -978,7 +978,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayRightToLeft(
         I_Window* iface,
         VARIANT_BOOL RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -987,7 +987,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_PointsToScreenPixelsX(
         long Points,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -996,7 +996,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_PointsToScreenPixelsY(
         long Points,
         long *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1006,7 +1006,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_RangeFromPoint(
         long y,
         IDispatch **RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1018,7 +1018,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_ScrollIntoView(
         long height,
         VARIANT Start)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1027,7 +1027,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_GetTypeInfoCount(
         I_Window* iface,
         UINT *pctinfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1037,7 +1037,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1049,7 +1049,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -1064,7 +1064,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 

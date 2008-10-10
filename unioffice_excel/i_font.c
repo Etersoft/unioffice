@@ -28,7 +28,6 @@ HRESULT get_typeinfo_font(ITypeInfo **typeinfo)
     ITypeLib *typelib;
     HRESULT hres;
     WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
-    TRACE_IN;
 
     if(ti_font) {
         *typeinfo = ti_font;
@@ -45,7 +44,6 @@ HRESULT get_typeinfo_font(ITypeInfo **typeinfo)
     typelib->lpVtbl->Release(typelib);
 
     *typeinfo = ti_font;
-    TRACE_OUT;
     return hres;
 }
 
@@ -76,7 +74,6 @@ static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
 {
     _FontImpl *This = (_FontImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -85,7 +82,6 @@ static ULONG WINAPI MSO_TO_OO_I_Font_AddRef(
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -95,7 +91,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_QueryInterface(
         void **ppvObject)
 {
     _FontImpl *This = (_FontImpl*)iface;
-    TRACE_IN;
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
@@ -104,7 +99,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_QueryInterface(
             IsEqualGUID(riid, &IID_I_Font)) {
         *ppvObject = &This->_ifontVtbl;
         MSO_TO_OO_I_Font_AddRef(iface);
-        return S_OK;
     }
     TRACE_OUT;
     return E_NOINTERFACE;
@@ -116,7 +110,6 @@ static ULONG WINAPI MSO_TO_OO_I_Font_Release(
 {
     _FontImpl *This = (_FontImpl*)iface;
     ULONG ref;
-    TRACE_IN;
     TRACE("REF = %i \n", This->ref);
 
     if (This == NULL) return E_POINTER;
@@ -130,7 +123,6 @@ static ULONG WINAPI MSO_TO_OO_I_Font_Release(
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
-    TRACE_OUT;
     return ref;
 }
 
@@ -665,7 +657,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Background(
         I_Font* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -673,7 +665,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Background(
         I_Font* iface,
         VARIANT RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -681,7 +673,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_FontStyle(
         I_Font* iface,
         VARIANT *RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -689,7 +681,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_FontStyle(
         I_Font* iface,
         VARIANT RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -708,7 +700,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_OutlineFont(
         I_Font* iface,
         VARIANT RHS)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return S_OK;
 }
 
@@ -747,7 +739,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Subscript(
     }
 
     return S_OK;*/
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -788,8 +780,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
     }
 
     return S_OK;
-    TRACE("\n");
-    return E_NOTIMPL;
+/*    TRACE_NOTIMPL;
+    return E_NOTIMPL;*/
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Superscript(
@@ -827,7 +819,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Superscript(
     }
 
     return S_OK;*/
-    TRACE("\n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -868,8 +860,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
     }
 
     return S_OK;
-    TRACE("\n");
-    return E_NOTIMPL;
+/*    TRACE_NOTIMPL;
+    return E_NOTIMPL;*/
 }
 
 /*IDispatch methods*/
@@ -878,7 +870,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetTypeInfoCount(
         I_Font* iface,
         UINT *pctinfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
@@ -888,7 +880,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE(" \n");
+    TRACE_NOTIMPL;
     return E_NOTIMPL;
 }
 
