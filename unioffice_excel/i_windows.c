@@ -22,6 +22,33 @@
 #include "special_functions.h"
 
 /*IWindows interface*/
+
+ITypeInfo *ti_windows = NULL;
+
+HRESULT get_typeinfo_windows(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if(ti_windows) {
+        *typeinfo = ti_windows;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Windows, &ti_windows);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_windows;
+    return hres;
+}
+
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Windows_AddRef(
         I_Windows* iface)
@@ -144,8 +171,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = get_typeinfo_windows(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
+    }
+    TRACE_OUT;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Windows_Invoke(
@@ -159,8 +198,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = get_typeinfo_windows(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+    }
+    TRACE_OUT;
+    return hres;
 }
 
 const I_WindowsVtbl MSO_TO_OO_I_WindowsVtbl =
@@ -206,6 +258,32 @@ extern HRESULT _I_WindowsConstructor(LPVOID *ppObj)
 /*
 IWindow interface
 */
+
+ITypeInfo *ti_window = NULL;
+
+HRESULT get_typeinfo_window(ITypeInfo **typeinfo)
+{
+    ITypeLib *typelib;
+    HRESULT hres;
+    WCHAR file_name[]= {'u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','t','l','b',0};
+
+    if(ti_window) {
+        *typeinfo = ti_window;
+        return S_OK;
+    }
+
+    hres = LoadTypeLib(file_name, &typelib);
+    if(FAILED(hres)) {
+        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        return hres;
+    }
+
+    hres = typelib->lpVtbl->GetTypeInfoOfGuid(typelib, &IID_I_Window, &ti_window);
+    typelib->lpVtbl->Release(typelib);
+
+    *typeinfo = ti_window;
+    return hres;
+}
 
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Window_AddRef(
@@ -1049,8 +1127,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_GetIDsOfNames(
         LCID lcid,
         DISPID *rgDispId)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = get_typeinfo_window(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
+    if (FAILED(hres)) {
+        WTRACE(L"ERROR name = %s \n", *rgszNames);
+    }
+    TRACE_OUT;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_Invoke(
@@ -1064,8 +1154,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    ITypeInfo *typeinfo;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = get_typeinfo_window(&typeinfo);
+    if(FAILED(hres))
+        return hres;
+
+    hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
+                            pVarResult, pExcepInfo, puArgErr);
+    if (FAILED(hres)) {
+        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+    }
+    TRACE_OUT;
+    return hres;
 }
 
 const I_WindowVtbl MSO_TO_OO_I_WindowVtbl =

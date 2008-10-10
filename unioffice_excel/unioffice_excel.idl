@@ -5150,4 +5150,6 @@ library MSO_TO_OOLib
 	interface Name;
 	interface Names;
 	interface I_Outline;
+	interface I_Windows;
+	interface I_Window;
 };
