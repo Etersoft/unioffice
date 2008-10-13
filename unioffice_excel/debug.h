@@ -58,4 +58,4 @@ if (trace_file) fclose(trace_file);\
 #define TRACE_IN TRACE(" IN \n")
 #define TRACE_OUT TRACE(" OUT \n")
 
-#define TRACE_NOTIMPL TRACE("ERROR method not implement")
+#define TRACE_NOTIMPL TRACE("ERROR method not implement \n")
