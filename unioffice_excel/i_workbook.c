@@ -252,7 +252,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     TRACE("\n");
     int i=0;
     while (*(FilenameURL+i)!=0) {
-        WTRACE(L"%c",*(FilenameURL+i));
+        WTRACE(L"%c \n",*(FilenameURL+i));
         i++;
     }
     TRACE("\n");
