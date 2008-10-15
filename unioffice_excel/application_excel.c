@@ -49,9 +49,6 @@ HRESULT get_typeinfo_application(ITypeInfo **typeinfo)
     return hres;
 }
 
-#define DEFINE_THIS(class,ifild,iface) ((class*)((BYTE*)(iface)-offsetof(class,p ## ifild ## Vtbl)))
-
-
 /*IConnectionPoint interface*/
 
 #define CONPOINT_THIS(iface) DEFINE_THIS(_ApplicationExcelImpl,ConnectionPoint,iface);

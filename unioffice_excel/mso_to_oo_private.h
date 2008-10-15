@@ -96,11 +96,18 @@ typedef struct
 
 typedef struct
 {
-    const I_SheetsVtbl *_sheetsVtbl;
+    const I_SheetsVtbl *psheetsVtbl;
+    const IEnumVARIANTVtbl *penumeratorVtbl;
+
     LONG ref;
     IDispatch *pwb;           /*Указатель на Workbook*/
     IDispatch *pOOSheets;     /*Указатель на Sheets openoffice*/
+    int enum_position;
+
 } SheetsImpl;
+
+#define SHEETS_SHEETS(x) ((I_Sheets*)&(x)->psheetsVtbl)
+#define SHEETS_ENUM(x) ((IEnumVARIANT*)&(x)->penumeratorVtbl)
 
 typedef struct
 {
@@ -220,6 +227,9 @@ typedef struct
 #define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)
 #define CONPOINT(x) ((IConnectionPoint*) &(x)->pConnectionPointVtbl)
 
+
+
+#define DEFINE_THIS(class,ifild,iface) ((class*)((BYTE*)(iface)-offsetof(class,p ## ifild ## Vtbl)))
 
 /*
  * Vtable interfaces and static instances

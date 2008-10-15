@@ -47,11 +47,16 @@ HRESULT get_typeinfo_sheets(ITypeInfo **typeinfo)
     return hres;
 }
 
+
+/*ISheets interface*/
+
+#define SHEETS_THIS(iface) DEFINE_THIS(SheetsImpl, sheets, iface);
+
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Sheets_AddRef(
         I_Sheets* iface)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
@@ -70,25 +75,32 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
+    WCHAR str_clsid[39];
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Sheets)) {
-        *ppvObject = &This->_sheetsVtbl;
-        MSO_TO_OO_I_Sheets_AddRef(iface);
+        *ppvObject = SHEETS_SHEETS(This);
+        I_Sheets_AddRef((I_Sheets*)(*ppvObject));
         return S_OK;
     }
-
+    if (IsEqualGUID(riid, &IID_IEnumVARIANT)) {
+        *ppvObject = SHEETS_ENUM(This);
+        IUnknown_AddRef((IUnknown*)(*ppvObject));
+        return S_OK;
+    }
+    StringFromGUID2(riid, str_clsid, 39);
+    WTRACE(L"(%s) not supported \n", str_clsid);
     return E_NOINTERFACE;
 }
 
 static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
         I_Sheets* iface)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
@@ -117,7 +129,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
         VARIANT varIndex,
         IDispatch **ppSheet)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(varIndex, &varIndex);
@@ -190,7 +202,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Count(
         I_Sheets* iface,
         int *count)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
     VARIANT res;
     VariantInit(&res);
     TRACE_IN;
@@ -215,7 +227,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Application(
         I_Sheets* iface,
         IDispatch **value)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
     TRACE_IN;
 
     if (This == NULL) {
@@ -244,7 +256,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Parent(
         I_Sheets* iface,
         IDispatch **value)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
     TRACE_IN;
 
     if (This == NULL) {
@@ -291,7 +303,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_Add(
         VARIANT Type,
         IDispatch **value)
 {
-    SheetsImpl *This = (SheetsImpl*)iface;
+    SheetsImpl *This = SHEETS_THIS(iface);
     int ftype_add = 0,i, j;
     int count;
     HRESULT hres;
@@ -476,8 +488,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__NewEnum(
         I_Sheets* iface,
         IUnknown **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    SheetsImpl *This = SHEETS_THIS(iface);
+    TRACE_IN;
+    *RHS = (IUnknown*)SHEETS_ENUM(This);
+    IUnknown_AddRef(*RHS);
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Sheets__PrintOut(
@@ -674,6 +690,142 @@ const I_SheetsVtbl MSO_TO_OO_I_SheetsVtbl =
     MSO_TO_OO_I_Sheets_PrintOut
 };
 
+#undef SHEETS_THIS
+
+/*IEnumVARIANT interface*/
+
+#define ENUMVAR_THIS(iface) DEFINE_THIS(SheetsImpl, enumerator, iface);
+
+/*** IUnknown methods ***/
+static ULONG WINAPI MSO_TO_OO_I_Sheets_EnumVAR_AddRef(
+        IEnumVARIANT* iface)
+{
+    SheetsImpl *This = ENUMVAR_THIS(iface);
+    return I_Sheets_AddRef(SHEETS_SHEETS(This));
+}
+
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_EnumVAR_QueryInterface(
+        IEnumVARIANT* iface,
+        REFIID riid,
+        void **ppvObject)
+{
+    SheetsImpl *This = ENUMVAR_THIS(iface);
+    return I_Sheets_QueryInterface(SHEETS_SHEETS(This), riid, ppvObject);
+}
+
+static ULONG WINAPI MSO_TO_OO_I_Sheets_EnumVAR_Release(
+        IEnumVARIANT* iface)
+{
+    SheetsImpl *This = ENUMVAR_THIS(iface);
+    return I_Sheets_Release(SHEETS_SHEETS(This));
+}
+
+/*** IEnumVARIANT methods ***/
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_EnumVAR_Next(
+        IEnumVARIANT* iface,
+        ULONG celt,
+        VARIANT *rgVar,
+        ULONG *pCeltFetched)
+{
+    SheetsImpl *This = ENUMVAR_THIS(iface);
+    HRESULT hres;
+    ULONG l;
+    long l1;
+    int count;
+    ULONG l2;
+    IDispatch *dret;
+    VARIANT varindex;
+
+    if (This->enum_position<0)
+        return S_FALSE;
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = 0;
+
+    if (rgVar == NULL)
+       return E_INVALIDARG;
+
+    VariantInit(&varindex);
+    /*Init Array*/
+    for (l=0; l<celt; l++)
+       VariantInit(&rgVar[l]);
+
+    I_Sheets_get_Count(SHEETS_SHEETS(This), &count);
+    V_VT(&varindex) = VT_I4;
+
+    for (l1=This->enum_position, l2=0; l1<count && l2<celt; l1++, l2++) {
+      V_I4(&varindex) = l1+1;
+      hres = I_Sheets_get_Item(SHEETS_SHEETS(This), varindex, &dret);
+      V_VT(&rgVar[l2]) = VT_DISPATCH;
+      V_DISPATCH(&rgVar[l2]) = dret;
+      if (FAILED(hres))
+         goto error;
+    }
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = l2;
+
+   This->enum_position = l1;
+
+   return  (l2 < celt) ? S_FALSE : S_OK;
+
+error:
+   for (l=0; l<celt; l++)
+      VariantClear(&rgVar[l]);
+   VariantClear(&varindex);
+   return hres;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_EnumVAR_Skip(
+        IEnumVARIANT* iface,
+        ULONG celt)
+{
+    SheetsImpl *This = ENUMVAR_THIS(iface);
+    int count;
+    TRACE_IN;
+
+    I_Sheets_get_Count(SHEETS_SHEETS(This), &count);
+    This->enum_position += celt;
+
+    if (This->enum_position>=(count)) {
+        This->enum_position = count - 1;
+        TRACE_OUT;
+        return S_FALSE;
+    }
+    TRACE_OUT;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_EnumVAR_Reset(
+        IEnumVARIANT* iface)
+{
+    SheetsImpl *This = ENUMVAR_THIS(iface);
+    This->enum_position = 0;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Sheets_EnumVAR_Clone(
+        IEnumVARIANT* iface,
+        IEnumVARIANT **ppEnum)
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL;
+}
+
+#undef ENUMVAR_THIS
+
+const IEnumVARIANTVtbl MSO_TO_OO_I_Sheets_enumvarVtbl =
+{
+    MSO_TO_OO_I_Sheets_EnumVAR_QueryInterface,
+    MSO_TO_OO_I_Sheets_EnumVAR_AddRef,
+    MSO_TO_OO_I_Sheets_EnumVAR_Release,
+    MSO_TO_OO_I_Sheets_EnumVAR_Next,
+    MSO_TO_OO_I_Sheets_EnumVAR_Skip,
+    MSO_TO_OO_I_Sheets_EnumVAR_Reset,
+    MSO_TO_OO_I_Sheets_EnumVAR_Clone
+};
+
 extern HRESULT _I_SheetsConstructor(LPVOID *ppObj)
 {
     SheetsImpl *sheets;
@@ -686,12 +838,14 @@ extern HRESULT _I_SheetsConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    sheets->_sheetsVtbl = &MSO_TO_OO_I_SheetsVtbl;
+    sheets->psheetsVtbl = &MSO_TO_OO_I_SheetsVtbl;
+    sheets->penumeratorVtbl = &MSO_TO_OO_I_Sheets_enumvarVtbl;
     sheets->ref = 0;
-    IDispatch *pwb = NULL;
-    IDispatch *pOOSheets =NULL;
+    sheets->pwb = NULL;
+    sheets->pOOSheets =NULL;
+    sheets->enum_position = 0;
 
-    *ppObj = &sheets->_sheetsVtbl;
+    *ppObj = SHEETS_SHEETS(sheets);
     TRACE_OUT;
     return S_OK;
 }
