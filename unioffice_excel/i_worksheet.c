@@ -2421,6 +2421,32 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
                 return S_OK;
             }
     }
+    /*special operation*/
+    if ((dispIdMember == dispid_worksheet_range) && (wFlags == DISPATCH_PROPERTYPUT)) {
+            switch (pDispParams->cArgs) {
+                case 2:
+                    hres = MSO_TO_OO_I_Worksheet_get_Range(iface,pDispParams->rgvarg[1], vNull, &dret);
+                    if (FAILED(hres)) {
+                        pExcepInfo->bstrDescription=SysAllocString(str_error);
+                        TRACE("(case 2) ERROR get_range hres = %08x\n",hres);
+                        return hres;
+                    }
+                    I_Range_put_Value((I_Range*)dret, vNull, 0, pDispParams->rgvarg[0]);
+                    IDispatch_Release(dret);
+                    return S_OK;
+                case 3:
+                    hres = MSO_TO_OO_I_Worksheet_get_Range(iface,pDispParams->rgvarg[2], pDispParams->rgvarg[1], &dret);
+                    if (FAILED(hres)) {
+                        pExcepInfo->bstrDescription=SysAllocString(str_error);
+                        TRACE("(case 2) ERROR get_range hres = %08x\n",hres);
+                        return hres;
+                    }
+                    I_Range_put_Value((I_Range*)dret, vNull, 0, pDispParams->rgvarg[0]);
+                    IDispatch_Release(dret);
+                return S_OK;
+            }
+    }
+
 
     switch (dispIdMember)
     {
