@@ -1477,7 +1477,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_RowHeight(
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vRowHeight, V_DISPATCH(&rows), L"Height", 0);
 
     IDispatch_Release(V_DISPATCH(&rows));
-    *pnrowheight = V_I2(&vRowHeight)/100;
+    *pnrowheight = V_I2(&vRowHeight)/1000*28;
 
     TRACE_OUT;
     return hres;
@@ -1506,7 +1506,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_RowHeight(
 
     VariantInit(&vRowHeight);
     V_VT(&vRowHeight) = VT_I4;
-    V_I4(&vRowHeight) = nrowheight*100;
+    V_I4(&vRowHeight) = nrowheight/28*1000; /*т.к. OpenOffice измеряет в 1/100мм, а MS Office в точках 1/28 см.*/;
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, V_DISPATCH(&rows), L"Height", 1, vRowHeight);
     IDispatch_Release(V_DISPATCH(&rows));

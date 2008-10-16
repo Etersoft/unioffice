@@ -185,7 +185,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
 
     if (RHS == VARIANT_TRUE) {
         V_VT(&cols) = VT_BSTR;
-        V_BSTR(&cols) = SysAllocString(L"1:256");
+        V_BSTR(&cols) = SysAllocString(L"1:1024");
         I_Worksheet_get_Columns((I_Worksheet*)(This->pwsh),cols,&tmp_range);
         RangeImpl *rangeimp = (RangeImpl*)tmp_range;
         V_VT(&param1) = VT_DISPATCH;

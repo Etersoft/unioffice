@@ -1321,15 +1321,6 @@ long MSO_TO_OO_FindIndexWorksheetByName(
         return E_POINTER;
     }
 
-/*Необходимо заменять запятую на подчеркивание, т.к. OO не поддерживает запятые*/
-    i=0;
-    while (*(name+i)!=0) {
-        if (*(name+i)==L',') *(name+i)=L'_';
-        WTRACE(L"%c",*(name+i));
-        i++;
-    }
-    TRACE("\n");
-
     hres = I_Sheets_get_Count(iface, &count);
     if (FAILED(hres)) {
         TRACE("ERROR when Sheets_get_Count\n");

@@ -169,12 +169,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get__Default(
         return S_OK;
     } else 
         if (V_VT(&varIndex) == VT_BSTR) {
-            /*Необходимо заменять запятую на подчеркивание, т.к. OO не поддерживает запятые*/
-            int i=0;
-            WTRACE(L"name = ");
-            while (*(V_BSTR(&varIndex)+i)!=0) {if (*(V_BSTR(&varIndex)+i)==L',') *(V_BSTR(&varIndex)+i)=L'_';WTRACE(L"%c", *(V_BSTR(&varIndex)+i));i++;}
-            WTRACE(L"\n");
-
             hres = AutoWrap (DISPATCH_METHOD, &resultSheet, This->pOOSheets, L"getByName", 1, varIndex);
             if (hres!=S_OK)
                 return hres;

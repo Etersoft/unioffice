@@ -22,7 +22,7 @@
 import "oaidl.idl";
 import "ocidl.idl";
 import "wtypes.idl";
-	
+
 
 	typedef enum
 	{

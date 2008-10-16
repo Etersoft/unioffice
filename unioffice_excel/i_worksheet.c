@@ -455,7 +455,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
             struct CELL_COORD cell1,cell2;
             cell1.x = 1;
             cell1.y = V_I4(&Row);
-            cell2.x = 256;
+            cell2.x = 1024;
             cell2.y = V_I4(&Row);
             hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
             if (hres != S_OK) {
@@ -510,7 +510,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
                 struct CELL_COORD cell1,cell2;
                 cell1.x = 1;
                 cell1.y = row1;
-                cell2.x = 256;
+                cell2.x = 1024;
                 cell2.y = row2;
 TRACE("PARAMETRS IS %i     %i \n", row1,row2);
                 hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
@@ -749,7 +749,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
     VariantInit(&cols);
     VariantInit(&torange);
     V_VT(&cols) = VT_BSTR;
-    V_BSTR(&cols) = SysAllocString(L"1:256");
+    V_BSTR(&cols) = SysAllocString(L"1:1024");
     I_Worksheet_get_Columns(iface,cols,&range1);
     I_Worksheet_get_Columns((I_Worksheet*)new_wsh,cols,&range2);
     V_VT(&torange) = VT_DISPATCH;
