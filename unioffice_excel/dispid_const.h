@@ -398,7 +398,7 @@
 #define dispid_names_item                                        5
 #define dispid_names__default                                    0
 #define dispid_names_count                                       7
-#define dispid_names_getenumerator                               8
+#define dispid_names_getenumerator                               -4
 
 /*IRange*/
 #define dispid_range_application                                 148

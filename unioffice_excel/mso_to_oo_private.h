@@ -146,12 +146,19 @@ typedef struct
 
 typedef struct
 {
-    const NamesVtbl *namesVtbl;
+    const NamesVtbl *pnamesVtbl;
+    const IEnumVARIANTVtbl *penumeratorVtbl;
+
     LONG ref;
     IDispatch *pwb;              /*указатель на Workbook*/
     IDispatch *pApplication;     /*указатель на Application*/
     IDispatch *pOONames;         /*указатель на OpenOffice Names*/
+    int enum_position;
+
 } NamesImpl;
+
+#define NAMES_NAMES(x) ((Names*)&(x)->pnamesVtbl)
+#define NAMES_ENUM(x) ((IEnumVARIANT*)&(x)->penumeratorVtbl)
 
 typedef struct
 {

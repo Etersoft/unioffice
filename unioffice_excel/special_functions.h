@@ -170,6 +170,11 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
         Names *pnames,
         VARIANT varname);
 
+HRESULT MSO_TO_OO_Name_Initialize_By_Index(
+        Name* iface,
+        Names *pnames,
+        VARIANT varindex);
+
 BOOL    Is_Variant_Null(
         VARIANT var);
 

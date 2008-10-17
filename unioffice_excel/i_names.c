@@ -671,11 +671,13 @@ HRESULT get_typeinfo_names(ITypeInfo **typeinfo)
 }
 
 
+#define NAMES_THIS(iface) DEFINE_THIS(NamesImpl, names, iface);
+
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_Names_AddRef(
         Names* iface)
 {
-    NamesImpl *This = (NamesImpl*)iface;
+    NamesImpl *This = NAMES_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
@@ -695,15 +697,20 @@ static HRESULT WINAPI MSO_TO_OO_Names_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    NamesImpl *This = (NamesImpl*)iface;
+    NamesImpl *This = NAMES_THIS(iface);
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_Names)) {
-        *ppvObject = &This->namesVtbl;
-        MSO_TO_OO_Names_AddRef(iface);
+        *ppvObject = NAMES_NAMES(This);
+        Names_AddRef((Names*)*ppvObject);
+        return S_OK;
+    }
+    if (IsEqualGUID(riid, &IID_IEnumVARIANT)) {
+        *ppvObject = NAMES_ENUM(This);
+        IUnknown_AddRef((IUnknown*)(*ppvObject));
         return S_OK;
     }
 
@@ -714,7 +721,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_Names_Release(
         Names* iface)
 {
-    NamesImpl *This = (NamesImpl*)iface;
+    NamesImpl *This = NAMES_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
@@ -746,7 +753,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Application(
         Names* iface,
         IDispatch **value)
 {
-    NamesImpl *This = (NamesImpl*)iface;
+    NamesImpl *This = NAMES_THIS(iface);
     TRACE_IN;
 
     if (This==NULL) return E_POINTER;
@@ -765,7 +772,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Count(
         Names* iface,
         int *count)
 {
-    NamesImpl *This = (NamesImpl*)iface;
+    NamesImpl *This = NAMES_THIS(iface);
     VARIANT vret;
     HRESULT hres;
     TRACE_IN;
@@ -805,7 +812,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Parent(
         Names* iface,
         IDispatch **value)
 {
-    NamesImpl *This = (NamesImpl*)iface;
+    NamesImpl *This = NAMES_THIS(iface);
     TRACE_IN;
 
     if (This==NULL) return E_POINTER;
@@ -828,7 +835,7 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
         IDispatch **ppvalue)
 {
     /*Используем пока только первый параметр*/
-    NamesImpl *This = (NamesImpl*)iface;
+    NamesImpl *This = NAMES_THIS(iface);
     HRESULT hres;
     IUnknown *punk = NULL;
     IDispatch *pname;
@@ -867,8 +874,13 @@ static HRESULT WINAPI MSO_TO_OO_Names__Default(
             return E_FAIL;
         } else {
             /*доступ по индексу*/
-            TRACE("NOT REALIZED \n");
-            return E_FAIL;
+            hres = MSO_TO_OO_Name_Initialize_By_Index((Name*)pname, iface, Index);
+            if (FAILED(hres)) {
+                IDispatch_Release(pname);
+                return hres;
+            }
+            *ppvalue = pname;
+            return S_OK;
         }
     }
     TRACE_OUT;
@@ -896,10 +908,14 @@ static HRESULT WINAPI MSO_TO_OO_Names_Add(
 
 static HRESULT WINAPI MSO_TO_OO_Names_GetEnumerator(
         Names* iface,
-        IDispatch **value)
+        IUnknown **value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    NamesImpl *This = NAMES_THIS(iface);
+    *value = (IUnknown*)NAMES_ENUM(This);
+    IUnknown_AddRef(*value);
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_Item(
@@ -956,7 +972,6 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetIDsOfNames(
     return hres;
 }
 
-#define param_count 3
 static HRESULT WINAPI MSO_TO_OO_Names_Invoke(
         Names* iface,
         DISPID dispIdMember,
@@ -1004,6 +1019,146 @@ const NamesVtbl MSO_TO_OO_NamesVtbl =
     MSO_TO_OO_Names_GetEnumerator
 };
 
+#undef NAMES_THIS
+
+/*IEnumVARIANT interface*/
+
+#define ENUMVAR_THIS(iface) DEFINE_THIS(NamesImpl, enumerator, iface);
+
+/*** IUnknown methods ***/
+static ULONG WINAPI MSO_TO_OO_I_Names_EnumVAR_AddRef(
+        IEnumVARIANT* iface)
+{
+    NamesImpl *This = ENUMVAR_THIS(iface);
+    return Names_AddRef(NAMES_NAMES(This));
+}
+
+
+static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_QueryInterface(
+        IEnumVARIANT* iface,
+        REFIID riid,
+        void **ppvObject)
+{
+    NamesImpl *This = ENUMVAR_THIS(iface);
+    return Names_QueryInterface(NAMES_NAMES(This), riid, ppvObject);
+}
+
+static ULONG WINAPI MSO_TO_OO_I_Names_EnumVAR_Release(
+        IEnumVARIANT* iface)
+{
+    NamesImpl *This = ENUMVAR_THIS(iface);
+    return Names_Release(NAMES_NAMES(This));
+}
+
+/*** IEnumVARIANT methods ***/
+static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_Next(
+        IEnumVARIANT* iface,
+        ULONG celt,
+        VARIANT *rgVar,
+        ULONG *pCeltFetched)
+{
+    NamesImpl *This = ENUMVAR_THIS(iface);
+    HRESULT hres;
+    ULONG l;
+    long l1;
+    int count;
+    ULONG l2;
+    IDispatch *dret;
+    VARIANT varindex, vNull;
+
+    VariantInit(&vNull);
+    V_VT(&vNull) = VT_NULL;
+
+    if (This->enum_position<0)
+        return S_FALSE;
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = 0;
+
+    if (rgVar == NULL)
+       return E_INVALIDARG;
+
+    VariantInit(&varindex);
+    /*Init Array*/
+    for (l=0; l<celt; l++)
+       VariantInit(&rgVar[l]);
+
+    Names_get_Count(NAMES_NAMES(This), &count);
+    V_VT(&varindex) = VT_I4;
+
+    for (l1=This->enum_position, l2=0; l1<count && l2<celt; l1++, l2++) {
+      V_I4(&varindex) = l1;
+      hres = Names_Item(NAMES_NAMES(This), varindex, vNull, vNull, &dret);
+      V_VT(&rgVar[l2]) = VT_DISPATCH;
+      V_DISPATCH(&rgVar[l2]) = dret;
+      if (FAILED(hres))
+         goto error;
+    }
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = l2;
+
+   This->enum_position = l1;
+
+   return  (l2 < celt) ? S_FALSE : S_OK;
+
+error:
+   for (l=0; l<celt; l++)
+      VariantClear(&rgVar[l]);
+   VariantClear(&varindex);
+   return hres;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_Skip(
+        IEnumVARIANT* iface,
+        ULONG celt)
+{
+    NamesImpl *This = ENUMVAR_THIS(iface);
+    int count;
+    TRACE_IN;
+
+    Names_get_Count(NAMES_NAMES(This), &count);
+    This->enum_position += celt;
+
+    if (This->enum_position>=(count)) {
+        This->enum_position = count - 1;
+        TRACE_OUT;
+        return S_FALSE;
+    }
+    TRACE_OUT;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_Reset(
+        IEnumVARIANT* iface)
+{
+    NamesImpl *This = ENUMVAR_THIS(iface);
+    This->enum_position = 0;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_Clone(
+        IEnumVARIANT* iface,
+        IEnumVARIANT **ppEnum)
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL;
+}
+
+#undef ENUMVAR_THIS
+
+const IEnumVARIANTVtbl MSO_TO_OO_Names_enumvarVtbl =
+{
+    MSO_TO_OO_I_Names_EnumVAR_QueryInterface,
+    MSO_TO_OO_I_Names_EnumVAR_AddRef,
+    MSO_TO_OO_I_Names_EnumVAR_Release,
+    MSO_TO_OO_I_Names_EnumVAR_Next,
+    MSO_TO_OO_I_Names_EnumVAR_Skip,
+    MSO_TO_OO_I_Names_EnumVAR_Reset,
+    MSO_TO_OO_I_Names_EnumVAR_Clone
+};
+
+
 extern HRESULT _NamesConstructor(LPVOID *ppObj)
 {
     NamesImpl *names;
@@ -1016,13 +1171,15 @@ extern HRESULT _NamesConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    names->namesVtbl = &MSO_TO_OO_NamesVtbl;
+    names->pnamesVtbl = &MSO_TO_OO_NamesVtbl;
+    names->penumeratorVtbl = &MSO_TO_OO_Names_enumvarVtbl;
     names->ref = 0;
     names->pApplication = NULL;
     names->pwb = NULL;
     names->pOONames = NULL;
+    names->enum_position = 0;
 
-    *ppObj = &names->namesVtbl;
+    *ppObj = NAMES_NAMES(names);
     TRACE_IN;
     return S_OK;
 }

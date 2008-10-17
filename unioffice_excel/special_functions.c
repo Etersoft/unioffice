@@ -1765,6 +1765,66 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
     return S_OK;
 }
 
+HRESULT MSO_TO_OO_Name_Initialize_By_Index(
+        Name* iface,
+        Names *pnames,
+        VARIANT varindex)
+{
+    NameImpl *This = (NameImpl*)iface;
+    NamesImpl *onames = (NamesImpl*)pnames;
+    WorkbookImpl *wbi = (WorkbookImpl*)(onames->pwb);
+    VARIANT vRet,vRet2;
+    HRESULT hres;
+    TRACE_IN;
+
+    VariantInit(&vRet);
+
+    if (This == NULL) {
+        TRACE("ERROR THIS = NULL \n");
+        return E_POINTER;
+    }
+
+    if (This->pnames!=NULL) {
+         Names_Release((Names*)(This->pnames));
+    }
+    This->pnames = (IDispatch*)pnames;
+    if (This->pnames != NULL) Names_AddRef((Names*)(This->pnames));
+
+    if (This->pApplication!=NULL) {
+         I_ApplicationExcel_Release((I_ApplicationExcel*)(This->pApplication));
+    }
+    This->pApplication = (IDispatch*)(wbi->pApplication);
+    if (This->pApplication != NULL) I_ApplicationExcel_AddRef((I_ApplicationExcel*)(This->pApplication));
+
+    if (wbi->pDoc==NULL) {
+        TRACE("Object pDoc is NULL\n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRet, wbi->pDoc, L"NamedRanges",0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when NamedRange \n");
+        return E_FAIL;
+    }
+
+    hres = AutoWrap(DISPATCH_METHOD, &vRet2, V_DISPATCH(&vRet), L"getByIndex",1,varindex);
+    if (FAILED(hres)) {
+        TRACE("ERROR when NamedRange \n");
+        return E_FAIL;
+    }
+
+    if (This->pOOName!=NULL) {
+         IDispatch_Release(This->pOOName);
+    }
+    This->pOOName = V_DISPATCH(&vRet2);
+    if (This->pOOName != NULL) IDispatch_AddRef(This->pOOName);
+
+    VariantClear(&vRet);
+
+    TRACE_OUT;
+    return S_OK;
+}
+
 BOOL    Is_Variant_Null(
         VARIANT var)
 {
