@@ -1365,8 +1365,22 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_get_Names(
         I_ApplicationExcel* iface,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    _ApplicationExcelImpl *This = APPEXCEL_THIS(iface);
+    I_Workbook *pwb;
+    HRESULT hres;
+    TRACE_IN;
+
+    hres = MSO_TO_OO_GetActiveWorkbook((I_Workbooks*)(This->pdWorkbooks), &pwb);
+    if (FAILED(hres)) return E_FAIL;
+
+    hres = I_Workbook_get_Names(pwb, RHS);
+    if (FAILED(hres)) {
+        TRACE("ERROR get_Names\n");
+        *RHS = NULL;
+    }
+    I_Workbook_Release(pwb);
+    TRACE_OUT;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Run(
