@@ -3343,7 +3343,7 @@ import "wtypes.idl";
 //Count
 		[propget,id(dispid_names_count), helpstring("property Count")] HRESULT Count([out, retval] int *count);
 //GetEnumerator
-		[id(dispid_names_getenumerator), helpstring("property GetEnumerator")] HRESULT GetEnumerator([out, retval] IUnknown **value);
+		[id(dispid_names_getenumerator), helpstring("property GetEnumerator")] HRESULT GetEnumerator([out, retval] IDispatch **value);
 	}
 
 	[
@@ -5080,7 +5080,8 @@ import "wtypes.idl";
 //NewWorkbook 	Returns a NewFile object.
 		[id(dispid_application_newworkbook), propget, helpstring("property")] HRESULT NewWorkbook([out, retval] IDispatch** RHS);
 //SpellingOptions 	Returns a SpellingOptions object that represents the spelling options of the application.
-		[id(dispid_application_spellingoptions), propget, helpstring("property SpellingOptions")] HRE                                                                eturns a Speech object.
+		[id(dispid_application_spellingoptions), propget, helpstring("property SpellingOptions")] HRESULT SpellingOptions([out, retval] IDispatch** RHS);
+//Speech 	Returns a Speech object.
 		[id(dispid_application_speech), propget, helpstring("property Speech")] HRESULT Speech([out, retval] IDispatch** RHS);
 //MapPaperSize 	True if documents formatted for the standard paper size of another country/region (for example, A4) are automatically adjusted so that they're printed correctly on the standard paper size (for example, Letter) of your country/region.
 		[id(dispid_application_mappapersize), propget, helpstring("property MapPaperSize")] HRESULT MapPaperSize([out, retval] VARIANT_BOOL* RHS);
