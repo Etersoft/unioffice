@@ -4351,8 +4351,10 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetTypeInfoCount(
         I_ApplicationExcel* iface,
         UINT *pctinfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pctinfo = 1;
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetTypeInfo(
@@ -4361,8 +4363,12 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    HRESULT hres = get_typeinfo_application(ppTInfo);
+    TRACE("\n");
+    if (FAILED(hres))
+        TRACE("Error when GetTypeInfo");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_GetIDsOfNames(

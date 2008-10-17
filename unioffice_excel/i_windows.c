@@ -149,8 +149,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_GetTypeInfoCount(
         I_Windows* iface,
         UINT *pctinfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pctinfo = 1;
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Windows_GetTypeInfo(
@@ -159,8 +161,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    HRESULT hres = get_typeinfo_windows(ppTInfo);
+    TRACE("\n");
+    if (FAILED(hres))
+        TRACE("Error when GetTypeInfo");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Windows_GetIDsOfNames(
@@ -1105,8 +1111,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_GetTypeInfoCount(
         I_Window* iface,
         UINT *pctinfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pctinfo = 1;
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_GetTypeInfo(
@@ -1115,8 +1123,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    HRESULT hres = get_typeinfo_window(ppTInfo);
+    TRACE("\n");
+    if (FAILED(hres))
+        TRACE("Error when GetTypeInfo");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_GetIDsOfNames(

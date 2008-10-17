@@ -472,8 +472,10 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfoCount(
         Name* iface,
         UINT *pctinfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pctinfo = 1;
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfo(
@@ -482,8 +484,12 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    HRESULT hres = get_typeinfo_name(ppTInfo);
+    TRACE("\n");
+    if (FAILED(hres))
+        TRACE("Error when GetTypeInfo");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_GetIDsOfNames(
@@ -925,7 +931,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_Item(
         VARIANT RefersTo,
         IDispatch **ppvalue)
 {
-    TRACE_NOTIMPL;
+    TRACE("----> _Default \n");
     return MSO_TO_OO_Names__Default(iface, Index, IndexLocal, RefersTo, ppvalue);
 }
 
@@ -935,8 +941,10 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfoCount(
         Names* iface,
         UINT *pctinfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pctinfo = 1;
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfo(
@@ -945,8 +953,12 @@ static HRESULT WINAPI MSO_TO_OO_Names_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    HRESULT hres = get_typeinfo_names(ppTInfo);
+    TRACE("\n");
+    if (FAILED(hres))
+        TRACE("Error when GetTypeInfo");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_GetIDsOfNames(

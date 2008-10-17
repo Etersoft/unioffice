@@ -339,8 +339,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfoCount(
         I_Interior* iface,
         UINT *pctinfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pctinfo = 1;
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfo(
@@ -349,8 +351,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    HRESULT hres = get_typeinfo_interrior(ppTInfo);
+    TRACE("\n");
+    if (FAILED(hres))
+        TRACE("Error when GetTypeInfo");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Interior_GetIDsOfNames(

@@ -2206,8 +2206,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfoCount(
         I_Workbook* iface,
         UINT *pctinfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pctinfo = 1;
+    TRACE_OUT;
+    return S_OK;
 }
 
 
@@ -2217,8 +2219,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    HRESULT hres = get_typeinfo_workbook(ppTInfo);
+    TRACE("\n");
+    if (FAILED(hres))
+        TRACE("Error when GetTypeInfo");
+
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_GetIDsOfNames(
