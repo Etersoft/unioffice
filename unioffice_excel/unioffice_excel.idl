@@ -3343,7 +3343,7 @@ import "wtypes.idl";
 //Count
 		[propget,id(dispid_names_count), helpstring("property Count")] HRESULT Count([out, retval] int *count);
 //GetEnumerator
-		[id(dispid_names_getenumerator), helpstring("property GetEnumerator")] HRESULT GetEnumerator([out, retval] IDispatch **value);
+		[id(dispid_names_getenumerator), helpstring("property GetEnumerator")] HRESULT GetEnumerator([out, retval] IUnknown **value);
 	}
 
 	[
