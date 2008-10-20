@@ -2989,8 +2989,66 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Group(
         VARIANT Periods,
         VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    RangeImpl *This = (RangeImpl*)iface;
+    WorksheetImpl *wsh = (WorksheetImpl*)This->pwsheet;
+    HRESULT hres;
+    VARIANT param1, param2, vret;
+    long startrow, startcolumn, endrow, endcolumn;
+
+    TRACE_IN;
+/*Now Ignore all parameters*/
+    MSO_TO_OO_CorrectArg(Start, &Start);
+    MSO_TO_OO_CorrectArg(End, &End);
+    MSO_TO_OO_CorrectArg(By, &By);
+    MSO_TO_OO_CorrectArg(Periods, &Periods);
+
+    VariantInit(&param1);
+    VariantInit(&param2);
+    VariantInit(&vret);
+
+    V_VT(&param1) = VT_DISPATCH;
+    V_DISPATCH(&param1) = This->pOORange;
+
+    hres = AutoWrap(DISPATCH_METHOD, &param1,This->pOORange, L"getRangeAddress", 0);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getRangeAddress\n");
+    }
+
+    hres = MSO_TO_OO_GetRangeAddress(iface, &startrow, &startcolumn, &endrow, &endcolumn);
+    if (FAILED(hres)) {
+        TRACE("ERROR when GetRangeAddress\n");
+    }
+    switch (OOVersion) {
+    case VER_2:
+        if (endcolumn-startcolumn==255) {
+            V_VT(&param2) = VT_I4;
+            V_I4(&param2) = toROWS;
+        } else {
+            V_VT(&param2) = VT_I4;
+            V_I4(&param2) = toCOLUMNS;
+        }
+        break;
+    case VER_3:
+        if (endcolumn-startcolumn==1023) {
+            V_VT(&param2) = VT_I4;
+            V_I4(&param2) = toROWS;
+        } else {
+            V_VT(&param2) = VT_I4;
+            V_I4(&param2) = toCOLUMNS;
+        }
+        break;
+    }
+    hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"group", 2, param2, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when group \n");
+    }
+
+    VariantClear(&param1);
+    VariantClear(&param2);
+    VariantClear(&vret);
+
+    TRACE_OUT;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_HasArray(
