@@ -192,9 +192,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
         }
         I_Worksheet_get_Columns((I_Worksheet*)(This->pwsh),cols,&tmp_range);
         RangeImpl *rangeimp = (RangeImpl*)tmp_range;
-        V_VT(&param1) = VT_DISPATCH;
-        V_DISPATCH(&param1) = rangeimp->pOORange;
-        IDispatch_AddRef(rangeimp->pOORange);
+        hres = AutoWrap(DISPATCH_METHOD, &param1,rangeimp->pOORange, L"getRangeAddress", 0);
+        if (FAILED(hres)) {
+            TRACE("ERROR when getRangeAddress\n");
+        }
 
         hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"autoOutline", 1, param1);
         if (FAILED(hres)) TRACE("ERROR when autoOutline\n");
@@ -247,7 +248,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
             return hres;
         }
         V_VT(&param2) = VT_I4;
-        V_I4(&param2) = toROWS;
+        V_I4(&param2) = toCOLUMNS;
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"showLevel", 2, param2, param1);
