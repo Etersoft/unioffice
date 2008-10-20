@@ -5123,8 +5123,78 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
     MSO_TO_OO_I_Workbooks_Initialize((I_Workbooks*)(_applicationexcell->pdWorkbooks), (I_ApplicationExcel*)_applicationexcell);
 
     *ppObj = APPEXCEL(_applicationexcell);
+/*Пытаемся получить номер версии*/
+    VARIANT p1,p2, param2, conf_prov, access_prov, version, res;
+    IDispatch *dpv;
+    long index = 0;
+    SAFEARRAY FAR* pPropVals;
 
-    OOVersion = VER_3;
+    VariantInit(&p1);
+    VariantInit(&p2);
+    VariantInit(&param2);
+    VariantInit(&conf_prov);
+    VariantInit(&access_prov);
+    VariantInit(&version);
+    VariantInit(&res);
+
+    VariantClear(&param1);
+    V_VT(&param1) = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(L"com.sun.star.configuration.ConfigurationProvider");
+
+    hres = AutoWrap(DISPATCH_METHOD, &conf_prov, _applicationexcell->pdOOApp, L"CreateInstance", 1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when CreateInstance ------- ConfigurationProvider\n");
+        return S_OK;
+    }
+
+    MSO_TO_OO_GetDispatchPropertyValue(APPEXCEL(_applicationexcell), &dpv);
+    if (dpv == NULL) {
+        TRACE("ERROR when GetDispatchPropertyValue\n");
+        return S_OK;
+    }
+
+    V_VT(&p1) = VT_BSTR;
+    V_BSTR(&p1) = SysAllocString(L"nodepath");
+    AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Name", 1, p1);
+    V_VT(&p2) = VT_BSTR;
+    V_BSTR(&p2) = SysAllocString(L"/org.openoffice.Setup/Product");
+    AutoWrap(DISPATCH_PROPERTYPUT, &res, dpv, L"Value", 1, p2);
+
+    pPropVals = SafeArrayCreateVector( VT_DISPATCH, 0, 1 );
+    hres = SafeArrayPutElement( pPropVals, &index, dpv );
+    V_VT(&param2) = VT_ARRAY | VT_DISPATCH;
+    V_ARRAY(&param2) = pPropVals;
+
+    VariantClear(&param1);
+    V_VT(&param1) = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(L"com.sun.star.configuration.ConfigurationAccess");
+    hres = AutoWrap(DISPATCH_METHOD, &access_prov, V_DISPATCH(&conf_prov), L"createInstanceWithArguments", 2, param2, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when CreateInstance --- ConfigurationAccess \n");
+        return S_OK;
+    }
+
+    VariantClear(&param1);
+    V_VT(&param1) = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(L"ooSetupVersion");
+    hres = AutoWrap(DISPATCH_METHOD, &version, V_DISPATCH(&access_prov), L"getByName", 1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when getByName \n");
+        return S_OK;
+    }
+
+    if (*(V_BSTR(&version))==L'2') OOVersion = VER_2;
+    else if (*(V_BSTR(&version))==L'3') OOVersion = VER_3;
+         else OOVersion = VER_2;
+
+    VariantClear(&p1);
+    VariantClear(&p2);
+    VariantClear(&param1);
+    VariantClear(&param2);
+    VariantClear(&conf_prov);
+    VariantClear(&access_prov);
+    VariantClear(&version);
+    VariantClear(&res);
 
     /*освобождаем память выделенную под строку*/
     SysFreeString(V_BSTR(&param1));
