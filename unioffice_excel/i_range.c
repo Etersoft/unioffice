@@ -2584,7 +2584,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Columns(
         I_Range* iface,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
+    TRACE(" ----> get_EntireColumn\n");
     return I_Range_get_EntireColumn(iface, RHS);;
 }
 
@@ -3545,7 +3545,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Rows(
         I_Range* iface,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
+    TRACE(" ----> get_EntireRow\n");
     return I_Range_get_EntireRow(iface, RHS);
 }
 
