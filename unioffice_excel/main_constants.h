@@ -32,3 +32,6 @@ typedef enum
 	vtFORMULA	= 3
 } OOValueType;
 
+#define toCOLUMNS 0
+#define toROWS 1
+

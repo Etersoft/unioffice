@@ -42,7 +42,11 @@
 #include "dispid_const.h"
 
 
+#define VER_2 1
+#define VER_3 2
+
 extern LONG dll_ref;
+extern LONG OOVersion;
 
 struct CELL_COORD
 {

@@ -21,6 +21,7 @@
 #include "mso_to_oo_private.h"
 
 LONG dll_ref = 0;
+LONG OOVersion = VER_3;
 BOOL write_log = 0;
 char buf[MAX_PATH+50];
 FILE *trace_file;

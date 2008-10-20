@@ -5124,6 +5124,8 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
 
     *ppObj = APPEXCEL(_applicationexcell);
 
+    OOVersion = VER_3;
+
     /*освобождаем память выделенную под строку*/
     SysFreeString(V_BSTR(&param1));
     VariantClear(&result);
