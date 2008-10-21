@@ -185,9 +185,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
 
         hres = VariantChangeTypeEx(&varColumnIndex, &varColumnIndex, 0, 0, VT_I4);
 
-        if ((V_VT(&varRowIndex) != VT_I4) || (V_VT(&varColumnIndex) != VT_I4))
+        if ((V_VT(&varRowIndex) != VT_I4) || (V_VT(&varColumnIndex) != VT_I4)) {
+            TRACE("ERROR when VariantChangeTypeEx");
             return E_FAIL;
-
+        }
         /*Создаем новый объект I_Range that occupy one cell*/
         struct CELL_COORD cellCoord;
 
