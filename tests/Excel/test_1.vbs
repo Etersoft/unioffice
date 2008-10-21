@@ -276,13 +276,34 @@ Else
     otchetFile.WriteLine("[SUCCESS] PUT IFont.FontStyle")  
     success = success + 1 
 End If
+
+
+Excel.Cells(7,1).Value = Excel.Cells(7,1).Font.FontStyle  
+Excel.Cells(7,2).Value = Excel.Cells(7,2).Font.FontStyle
+Excel.Cells(7,3).Value = Excel.Cells(7,3).Font.FontStyle
+Excel.Cells(7,4).Value = Excel.Cells(7,4).Font.FontStyle
+Excel.Cells(7,5).Value = Excel.Cells(7,5).Font.FontStyle
+Excel.Cells(7,6).Value = Excel.Cells(7,6).Font.FontStyle
+Excel.Cells(7,7).Value = Excel.Cells(7,7).Font.FontStyle
+Excel.Cells(7,8).Value = Excel.Cells(7,8).Font.FontStyle
+Excel.Cells(7,9).Value = Excel.Cells(7,9).Font.FontStyle
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] GET IFont.FontStyle")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] GET IFont.FontStyle")  
+    success = success + 1 
+End If
+
+
 If Excel.Cells(7,1).Font.Bold=TRUE then
     If  Err.Number <> 0 Then
-        otchetFile.WriteLine("[FAILED] GET IFont.FontStyle")  
+        otchetFile.WriteLine("[FAILED] GET IFont.Bold")  
         failed = failed + 1
         Err.Clear
     Else
-        otchetFile.WriteLine("[SUCCESS] GET IFont.FontStyle")  
+        otchetFile.WriteLine("[SUCCESS] EQUAL IFont.FontStyle")  
         success = success + 1     
     End If 
 Else
