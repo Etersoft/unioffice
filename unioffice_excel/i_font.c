@@ -673,16 +673,98 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_FontStyle(
         I_Font* iface,
         VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    WCHAR str[200];
+    VARIANT_BOOL tmp;
+    int pusto = 1;
+    HRESULT hres;
+
+    tmp = VARIANT_FALSE;
+    hres = I_Font_get_Bold(iface, &tmp);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get_Bold");
+    }
+    if (tmp==VARIANT_TRUE) {
+        if (pusto) swprintf(str, L"%s", L"bold");
+            else swprintf(str, L"%s %s", str, L"bold");
+        pusto = 0;
+    }
+
+    tmp = VARIANT_FALSE;
+    hres = I_Font_get_Italic(iface, &tmp);
+    if (FAILED(hres)) {
+        TRACE("ERROR when get_Italic");
+    }
+    if (tmp==VARIANT_TRUE) {
+        if (pusto) swprintf(str, L"%s", L"italic");
+            else swprintf(str, L"%s %s", str, L"italic");
+        pusto = 0;
+    }
+
+    if (pusto) swprintf(str, L"%s", L"normal");
+
+    V_VT(RHS) = VT_BSTR;
+    V_BSTR(RHS) = SysAllocString(str);
+
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_put_FontStyle(
         I_Font* iface,
         VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    static WCHAR str_bold_en[] = {
+        'b','o','l','d',0};
+    static WCHAR str_italic_en[] = {
+        'i','t','a','l','i','c',0};
+    static WCHAR str_bold_ru[] = {
+        0x0436,0x0438,0x0440,0x043d,0x044b, 0x0439,0};
+    static WCHAR str_italic_ru[] = {
+        0x043a,0x0443,0x0440,0x0441,0x0438, 0x0432,0};
+    static WCHAR str_bold2_ru[] = {
+        0x043f, 0x043e, 0x043b, 0x0443,0x0436,0x0438,0x0440,0x043d,0x044b, 0x0439,0};
+
+    int i = 0;
+    WCHAR str[100];
+
+    MSO_TO_OO_CorrectArg(RHS, &RHS);
+
+    if (V_VT(&RHS)!=VT_BSTR) {
+        TRACE("ERROR parameter not BSTR");
+        return E_FAIL;
+    }
+
+    str[0] = 0;
+    while (*(V_BSTR(&RHS)+i)) {
+        if (*(V_BSTR(&RHS)+i)==L' ') {
+            if ((!lstrcmpiW(str, str_bold_en)) ||
+                (!lstrcmpiW(str, str_bold_ru)) ||
+                (!lstrcmpiW(str, str_bold2_ru))) {
+                 I_Font_put_Bold(iface, VARIANT_TRUE);
+            }
+            if ((!lstrcmpiW(str, str_italic_en)) ||
+                (!lstrcmpiW(str, str_italic_ru))) {
+                 I_Font_put_Italic(iface, VARIANT_TRUE);
+            }
+            str[0] = 0;
+        } else {
+            swprintf(str, L"%s%c",str, *(V_BSTR(&RHS)+i));
+        }
+        i++;
+    }
+    if ((!lstrcmpiW(str, str_bold_en)) ||
+        (!lstrcmpiW(str, str_bold_ru)) ||
+        (!lstrcmpiW(str, str_bold2_ru)))  {
+         I_Font_put_Bold(iface, VARIANT_TRUE);
+    }
+    if ((!lstrcmpiW(str, str_italic_en)) ||
+        (!lstrcmpiW(str, str_italic_ru))) {
+         I_Font_put_Italic(iface, VARIANT_TRUE);
+    }
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_OutlineFont(
