@@ -5185,7 +5185,6 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
 
     if (*(V_BSTR(&version))==L'2') OOVersion = VER_2;
     else if (*(V_BSTR(&version))==L'3') OOVersion = VER_3;
-         else OOVersion = VER_2;
 
     VariantClear(&p1);
     VariantClear(&p2);
