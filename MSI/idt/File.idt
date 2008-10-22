@@ -1,4 +1,5 @@
 File	Component_	FileName	FileSize	Version	Language	Attributes	Sequence
 s72	s72	l255	i4	S72	S20	I2	i2
 File	File
-unioffice_excel.dll	Ooffice	mso_oo.dll|unioffice_excel.dll	200000			512	1
+unioffice_excel.dll	Ooffice	uo_excel.dll|unioffice_excel.dll	200000			512	1
+unioffice_excel.tlb	Ooffice1	uo_excel.tlb|unioffice_excel.tlb	100000			512	2
