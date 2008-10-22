@@ -32,7 +32,7 @@ else
 End If
 
 'Не забыть скрыть Excel если этопотоковый запуск.
-otchetFile.WriteLine("++++++ TEST 1 ++++++")
+otchetFile.WriteLine("++++++ TEST 3 (IBorders, IBorder)++++++")
 On Error Resume Next
 
 'Создаем объект Excel.Application
