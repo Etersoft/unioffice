@@ -900,7 +900,7 @@ import "wtypes.idl";
 		[propget,id(dispid_borders_linestyle), helpstring("property LineStyle")] HRESULT LineStyle([out, retval] XlLineStyle *plinestyle);
 		[propput,id(dispid_borders_linestyle), helpstring("property LineStyle")] HRESULT LineStyle([in] XlLineStyle linestyle);
 //GetEnumerator 	Returns an enumerator to support iterating through the collection.
-		[id(dispid_borders_getenumerator), helpstring("method GetEnumerator")] HRESULT GetEnumerator([out, retval] IDispatch **pdretval);
+		[id(dispid_borders_getenumerator), helpstring("method GetEnumerator")] HRESULT GetEnumerator([out, retval] IUnknown **pdretval);
 //Value 	Returns or sets the line style for the border.
 		[propget,id(dispid_borders_value), helpstring("property Value")] HRESULT Value([out, retval] XlLineStyle *plinestyle);
 		[propput,id(dispid_borders_value), helpstring("property Value")] HRESULT Value([in] XlLineStyle linestyle);

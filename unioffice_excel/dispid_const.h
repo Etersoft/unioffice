@@ -332,7 +332,7 @@
 #define dispid_borders_count                                     6
 #define dispid_borders_item                                      7
 #define dispid_borders_linestyle                                 8
-#define dispid_borders_getenumerator                             9
+#define dispid_borders_getenumerator                             -4
 #define dispid_borders_value                                     10
 #define dispid_borders_weight                                    11
 #define dispid_borders__default                                  0

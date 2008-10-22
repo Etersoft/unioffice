@@ -47,11 +47,15 @@ HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
     return hres;
 }
 
+/*IBorders interface*/
+
+#define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface);
+
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
         I_Borders* iface)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     ULONG ref;
     TRACE("REF = %i \n", This->ref);
 
@@ -69,15 +73,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
 
     if (This == NULL || ppvObject == NULL) return E_POINTER;
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Borders)) {
-        *ppvObject = &This->_bordersVtbl;
-        MSO_TO_OO_I_Borders_AddRef(iface);
+        *ppvObject = BORDERS_BORDERS(This);
+        I_Borders_AddRef((I_Borders*)(*ppvObject));
+        return S_OK;
+    }
+    if (IsEqualGUID(riid, &IID_IEnumVARIANT)) {
+        *ppvObject = BORDERS_ENUM(This);
+        IUnknown_AddRef((IUnknown*)(*ppvObject));
         return S_OK;
     }
 
@@ -87,7 +96,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_I_Borders_Release(
         I_Borders* iface)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     ULONG ref;
     TRACE("REF = %i \n", This->ref);
 
@@ -110,7 +119,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Application(
         I_Borders* iface,
         IDispatch **value)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     TRACE_IN;
 
     if (This==NULL) return E_POINTER;
@@ -124,7 +133,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Parent(
         I_Borders* iface,
         IDispatch **value)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     TRACE_IN;
 
     if (This==NULL) return E_POINTER;
@@ -143,7 +152,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Color(
         I_Borders* iface,
         long *plcolor)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
     IDispatch *border_tmp;
     TRACE_IN;
@@ -160,7 +169,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
         I_Borders* iface,
         long lcolor)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
     IDispatch *border_tmp;
     int i;
@@ -183,7 +192,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_ColorIndex(
         I_Borders* iface,
         long *plcolorindex)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     long tmpcolor;
     int i;
     HRESULT hres;
@@ -213,7 +222,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_ColorIndex(
         I_Borders* iface,
         long lcolorindex)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     long tmpcolor;
     TRACE_IN;
 
@@ -244,7 +253,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_LineStyle(
         I_Borders* iface,
         XlLineStyle *plinestyle)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
     IDispatch *border_tmp;
     TRACE_IN;
@@ -263,7 +272,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
         I_Borders* iface,
         XlLineStyle linestyle)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
     IDispatch *border_tmp;
     int i;
@@ -285,7 +294,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Weight(
         I_Borders* iface,
         XlBorderWeight *pweight)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
     IDispatch *border_tmp;
     TRACE_IN;
@@ -304,7 +313,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
         I_Borders* iface,
         XlBorderWeight weight)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
     IDispatch *border_tmp;
     int i;
@@ -327,7 +336,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
         XlBordersIndex key,
         IDispatch **ppObject)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
     IUnknown *punk = NULL;
     IDispatch *pborder;
     HRESULT hres;
@@ -391,16 +400,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Count(
         I_Borders* iface,
         long *pretval)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    *pretval = 12;
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_GetEnumerator(
         I_Borders* iface,
-        IDispatch **pdretval)
+        IUnknown **pdretval)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    BordersImpl *This = BORDERS_THIS(iface);
+    TRACE_IN;
+    *pdretval = (IUnknown*)BORDERS_ENUM(This);
+    IUnknown_AddRef(*pdretval);
+    TRACE_OUT;
+    return S_OK;
 }
 
 /*** IDispatch methods ***/
@@ -506,6 +521,138 @@ const I_BordersVtbl MSO_TO_OO_I_Borders_Vtbl =
     MSO_TO_OO_I_Borders_get__Default
 };
 
+#undef SHEETS_THIS
+
+/*IEnumVARIANT interface*/
+
+#define ENUMVAR_THIS(iface) DEFINE_THIS(BordersImpl, enumerator, iface);
+
+/*** IUnknown methods ***/
+static ULONG WINAPI MSO_TO_OO_I_Borders_EnumVAR_AddRef(
+        IEnumVARIANT* iface)
+{
+    BordersImpl *This = ENUMVAR_THIS(iface);
+    return I_Borders_AddRef(BORDERS_BORDERS(This));
+}
+
+
+static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_QueryInterface(
+        IEnumVARIANT* iface,
+        REFIID riid,
+        void **ppvObject)
+{
+    BordersImpl *This = ENUMVAR_THIS(iface);
+    return I_Borders_QueryInterface(BORDERS_BORDERS(This), riid, ppvObject);
+}
+
+static ULONG WINAPI MSO_TO_OO_I_Borders_EnumVAR_Release(
+        IEnumVARIANT* iface)
+{
+    BordersImpl *This = ENUMVAR_THIS(iface);
+    return I_Borders_Release(BORDERS_BORDERS(This));
+}
+
+/*** IEnumVARIANT methods ***/
+static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Next(
+        IEnumVARIANT* iface,
+        ULONG celt,
+        VARIANT *rgVar,
+        ULONG *pCeltFetched)
+{
+    BordersImpl *This = ENUMVAR_THIS(iface);
+    HRESULT hres;
+    ULONG l;
+    long l1;
+    int count;
+    ULONG l2;
+    IDispatch *dret;
+
+    if (This->enum_position<0)
+        return S_FALSE;
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = 0;
+
+    if (rgVar == NULL)
+       return E_INVALIDARG;
+
+    /*Init Array*/
+    for (l=0; l<celt; l++)
+       VariantInit(&rgVar[l]);
+
+    I_Borders_get_Count(BORDERS_BORDERS(This), (long*)&count);
+
+    for (l1=This->enum_position, l2=0; l1<count && l2<celt; l1++, l2++) {
+      hres = I_Borders_get_Item(BORDERS_BORDERS(This), l1+1, &dret);
+      V_VT(&rgVar[l2]) = VT_DISPATCH;
+      V_DISPATCH(&rgVar[l2]) = dret;
+      if (FAILED(hres))
+         goto error;
+    }
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = l2;
+
+   This->enum_position = l1;
+
+   return  (l2 < celt) ? S_FALSE : S_OK;
+
+error:
+   for (l=0; l<celt; l++)
+      VariantClear(&rgVar[l]);
+   return hres;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Skip(
+        IEnumVARIANT* iface,
+        ULONG celt)
+{
+    BordersImpl *This = ENUMVAR_THIS(iface);
+    int count;
+    TRACE_IN;
+
+    I_Borders_get_Count(BORDERS_BORDERS(This), (long*)&count);
+    This->enum_position += celt;
+
+    if (This->enum_position>=(count)) {
+        This->enum_position = count - 1;
+        TRACE_OUT;
+        return S_FALSE;
+    }
+    TRACE_OUT;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Reset(
+        IEnumVARIANT* iface)
+{
+    BordersImpl *This = ENUMVAR_THIS(iface);
+    This->enum_position = 0;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Clone(
+        IEnumVARIANT* iface,
+        IEnumVARIANT **ppEnum)
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL;
+}
+
+#undef ENUMVAR_THIS
+
+const IEnumVARIANTVtbl MSO_TO_OO_I_Borders_enumvarVtbl =
+{
+    MSO_TO_OO_I_Borders_EnumVAR_QueryInterface,
+    MSO_TO_OO_I_Borders_EnumVAR_AddRef,
+    MSO_TO_OO_I_Borders_EnumVAR_Release,
+    MSO_TO_OO_I_Borders_EnumVAR_Next,
+    MSO_TO_OO_I_Borders_EnumVAR_Skip,
+    MSO_TO_OO_I_Borders_EnumVAR_Reset,
+    MSO_TO_OO_I_Borders_EnumVAR_Clone
+};
+
+
 extern HRESULT _I_BordersConstructor(LPVOID *ppObj)
 {
     BordersImpl *borders;
@@ -518,11 +665,13 @@ extern HRESULT _I_BordersConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    borders->_bordersVtbl = &MSO_TO_OO_I_Borders_Vtbl;
+    borders->pbordersVtbl = &MSO_TO_OO_I_Borders_Vtbl;
+    borders->penumeratorVtbl = &MSO_TO_OO_I_Borders_enumvarVtbl;
     borders->ref = 0;
     borders->prange = NULL;
+    borders->enum_position = 0;
 
-    *ppObj = &borders->_bordersVtbl;
+    *ppObj = BORDERS_BORDERS(borders);
     TRACE_OUT;
     return S_OK;
 }

@@ -62,10 +62,17 @@ typedef struct
 
 typedef struct
 {
-    const I_BordersVtbl *_bordersVtbl;
+    const I_BordersVtbl *pbordersVtbl;
+    const IEnumVARIANTVtbl *penumeratorVtbl;
+
     LONG ref;
     IDispatch *prange;           /*Указатель на Range*/
+    int enum_position;
+
 } BordersImpl;
+
+#define BORDERS_BORDERS(x) ((I_Borders*)&(x)->pbordersVtbl)
+#define BORDERS_ENUM(x) ((IEnumVARIANT*)&(x)->penumeratorVtbl)
 
 typedef struct
 {
