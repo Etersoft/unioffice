@@ -47,11 +47,11 @@ HRESULT MSO_TO_OO_I_PageSetup_Initialize(
 
 HRESULT MSO_TO_OO_I_Workbook_Initialize(
         I_Workbook* iface,
-        I_ApplicationExcel *app);
+        I_Workbooks *pwrks);
 
 HRESULT MSO_TO_OO_I_Workbook_Initialize2(
         I_Workbook* iface,
-        I_ApplicationExcel *app,
+        I_Workbooks *pwrks,
         BSTR Filename,
         VARIANT_BOOL astemplate);
 

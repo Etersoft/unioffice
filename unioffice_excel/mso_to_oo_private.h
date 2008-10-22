@@ -193,7 +193,7 @@ typedef struct
 {
     const I_WorkbookVtbl *_workbookVtbl;
     LONG ref;
-    IDispatch *pApplication;  /*Указатель на Application*/
+    IDispatch *pworkbooks;  /*Указатель на Application*/
     IDispatch *pDoc;          /*Указатель на Document*/
     IDispatch *pSheets;       /*Указатель на Sheets*/
 //    BSTR filename;            /*имя файла*/ 

@@ -169,7 +169,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
     }
 
     if ((Is_Variant_Null(varTemplate)) || (lstrlenW(V_BSTR(&varTemplate)) == 0)) {
-        hres = MSO_TO_OO_I_Workbook_Initialize( This->pworkbook[This->current_workbook], This->pApplication);
+        hres = MSO_TO_OO_I_Workbook_Initialize( This->pworkbook[This->current_workbook], iface);
     } else {
        /* Необходимо преобразовать путь+имя в нужную форму
        от C:\test test.xls
@@ -178,7 +178,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
        MSO_TO_OO_MakeURLFromFilename(V_BSTR(&varTemplate),&Filename);
        /*преобразовали*/
        WTRACE(L"FILENAME ------>  %s \n",Filename);
-       hres = MSO_TO_OO_I_Workbook_Initialize2( This->pworkbook[This->current_workbook], This->pApplication, Filename, VARIANT_TRUE);
+       hres = MSO_TO_OO_I_Workbook_Initialize2( This->pworkbook[This->current_workbook], iface, Filename, VARIANT_TRUE);
        SysFreeString(Filename);
     }
     if (FAILED(hres)) {
@@ -374,7 +374,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     VARIANT_BOOL astemp;
     astemp = VARIANT_FALSE;
 
-    hres = MSO_TO_OO_I_Workbook_Initialize2(This->pworkbook[This->current_workbook], This->pApplication, filenametmp,astemp);
+    hres = MSO_TO_OO_I_Workbook_Initialize2(This->pworkbook[This->current_workbook], iface, filenametmp,astemp);
     if (FAILED(hres)) {
         *ppWorkbook = NULL;
         return hres;
