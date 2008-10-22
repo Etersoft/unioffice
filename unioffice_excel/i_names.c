@@ -116,8 +116,10 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Application(
         Name* iface,
         IDispatch **value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    NameImpl *This = (NameImpl*)iface;
+    TRACE_OUT;
+    return Names_get_Application((Names*)(This->pnames), value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_Creator(
@@ -132,8 +134,19 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Parent(
         Name* iface,
         IDispatch **value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    NameImpl *This = (NameImpl*)iface;
+    TRACE_IN;
+
+    if (This==NULL) return E_POINTER;
+
+    if (value==NULL)
+        return E_POINTER;
+
+    *value = This->pnames;
+    IDispatch_AddRef(*value);
+
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get__Default(
