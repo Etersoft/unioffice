@@ -176,7 +176,6 @@ typedef struct
     const NameVtbl *nameVtbl;
     LONG ref;
     IDispatch *pnames;              /*указатель на Names*/
-    IDispatch *pApplication;     /*указатель на Application*/
     IDispatch *pOOName;         /*указатель на OpenOffice Name*/
 } NameImpl;
 

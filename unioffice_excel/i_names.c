@@ -97,10 +97,6 @@ static ULONG WINAPI MSO_TO_OO_Name_Release(
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pApplication != NULL) {
-            I_ApplicationExcel_Release(This->pApplication);
-            This->pApplication = NULL;
-        }
         if (This->pnames != NULL) {
             IDispatch_Release(This->pnames);
             This->pnames = NULL;
@@ -639,7 +635,6 @@ extern HRESULT _NameConstructor(LPVOID *ppObj)
 
     name->nameVtbl = &MSO_TO_OO_NameVtbl;
     name->ref = 0;
-    name->pApplication = NULL;
     name->pnames = NULL;
     name->pOOName = NULL;
 
