@@ -151,13 +151,6 @@ HRESULT MSO_TO_OO_I_PageSetup_Initialize(
         I_Worksheet_AddRef((I_Worksheet*)this->pwsheet);
     }
 
-    if (this->pApplication!=NULL) {
-        I_ApplicationExcel_Release((I_ApplicationExcel*)this->pApplication);
-    }
-    this->pApplication = wb->pApplication;
-    if (this->pApplication!=NULL) {
-        I_ApplicationExcel_AddRef((I_ApplicationExcel*)this->pApplication);
-    }
     TRACE_OUT;
     return S_OK;
 }

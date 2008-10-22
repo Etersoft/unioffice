@@ -100,10 +100,6 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_Release(
             IDispatch_Release(This->pwsheet);
             This->pwsheet = NULL;
         }
-        if (This->pApplication != NULL) {
-            IDispatch_Release(This->pApplication);
-            This->pApplication = NULL;
-        }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
@@ -1864,8 +1860,11 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Application(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    PageSetupImpl *This = (PageSetupImpl*)iface;
+    if (This==NULL) return E_POINTER;
+    TRACE_OUT;
+    return I_Worksheet_get_Application((I_Worksheet*)(This->pwsheet), value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Creator(
@@ -1880,8 +1879,17 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Parent(
         I_PageSetup* iface,
         IDispatch **value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    PageSetupImpl *This = (PageSetupImpl*)iface;
+    if (This==NULL) return E_POINTER;
+
+    if (value==NULL) return E_POINTER;
+
+    *value = (IDispatch*)(This->pwsheet);
+    IDispatch_AddRef(*value);
+
+    TRACE_OUT;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BlackAndWhite(
@@ -2433,7 +2441,6 @@ extern HRESULT _I_PageSetupConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
     pagesetup->_pagesetupVtbl = &MSO_TO_OO_I_PageSetupVtbl;
     pagesetup->ref = 0;
     pagesetup->pwsheet = NULL;
-    pagesetup->pApplication = NULL;
 
     *ppObj = &pagesetup->_pagesetupVtbl;
     TRACE_OUT;

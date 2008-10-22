@@ -152,7 +152,6 @@ typedef struct
     const I_PageSetupVtbl *_pagesetupVtbl;
     LONG ref;
     IDispatch *pwsheet;      /*Указатель на worksheet*/
-    IDispatch *pApplication;  /*Указатель на Application*/
 } PageSetupImpl;
 
 typedef struct
