@@ -403,8 +403,6 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
 
     WorkbookImpl *wbtemp = (WorkbookImpl*)This->pwb;
     /*присваиваем указатель на Application*/
-    this_range->pApplication = wbtemp->pApplication;
-    IDispatch_AddRef(this_range->pApplication);
 
     MSO_TO_OO_I_Range_Initialize2((I_Range*)This->pAllRange, This->pOOSheet);
 
@@ -840,8 +838,6 @@ HRESULT MSO_TO_OO_I_Range_Initialize(
     This->pwsheet = This_parent->pwsheet;
     IDispatch_AddRef(This->pwsheet);
     /*Присваиваем указатель на Application*/
-    This->pApplication = This_parent->pApplication;
-    IDispatch_AddRef(This->pApplication);
 
     This->pOORange = V_DISPATCH(&resRange);
     IDispatch_AddRef(V_DISPATCH(&resRange));
@@ -901,8 +897,6 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
         return S_OK;
     }
 
-    This->pApplication = pApp;
-    IDispatch_AddRef(pApp);
     This->pwsheet = psheet;
     IDispatch_AddRef(psheet);
 
@@ -1064,9 +1058,6 @@ HRESULT MSO_TO_OO_GetActiveCells(
     this_range->pwsheet = (IDispatch*)pworksheet;
     IDispatch_AddRef(this_range->pwsheet);
     /*Присваиваем указатель на parent worksheet*/
-    this_range->pApplication = wb->pApplication;
-    IDispatch_AddRef(this_range->pApplication);
-
     hres = MSO_TO_OO_I_Range_Initialize2((I_Range*)pRange,pCurrentCell);
 
     *ppRange = (I_Range*)pRange;
@@ -1109,8 +1100,6 @@ HRESULT MSO_TO_OO_I_Range_Initialize_ByName(
     This->pwsheet = This_parent->pwsheet;
     IDispatch_AddRef(This->pwsheet);
     /*Присваиваем указатель на worksheet*/
-    This->pApplication = This_parent->pApplication;
-    IDispatch_AddRef(This->pApplication);
 
     This->pOORange = V_DISPATCH(&resRange);
     IDispatch_AddRef(This->pOORange);

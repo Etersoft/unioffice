@@ -126,7 +126,6 @@ typedef struct
     LONG ref;
     IDispatch *pOORange;     /*Указатель на Range openoffice*/
     IDispatch *pwsheet;      /*Указатель на worksheet*/
-    IDispatch *pApplication;  /*Указатель на Application*/
     int is_release;
 } RangeImpl;
 
