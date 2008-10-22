@@ -1384,12 +1384,6 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
     This->pwsheet = (IDispatch*)wsh;
     I_Worksheet_AddRef((I_Worksheet*)This->pwsheet);
 
-    if (This->pApplication!=NULL) {
-        I_ApplicationExcel_Release((I_ApplicationExcel*)This->pApplication);
-    }
-    This->pApplication = (IDispatch*)wb->pApplication;
-    I_ApplicationExcel_AddRef((I_ApplicationExcel*)This->pApplication);
-
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vframe, wb->pDoc, L"DrawPages",1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when get DrawPages \n");

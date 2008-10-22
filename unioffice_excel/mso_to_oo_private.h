@@ -135,7 +135,6 @@ typedef struct
     LONG ref;
     IDispatch *pOOPage;     /*Указатель на DrawPage openoffice*/
     IDispatch *pwsheet;      /*Указатель на worksheet*/
-    IDispatch *pApplication;  /*Указатель на Application*/
 } ShapesImpl;
 
 typedef struct
