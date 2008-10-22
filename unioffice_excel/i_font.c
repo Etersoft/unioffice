@@ -168,7 +168,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Bold(
     V_VT(&vBoldState) = VT_R4;
 
     if (vbBold == VARIANT_TRUE)
-        V_R4(&vBoldState) = 200;
+        V_R4(&vBoldState) = 150;
     else
         V_R4(&vBoldState) = 100;
 
