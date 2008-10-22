@@ -14,6 +14,8 @@ all: unioffice.msi
 # Заполняем CAB-файлы содержимым
 ooffice.cab: ./../unioffice_excel/unioffice_excel.dll
 	$(MAKECAB) ..\\unioffice_excel\\unioffice_excel.dll $@
+ooffice1.cab: ./../unioffice_excel/unioffice_excel.tlb
+	$(MAKECAB) ..\\unioffice_excel\\unioffice_excel.tlb $@
 
 # Удаляем временные файлы
 rmtmp:
@@ -29,8 +31,8 @@ extridt:
 	rm -f idt/_Validation.idt idt/_SummaryInformation.idt
 
 # Формируем пакет MSI из шаблона, добавляем CAB'ы и .idt
-unioffice.msi: bin/template.msi ooffice.cab
+unioffice.msi: bin/template.msi ooffice.cab ooffice1.cab
 	cp bin/template.msi $@
 	$(MSIDB) -d $@ -f $(PWD)\\idt -i "*"
 	$(MSIDB) -d $@ -f $(PWD)\\idt\\Binary -i "*"
-	$(MSIDB) -d $@ -a ooffice.cab
+	$(MSIDB) -d $@ -a ooffice.cab -a ooffice1.cab
