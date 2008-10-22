@@ -118,6 +118,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Application(
 {
     TRACE_IN;
     NameImpl *This = (NameImpl*)iface;
+    if (This==NULL) return E_POINTER;
     TRACE_OUT;
     return Names_get_Application((Names*)(This->pnames), value);
 }
@@ -744,10 +745,6 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pApplication != NULL) {
-            I_ApplicationExcel_Release(This->pApplication);
-            This->pApplication = NULL;
-        }
         if (This->pwb != NULL) {
             IDispatch_Release(This->pwb);
             This->pwb = NULL;
@@ -767,19 +764,11 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Application(
         Names* iface,
         IDispatch **value)
 {
-    NamesImpl *This = NAMES_THIS(iface);
     TRACE_IN;
-
+    NamesImpl *This = NAMES_THIS(iface);
     if (This==NULL) return E_POINTER;
-
-    if (value==NULL)
-        return E_POINTER;
-
-    *value = This->pApplication;
-    IDispatch_AddRef(This->pApplication);
-
     TRACE_OUT;
-    return S_OK;
+    return I_Workbook_get_Application((I_Workbook*)(This->pwb), value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_get_Count(
@@ -1194,7 +1183,6 @@ extern HRESULT _NamesConstructor(LPVOID *ppObj)
     names->pnamesVtbl = &MSO_TO_OO_NamesVtbl;
     names->penumeratorVtbl = &MSO_TO_OO_Names_enumvarVtbl;
     names->ref = 0;
-    names->pApplication = NULL;
     names->pwb = NULL;
     names->pOONames = NULL;
     names->enum_position = 0;

@@ -162,7 +162,6 @@ typedef struct
 
     LONG ref;
     IDispatch *pwb;              /*указатель на Workbook*/
-    IDispatch *pApplication;     /*указатель на Application*/
     IDispatch *pOONames;         /*указатель на OpenOffice Names*/
     int enum_position;
 

@@ -1594,12 +1594,6 @@ HRESULT MSO_TO_OO_Names_Initialize(
     This->pwb = (IDispatch*)wb;
     if (This->pwb != NULL) I_Workbook_AddRef((I_Workbook*)(This->pwb));
 
-    if (This->pApplication!=NULL) {
-         I_ApplicationExcel_Release((I_ApplicationExcel*)(This->pApplication));
-    }
-    This->pApplication = (IDispatch*)(wbi->pApplication);
-    if (This->pApplication != NULL) I_ApplicationExcel_AddRef((I_ApplicationExcel*)(This->pApplication));
-
     if (wbi->pDoc==NULL) {
         TRACE("Object pDoc is NULL\n");
         return E_FAIL;
