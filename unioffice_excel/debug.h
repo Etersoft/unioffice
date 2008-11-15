@@ -23,7 +23,7 @@ extern char buf[MAX_PATH+50];
 extern write_log;
 extern FILE *trace_file;
 
-#define DEBUG 1
+#define DEBUG
 
 #ifdef DEBUG
 #define TRACE(args...) \
@@ -57,5 +57,36 @@ if (trace_file) fclose(trace_file);\
 
 #define TRACE_IN TRACE(" IN \n")
 #define TRACE_OUT TRACE(" OUT \n")
-
 #define TRACE_NOTIMPL TRACE("ERROR method not implement \n")
+
+#ifdef DEBUG
+#define ERR(args...) \
+do { if (write_log) { \
+trace_file = fopen(buf,"a");\
+if (trace_file) { \
+fprintf(trace_file,"ERROR:%s:%s:",__FILE__,__FUNCTION__);\
+fprintf(trace_file, args); \
+if (trace_file) fclose(trace_file);\
+} \
+} \
+} while(0)
+#else
+#define ERR(n,...)
+#endif
+
+#ifdef DEBUG
+#define WERR(args...) \
+do { if (write_log) { \
+trace_file = fopen(buf,"a");\
+if (trace_file) { \
+fprintf(trace_file,"ERROR:%s:%s:",__FILE__,__FUNCTION__);\
+fwprintf(trace_file, args); \
+if (trace_file) fclose(trace_file);\
+} \
+} \
+} while(0)
+#else
+#define WERR(n,...)
+#endif
+
+
