@@ -35,7 +35,7 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
 
     hres = LoadTypeLib(file_name, &typelib);
     if(FAILED(hres)) {
-        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        ERR("LoadTypeLib hres = %08x \n", hres);
         return hres;
     }
 
@@ -58,7 +58,7 @@ static ULONG WINAPI MSO_TO_OO_I_Border_AddRef(
     TRACE("REF = %i \n", This->ref);
 
     if (!This) {
-        TRACE("ERROR object is null \n");           
+        ERR("object is null \n");           
         return E_POINTER;
     }
 
@@ -80,7 +80,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
     *ppvObject = NULL;
     
     if (!This) {
-        TRACE("ERROR object is null \n");
+        ERR("object is null \n");
         return E_POINTER;
     }
 
@@ -93,7 +93,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
     }
     
     StringFromGUID2(riid, str_clsid, 39);
-    WTRACE(L"(%s) not supported \n", str_clsid);
+    WERR(L"(%s) not supported \n", str_clsid);
 
     return E_NOINTERFACE;
 }
@@ -106,7 +106,7 @@ static ULONG WINAPI MSO_TO_OO_I_Border_Release(
     TRACE("REF = %i \n", This->ref);
 
     if (!This) {
-        TRACE("ERROR Object is NULL \n");
+        ERR("Object is NULL \n");
         return E_POINTER;
     }
      
@@ -139,19 +139,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Application(
     *value = NULL;
 
     if (!This) {
-        TRACE("ERROR Object is NULL\n");
+        ERR(" Object is NULL\n");
         return E_POINTER;
     }
 
     I_Border_get_Parent(BORDER_BORDER(This), (IDispatch**) &borders);
     if (!borders) {
-        TRACE("ERROR when get Parent \n");
+        ERR("when get Parent \n");
         return E_FAIL;
     }
     
     I_Borders_get_Application(borders, value);
     if (!value) {
-        TRACE("ERROR when get Application \n");  
+        ERR("when get Application \n");  
         return E_FAIL;
     }
     
@@ -169,14 +169,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Parent(
     *value = NULL;
 
     if (!This) {
-        TRACE("ERROR object is NULL \n");
+        ERR("object is NULL \n");
         return E_POINTER;
     }
 
     *value = (IDispatch*)(This->pBorders);
     
     if (!value) {
-        TRACE("ERROR parent is NULL \n");                 
+        ERR("parent is NULL \n");                 
         return E_FAIL;
     }
     
@@ -201,13 +201,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
     VariantInit(&Y);
 
     if (!This) {
-        TRACE("ERROR Object is NULL \n");
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when get TableBorder\n");
+        ERR("get TableBorder\n");
         return E_FAIL;
     }
 
@@ -244,7 +244,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
     case xlEdgeLeft:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"LeftLine", 0);
         if (FAILED(hres)) {
-            TRACE(" ERROR when get LeftLine\n");
+            ERR("get LeftLine\n");
             return E_FAIL;
         }
         break;
@@ -252,7 +252,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
     case xlEdgeRight:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"RightLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get RightLine\n");
+            ERR("get RightLine\n");
             return E_FAIL;
         }
         break;
@@ -260,7 +260,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
     case xlEdgeTop:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"TopLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get TopLine\n");
+            ERR("get TopLine\n");
             return E_FAIL;
         }
         break;
@@ -268,35 +268,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
     case xlEdgeBottom:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"BottomLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get BottomLine\n");
+            ERR("get BottomLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideHorizontal:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"HorizontalLine", 0);
         if (FAILED(hres)) {
-            TRACE(" ERROR when get HorizontalLine\n");
+            ERR("get HorizontalLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideVertical:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"VerticalLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get VerticalLine\n");
+            ERR("get VerticalLine\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalDown:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalTLBR\n");
+            ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalBLTR\n");
+            ERR("get DiagonalBLTR\n");
             return E_FAIL;
         }
         break;
@@ -306,7 +306,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, V_DISPATCH(&Y), L"Color", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when Color \n");
+        ERR("Color \n");
         return E_FAIL;
     }
     *plcolor=V_I4(&vret);
@@ -334,7 +334,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     VariantInit(&param1);
 
     if (!This) {
-        TRACE("ERROR Object is NULL \n");
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
     /*Делаем границу видимой*/
@@ -342,7 +342,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when get TableBorder\n");
+        ERR("get TableBorder\n");
         return E_FAIL;
     }
 
@@ -379,7 +379,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeLeft:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"LeftLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get LeftLine\n");
+            ERR("get LeftLine\n");
             return E_FAIL;
         }
         break;
@@ -387,7 +387,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeRight:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"RightLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get RightLine\n");
+            ERR("get RightLine\n");
             return E_FAIL;
         }
         break;
@@ -395,7 +395,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeTop:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"TopLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get TopLine\n");
+            ERR("get TopLine\n");
             return E_FAIL;
         }
         break;
@@ -403,35 +403,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeBottom:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"BottomLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get BottomLine\n");
+            ERR("get BottomLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideHorizontal:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"HorizontalLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get HorizontalLine\n");
+            ERR("get HorizontalLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideVertical:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"VerticalLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get VerticalLine\n");
+            ERR("get VerticalLine\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalDown:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalTLBR\n");
+            ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalBLTR\n");
+            ERR("get DiagonalBLTR\n");
             return E_FAIL;
         }
         break;
@@ -445,7 +445,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&Y), L"Color", 1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when Color \n");
+        ERR("Color \n");
         return E_FAIL;
     }
 
@@ -487,7 +487,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeLeft:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"LeftLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get LeftLine\n");
+            ERR("get LeftLine\n");
             return E_FAIL;
         }
         break;
@@ -495,7 +495,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeRight:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"RightLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get RightLine\n");
+            ERR("get RightLine\n");
             return E_FAIL;
         }
         break;
@@ -503,7 +503,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeTop:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"TopLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get TopLine\n");
+            ERR("get TopLine\n");
             return E_FAIL;
         }
         break;
@@ -511,35 +511,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     case xlEdgeBottom:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"BottomLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get BottomLine\n");
+            ERR("get BottomLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideHorizontal:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"HorizontalLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get HorizontalLine\n");
+            ERR("get HorizontalLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideVertical:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"VerticalLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get VerticalLine\n");
+            ERR("get VerticalLine\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalDown:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret,This->pOORange, L"DiagonalTLBR", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when put DiagonalTLBR\n");
+            ERR("put DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalBLTR", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when put DiagonalBLTR\n");
+            ERR("put DiagonalBLTR\n");
             return E_FAIL;
         }
         break;
@@ -555,7 +555,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"TableBorder", 1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when get TableBorder\n");
+        ERR("get TableBorder\n");
         return E_FAIL;
     }
 
@@ -590,7 +590,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_ColorIndex(
             return S_OK;
         }
 
-    TRACE("ERROR Color don`t have colorindex \n");
+    ERR("Color don`t have colorindex \n");
     *plcolorindex = 1;/*белый цвет*/
     /*Отправляем что все хорошо, на всякий случай*/
     TRACE_OUT;
@@ -611,7 +611,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_ColorIndex(
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
 
     if ((lcolorindex<1)||(lcolorindex>56)) {
-        TRACE("ERROR Incorrect colorindex %i\n", lcolorindex);
+        ERR("Incorrect colorindex %i\n", lcolorindex);
         TRACE_OUT;
         return S_OK;
     } else {
@@ -647,13 +647,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     VariantInit(&Y);
 
     if (!This) {
-        TRACE("ERROR Object is NULL \n");
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when get TableBorder\n");
+        ERR("get TableBorder\n");
         return E_FAIL;
     }
 
@@ -690,7 +690,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     case xlEdgeLeft:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"LeftLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get LeftLine\n");
+            ERR("get LeftLine\n");
             return E_FAIL;
         }
         break;
@@ -698,7 +698,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     case xlEdgeRight:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"RightLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get RightLine\n");
+            ERR("get RightLine\n");
             return E_FAIL;
         }
         break;
@@ -706,7 +706,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     case xlEdgeTop:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"TopLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get TopLine\n");
+            ERR("get TopLine\n");
             return E_FAIL;
         }
         break;
@@ -714,35 +714,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     case xlEdgeBottom:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"BottomLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get BottomLine\n");
+            ERR("get BottomLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideHorizontal:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"HorizontalLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get HorizontalLine\n");
+            ERR("get HorizontalLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideVertical:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"VerticalLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get VerticalLine\n");
+            ERR("get VerticalLine\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalDown:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalTLBR\n");
+            ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalBLTR\n");
+            ERR("get DiagonalBLTR\n");
             return E_FAIL;
         }
         break;
@@ -752,7 +752,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, V_DISPATCH(&Y), L"InnerLineWidth", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when InnerLineWidth \n");
+        ERR("InnerLineWidth \n");
         return E_FAIL;
     }
     hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
@@ -760,7 +760,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     VariantClear(&vret);
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, V_DISPATCH(&Y), L"OuterLineWidth", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when OuterLineWidth \n");
+        ERR("OuterLineWidth \n");
         return E_FAIL;
     }
     hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
@@ -768,7 +768,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     VariantClear(&vret);
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, V_DISPATCH(&Y), L"LineDistance", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when LineDistance \n");
+        ERR("LineDistance \n");
         return E_FAIL;
     }
     hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
@@ -803,7 +803,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     long in,out,l;
 
     if (!This) {
-        TRACE("ERROR Object is NULL \n");
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
 
@@ -834,7 +834,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when get TableBorder\n");
+        ERR("get TableBorder\n");
         return E_FAIL;
     }
 
@@ -871,7 +871,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeLeft:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"LeftLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get LeftLine\n");
+            ERR("get LeftLine\n");
             return E_FAIL;
         }
         break;
@@ -879,7 +879,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeRight:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"RightLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get RightLine\n");
+            ERR("get RightLine\n");
             return E_FAIL;
         }
         break;
@@ -887,7 +887,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeTop:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"TopLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get TopLine\n");
+            ERR("get TopLine\n");
             return E_FAIL;
         }
         break;
@@ -895,35 +895,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeBottom:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"BottomLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get BottomLine\n");
+            ERR("get BottomLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideHorizontal:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"HorizontalLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get HorizontalLine\n");
+            ERR("get HorizontalLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideVertical:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"VerticalLine", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get VerticalLine\n");
+            ERR("get VerticalLine\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalDown:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalTLBR\n");
+            ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
         hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when get DiagonalBLTR\n");
+            ERR("get DiagonalBLTR\n");
             return E_FAIL;
         }
         break;
@@ -937,7 +937,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&Y), L"InnerLineWidth", 1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when InnerLineWidth \n");
+        ERR("InnerLineWidth \n");
         return E_FAIL;
     }
     V_VT(&param1) = VT_I4;
@@ -946,7 +946,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&Y), L"OuterLineWidth", 1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when OuterLineWidth \n");
+        ERR("OuterLineWidth \n");
         return E_FAIL;
     }
     V_VT(&param1) = VT_I4;
@@ -955,7 +955,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&Y), L"LineDistance", 1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when LineDistance \n");
+        ERR("LineDistance \n");
         return E_FAIL;
     }
 
@@ -997,7 +997,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeLeft:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"LeftLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get LeftLine\n");
+            ERR("get LeftLine\n");
             return E_FAIL;
         }
         break;
@@ -1005,7 +1005,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeRight:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"RightLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get RightLine\n");
+            ERR("get RightLine\n");
             return E_FAIL;
         }
         break;
@@ -1013,7 +1013,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeTop:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"TopLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get TopLine\n");
+            ERR("get TopLine\n");
             return E_FAIL;
         }
         break;
@@ -1021,35 +1021,35 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     case xlEdgeBottom:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"BottomLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get BottomLine\n");
+            ERR("get BottomLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideHorizontal:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"HorizontalLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get HorizontalLine\n");
+            ERR("get HorizontalLine\n");
             return E_FAIL;
         }
         break;
     case xlInsideVertical:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"VerticalLine", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when get VerticalLine\n");
+            ERR("get VerticalLine\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalDown:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalTLBR", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when put DiagonalTLBR\n");
+            ERR("put DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
         hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalBLTR", 1, param1);
         if (FAILED(hres)) {
-            TRACE("ERROR when put DiagonalBLTR\n");
+            ERR("put DiagonalBLTR\n");
             return E_FAIL;
         }
         break;
@@ -1065,7 +1065,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"TableBorder", 1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when get TableBorder\n");
+        ERR("get TableBorder\n");
         return E_FAIL;
     }
 
@@ -1116,7 +1116,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_GetTypeInfo(
     HRESULT hres = get_typeinfo_border(ppTInfo);
     TRACE("\n");
     if (FAILED(hres))
-        TRACE("Error when GetTypeInfo");
+        ERR("GetTypeInfo");
 
     return hres;
 }
@@ -1139,7 +1139,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_GetIDsOfNames(
 
     hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
     if (FAILED(hres)) {
-        WTRACE(L"ERROR name = %s \n", *rgszNames);
+        WERR(L"name = %s \n", *rgszNames);
     }
     TRACE_OUT;
     return hres;
@@ -1167,7 +1167,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
     hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
                             pVarResult, pExcepInfo, puArgErr);
     if (FAILED(hres)) {
-        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+        ERR("wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
 
     TRACE_OUT;
