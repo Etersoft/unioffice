@@ -47,15 +47,20 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
 }
 
 
+#define BORDER_THIS(iface) DEFINE_THIS(BorderImpl, border, iface)
+
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Border_AddRef(
         I_Border* iface)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     ULONG ref;
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        TRACE("ERROR object is null \n");           
+        return E_POINTER;
+    }
 
     ref = InterlockedIncrement(&This->ref);
     if (ref == 1) {
@@ -69,18 +74,26 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    BorderImpl *This = (BorderImpl*)iface;
-
-    if (This == NULL || ppvObject == NULL) return E_POINTER;
+    BorderImpl *This = BORDER_THIS(iface);
+    WCHAR str_clsid[39];
+    
+    *ppvObject = NULL;
+    
+    if (!This) {
+        TRACE("ERROR object is null \n");
+        return E_POINTER;
+    }
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Border)) {
-        *ppvObject = &This->_borderVtbl;
-        MSO_TO_OO_I_Border_AddRef(iface);
-
+        *ppvObject = BORDER_BORDER(This);
+        I_Border_AddRef((I_Border*)*ppvObject);
         return S_OK;
     }
+    
+    StringFromGUID2(riid, str_clsid, 39);
+    WTRACE(L"(%s) not supported \n", str_clsid);
 
     return E_NOINTERFACE;
 }
@@ -88,20 +101,28 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_I_Border_Release(
         I_Border* iface)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     ULONG ref;
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
-
+    if (!This) {
+        TRACE("ERROR Object is NULL \n");
+        return E_POINTER;
+    }
+     
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pborders!=NULL) {
-            IDispatch_Release(This->pborders);
-            This->pborders = NULL;
+        if (This->pBorders) {
+            I_Borders_Release(This->pBorders);
+            This->pBorders = NULL;
         }
+        if (This->pOORange) {
+            IDispatch_Release(This->pOORange);
+            This->pOORange = NULL;
+        }        
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        TRACE("DELETE OBJECT \n");
     }
     return ref;
 }
@@ -111,34 +132,55 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Application(
         I_Border* iface,
         IDispatch **value)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
+    I_Borders *borders = NULL;
     TRACE_IN;
+    
+    *value = NULL;
 
-    if (This==NULL) return E_POINTER;
+    if (!This) {
+        TRACE("ERROR Object is NULL\n");
+        return E_POINTER;
+    }
 
-    BordersImpl *borders = (BordersImpl*)(This->pborders);
-    TRACE("\n");
-
-    if (borders==NULL) return E_POINTER;
-    if (borders->prange==NULL) return E_POINTER;
+    I_Border_get_Parent(BORDER_BORDER(This), (IDispatch**) &borders);
+    if (!borders) {
+        TRACE("ERROR when get Parent \n");
+        return E_FAIL;
+    }
+    
+    I_Borders_get_Application(borders, value);
+    if (!value) {
+        TRACE("ERROR when get Application \n");  
+        return E_FAIL;
+    }
+    
     TRACE_OUT;
-    return I_Range_get_Application((I_Range*)(borders->prange),value);
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_get_Parent(
         I_Border* iface,
         IDispatch **value)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
+    *value = NULL;
 
-    *value = This->pborders;
-    I_Range_AddRef(This->pborders);
-
-    if (value==NULL)
+    if (!This) {
+        TRACE("ERROR object is NULL \n");
         return E_POINTER;
+    }
+
+    *value = (IDispatch*)(This->pBorders);
+    
+    if (!value) {
+        TRACE("ERROR parent is NULL \n");                 
+        return E_FAIL;
+    }
+    
+    I_Borders_AddRef(This->pBorders);
 
     TRACE_OUT;
     return S_OK;
@@ -148,24 +190,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
         I_Border* iface,
         long *plcolor)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     HRESULT hres;
     VARIANT vret;
     VARIANT X,Y;
-    BordersImpl *borders = (BordersImpl*)(This->pborders);
-    RangeImpl *cur_range = (RangeImpl*)borders->prange;
     TRACE_IN;
 
     VariantInit(&vret);
     VariantInit(&X);
     VariantInit(&Y);
 
-    if (This==NULL) {
+    if (!This) {
         TRACE("ERROR Object is NULL \n");
         return E_FAIL;
     }
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, cur_range->pOORange, L"TableBorder", 0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
         TRACE("ERROR when get TableBorder\n");
         return E_FAIL;
@@ -247,14 +287,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalTLBR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalBLTR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalBLTR\n");
             return E_FAIL;
@@ -282,12 +322,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
         I_Border* iface,
         long lcolor)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     HRESULT hres;
     VARIANT vret;
     VARIANT X,Y,param1;
-    BordersImpl *borders = (BordersImpl*)(This->pborders);
-    RangeImpl *cur_range = (RangeImpl*)borders->prange;
     TRACE_IN;
 
     VariantInit(&vret);
@@ -295,14 +333,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     VariantInit(&Y);
     VariantInit(&param1);
 
-    if (This==NULL) {
+    if (!This) {
         TRACE("ERROR Object is NULL \n");
         return E_FAIL;
     }
     /*Делаем границу видимой*/
     I_Border_put_LineStyle(iface, xlContinuous);
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, cur_range->pOORange, L"TableBorder", 0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
         TRACE("ERROR when get TableBorder\n");
         return E_FAIL;
@@ -384,14 +422,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalTLBR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalBLTR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalBLTR\n");
             return E_FAIL;
@@ -492,14 +530,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"DiagonalTLBR", 1, param1);
+        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret,This->pOORange, L"DiagonalTLBR", 1, param1);
         if (FAILED(hres)) {
             TRACE("ERROR when put DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"DiagonalBLTR", 1, param1);
+        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalBLTR", 1, param1);
         if (FAILED(hres)) {
             TRACE("ERROR when put DiagonalBLTR\n");
             return E_FAIL;
@@ -515,7 +553,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     IDispatch_AddRef(V_DISPATCH(&param1));
     VariantClear(&vret);
 
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"TableBorder", 1, param1);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"TableBorder", 1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when get TableBorder\n");
         return E_FAIL;
@@ -534,13 +572,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_ColorIndex(
         I_Border* iface,
         long *plcolorindex)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     long tmpcolor;
     int i;
     HRESULT hres;
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
+    if (!This) return E_POINTER;
 
     hres = MSO_TO_OO_I_Border_get_Color(iface,&tmpcolor);
     if (FAILED(hres)) {
@@ -563,11 +601,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_ColorIndex(
         I_Border* iface,
         long lcolorindex)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     long tmpcolor;
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
+    if (!This) return E_POINTER;
 
     if (lcolorindex==xlColorIndexNone) lcolorindex = 2;
     if (lcolorindex==xlColorIndexAutomatic) lcolorindex = 1;
@@ -597,25 +635,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
         I_Border* iface,
         XlLineStyle *plinestyle)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     HRESULT hres;
     VARIANT vret;
     VARIANT X,Y;
     long in,out,l;
-    BordersImpl *borders = (BordersImpl*)(This->pborders);
-    RangeImpl *cur_range = (RangeImpl*)borders->prange;
     TRACE_IN;
 
     VariantInit(&vret);
     VariantInit(&X);
     VariantInit(&Y);
 
-    if (This==NULL) {
+    if (!This) {
         TRACE("ERROR Object is NULL \n");
         return E_FAIL;
     }
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, cur_range->pOORange, L"TableBorder", 0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
         TRACE("ERROR when get TableBorder\n");
         return E_FAIL;
@@ -697,14 +733,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalTLBR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalBLTR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalBLTR\n");
             return E_FAIL;
@@ -754,12 +790,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
         I_Border* iface,
         XlLineStyle linestyle)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
     HRESULT hres;
     VARIANT vret;
     VARIANT X,Y,param1;
-    BordersImpl *borders = (BordersImpl*)(This->pborders);
-    RangeImpl *cur_range = (RangeImpl*)borders->prange;
     TRACE_IN;
 
     VariantInit(&vret);
@@ -768,7 +802,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     VariantInit(&param1);
     long in,out,l;
 
-    if (This==NULL) {
+    if (!This) {
         TRACE("ERROR Object is NULL \n");
         return E_FAIL;
     }
@@ -798,7 +832,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
         return E_NOTIMPL;
     }
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, cur_range->pOORange, L"TableBorder", 0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
     if (FAILED(hres)) {
         TRACE("ERROR when get TableBorder\n");
         return E_FAIL;
@@ -880,14 +914,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalTLBR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"DiagonalBLTR", 0);
+        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
         if (FAILED(hres)) {
             TRACE("ERROR when get DiagonalBLTR\n");
             return E_FAIL;
@@ -1006,14 +1040,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"DiagonalTLBR", 1, param1);
+        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalTLBR", 1, param1);
         if (FAILED(hres)) {
             TRACE("ERROR when put DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"DiagonalBLTR", 1, param1);
+        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalBLTR", 1, param1);
         if (FAILED(hres)) {
             TRACE("ERROR when put DiagonalBLTR\n");
             return E_FAIL;
@@ -1029,7 +1063,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     IDispatch_AddRef(V_DISPATCH(&param1));
     VariantClear(&vret);
 
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"TableBorder", 1, param1);
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"TableBorder", 1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when get TableBorder\n");
         return E_FAIL;
@@ -1141,7 +1175,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_Invoke(
 }
 
 
-const I_BorderVtbl MSO_TO_OO_I_Border_Vtbl =
+static const I_BorderVtbl MSO_TO_OO_I_Border_Vtbl =
 {
     MSO_TO_OO_I_Border_QueryInterface,
     MSO_TO_OO_I_Border_AddRef,
@@ -1175,13 +1209,18 @@ extern HRESULT _I_BorderConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    border->_borderVtbl = &MSO_TO_OO_I_Border_Vtbl;
+    border->pborderVtbl = &MSO_TO_OO_I_Border_Vtbl;
     border->ref = 0;
     border->key = 0;
-    border->pborders = NULL;
+    border->pBorders = NULL;
+    border->pOORange = NULL;
 
-    *ppObj = &border->_borderVtbl;
+    *ppObj = BORDER_BORDER(border);
+    
+    TRACE("CREATE OBJECT \n");
+ 
     TRACE_OUT;
     return S_OK;
 }
 
+#undef BORDER_THIS

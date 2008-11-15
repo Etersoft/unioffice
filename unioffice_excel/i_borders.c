@@ -49,7 +49,7 @@ HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
 
 /*IBorders interface*/
 
-#define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface);
+#define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface)
 
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Borders_AddRef(
@@ -104,10 +104,14 @@ static ULONG WINAPI MSO_TO_OO_I_Borders_Release(
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->prange!=NULL) {
+        if (This->prange) {
             IDispatch_Release(This->prange);
             This->prange = NULL;
         }
+        if (This->pOORange) {
+            IDispatch_Release(This->pOORange);
+            This->pOORange = NULL;
+        }      
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
@@ -338,7 +342,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
 {
     BordersImpl *This = BORDERS_THIS(iface);
     IUnknown *punk = NULL;
-    IDispatch *pborder;
+    I_Border *pborder;
     HRESULT hres;
     TRACE_IN;
     TRACE("key=%08x\n",key);
@@ -351,22 +355,26 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
     *ppObject = NULL;
 
     hres = _I_BorderConstructor((LPVOID*) &punk);
-
-    if (FAILED(hres)) return E_NOINTERFACE;
-
+TRACE("(%p)\n", punk);
+    if (FAILED(hres)) {
+        TRACE("ERROR when create IBorder object\n");
+        return E_NOINTERFACE;
+    }
+TRACE("TEST1 \n", punk);
     hres = I_Border_QueryInterface(punk, &IID_I_Border, (void**) &pborder);
-    if (pborder == NULL) {
+    if (FAILED(hres)) {
+        TRACE("ERROR when QueryInterface \n");
         return E_FAIL;
     }
-
-    hres = MSO_TO_OO_I_Border_Initialize((I_Border*)pborder, iface, key);
+TRACE("TEST2 \n", punk);
+    hres = MSO_TO_OO_I_Border_Initialize(pborder, iface, key);
 
     if (FAILED(hres)) {
-        IDispatch_Release(pborder);
+        I_Border_Release(pborder);
         return hres;
     }
 
-    *ppObject = pborder;
+    *ppObject = (IDispatch*)pborder;
     TRACE_OUT;
     return S_OK;
 }
@@ -521,7 +529,7 @@ const I_BordersVtbl MSO_TO_OO_I_Borders_Vtbl =
     MSO_TO_OO_I_Borders_get__Default
 };
 
-#undef SHEETS_THIS
+#undef BORDERS_THIS
 
 /*IEnumVARIANT interface*/
 
@@ -670,7 +678,8 @@ extern HRESULT _I_BordersConstructor(LPVOID *ppObj)
     borders->ref = 0;
     borders->prange = NULL;
     borders->enum_position = 0;
-
+    borders->pOORange = NULL;
+             
     *ppObj = BORDERS_BORDERS(borders);
     TRACE_OUT;
     return S_OK;

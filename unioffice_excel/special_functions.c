@@ -85,11 +85,13 @@ HRESULT MSO_TO_OO_I_Interior_Initialize(
     return S_OK;
 }
 
+#define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface)
 HRESULT MSO_TO_OO_I_Borders_Initialize(
         I_Borders* iface,
         I_Range *range)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
+    RangeImpl* This_range = (RangeImpl*)range;
     TRACE_IN;
 
     if (This == NULL) {
@@ -100,39 +102,65 @@ HRESULT MSO_TO_OO_I_Borders_Initialize(
     if (This->prange!=NULL) {
         I_Range_Release((I_Range*)(This->prange));
     }
-
     This->prange = (IDispatch*)range;
     if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
+
+    if (This->pOORange) {
+        IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_range->pOORange;
+    if (This->pOORange) IDispatch_AddRef((This->pOORange));
 
     TRACE_OUT;
     return S_OK;
 }
+#undef BORDERS_THIS
 
+#define BORDER_THIS(iface) DEFINE_THIS(BorderImpl, border, iface)
+#define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface)
 HRESULT MSO_TO_OO_I_Border_Initialize(
         I_Border* iface,
         I_Borders *borders,
         XlBordersIndex key)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
+    BordersImpl *This_borders = BORDERS_THIS(borders);
     TRACE_IN;
 
-    if (This == NULL) {
+    if (!This) {
         TRACE("ERROR THIS = NULL \n");
         return E_POINTER;
     }
 
-    if (This->pborders!=NULL) {
-        I_Range_Release((I_Range*)(This->pborders));
+    if (This->pBorders) {
+        I_Borders_Release(This->pBorders);
+    }
+    This->pBorders = borders;
+    if (This->pBorders) 
+        I_Borders_AddRef(This->pBorders);
+    else {
+        TRACE("ERROR parent object is NULL \n");
+        return E_FAIL;    
     }
 
-    This->pborders = (IDispatch*)borders;
-    if (This->pborders != NULL) I_Range_AddRef((I_Range*)(This->pborders));
+    if (This->pOORange) {
+        IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_borders->pOORange;
+    if (This->pOORange) 
+        IDispatch_AddRef(This->pOORange);
+    else {
+        TRACE("ERROR OORange object is NULL \n");
+        return E_FAIL;    
+    }
 
     This->key = key;
 
     TRACE_OUT;
     return S_OK;
 }
+#undef BORDER_THIS
+#undef BORDERS_THIS
 
 HRESULT MSO_TO_OO_I_PageSetup_Initialize(
      I_PageSetup* pPageSetup,

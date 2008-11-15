@@ -56,9 +56,11 @@ struct CELL_COORD
 
 typedef struct
 {
-    const IClassFactoryVtbl *lpVtbl;
+    const IClassFactoryVtbl *pclassfactoryVtbl;
     LONG ref;
 } ClassFactoryImpl;
+
+#define CLASSFACTORY_CLASSFACTORY(x) ((IClassFactory*)&(x)->pclassfactoryVtbl)
 
 typedef struct
 {
@@ -67,6 +69,7 @@ typedef struct
 
     LONG ref;
     IDispatch *prange;           /*Указатель на Range*/
+    IDispatch *pOORange;           /*Pointer to OpenOffice range interface*/
     int enum_position;
 
 } BordersImpl;
@@ -76,11 +79,14 @@ typedef struct
 
 typedef struct
 {
-    const I_BorderVtbl *_borderVtbl;
+    const I_BorderVtbl *pborderVtbl;
     LONG ref;
-    IDispatch *pborders;           /*Указатель на Borders*/
+    I_Borders *pBorders;           /*Указатель на Borders*/
+    IDispatch *pOORange;           /*Pointer to OpenOffice range interface*/
     XlBordersIndex key;
 } BorderImpl;
+
+#define BORDER_BORDER(x) ((I_Border*)&(x)->pborderVtbl)
 
 typedef struct
 {
