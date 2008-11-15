@@ -102,6 +102,7 @@ static ULONG WINAPI MSO_TO_OO_I_PageSetup_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -2443,6 +2444,9 @@ extern HRESULT _I_PageSetupConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
     pagesetup->pwsheet = NULL;
 
     *ppObj = &pagesetup->_pagesetupVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

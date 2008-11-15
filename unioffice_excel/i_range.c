@@ -128,6 +128,7 @@ static ULONG WINAPI MSO_TO_OO_I_Range_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -4528,6 +4529,9 @@ extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
     range->is_release = 1;
 
     *ppObj = &range->_rangeVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

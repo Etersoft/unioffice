@@ -105,6 +105,7 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -253,6 +254,9 @@ extern HRESULT _I_ShapesConstructor(LPVOID *ppObj)
     shapes->pwsheet = NULL;
 
     *ppObj = &shapes->_shapesVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

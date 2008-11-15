@@ -257,6 +257,9 @@ extern HRESULT _I_WindowsConstructor(LPVOID *ppObj)
     windows->pApplication = NULL;
 
     *ppObj = &windows->_windowsVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }
@@ -1306,6 +1309,8 @@ extern HRESULT _I_WindowConstructor(LPVOID *ppObj)
     window->pWindows = NULL;
 
     *ppObj = &window->_windowVtbl;
+
+    CREATE_OBJECT;
 
     TRACE_OUT;
     return S_OK;

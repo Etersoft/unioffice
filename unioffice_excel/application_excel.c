@@ -302,6 +302,7 @@ static ULONG WINAPI MSO_TO_OO_I_ApplicationExcel_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
 
     return ref;
@@ -5199,6 +5200,8 @@ HRESULT _ApplicationExcelConstructor(LPVOID *ppObj)
     SysFreeString(V_BSTR(&param1));
     VariantClear(&result);
 
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

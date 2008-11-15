@@ -122,7 +122,7 @@ static ULONG WINAPI MSO_TO_OO_I_Border_Release(
         }        
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
-        TRACE("DELETE OBJECT \n");
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -1217,7 +1217,7 @@ extern HRESULT _I_BorderConstructor(LPVOID *ppObj)
 
     *ppObj = BORDER_BORDER(border);
     
-    TRACE("CREATE OBJECT \n");
+    CREATE_OBJECT;
  
     TRACE_OUT;
     return S_OK;

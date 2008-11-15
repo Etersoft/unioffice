@@ -114,6 +114,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
         /*SysFreeString(This->filename);*/
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -2585,6 +2586,9 @@ extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj)
     workbook->pSheets = NULL;
 
     *ppObj = &workbook->_workbookVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

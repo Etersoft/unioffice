@@ -122,6 +122,7 @@ static ULONG WINAPI MSO_TO_OO_I_Font_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -1084,6 +1085,9 @@ HRESULT _I_FontConstructor(LPVOID *ppObj)
     _font->prange = NULL;
 
     *ppObj = &_font->_ifontVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

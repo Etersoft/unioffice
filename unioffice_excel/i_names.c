@@ -107,6 +107,7 @@ static ULONG WINAPI MSO_TO_OO_Name_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -653,6 +654,9 @@ extern HRESULT _NameConstructor(LPVOID *ppObj)
     name->pOOName = NULL;
 
     *ppObj = &name->nameVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }
@@ -755,6 +759,7 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -1188,6 +1193,9 @@ extern HRESULT _NamesConstructor(LPVOID *ppObj)
     names->enum_position = 0;
 
     *ppObj = NAMES_NAMES(names);
+    
+    CREATE_OBJECT;
+    
     TRACE_IN;
     return S_OK;
 }
