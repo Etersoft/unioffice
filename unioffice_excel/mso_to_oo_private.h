@@ -68,7 +68,7 @@ typedef struct
     const IEnumVARIANTVtbl *penumeratorVtbl;
 
     LONG ref;
-    IDispatch *prange;           /*Указатель на Range*/
+    I_Range *pRange;               /*Pointer to IRange*/
     IDispatch *pOORange;           /*Pointer to OpenOffice range interface*/
     int enum_position;
 

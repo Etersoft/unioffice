@@ -94,16 +94,16 @@ HRESULT MSO_TO_OO_I_Borders_Initialize(
     RangeImpl* This_range = (RangeImpl*)range;
     TRACE_IN;
 
-    if (This == NULL) {
-        TRACE("ERROR THIS = NULL \n");
+    if (!This) {
+        ERR("object is NULL \n");
         return E_POINTER;
     }
 
-    if (This->prange!=NULL) {
-        I_Range_Release((I_Range*)(This->prange));
+    if (This->pRange) {
+        I_Range_Release((This->pRange));
     }
-    This->prange = (IDispatch*)range;
-    if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
+    This->pRange = range;
+    if (This->pRange) I_Range_AddRef(This->pRange);
 
     if (This->pOORange) {
         IDispatch_Release(This->pOORange);
