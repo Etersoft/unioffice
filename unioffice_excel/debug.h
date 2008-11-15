@@ -59,6 +59,10 @@ if (trace_file) fclose(trace_file);\
 #define TRACE_OUT TRACE(" OUT \n")
 #define TRACE_NOTIMPL TRACE("ERROR method not implement \n")
 
+#define CREATE_OBJECT TRACE("Create object \n")
+#define DELETE_OBJECT TRACE("Delete object \n")
+
+
 #ifdef DEBUG
 #define ERR(args...) \
 do { if (write_log) { \
