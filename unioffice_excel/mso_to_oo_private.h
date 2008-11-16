@@ -62,10 +62,17 @@ typedef struct
 
 typedef struct
 {
-    const I_BordersVtbl *_bordersVtbl;
+    const I_BordersVtbl *pbordersVtbl;
+    const IEnumVARIANTVtbl *penumeratorVtbl;
+
     LONG ref;
     IDispatch *prange;           /*Указатель на Range*/
+    int enum_position;
+
 } BordersImpl;
+
+#define BORDERS_BORDERS(x) ((I_Borders*)&(x)->pbordersVtbl)
+#define BORDERS_ENUM(x) ((IEnumVARIANT*)&(x)->penumeratorVtbl)
 
 typedef struct
 {
@@ -119,7 +126,6 @@ typedef struct
     LONG ref;
     IDispatch *pOORange;     /*Указатель на Range openoffice*/
     IDispatch *pwsheet;      /*Указатель на worksheet*/
-    IDispatch *pApplication;  /*Указатель на Application*/
     int is_release;
 } RangeImpl;
 
@@ -129,7 +135,6 @@ typedef struct
     LONG ref;
     IDispatch *pOOPage;     /*Указатель на DrawPage openoffice*/
     IDispatch *pwsheet;      /*Указатель на worksheet*/
-    IDispatch *pApplication;  /*Указатель на Application*/
 } ShapesImpl;
 
 typedef struct
@@ -145,7 +150,6 @@ typedef struct
     const I_PageSetupVtbl *_pagesetupVtbl;
     LONG ref;
     IDispatch *pwsheet;      /*Указатель на worksheet*/
-    IDispatch *pApplication;  /*Указатель на Application*/
 } PageSetupImpl;
 
 typedef struct
@@ -155,7 +159,6 @@ typedef struct
 
     LONG ref;
     IDispatch *pwb;              /*указатель на Workbook*/
-    IDispatch *pApplication;     /*указатель на Application*/
     IDispatch *pOONames;         /*указатель на OpenOffice Names*/
     int enum_position;
 
@@ -169,7 +172,6 @@ typedef struct
     const NameVtbl *nameVtbl;
     LONG ref;
     IDispatch *pnames;              /*указатель на Names*/
-    IDispatch *pApplication;     /*указатель на Application*/
     IDispatch *pOOName;         /*указатель на OpenOffice Name*/
 } NameImpl;
 
@@ -191,7 +193,7 @@ typedef struct
 {
     const I_WorkbookVtbl *_workbookVtbl;
     LONG ref;
-    IDispatch *pApplication;  /*Указатель на Application*/
+    IDispatch *pworkbooks;  /*Указатель на Application*/
     IDispatch *pDoc;          /*Указатель на Document*/
     IDispatch *pSheets;       /*Указатель на Sheets*/
 //    BSTR filename;            /*имя файла*/ 

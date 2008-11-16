@@ -101,7 +101,7 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
 __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVOID *ppv)
 {
     *ppv = NULL;
-    char file_name[]= {'\\','u','n','i','o','f','f','i','c','e','.','l','o','g',0};
+    char file_name[]= {'\\','u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','l','o','g',0};
     int len,i=0;
     TRACE_IN;
 

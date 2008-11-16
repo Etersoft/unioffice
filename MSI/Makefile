@@ -12,10 +12,8 @@ all: unioffice.msi
 	$(MAKE) rmtmp
 
 # Заполняем CAB-файлы содержимым
-ooffice.cab: ./../unioffice_excel/unioffice_excel.dll
-	$(MAKECAB) ..\\unioffice_excel\\unioffice_excel.dll $@
-ooffice1.cab: ./../unioffice_excel/unioffice_excel.tlb
-	$(MAKECAB) ..\\unioffice_excel\\unioffice_excel.tlb $@
+ooffice.cab: ../unioffice_excel/unioffice_excel.dll ../unioffice_excel/unioffice_excel.tlb
+	$(CABARC) $@ ..\\unioffice_excel\\unioffice_excel.tlb ..\\unioffice_excel\\unioffice_excel.dll
 
 # Удаляем временные файлы
 rmtmp:

@@ -126,10 +126,6 @@ static ULONG WINAPI MSO_TO_OO_I_Range_Release(
             IDispatch_Release(This->pwsheet);
             This->pwsheet = NULL;
         }
-        if (This->pApplication != NULL) {
-            IDispatch_Release(This->pApplication);
-            This->pApplication = NULL;
-        }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
@@ -1063,19 +1059,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Application(
         I_Range* iface,
         IDispatch **value)
 {
-    RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
+    RangeImpl *This = (RangeImpl*)iface;
 
     if (This == NULL) return E_POINTER;
 
-    *value = This->pApplication;
-    I_ApplicationExcel_AddRef(This->pApplication);
-
-    if (value==NULL)
-        return E_POINTER;
-
     TRACE_OUT;
-    return S_OK;
+    return I_Worksheet_get_Application((I_Worksheet*)(This->pwsheet), value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Parent(
@@ -1087,11 +1077,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Parent(
 
     if (This == NULL) return E_POINTER;
 
-    *value = This->pwsheet;
-    I_Worksheet_AddRef(*value);
-
     if (value==NULL)
         return E_POINTER;
+
+    *value = This->pwsheet;
+    IDispatch_AddRef(*value);
 
     TRACE_OUT;
     return S_OK;
@@ -4535,7 +4525,6 @@ extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
     range->ref = 0;
     range->pOORange = NULL;
     range->pwsheet = NULL;
-    range->pApplication = NULL;
     range->is_release = 1;
 
     *ppObj = &range->_rangeVtbl;

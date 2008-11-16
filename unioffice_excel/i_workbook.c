@@ -98,11 +98,11 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
- /*       if (This->pApplication != NULL) {
-            I_ApplicationExcel_Release(This->pApplication);*/
-            This->pApplication = NULL;
- /*       }*/
         TRACE("(%p) (%p) (%p) (%p)\n", iface, This, This->pDoc, This->pSheets);
+        if (This->pworkbooks != NULL) {
+            I_Workbooks_Release(This->pworkbooks);
+            This->pworkbooks = NULL;
+        }
         if (This->pDoc != NULL) {
             IDispatch_Release(This->pDoc);
             This->pDoc = NULL;
@@ -154,8 +154,6 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
     WorkbookImpl *This = (WorkbookImpl*)iface;
     BSTR filename;
     HRESULT hres;
-    _ApplicationExcelImpl *app = (_ApplicationExcelImpl*)This->pApplication;
-    WorkbooksImpl *wbs = (WorkbooksImpl*)app->pdWorkbooks;
     int i;
     IDispatch *pdtmp;
 /*TODO*/
@@ -200,6 +198,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     long ix = 0;
     SAFEARRAY FAR* pPropVals;
     BSTR FilenameURL;
+    WorkbooksImpl *wbks = (WorkbooksImpl*)(This->pworkbooks);
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(Filename, &Filename);
@@ -215,7 +214,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     MSO_TO_OO_CorrectArg(Local, &Local);
 
     if (This==NULL) {
-        TRACE("ERROR objetct is NULL \n");
+        TRACE("ERROR object is NULL \n");
         return E_FAIL;
     }
     if (V_VT(&Filename)!=VT_BSTR) {
@@ -225,7 +224,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
 
     /* Create PropertyValue with save-format-data */
     IDispatch *dpv;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(This->pApplication), &dpv);
+    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(wbks->pApplication), &dpv);
     if (dpv == NULL)
         return E_FAIL;
 
@@ -2581,7 +2580,7 @@ extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj)
 
     workbook->_workbookVtbl = &MSO_TO_OO_I_WorkbookVtbl;
     workbook->ref = 0;
-    workbook->pApplication = NULL;
+    workbook->pworkbooks = NULL;
     workbook->pDoc = NULL;
     workbook->pSheets = NULL;
 

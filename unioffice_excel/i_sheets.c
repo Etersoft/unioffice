@@ -232,18 +232,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Application(
         TRACE("ERROR: pwb Object is NULL\n");
         return E_POINTER;
     }
-    WorkbookImpl *wb = (WorkbookImpl*)(This->pwb);
-
-    if (wb->pApplication == NULL){
-        TRACE("ERROR: wb->Application Object is NULL\n");
-        return E_POINTER;
-    }
-
-    *value = wb->pApplication;
-    IDispatch_AddRef(wb->pApplication);
-
     TRACE_OUT;
-    return S_OK;
+    return I_Workbook_get_Application((I_Workbook*)(This->pwb), value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_get_Parent(

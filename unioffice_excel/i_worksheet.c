@@ -354,7 +354,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Activate(
     long index;
     SAFEARRAY FAR* pPropVals;
     long ix = 0;
-    WorkbookImpl *paren_wb = (WorkbookImpl*)This->pwb;
+    WorkbookImpl *paren_wb = (WorkbookImpl*)(This->pwb);
+    WorkbooksImpl *parent_wbs = (WorkbooksImpl*)(paren_wb->pworkbooks);
     HRESULT hres;
     BSTR name;
     TRACE_IN;
@@ -377,7 +378,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Activate(
     command = SysAllocString(L".uno:JumpToTable");
     /* Create PropertyValue with save-format-data */
     IDispatch *ooParams;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(paren_wb->pApplication), &ooParams);
+    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(parent_wbs->pApplication), &ooParams);
     if (ooParams == NULL)
         return E_FAIL;
 
@@ -700,7 +701,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
     VariantInit(&vNull);
     VariantClear(&find_name);
     IDispatch *new_wsh;
-    _ApplicationExcelImpl *app = (_ApplicationExcelImpl*)parent_wb->pApplication;
+    WorkbooksImpl *parent_wbs = (WorkbooksImpl*)(parent_wb->pworkbooks);
+    _ApplicationExcelImpl *app = (_ApplicationExcelImpl*)parent_wbs->pApplication;
     IDispatch *range1,*range2, *range3;
     VARIANT cols,torange;
     TRACE_IN;

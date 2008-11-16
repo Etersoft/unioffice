@@ -103,10 +103,6 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_Release(
             I_Workbook_Release(This->pwsheet);
             This->pwsheet = NULL;
         }
-        if (This->pApplication != NULL) {
-            IDispatch_Release(This->pApplication);
-            This->pApplication = NULL;
-        }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
     }
@@ -255,7 +251,6 @@ extern HRESULT _I_ShapesConstructor(LPVOID *ppObj)
     shapes->ref = 0;
     shapes->pOOPage = NULL;
     shapes->pwsheet = NULL;
-    shapes->pApplication = NULL;
 
     *ppObj = &shapes->_shapesVtbl;
     TRACE_OUT;
