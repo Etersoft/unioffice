@@ -100,10 +100,13 @@ typedef struct
 
 typedef struct
 {
-    const I_InteriorVtbl *_interiorVtbl;
+    const I_InteriorVtbl *pinteriorVtbl;
     LONG ref;
-    IDispatch *prange;           /*Указатель на Range*/
+    I_Range *pRange;           /*Pointer to IRange*/
+    IDispatch *pOORange;       /*Pointer to OORange*/
 } InteriorImpl;
+
+#define INTERIOR_INTERIOR(x) ((I_Interior*)&(x)->pinteriorVtbl)
 
 typedef struct
 {

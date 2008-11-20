@@ -72,28 +72,44 @@ HRESULT MSO_TO_OO_I_Font_Initialize(
 #undef RANGE_THIS
 #undef FONT_THIS
 
+#define INTERIOR_THIS(iface) DEFINE_THIS(InteriorImpl, interior, iface)
+#define RANGE_THIS(iface) DEFINE_THIS(RangeImpl, range, iface)
 HRESULT MSO_TO_OO_I_Interior_Initialize(
         I_Interior* iface,
         I_Range *range)
 {
-    InteriorImpl *This = (InteriorImpl*)iface;
+    InteriorImpl *This = INTERIOR_THIS(iface);
+    RangeImpl *This_range = RANGE_THIS(range);
     TRACE_IN;
 
-    if (This == NULL) {
-        TRACE("ERROR THIS = NULL \n");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_POINTER;
     }
-
-    if (This->prange!=NULL) {
-        I_Range_Release((I_Range*)(This->prange));
+    
+    if (!This_range) {
+        ERR("This_range is NULL \n");
+        return E_POINTER;
     }
+    
+    if (This->pRange) {
+        I_Range_Release(This->pRange);
+    }
+    This->pRange = range;
+    if (This->pRange) I_Range_AddRef((This->pRange));
 
-    This->prange = (IDispatch*)range;
-    if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
+    if (This->pOORange) {
+        IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_range->pOORange;
+    if (This->pOORange) IDispatch_AddRef((This->pOORange));
+
 
     TRACE_OUT;
     return S_OK;
 }
+#undef RANGE_THIS
+#undef INTERIOR_THIS
 
 #define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface)
 HRESULT MSO_TO_OO_I_Borders_Initialize(
