@@ -108,11 +108,11 @@ For Each V in Excel.Range("A1:D4").Borders
 
      V.ColorIndex = 10
      If Err.Number <> 0 Then
-        otchetFile.WriteLine("[FAILED] Border->ColorIndex")  
+        otchetFile.WriteLine("[FAILED] PUT Border->ColorIndex")  
         failed = failed + 1
         Err.Clear
      Else 
-        otchetFile.WriteLine("[SUCCESS] Border->ColorIndex)")  
+        otchetFile.WriteLine("[SUCCESS] PUT Border->ColorIndex)")  
         success = success + 1 
     End If 
 Next
