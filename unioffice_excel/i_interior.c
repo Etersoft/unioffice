@@ -258,11 +258,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Application(
     InteriorImpl *This = INTERIOR_THIS(iface);
     TRACE_IN;
 
-    if (This==NULL) {
+    if (!This) {
        ERR("Object is NULL \n");
        return E_POINTER;
     }
-    if (This->pRange==NULL) {
+    if (!(This->pRange)) {
        ERR("Object is NULL 2 \n");
        return E_POINTER;
     }
