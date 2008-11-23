@@ -123,7 +123,7 @@ typedef struct
     const I_WorksheetVtbl *pworksheetVtbl;
     LONG ref;
     IDispatch *pOOSheet;      /*Указатель на Sheet из OpenOffice*/
-    IDispatch *pwb;           /*Указатель на Parent Workbook*/
+    I_Workbook *pwb;           /*Указатель на Parent Workbook*/
     IDispatch *pAllRange;
 } WorksheetImpl;
 
@@ -169,10 +169,14 @@ typedef struct
 
 typedef struct
 {
-    const I_PageSetupVtbl *_pagesetupVtbl;
+    const I_PageSetupVtbl *ppagesetupVtbl;
     LONG ref;
-    IDispatch *pwsheet;      /*Указатель на worksheet*/
+    I_Worksheet *pWorksheet;      /*Pointer to IWorksheet*/
+    IDispatch *pOOSheet;          /*Pointer to OOSheet*/
+    IDispatch *pOODocument;       /*Pointer to OODocument*/
 } PageSetupImpl;
+
+#define PAGESETUP_PAGESETUP(x) ((I_PageSetup*)&(x)->ppagesetupVtbl)
 
 typedef struct
 {
@@ -213,9 +217,9 @@ typedef struct
 
 typedef struct
 {
-    const I_WorkbookVtbl *_workbookVtbl;
+    const I_WorkbookVtbl *pworkbookVtbl;
     LONG ref;
-    IDispatch *pworkbooks;  /*Указатель на Application*/
+    IDispatch *pworkbooks;    /*Указатель на Application*/
     IDispatch *pDoc;          /*Указатель на Document*/
     IDispatch *pSheets;       /*Указатель на Sheets*/
 //    BSTR filename;            /*имя файла*/ 

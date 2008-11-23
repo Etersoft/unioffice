@@ -35,7 +35,7 @@ HRESULT get_typeinfo_pagesetup(ITypeInfo **typeinfo)
 
     hres = LoadTypeLib(file_name, &typelib);
     if(FAILED(hres)) {
-        TRACE("ERROR: LoadTypeLib hres = %08x \n", hres);
+        ERR("LoadTypeLib hres = %08x \n", hres);
         return hres;
     }
 
@@ -46,16 +46,21 @@ HRESULT get_typeinfo_pagesetup(ITypeInfo **typeinfo)
     return hres;
 }
 
+#define PAGESETUP_THIS(iface) DEFINE_THIS(PageSetupImpl, pagesetup, iface)
+
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_PageSetup_AddRef(
         I_PageSetup* iface)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");       
+        return E_POINTER;
+    }
 
     ref = InterlockedIncrement(&This->ref);
     if (ref == 1) {
@@ -69,15 +74,23 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
 
-    if (This == NULL || ppvObject == NULL) return E_POINTER;
-
+    if (!This) {
+        ERR("Object is NULL \n");       
+        return E_POINTER;
+    }
+    
+    if (!ppvObject) {
+        ERR("Object is NULL \n");       
+        return E_POINTER;
+    }
+    
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_PageSetup)) {
-        *ppvObject = &This->_pagesetupVtbl;
-        MSO_TO_OO_I_PageSetup_AddRef(iface);
+        *ppvObject = PAGESETUP_PAGESETUP(This);
+        I_PageSetup_AddRef(iface);
         return S_OK;
     }
 
@@ -87,19 +100,30 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_I_PageSetup_Release(
         I_PageSetup* iface)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");       
+        return E_POINTER;
+    }
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pwsheet != NULL) {
-            IDispatch_Release(This->pwsheet);
-            This->pwsheet = NULL;
+        if (This->pWorksheet) {
+            I_Worksheet_Release(This->pWorksheet);
+            This->pWorksheet = NULL;
         }
+        if (This->pOOSheet) {
+            IDispatch_Release(This->pOOSheet);
+            This->pOOSheet = NULL;
+        }
+        if (This->pOODocument) {
+            IDispatch_Release(This->pOODocument);
+            This->pOODocument = NULL;
+        }       
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
         DELETE_OBJECT;
@@ -113,11 +137,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftMargin(
         I_PageSetup* iface,
         double *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -127,46 +149,47 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");       
+        return E_POINTER;
     }
+    
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"LeftMargin",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  LeftMargin \n");
+        ERR("LeftMargin \n");
         return hres;
     }
 
     hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR("(1)VariantChangeType \n");
         return hres;
     }
 
@@ -187,11 +210,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
         I_PageSetup* iface,
         double value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -201,22 +222,22 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
 
@@ -224,13 +245,13 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
@@ -240,12 +261,12 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     V_R8(&param1) = value;
     hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"LeftMargin",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when LeftMargin \n");
+        ERR("LeftMargin \n");
         return hres;
     }
 
@@ -263,11 +284,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightMargin(
         I_PageSetup* iface,
         double *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -277,46 +296,46 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"RightMargin",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  RightMargin \n");
+        ERR("RightMargin \n");
         return hres;
     }
 
     hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
@@ -337,11 +356,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
         I_PageSetup* iface,
         double value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -351,34 +368,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
@@ -388,13 +405,13 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
     V_R8(&param1) = value;
     hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"RightMargin",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when  RightMargin \n");
+        ERR(" RightMargin \n");
         return hres;
     }
 
@@ -412,11 +429,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_TopMargin(
         I_PageSetup* iface,
         double *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -426,46 +441,46 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_TopMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"TopMargin",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  TopMargin \n");
+        ERR("TopMargin \n");
         return hres;
     }
 
     hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
@@ -486,11 +501,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
         I_PageSetup* iface,
         double value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -500,34 +513,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
@@ -537,13 +550,13 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
     V_R8(&param1) = value;
     hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"TopMargin",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when  TopMargin \n");
+        ERR("TopMargin \n");
         return hres;
     }
 
@@ -561,11 +574,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BottomMargin(
         I_PageSetup* iface,
         double *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -575,46 +586,46 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BottomMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR(" Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"BottomMargin",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  BottomMargin \n");
+        ERR("BottomMargin \n");
         return hres;
     }
 
     hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
@@ -635,11 +646,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
         I_PageSetup* iface,
         double value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -649,34 +658,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
@@ -686,13 +695,13 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
     V_R8(&param1) = value;
     hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"BottomMargin",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when  BottomMargin \n");
+        ERR("BottomMargin \n");
         return hres;
     }
 
@@ -710,11 +719,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
         I_PageSetup* iface,
         long *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -724,40 +731,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        TRACE("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"IsLandscape",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  Orientation \n");
+        ERR("Orientation \n");
         return hres;
     }
     switch (V_BOOL(&vres)){
@@ -784,11 +791,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
         I_PageSetup* iface,
         long value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -798,34 +803,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
@@ -845,7 +850,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"IsLandscape",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when  IsLandscape \n");
+        ERR("IsLandscape \n");
         return hres;
     }
 
@@ -863,11 +868,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Zoom(
         I_PageSetup* iface,
         VARIANT *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -877,40 +880,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Zoom(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"PageScale",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  PageScale \n");
+        ERR("PageScale \n");
         return hres;
     }
 
@@ -930,11 +933,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Zoom(
         I_PageSetup* iface,
         VARIANT value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(value, &value);
@@ -946,40 +947,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Zoom(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"PageScale",1, value);
     if (FAILED(hres)) {
-        TRACE("ERROR when  PageScale \n");
+        ERR("PageScale \n");
         return hres;
     }
 
@@ -997,11 +998,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesTall(
         I_PageSetup* iface,
         VARIANT *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1011,40 +1010,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesTall(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"ScaleToPagesY",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  ScaleToPagesY \n");
+        ERR("ScaleToPagesY \n");
         return hres;
     }
 
@@ -1064,11 +1063,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesTall(
         I_PageSetup* iface,
         VARIANT value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(value, &value);
@@ -1080,46 +1077,46 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesTall(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = VariantChangeTypeEx(&value, &value, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE("ERROR when VariantChangeType \n");
+        ERR("VariantChangeType \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"ScaleToPagesY",1, value);
     if (FAILED(hres)) {
-        TRACE("ERROR when  ScaleToPagesY \n");
+        ERR(" ScaleToPagesY \n");
         return hres;
     }
 
@@ -1137,11 +1134,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesWide(
         I_PageSetup* iface,
         VARIANT *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1151,40 +1146,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesWide(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"ScaleToPagesX",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  ScaleToPagesX \n");
+        ERR(" ScaleToPagesX \n");
         return hres;
     }
 
@@ -1204,11 +1199,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesWide(
         I_PageSetup* iface,
         VARIANT value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(value, &value);
@@ -1220,40 +1213,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesWide(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"ScaleToPagesX",1, value);
     if (FAILED(hres)) {
-        TRACE("ERROR when  ScaleToPagesX \n");
+        ERR(" ScaleToPagesX \n");
         return hres;
     }
 
@@ -1271,11 +1264,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_HeaderMargin(
         I_PageSetup* iface,
         double *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1285,46 +1276,46 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_HeaderMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR(" StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR(" getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"HeaderHeight",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  HeaderHeight \n");
+        ERR(" HeaderHeight \n");
         return hres;
     }
 
     hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
@@ -1345,11 +1336,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
         I_PageSetup* iface,
         double value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1359,34 +1348,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR(" PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR(" StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR(" getByName2 \n");
         return hres;
     }
 
@@ -1396,13 +1385,13 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
     V_R8(&param1) = value;
     hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"HeaderHeight",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when  HeaderHeight \n");
+        ERR(" HeaderHeight \n");
         return hres;
     }
 
@@ -1420,11 +1409,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FooterMargin(
         I_PageSetup* iface,
         double *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1434,46 +1421,46 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FooterMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR(" PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR(" StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR(" getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR(" getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"FooterHeight",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  FooterHeight \n");
+        ERR(" FooterHeight \n");
         return hres;
     }
 
     hres = VariantChangeTypeEx(&vres, &vres, 0, 0, VT_R8);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
@@ -1494,11 +1481,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
         I_PageSetup* iface,
         double value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1508,34 +1493,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR(" PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR(" StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR(" getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR(" getByName2 \n");
         return hres;
     }
 
@@ -1545,13 +1530,13 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
     V_R8(&param1) = value;
     hres = VariantChangeTypeEx(&param1, &param1, 0, 0, VT_I4);
     if (FAILED(hres)) {
-        TRACE(" (1) ERROR when VariantChangeType \n");
+        ERR(" (1) VariantChangeType \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"FooterHeight",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when  FooterHeight \n");
+        ERR(" FooterHeight \n");
         return hres;
     }
 
@@ -1569,11 +1554,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHorizontally(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1583,40 +1566,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHorizontally(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"CenterHorizontally",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  CenterHorizontally \n");
+        ERR(" CenterHorizontally \n");
         return hres;
     }
 
@@ -1636,11 +1619,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHorizontally(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1650,34 +1631,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHorizontally(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_FAIL;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR("PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR(" StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR(" getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
@@ -1687,7 +1668,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHorizontally(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"CenterHorizontally",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when CenterHorizontally \n");
+        ERR(" CenterHorizontally \n");
         return hres;
     }
 
@@ -1705,11 +1686,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterVertically(
         I_PageSetup* iface,
         VARIANT_BOOL *value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1719,40 +1698,40 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterVertically(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR(" PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR(" getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vres, V_DISPATCH(&vstyle), L"CenterVertically",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when  CenterVertically \n");
+        ERR(" CenterVertically \n");
         return hres;
     }
 
@@ -1772,11 +1751,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
         I_PageSetup* iface,
         VARIANT_BOOL value)
 {
-    PageSetupImpl *This = (PageSetupImpl*)iface;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
     VARIANT name_of_style, vstyles, vpagestyles, param1, vstyle, vres;
-    WorksheetImpl *wsh = (WorksheetImpl *)(This->pwsheet);
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     TRACE_IN;
 
     VariantInit(&name_of_style);
@@ -1786,34 +1763,34 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
     VariantInit(&vstyle);
     VariantInit(&vres);
 
-    if (This==NULL) {
-        TRACE("ERROR Object is NULL");
-        return E_FAIL;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
     }
     /*С начала необходимо узнать название стиля используемого на странице*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, wsh->pOOSheet, L"PageStyle",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &name_of_style, This->pOOSheet, L"PageStyle",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when PageStyle \n");
+        ERR(" PageStyle \n");
         return hres;
     }
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, wb->pDoc, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
     if (FAILED(hres)) {
-        TRACE("ERROR when StyleFamilies \n");
+        ERR("StyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(L"PageStyles");
     hres = AutoWrap(DISPATCH_METHOD, &vpagestyles, V_DISPATCH(&vstyles), L"getByName",1,param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName \n");
+        ERR("getByName \n");
         return hres;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vstyle, V_DISPATCH(&vpagestyles), L"getByName",1, name_of_style);
     if (FAILED(hres)) {
-        TRACE("ERROR when getByName2 \n");
+        ERR("getByName2 \n");
         return hres;
     }
 
@@ -1823,7 +1800,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
 
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vres, V_DISPATCH(&vstyle), L"CenterVertically",1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when CenterVertically \n");
+        ERR("CenterVertically \n");
         return hres;
     }
 
@@ -1862,10 +1839,18 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Application(
         IDispatch **value)
 {
     TRACE_IN;
-    PageSetupImpl *This = (PageSetupImpl*)iface;
-    if (This==NULL) return E_POINTER;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
+    HRESULT hres;
+    
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
+    
+    hres = I_Worksheet_get_Application(This->pWorksheet, value);
+    
     TRACE_OUT;
-    return I_Worksheet_get_Application((I_Worksheet*)(This->pwsheet), value);
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Creator(
@@ -1881,13 +1866,20 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Parent(
         IDispatch **value)
 {
     TRACE_IN;
-    PageSetupImpl *This = (PageSetupImpl*)iface;
-    if (This==NULL) return E_POINTER;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
+    
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
-    if (value==NULL) return E_POINTER;
+    if (!value) {
+        ERR("Object2 is NULL \n");
+        return E_POINTER;
+    }
 
-    *value = (IDispatch*)(This->pwsheet);
-    IDispatch_AddRef(*value);
+    *value = (IDispatch*)(This->pWorksheet);
+    I_Worksheet_AddRef(This->pWorksheet);
 
     TRACE_OUT;
     return S_OK;
@@ -2285,7 +2277,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetTypeInfo(
     HRESULT hres = get_typeinfo_pagesetup(ppTInfo);
     TRACE("\n");
     if (FAILED(hres))
-        TRACE("Error when GetTypeInfo");
+        ERR("GetTypeInfo");
 
     return hres;
 }
@@ -2307,7 +2299,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_GetIDsOfNames(
 
     hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
     if (FAILED(hres)) {
-        WTRACE(L"ERROR name = %s \n", *rgszNames);
+        WERR(L" name = %s \n", *rgszNames);
     }
     TRACE_OUT;
     return hres;
@@ -2334,12 +2326,13 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_Invoke(
     hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
                             pVarResult, pExcepInfo, puArgErr);
     if (FAILED(hres)) {
-        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+        ERR("wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
     TRACE_OUT;
     return hres;
 }
 
+#undef PAGESETUP_THIS
 
 const I_PageSetupVtbl MSO_TO_OO_I_PageSetupVtbl =
 {
@@ -2439,11 +2432,13 @@ extern HRESULT _I_PageSetupConstructor(IUnknown *pUnkOuter, LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    pagesetup->_pagesetupVtbl = &MSO_TO_OO_I_PageSetupVtbl;
+    pagesetup->ppagesetupVtbl = &MSO_TO_OO_I_PageSetupVtbl;
     pagesetup->ref = 0;
-    pagesetup->pwsheet = NULL;
-
-    *ppObj = &pagesetup->_pagesetupVtbl;
+    pagesetup->pWorksheet = NULL;
+    pagesetup->pOOSheet = NULL;   
+    pagesetup->pOODocument = NULL;
+    
+    *ppObj = PAGESETUP_PAGESETUP(pagesetup);
     
     CREATE_OBJECT;
     

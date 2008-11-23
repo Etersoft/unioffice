@@ -188,26 +188,49 @@ HRESULT MSO_TO_OO_I_Border_Initialize(
 #undef BORDER_THIS
 #undef BORDERS_THIS
 
+#define PAGESETUP_THIS(iface) DEFINE_THIS(PageSetupImpl, pagesetup, iface)
+#define WORKSHEET_THIS(iface) DEFINE_THIS(WorksheetImpl, worksheet, iface)
+#define WORKBOOK_THIS(iface) DEFINE_THIS(WorkbookImpl, workbook, iface)
 HRESULT MSO_TO_OO_I_PageSetup_Initialize(
      I_PageSetup* pPageSetup,
      I_Worksheet* wsh)
 {
-    PageSetupImpl *this = (PageSetupImpl*) pPageSetup;
-    WorksheetImpl *parent_wsh = (WorksheetImpl*) wsh;
-    WorkbookImpl *wb = (WorkbookImpl*) parent_wsh->pwb;
+    PageSetupImpl *This = PAGESETUP_THIS(pPageSetup);
+    WorksheetImpl *This_worksheet = WORKSHEET_THIS(wsh);
+    WorkbookImpl *This_workbook = WORKBOOK_THIS(This_worksheet->pwb);
+    
     TRACE_IN;
 
-    if (this->pwsheet!=NULL) {
-        I_Worksheet_Release((I_Worksheet*)this->pwsheet);
+    if (This->pWorksheet) {
+        I_Worksheet_Release(This->pWorksheet);
     }
-    this->pwsheet = (IDispatch*)wsh;
-    if (this->pwsheet!=NULL) {
-        I_Worksheet_AddRef((I_Worksheet*)this->pwsheet);
+    This->pWorksheet = wsh;
+    if (This->pWorksheet) {
+        I_Worksheet_AddRef(This->pWorksheet);
+    }
+
+    if (This->pOOSheet) {
+        IDispatch_Release(This->pOOSheet);
+    }
+    This->pOOSheet = This_worksheet->pOOSheet;
+    if (This->pOOSheet) {
+        IDispatch_AddRef(This->pOOSheet);
+    }
+
+    if (This->pOODocument) {
+        IDispatch_Release(This->pOODocument);
+    }
+    This->pOODocument = This_workbook->pDoc;
+    if (This->pOODocument) {
+        IDispatch_AddRef(This->pOODocument);
     }
 
     TRACE_OUT;
     return S_OK;
 }
+#undef WORKBOOK_THIS
+#undef WORKSHEET_THIS
+#undef PAGESETUP_THIS
 
 HRESULT MSO_TO_OO_I_Workbook_Initialize(
         I_Workbook* iface,
