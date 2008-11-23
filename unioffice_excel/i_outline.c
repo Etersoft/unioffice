@@ -46,16 +46,21 @@ HRESULT get_typeinfo_outline(ITypeInfo **typeinfo)
     return hres;
 }
 
+#define OUTLINE_THIS(iface) DEFINE_THIS(OutlineImpl, outline, iface)
+
     /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Outline_AddRef(
         I_Outline* iface)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
+    OutlineImpl *This = OUTLINE_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("object is NULL \n");         
+        return E_POINTER;
+    }
 
     ref = InterlockedIncrement(&This->ref);
     if (ref == 1) {
@@ -69,15 +74,25 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
+    OutlineImpl *This = OUTLINE_THIS(iface);
 
-    if (This == NULL || ppvObject == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
+
+    if (!ppvObject) {
+        ERR("Object2 is NULL\n");
+        return E_POINTER;
+    }
+
+    *ppvObject = NULL;
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Outline)) {
-        *ppvObject = &This->_outlineVtbl;
-        MSO_TO_OO_I_Outline_AddRef(iface);
+        *ppvObject = OUTLINE_OUTLINE(This);
+        I_Outline_AddRef(iface);
         return S_OK;
     }
 
@@ -87,19 +102,26 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_I_Outline_Release(
         I_Outline* iface)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
+    OutlineImpl *This = OUTLINE_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pwsh!=NULL) {
-            IDispatch_Release(This->pwsh);
-            This->pwsh = NULL;
+        if (This->pWorksheet) {
+            I_Worksheet_Release(This->pWorksheet);
+            This->pWorksheet = NULL;
         }
+        if (This->pOOSheet) {
+            IDispatch_Release(This->pOOSheet);
+            This->pOOSheet = NULL;
+        }        
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
         DELETE_OBJECT;
@@ -112,18 +134,24 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Application(
         I_Outline* iface,
         IDispatch **RHS)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
+    OutlineImpl *This = OUTLINE_THIS(iface);
+    HRESULT hres;
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
-
-    if (RHS==NULL)
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_POINTER;
+    }
 
-    I_Worksheet_get_Application((I_Worksheet*)(This->pwsh),RHS);
+    if (!RHS) {
+        ERR("Object RHS is NULL \n");
+        return E_POINTER;
+    }
+
+    hres = I_Worksheet_get_Application(This->pWorksheet, RHS);
 
     TRACE_OUT;
-    return S_OK;
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Creator(
@@ -140,16 +168,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_Parent(
         I_Outline* iface,
         IDispatch **RHS)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
+    OutlineImpl *This = OUTLINE_THIS(iface);
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
-
-    if (RHS==NULL)
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_POINTER;
+    }
 
-    *RHS = This->pwsh;
-    I_Worksheet_AddRef((I_Worksheet*)(This->pwsh));
+    if (!RHS) {
+        ERR("Object RHS is NULL \n");
+        return E_POINTER;
+    }
+
+    *RHS = (IDispatch*)(This->pWorksheet);
+    I_Worksheet_AddRef(This->pWorksheet);
 
     TRACE_OUT;
     return S_OK;
@@ -166,15 +199,15 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_get_AutomaticStyles(
     return S_OK;
 }
 
+#define RANGE_THIS(iface) DEFINE_THIS(RangeImpl, range, iface)
 static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
         I_Outline* iface,
         VARIANT_BOOL RHS)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
-    WorksheetImpl *wsh = (WorksheetImpl*)This->pwsh;
+    OutlineImpl *This = OUTLINE_THIS(iface);
     HRESULT hres;
     VARIANT param1, cols, vret;
-    IDispatch *tmp_range;
+    I_Range *tmp_range;
     TRACE_IN;
 
     VariantClear(&param1);
@@ -191,22 +224,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
             V_BSTR(&cols) = SysAllocString(L"1:1024");
             break;
         }
-        I_Worksheet_get_Columns((I_Worksheet*)(This->pwsh),cols,&tmp_range);
-        RangeImpl *rangeimp = (RangeImpl*)tmp_range;
-        hres = AutoWrap(DISPATCH_METHOD, &param1,rangeimp->pOORange, L"getRangeAddress", 0);
+        I_Worksheet_get_Columns(This->pWorksheet, cols, (IDispatch**)&tmp_range);
+        
+        RangeImpl *rangeimpl = RANGE_THIS(tmp_range);
+        
+        hres = AutoWrap(DISPATCH_METHOD, &param1, rangeimpl->pOORange, L"getRangeAddress", 0);
         if (FAILED(hres)) {
-            TRACE("ERROR when getRangeAddress\n");
+            ERR("getRangeAddress\n");
         }
 
-        hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"autoOutline", 1, param1);
-        if (FAILED(hres)) TRACE("ERROR when autoOutline\n");
+        hres = AutoWrap(DISPATCH_METHOD, &vret, This->pOOSheet, L"autoOutline", 1, param1);
+        if (FAILED(hres)) 
+            ERR("autoOutline\n");
+            
+        if (tmp_range) {
+            I_Range_Release(tmp_range);
+            tmp_range = NULL;
+        }
+        
         VariantClear(&param1);
-        IDispatch_Release(tmp_range);
-        tmp_range = NULL;
         VariantClear(&cols);
     } else {
-        hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"clearOutline", 0);
-        if (FAILED(hres)) TRACE("ERROR when autoOutline\n");
+        hres = AutoWrap(DISPATCH_METHOD, &vret, This->pOOSheet, L"clearOutline", 0);
+        if (FAILED(hres)) 
+            ERR("autoOutline\n");
     }
 
     VariantClear(&vret);
@@ -214,6 +255,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
     TRACE_OUT;
     return hres;
 }
+#undef RANGE_THIS
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
         I_Outline* iface,
@@ -221,8 +263,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
         VARIANT ColumnLevels,
         VARIANT *RHS)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
-    WorksheetImpl *wsh = (WorksheetImpl*)This->pwsh;
+    OutlineImpl *This = OUTLINE_THIS(iface);
     HRESULT hres;
     VARIANT param1, param2, vret;
     TRACE_IN;
@@ -237,7 +278,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
     if (!Is_Variant_Null(RowLevels)) {
         hres = VariantChangeTypeEx(&param1, &RowLevels, 0, 0, VT_I4);
         if (FAILED(hres)) {
-            TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+            ERR("VariantChangeTypeEx   %08x\n", hres);
             return hres;
         }
         V_VT(&param2) = VT_I4;
@@ -245,16 +286,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
     } else {
         hres = VariantChangeTypeEx(&param1, &ColumnLevels, 0, 0, VT_I4);
         if (FAILED(hres)) {
-            TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
+            ERR("VariantChangeTypeEx   %08x\n", hres);
             return hres;
         }
         V_VT(&param2) = VT_I4;
         V_I4(&param2) = toCOLUMNS;
     }
 
-    hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"showLevel", 2, param2, param1);
+    hres = AutoWrap(DISPATCH_METHOD, &vret, This->pOOSheet, L"showLevel", 2, param2, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when showLevel\n");
+        ERR("showLevel\n");
         return hres;
     }
 
@@ -323,7 +364,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetTypeInfo(
     HRESULT hres = get_typeinfo_outline(ppTInfo);
     TRACE("\n");
     if (FAILED(hres))
-        TRACE("Error when GetTypeInfo");
+        ERR("GetTypeInfo");
 
     return hres;
 }
@@ -346,7 +387,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_GetIDsOfNames(
 
     hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
     if (FAILED(hres)) {
-        WTRACE(L"ERROR name = %s \n", *rgszNames);
+        WERR(L"name = %s \n", *rgszNames);
     }
     TRACE_OUT;
     return hres;
@@ -374,13 +415,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_Invoke(
     hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
                             pVarResult, pExcepInfo, puArgErr);
     if (FAILED(hres)) {
-        TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+        ERR("wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
     }
 
     TRACE_OUT;
     return hres;
 }
 
+#undef OUTLINE_THIS
 
 const I_OutlineVtbl MSO_TO_OO_I_Outline_Vtbl =
 {
@@ -415,12 +457,13 @@ extern HRESULT _I_OutlineConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    outline->_outlineVtbl = &MSO_TO_OO_I_Outline_Vtbl;
+    outline->poutlineVtbl = &MSO_TO_OO_I_Outline_Vtbl;
     outline->ref = 0;
-    outline->pwsh = NULL;
+    outline->pWorksheet = NULL;
+    outline->pOOSheet = NULL;
 
-    *ppObj = &outline->_outlineVtbl;
-    
+    *ppObj = OUTLINE_OUTLINE(outline);
+        
     CREATE_OBJECT;
     
     TRACE_OUT;

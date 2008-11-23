@@ -1714,22 +1714,33 @@ HRESULT MSO_TO_OO_Workbook_SetVisible(
     return S_OK;
 }
 
+#define OUTLINE_THIS(iface) DEFINE_THIS(OutlineImpl, outline, iface)
+#define WORKSHEET_THIS(iface) DEFINE_THIS(WorksheetImpl, worksheet, iface)
 HRESULT MSO_TO_OO_I_Outline_Initialize(
         I_Outline* iface,
         I_Worksheet *iwsh)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
+    OutlineImpl *This = OUTLINE_THIS(iface);
+    WorksheetImpl *This_worksheet = WORKSHEET_THIS(iwsh);
     TRACE_IN;
 
-    if (This->pwsh!=NULL) {
-        I_Worksheet_Release((I_Worksheet*)This->pwsh);
+    if (This->pWorksheet) {
+        I_Worksheet_Release(This->pWorksheet);
     }
-    This->pwsh = (IDispatch*)iwsh;
-    I_Worksheet_AddRef((I_Worksheet*)This->pwsh);
+    This->pWorksheet = iwsh;
+    I_Worksheet_AddRef(This->pWorksheet);
+
+    if (This->pOOSheet) {
+        IDispatch_Release(This->pOOSheet);
+    }
+    This->pOOSheet = This_worksheet->pOOSheet;
+    IDispatch_AddRef(This->pOOSheet);
 
     TRACE_OUT;
     return S_OK;
 }
+#undef WORKSHEET_THIS
+#undef OUTLINE_THIS
 
 HRESULT MSO_TO_OO_Name_Initialize_By_Name(
         Name* iface,

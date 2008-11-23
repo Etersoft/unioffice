@@ -77,7 +77,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_QueryInterface(
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Worksheet)) {
-        *ppvObject = &This->_worksheetVtbl;
+        *ppvObject = &This->pworksheetVtbl;
         MSO_TO_OO_I_Worksheet_AddRef(iface);
         return S_OK;
     }
@@ -2753,13 +2753,13 @@ extern HRESULT _I_WorksheetConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    worksheet->_worksheetVtbl = &MSO_TO_OO_I_WorksheetVtbl;
+    worksheet->pworksheetVtbl = &MSO_TO_OO_I_WorksheetVtbl;
     worksheet->ref = 0;
     worksheet->pOOSheet = NULL;
     worksheet->pwb = NULL;
     worksheet->pAllRange = NULL;
 
-    *ppObj = &worksheet->_worksheetVtbl;
+    *ppObj = &worksheet->pworksheetVtbl;
     
     CREATE_OBJECT;
     
