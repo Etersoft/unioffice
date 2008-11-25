@@ -215,6 +215,57 @@ Else
     failed = failed + 1
 End If
 
+'++++++++++++++++++++
+'Check Value with array
+'++++++++++++++++++++
+
+Excel.Cells(2,6) = "Formula"
+Excel.Cells(2,7) = 10
+Excel.Cells(2,8) = 20
+Excel.Cells(2,9) = "=B2+C2"
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] PUT IRange = value")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] PUT IRange = value")  
+    success = success + 1 
+End If
+
+'++++++++++++++++++++
+'Check Value with array
+'++++++++++++++++++++
+Dim MyArray(3, 3)
+
+for i=0 to 2
+	for j=0 to 2
+		MyArray(i, j) = i+j
+	next 
+next 
+
+
+Excel.Range("A3:C5").Value = MyArray
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] PUT IRange.Value Two Demension Array")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] PUT IRange.Value Two Demension Array")  
+    success = success + 1 
+End If
+
+Excel.Range("B6:D8") = MyArray
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] PUT Range =  Two Demension Array")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] PUT Range =  Two Demension Array")  
+    success = success + 1 
+End If
+
+
+
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 'конец кода теста
