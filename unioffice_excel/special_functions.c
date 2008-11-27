@@ -454,8 +454,8 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
     HRESULT hres;
     TRACE_IN;
 
-    This->pwb = (IDispatch*)wb;
-    IDispatch_AddRef(This->pwb);
+    This->pwb = wb;
+    I_Workbook_AddRef(This->pwb);
     This->pOOSheet = oosheet;
     IDispatch_AddRef(This->pOOSheet);
 
