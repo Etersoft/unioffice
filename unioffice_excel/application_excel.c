@@ -4430,7 +4430,7 @@ static HRESULT WINAPI MSO_TO_OO_I_ApplicationExcel_Invoke(
     if (This == NULL) return E_POINTER;
 
     /*special operation*/
-    if ((dispIdMember == dispid_worksheet_range) && (wFlags == DISPATCH_PROPERTYPUT)) {
+    if ((dispIdMember == dispid_application_range) && (wFlags == DISPATCH_PROPERTYPUT)) {
             switch (pDispParams->cArgs) {
                 case 2:
                     hres = MSO_TO_OO_I_ApplicationExcel_get_Range(iface,pDispParams->rgvarg[1], vNull, &pretdisp);
