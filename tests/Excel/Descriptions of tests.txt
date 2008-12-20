@@ -71,3 +71,4 @@ TEST 5
 		IRange->Offset (with 1 and 2 parameters)
 		IRange->Select
 		IApplication->Selection (GET)
+		IRange->Range[Range, Range]  (GET)

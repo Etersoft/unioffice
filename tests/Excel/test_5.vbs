@@ -439,6 +439,23 @@ Else
 End If
 
 
+'+++++++++++ Range[range, range]
+
+Excel.Range(Excel.Cells(19,5), Excel.Cells(20,7)).Select()
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] GET Range[range, range]")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] GET Range[range, range]")  
+    success = success + 1 
+End If
+	
+
+
+
+
+
 
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
