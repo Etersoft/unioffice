@@ -72,3 +72,4 @@ TEST 5
 		IRange->Select
 		IApplication->Selection (GET)
 		IRange->Range[Range, Range]  (GET)
+		IRange->Resize()

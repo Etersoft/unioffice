@@ -452,10 +452,40 @@ Else
 End If
 	
 
+'+++++++++++ Range->Resize(row,col) 
 
+Set tmp = Excel.Range(Excel.Cells(19,1), Excel.Cells(19,1))
+tmp.Resize(3,3).Interior.ColorIndex = 12
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] IRange -> Resize ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] IRange -> Resize")  
+    success = success + 1 
+End If
 
+Set tmp = Excel.Range(Excel.Cells(22,1), Excel.Cells(25,7))
+tmp.Resize(2,2).Interior.ColorIndex = 10
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] IRange -> Resize ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] IRange -> Resize")  
+    success = success + 1 
+End If
 
-
+Set tmp = Excel.Range(Excel.Cells(25,4), Excel.Cells(28,10))
+tmp.Resize(2).Interior.ColorIndex = 8
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] IRange -> Resize ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] IRange -> Resize")  
+    success = success + 1 
+End If
 
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
