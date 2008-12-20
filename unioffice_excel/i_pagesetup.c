@@ -2058,8 +2058,80 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintArea(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE_STUB;
-    return S_OK;
+    PageSetupImpl *This = PAGESETUP_THIS(iface); 
+    HRESULT hres;
+    VARIANT celladdress, vret, cell1, vNull, param1;
+    I_Range* range;
+    int i, count;
+    I_Worksheet* wrksh;    
+    SAFEARRAY FAR* pPropVals;
+    long ix = 0;
+    
+    VariantInit(&celladdress);
+    VariantInit(&vret);
+    VariantInit(&cell1); 
+    VariantInit(&param1);       
+    VariantInit(&vNull);   
+    V_VT(&vNull) = VT_NULL; 
+          
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;           
+    } 
+      
+    hres = I_PageSetup_get_Parent(iface, (IDispatch**)&wrksh);
+    if (FAILED(hres)) {
+        ERR("PageSetup_get_Parent\n");
+        return E_FAIL;
+    }     
+       
+    V_VT(&cell1) = VT_BSTR;
+    V_BSTR(&cell1) = SysAllocString(value);  
+      
+    hres = I_Worksheet_get_Range(wrksh, cell1, vNull, (IDispatch**)&range);  
+    if (FAILED(hres)) {
+        ERR("Worksheet_get_Range\n");
+        return E_FAIL;
+    }      
+      
+    RangeImpl* rangeimpl = (RangeImpl*)range;  
+      
+    hres = AutoWrap(DISPATCH_METHOD, &celladdress, rangeimpl->pOORange, L"getRangeAddress", 0);
+    if (FAILED(hres)) {
+        ERR("getRangeAddress\n");
+        if (wrksh) {
+            I_Worksheet_Release(wrksh);
+            wrksh = NULL;           
+        }
+        return E_FAIL;
+    }
+    
+    pPropVals = SafeArrayCreateVector( VT_VARIANT, 0, 1 );
+
+    hres = SafeArrayPutElement( pPropVals, &ix, &celladdress );
+
+    V_VT(&param1) = VT_ARRAY | VT_VARIANT;
+    V_ARRAY(&param1) = pPropVals;
+    
+    hres = AutoWrap(DISPATCH_METHOD, &vret, This->pOOSheet, L"setPrintAreas", 1, param1);
+    if (FAILED(hres)) {
+        ERR("setPrintAreas \n");
+    }   
+
+    VariantClear(&celladdress);
+    VariantClear(&vret);
+    VariantClear(&param1);
+    VariantClear(&cell1);
+    if (wrksh) {
+        I_Worksheet_Release(wrksh);
+        wrksh = NULL;           
+    }
+    if (range) {
+        I_Range_Release(range);
+        range = NULL;           
+    }    
+        
+    return hres;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintGridlines(
