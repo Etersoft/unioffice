@@ -335,7 +335,7 @@ If tmp.Rows.Row=3 then
     If Err.Number <> 0 Then
         otchetFile.WriteLine("[FAILED] GET IRange -> Rows")  
         failed = failed + 1
-    Err.Clear
+    	Err.Clear
     Else
         otchetFile.WriteLine("[SUCCESS] GET IRange -> Rows")  
         success = success + 1     
@@ -345,7 +345,68 @@ Else
     failed = failed + 1
 End If
 
-'Set tmp = 0
+'++++++   IRange -> Offset 
+
+Set tmp = Excel.Range("C3:F4")
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] GET Excel - > Range")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] GET Excel -> Range")  
+    success = success + 1 
+End If
+
+Set tmp = tmp.Offset(3)
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] GET Range -> Offset")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] GET Range -> Offset")  
+    success = success + 1 
+End If
+
+
+If tmp.Row=6 then
+    If Err.Number <> 0 Then
+        otchetFile.WriteLine("[FAILED] GET IRange -> Offset")  
+        failed = failed + 1
+    Err.Clear
+    Else
+        otchetFile.WriteLine("[SUCCESS] GET IRange -> Offset")  
+        success = success + 1     
+   End If
+Else
+    otchetFile.WriteLine("[FAILED] NOT EQUAL IRange -> Offset")  
+    failed = failed + 1
+End If
+ 
+	
+Set tmp = tmp.Offset(0, 3)
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] GET Range -> Offset")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] GET Range -> Offset")  
+    success = success + 1 
+End If
+
+
+If tmp.Column=6 then
+    If Err.Number <> 0 Then
+        otchetFile.WriteLine("[FAILED] GET IRange -> Offset")  
+        failed = failed + 1
+    Err.Clear
+    Else
+        otchetFile.WriteLine("[SUCCESS] GET IRange -> Offset")  
+        success = success + 1     
+   End If
+Else
+    otchetFile.WriteLine("[FAILED] NOT EQUAL IRange -> Offset")  
+    failed = failed + 1
+End If
 
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

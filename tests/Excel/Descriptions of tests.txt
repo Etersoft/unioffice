@@ -68,3 +68,4 @@ TEST 5
 		IRange->EntireColumns (GET)
 		IRange->Row (GET)
 		IRange->Column (GET)
+		IRange->Offset (with 1 and 2 parameters)
