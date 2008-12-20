@@ -2058,8 +2058,8 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintArea(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_STUB;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintGridlines(

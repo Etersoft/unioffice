@@ -1606,7 +1606,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_NumberFormat(
         VARIANT numbformat)
 {
 /*TODO*/
-    TRACE_NOTIMPL;
+    TRACE_STUB;
     return S_OK;
 }
 
@@ -1627,7 +1627,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_NumberFormatLocal(
         VARIANT numbformat)
 {
 /*TODO*/
-    TRACE_NOTIMPL;
+    TRACE_STUB;
     return S_OK;
 }
 
