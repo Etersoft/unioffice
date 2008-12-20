@@ -409,6 +409,38 @@ Else
 End If
 
 
+'+++++++++++++++ Range->Select()
+
+Excel.Range("F15").Select()
+Excel.Range("F15").Value = "TEST"
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] GET Range -> Select")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] GET Range -> Select")  
+    success = success + 1 
+End If
+
+'+++++++++++++++ Application->Selection()
+
+If Excel.Selection.Value = "TEST" then
+    If Err.Number <> 0 Then
+        otchetFile.WriteLine("[FAILED] GET IApplication -> Selection")  
+        failed = failed + 1
+    Err.Clear
+    Else
+        otchetFile.WriteLine("[SUCCESS] GET IApplication -> Selection")  
+        success = success + 1     
+   End If
+Else
+    otchetFile.WriteLine("[FAILED] NOT EQUAL IApplication -> Selection")  
+    failed = failed + 1
+End If
+
+
+
+
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 'конец кода теста
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
