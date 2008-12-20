@@ -142,15 +142,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
     hres = _I_WorkbookConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
-    if (This->count_workbooks==0){
-        This->count_workbooks += 1;
+    if (This->capasity_workbooks == 0){
+        This->count_workbooks = 1;       
+        This->capasity_workbooks = This->count_workbooks;
         This->pworkbook = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, sizeof(WorkbookImpl*));
-        if (FAILED(hres)) return E_OUTOFMEMORY;
+        if (!(This->pworkbook)) {
+            return E_OUTOFMEMORY;
+        }
         This->current_workbook = 0;
     } else {
         This->count_workbooks += 1;
-        This->pworkbook = HeapReAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, This->pworkbook, This->count_workbooks * sizeof(WorkbookImpl*));
-        if (FAILED(hres)) return E_OUTOFMEMORY;
+        if (This->count_workbooks > This->capasity_workbooks) {
+            This->capasity_workbooks = This->count_workbooks;
+            This->pworkbook = HeapReAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, This->pworkbook, This->capasity_workbooks * sizeof(WorkbookImpl*));
+        }
+        if (!(This->pworkbook)) {
+            return E_OUTOFMEMORY;
+        }
         This->current_workbook = This->count_workbooks - 1;
     }
 
@@ -233,7 +241,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Close(
         if (This->pworkbook[i]!=NULL) {
             MSO_TO_OO_CloseWorkbook(This->pworkbook[i], filename);
             I_Workbook_Release(This->pworkbook[i]);
-            This->pworkbook[i]=NULL;
+            This->pworkbook[i] = NULL;
         }
 /*        SysFreeString(filename);*/
     }
@@ -348,15 +356,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     hres = _I_WorkbookConstructor((LPVOID*) &punk);
     if (FAILED(hres)) return E_NOINTERFACE;
 
-    if (This->count_workbooks==0){
-        This->count_workbooks += 1;
+    if (This->capasity_workbooks == 0){
+        This->count_workbooks = 1;
+        This->capasity_workbooks = This->count_workbooks;
         This->pworkbook = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, sizeof(WorkbookImpl*));
-        if (FAILED(hres)) return E_OUTOFMEMORY;
+        if (!(This->pworkbook)) {
+            return E_OUTOFMEMORY;
+        }
         This->current_workbook = 0;
     } else {
         This->count_workbooks += 1;
-        This->pworkbook = HeapReAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, This->pworkbook, This->count_workbooks * sizeof(WorkbookImpl*));
-        if (FAILED(hres)) return E_OUTOFMEMORY;
+        if (This->count_workbooks > This->capasity_workbooks) {
+            This->capasity_workbooks = This->count_workbooks;
+            This->pworkbook = HeapReAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, This->pworkbook, This->capasity_workbooks * sizeof(WorkbookImpl*));
+        }
+        if (!(This->pworkbook)) {
+            return E_OUTOFMEMORY;
+        }
         This->current_workbook = This->count_workbooks - 1;
     }
 
@@ -522,8 +538,44 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__Default(
         VARIANT varIndex,
         IDispatch **ppSheet)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    WorkbooksImpl *This = (WorkbooksImpl*)iface;    
+    HRESULT hres;
+    VARIANT i4_index;
+    
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;           
+    }
+    
+    if (!ppSheet) {
+         ERR("ppSheet is NULL \n");
+         return E_POINTER;
+    }
+    
+    MSO_TO_OO_CorrectArg(varIndex, &varIndex);
+    VariantInit(&i4_index);
+    
+    if (V_VT(&varIndex) == VT_BSTR) {
+        TRACE(" BSTR parameters not supported \n");                
+    } else {
+        hres = VariantChangeTypeEx(&i4_index, &varIndex,0,0,VT_I4);
+        if (FAILED(hres)) {
+            TRACE(" ERROR when VariantChangeTypeEx\n");
+            return E_FAIL;
+        }       
+           
+        if (V_I4(&i4_index) > This->count_workbooks) {
+            ERR("Index i4_index = %i,  count = %i", V_I4(&i4_index), This->count_workbooks);  
+            return E_FAIL;               
+        } 
+        
+        *ppSheet = This->pworkbook[V_I4(&i4_index) - 1];
+        I_Workbook_AddRef((I_Workbook*)(*ppSheet));  
+        return S_OK;
+    }
+    
+    ERR(" parameters \n");
+    return E_FAIL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Item(
@@ -531,9 +583,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Item(
         VARIANT index,
         IDispatch **result)
 {
-    /*Должны обрабатывать и имена и числовые значения*/
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE("-------> get__Default");
+    return I_Workbooks_get__Default(iface, index, result);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbooks___OpenText(
@@ -776,6 +827,7 @@ extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj)
     workbooks->count_workbooks = 0;
     workbooks->pworkbook = NULL;
     workbooks->current_workbook = -1;
+    workbooks->capasity_workbooks = 0;
 
     *ppObj = &workbooks->_workbooksVtbl;
     

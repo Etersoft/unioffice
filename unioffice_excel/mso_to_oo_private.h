@@ -229,10 +229,12 @@ typedef struct
 {
     const I_WorkbooksVtbl *_workbooksVtbl;
     LONG ref;
-    IDispatch *pApplication;  /*Указатель на Application*/
-    int count_workbooks;      /*кол-во workbook*/
-    IDispatch **pworkbook;    /*массив workbook*/
-    int current_workbook;     /*текущий workbook*/
+    IDispatch *pApplication;  /*Pointer to Application*/
+    
+    IDispatch **pworkbook;    /*pointer to aray of workbook*/
+    int count_workbooks;      /*amount of workbook*/
+    int capasity_workbooks;   /*capasity (to work with memory) */
+    int current_workbook;     /*index of current workbook*/
 } WorkbooksImpl;
 
 typedef struct
