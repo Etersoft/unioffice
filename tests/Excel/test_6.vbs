@@ -128,6 +128,39 @@ while Excel.Sheets.Count > 1
 	End If	
 wend
 
+'+++++++ Rename list
+
+Excel.Sheets.Item(1).Name = "Лист 1" 
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] ISheets.item(1).Name ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] ISheets.item(1).Name")  
+    success = success + 1 
+End If
+
+'+++++++++++++ ISheets -> Add
+
+Set tmp = Excel.Sheets.Add() 
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] ISheets.Add ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] ISheets.Add")  
+    success = success + 1 
+End If
+
+Excel.Sheets.Add()
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] ISheets.Add second list ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] ISheets.Add second list")  
+    success = success + 1 
+End If
 
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
