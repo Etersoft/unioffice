@@ -1193,8 +1193,15 @@ HRESULT MSO_TO_OO_CorrectArg(
          VARIANT *retval)
 {
 VariantInit(retval);
-if (V_ISBYREF(&value)) {
-    switch(V_VT(&value) - VT_BYREF) {
+if (V_ISBYREF(&value)) {  
+                       
+    if ((V_VT(&value) - VT_BYREF) & VT_ARRAY) {
+       V_VT(retval) = V_VT(&value) - VT_BYREF;
+       V_ARRAY(retval) =*(V_ARRAYREF(&value));   
+       return S_OK;           
+    }  
+              
+    switch(V_VT(&value) - VT_BYREF) {                    
     case VT_EMPTY:{
         V_VT(retval) = VT_EMPTY;
         break;
@@ -1274,11 +1281,11 @@ if (V_ISBYREF(&value)) {
         V_VT(retval) = VT_ERROR;
         break;
         }
-    case VT_ARRAY:{
+/*    case VT_ARRAY:{
         V_VT(retval) = VT_ARRAY;
         V_ARRAY(retval) =*(V_ARRAYREF(&value));
         break;
-        }
+        }*/
     }
 } else {
     *retval = value; 
