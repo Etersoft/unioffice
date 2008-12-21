@@ -29,8 +29,8 @@ extridt:
 	rm -f idt/_Validation.idt idt/_SummaryInformation.idt
 
 # Формируем пакет MSI из шаблона, добавляем CAB'ы и .idt
-unioffice.msi: bin/template.msi ooffice.cab ooffice1.cab
+unioffice.msi: bin/template.msi ooffice.cab
 	cp bin/template.msi $@
 	$(MSIDB) -d $@ -f $(PWD)\\idt -i "*"
 	$(MSIDB) -d $@ -f $(PWD)\\idt\\Binary -i "*"
-	$(MSIDB) -d $@ -a ooffice.cab -a ooffice1.cab
+	$(MSIDB) -d $@ -a ooffice.cab
