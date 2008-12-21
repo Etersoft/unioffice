@@ -1,0 +1,75 @@
+IN ALL TESTS
+		
+
+TEST 1
+	test_1.vbs
+		IFont->Italic (GET, PUT)
+		IFont->Bold (GET, PUT)
+		IFont->Strikethrough (GET, PUT)	
+		IFont->Underline (GET, PUT)
+		IFont->SubScript (GET, PUT)
+		IFont->SuperScript (GET, PUT)
+		IFont->FontStyle (GET, PUT)
+		IFont->Name (GET, PUT)
+		IFont->Shadow (GET, PUT)
+		IFont->Size (GET, PUT)
+		IFont->Color (GET, PUT)
+		IFont->ColorIndex (GET, PUT)
+		IFont->OutlineFont (GET, PUT)
+		
+TEST 2
+	test_2.vbs
+		Excel->SheetsInNewWorkbook (PUT)
+		Excel.Workbooks (GET)
+		Workbooks.Add
+		Excel.Sheets (GET)
+		Sheets.Count (GET)
+		Sheets.Range(String) (GET)
+		Range.Group
+		Range.UnGroup
+		Sheets(index) (GET)
+                IWorksheet->Outline
+		IOutline->Showlevels
+		
+TEST 3
+	test_3.vbs
+		(IEnumVARIANT)  Construction of "For Each V in Excel.Range("A1:D4").Borders"
+		IBorder->LineStyle (PUT)
+		IBorder->ColorIndex (PUT)
+TEST 4
+	test_4.vbs
+		IPageSetup.LeftMargin
+		IPageSetup->RightMargin
+		IPageSetup->TopMargin
+		IPageSetup->BottomMargin
+		IPageSetup->Orientation
+		IPageSetup->Zoom
+		IPageSetup->CenterHorizontally
+		IPageSetup->CenterVertically
+		IPageSetup->FooterMargin
+		IPageSetup->HeaderMargin
+		FitToPagesWide->cFitToPagesTall
+		FitToPagesWide->FitToPagesWide
+
+TEST 5
+	test_5.vbs
+		IRange->Value (string)  (GET, PUT)
+		IRange->Value (int)  (GET, PUT)
+		IRange->Value (formula)  (GET, PUT)
+		IRange->Formula (string)  (GET, PUT)
+		IRange->Formula (int)  (GET, PUT)
+		IRange->Formula (formula)  (GET, PUT)
+		Range = Value (PUT Two demension array)
+		IRange->Value (PUT Two demension array)
+		Range = value (PUT Two demension array)
+		IRange->EntireRow (GET)
+		IRange->EntireColumn (GET)
+		IRange->EntireRows (GET)
+		IRange->EntireColumns (GET)
+		IRange->Row (GET)
+		IRange->Column (GET)
+		IRange->Offset (with 1 and 2 parameters)
+		IRange->Select
+		IApplication->Selection (GET)
+		IRange->Range[Range, Range]  (GET)
+		IRange->Resize()

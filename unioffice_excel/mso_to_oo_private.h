@@ -56,9 +56,11 @@ struct CELL_COORD
 
 typedef struct
 {
-    const IClassFactoryVtbl *lpVtbl;
+    const IClassFactoryVtbl *pclassfactoryVtbl;
     LONG ref;
 } ClassFactoryImpl;
+
+#define CLASSFACTORY_CLASSFACTORY(x) ((IClassFactory*)&(x)->pclassfactoryVtbl)
 
 typedef struct
 {
@@ -66,7 +68,8 @@ typedef struct
     const IEnumVARIANTVtbl *penumeratorVtbl;
 
     LONG ref;
-    IDispatch *prange;           /*Указатель на Range*/
+    I_Range *pRange;               /*Pointer to IRange*/
+    IDispatch *pOORange;           /*Pointer to OpenOffice range interface*/
     int enum_position;
 
 } BordersImpl;
@@ -76,32 +79,51 @@ typedef struct
 
 typedef struct
 {
-    const I_BorderVtbl *_borderVtbl;
+    const I_BorderVtbl *pborderVtbl;
     LONG ref;
-    IDispatch *pborders;           /*Указатель на Borders*/
+    I_Borders *pBorders;           /*Указатель на Borders*/
+    IDispatch *pOORange;           /*Pointer to OpenOffice range interface*/
     XlBordersIndex key;
 } BorderImpl;
 
+#define BORDER_BORDER(x) ((I_Border*)&(x)->pborderVtbl)
+
 typedef struct
 {
-    const I_InteriorVtbl *_interiorVtbl;
+    const I_FontVtbl *pfontVtbl;
     LONG ref;
-    IDispatch *prange;           /*Указатель на Range*/
+    I_Range *pRange;        /*Pointer to IRange*/
+    IDispatch *pOORange;     /*Pointer to OO Range*/
+} FontImpl;
+
+#define FONT_FONT(x) ((I_Font*)&(x)->pfontVtbl)
+
+typedef struct
+{
+    const I_InteriorVtbl *pinteriorVtbl;
+    LONG ref;
+    I_Range *pRange;           /*Pointer to IRange*/
+    IDispatch *pOORange;       /*Pointer to OORange*/
 } InteriorImpl;
 
-typedef struct
-{
-    const I_OutlineVtbl *_outlineVtbl;
-    LONG ref;
-    IDispatch *pwsh;           /*Указатель на Worksheet*/
-} OutlineImpl;
+#define INTERIOR_INTERIOR(x) ((I_Interior*)&(x)->pinteriorVtbl)
 
 typedef struct
 {
-    const I_WorksheetVtbl *_worksheetVtbl;
+    const I_OutlineVtbl *poutlineVtbl;
+    LONG ref;
+    I_Worksheet *pWorksheet;           /*Pointer to IWorksheet*/
+    IDispatch *pOOSheet;               /*Pointer to OOSheet*/
+} OutlineImpl;
+
+#define OUTLINE_OUTLINE(x) ((I_Outline*)&(x)->poutlineVtbl)
+
+typedef struct
+{
+    const I_WorksheetVtbl *pworksheetVtbl;
     LONG ref;
     IDispatch *pOOSheet;      /*Указатель на Sheet из OpenOffice*/
-    IDispatch *pwb;           /*Указатель на Parent Workbook*/
+    I_Workbook *pwb;           /*Указатель на Parent Workbook*/
     IDispatch *pAllRange;
 } WorksheetImpl;
 
@@ -122,9 +144,9 @@ typedef struct
 
 typedef struct
 {
-    const I_RangeVtbl *_rangeVtbl;
+    const I_RangeVtbl *prangeVtbl;
     LONG ref;
-    IDispatch *pOORange;     /*Указатель на Range openoffice*/
+    IDispatch *pOORange;     /*Pointer to OO Range*/
     IDispatch *pwsheet;      /*Указатель на worksheet*/
     int is_release;
 } RangeImpl;
@@ -147,10 +169,14 @@ typedef struct
 
 typedef struct
 {
-    const I_PageSetupVtbl *_pagesetupVtbl;
+    const I_PageSetupVtbl *ppagesetupVtbl;
     LONG ref;
-    IDispatch *pwsheet;      /*Указатель на worksheet*/
+    I_Worksheet *pWorksheet;      /*Pointer to IWorksheet*/
+    IDispatch *pOOSheet;          /*Pointer to OOSheet*/
+    IDispatch *pOODocument;       /*Pointer to OODocument*/
 } PageSetupImpl;
+
+#define PAGESETUP_PAGESETUP(x) ((I_PageSetup*)&(x)->ppagesetupVtbl)
 
 typedef struct
 {
@@ -191,9 +217,9 @@ typedef struct
 
 typedef struct
 {
-    const I_WorkbookVtbl *_workbookVtbl;
+    const I_WorkbookVtbl *pworkbookVtbl;
     LONG ref;
-    IDispatch *pworkbooks;  /*Указатель на Application*/
+    IDispatch *pworkbooks;    /*Указатель на Application*/
     IDispatch *pDoc;          /*Указатель на Document*/
     IDispatch *pSheets;       /*Указатель на Sheets*/
 //    BSTR filename;            /*имя файла*/ 
@@ -203,10 +229,12 @@ typedef struct
 {
     const I_WorkbooksVtbl *_workbooksVtbl;
     LONG ref;
-    IDispatch *pApplication;  /*Указатель на Application*/
-    int count_workbooks;      /*кол-во workbook*/
-    IDispatch **pworkbook;    /*массив workbook*/
-    int current_workbook;     /*текущий workbook*/
+    IDispatch *pApplication;  /*Pointer to Application*/
+    
+    IDispatch **pworkbook;    /*pointer to aray of workbook*/
+    int count_workbooks;      /*amount of workbook*/
+    int capasity_workbooks;   /*capasity (to work with memory) */
+    int current_workbook;     /*index of current workbook*/
 } WorkbooksImpl;
 
 typedef struct
@@ -227,14 +255,6 @@ typedef struct
     long sheetsinnewworkbook;
 
 } _ApplicationExcelImpl;
-
-typedef struct
-{
-    const I_FontVtbl *_ifontVtbl;
-    LONG ref;
-    IDispatch *prange;        /*указатель на range*/
-} _FontImpl;
-
 
 #define APPEXCEL(x) ((I_ApplicationExcel*) &(x)->pApplicationExcelVtbl)
 #define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)

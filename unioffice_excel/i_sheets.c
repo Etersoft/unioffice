@@ -119,6 +119,7 @@ static ULONG WINAPI MSO_TO_OO_I_Sheets_Release(
         }
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -836,6 +837,9 @@ extern HRESULT _I_SheetsConstructor(LPVOID *ppObj)
     sheets->enum_position = 0;
 
     *ppObj = SHEETS_SHEETS(sheets);
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

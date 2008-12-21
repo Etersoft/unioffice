@@ -77,7 +77,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_QueryInterface(
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Workbook)) {
-        *ppvObject = &This->_workbookVtbl;
+        *ppvObject = &This->pworkbookVtbl;
         MSO_TO_OO_I_Workbook_AddRef(iface);
         return S_OK;
     }
@@ -114,6 +114,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbook_Release(
         /*SysFreeString(This->filename);*/
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
+        DELETE_OBJECT;
     }
     return ref;
 }
@@ -152,12 +153,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
         LCID lcid)
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
+    WorkbooksImpl *This_wbks = (WorkbooksImpl*)(This->pworkbooks);
+    
     BSTR filename;
     HRESULT hres;
     int i;
     IDispatch *pdtmp;
-/*TODO*/
-/*Игнорируем все параметры*/
+
     TRACE_IN;
 
     filename = SysAllocString(L"");
@@ -168,8 +170,24 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
         return E_FAIL;
     }
 
+    /*Find this workbook in array? and delete it*/
+    int find_index=-1;
+    for (i=0; i<This_wbks->count_workbooks; i++) {
+        if (This_wbks->pworkbook[i] == (IDispatch*)iface) {
+            find_index = i;
+        }
+    }
+    
+    if (find_index < 0) ERR("Workbook NOT FIND \n");
+
     hres = MSO_TO_OO_I_Workbook_Release(iface);
     iface = NULL;
+
+    for (i = find_index; i < This_wbks->count_workbooks - 1; i++) {
+        This_wbks->pworkbook[i] = This_wbks->pworkbook[i + 1];
+    }
+    This_wbks->count_workbooks = This_wbks->count_workbooks - 1;
+    
 
     TRACE_OUT;
     return hres;
@@ -2578,13 +2596,16 @@ extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    workbook->_workbookVtbl = &MSO_TO_OO_I_WorkbookVtbl;
+    workbook->pworkbookVtbl = &MSO_TO_OO_I_WorkbookVtbl;
     workbook->ref = 0;
     workbook->pworkbooks = NULL;
     workbook->pDoc = NULL;
     workbook->pSheets = NULL;
 
-    *ppObj = &workbook->_workbookVtbl;
+    *ppObj = &workbook->pworkbookVtbl;
+    
+    CREATE_OBJECT;
+    
     TRACE_OUT;
     return S_OK;
 }

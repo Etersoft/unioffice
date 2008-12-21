@@ -1,8 +1,3 @@
-'++++++++++++++++++++++++++++++++++++++++++++
-'test
-'     IBorders
-'     IBorder
-'++++++++++++++++++++++++++++++++++++++++++++
 Dim WshShell
 Dim fso
 Dim gsuccess, gfailed, show_excel, next_script
@@ -32,7 +27,7 @@ else
 End If
 
 'Не забыть скрыть Excel если этопотоковый запуск.
-otchetFile.WriteLine("++++++ TEST 3 (IBorders, IBorder)++++++")
+otchetFile.WriteLine("++++++ TEST 6 (ISheets)++++++")
 On Error Resume Next
 
 'Создаем объект Excel.Application
@@ -85,6 +80,16 @@ End If
 'Здесь помещается текст тестового скрипта
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+Excel.SheetsInNewWorkbook = 2
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] PUT Excel.SheetsInNewWorkbook")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] PUT Excel.SheetsInNewWorkbook")  
+    success = success + 1 
+End If
+
 Set WB = Excel.Workbooks.Add
 If Err.Number <> 0 Then
     otchetFile.WriteLine("[FAILED] PUT Excel.Workbooks.Add")  
@@ -95,36 +100,67 @@ Else
     success = success + 1 
 End If
 
-For Each V in Excel.Range("A1:D4").Borders
-     V.LineStyle = 1
-     If Err.Number <> 0 Then
-        otchetFile.WriteLine("[FAILED] PUT Border->LineStyle")  
-        failed = failed + 1
-        Err.Clear
-     Else 
-        otchetFile.WriteLine("[SUCCESS] PUT Border->LineStyle")  
-        success = success + 1 
-    End If     
 
-     V.ColorIndex = 10
-     If Err.Number <> 0 Then
-        otchetFile.WriteLine("[FAILED] PUT Border->ColorIndex")  
-        failed = failed + 1
-        Err.Clear
-     Else 
-        otchetFile.WriteLine("[SUCCESS] PUT Border->ColorIndex)")  
-        success = success + 1 
-    End If 
-Next
+'+++++++   ISheets->Count
+
+Excel.Cells(1,1).Value = "Count"
+Excel.Cells(1,2).Value = Excel.Sheets.Count 
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] Borders (IEnumVARIANT)")  
+    otchetFile.WriteLine("[FAILED] ISheets -> Count ")  
     failed = failed + 1
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] Borders (IEnumVARIANT)")  
+    otchetFile.WriteLine("[SUCCESS] ISheets -> Count")  
     success = success + 1 
 End If
 
+'+++++++   ISheets->Delete
+
+while Excel.Sheets.Count > 1
+	Excel.Sheets(Excel.Sheets.Count).Delete()
+	If Err.Number <> 0 Then
+    		otchetFile.WriteLine("[FAILED] ISheets -> Delete Count = " + Excel.Sheets.Count)  
+    		failed = failed + 1
+    		Err.Clear
+	Else 
+    		otchetFile.WriteLine("[SUCCESS] ISheets -> Delete ")  
+    		success = success + 1 
+	End If	
+wend
+
+'+++++++ Rename list
+
+Excel.Sheets.Item(1).Name = "Лист 1" 
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] ISheets.item(1).Name ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] ISheets.item(1).Name")  
+    success = success + 1 
+End If
+
+'+++++++++++++ ISheets -> Add
+
+Set tmp = Excel.Sheets.Add() 
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] ISheets.Add ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] ISheets.Add")  
+    success = success + 1 
+End If
+
+Excel.Sheets.Add()
+If Err.Number <> 0 Then
+    otchetFile.WriteLine("[FAILED] ISheets.Add second list ")  
+    failed = failed + 1
+    Err.Clear
+Else 
+    otchetFile.WriteLine("[SUCCESS] ISheets.Add second list")  
+    success = success + 1 
+End If
 
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

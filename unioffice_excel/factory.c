@@ -22,9 +22,11 @@
 
 #include "mso_to_oo_private.h"
 
+#define CLASSFACTORY_THIS(iface) DEFINE_THIS(ClassFactoryImpl, classfactory, iface);
+
 static ULONG WINAPI MSO_TO_OO_IClassFactory_AddRef(LPCLASSFACTORY iface)
 {
-    ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
+    ClassFactoryImpl *This = CLASSFACTORY_THIS(iface);
     ULONG ref;
 
     if (This == NULL) return E_POINTER;
@@ -41,14 +43,14 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
         REFIID riid,
         LPVOID *ppvObj)
 {
-    ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
+    ClassFactoryImpl *This = CLASSFACTORY_THIS(iface);
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
 
     if (IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_IClassFactory)) {
         *ppvObj = (LPVOID)iface;
-        MSO_TO_OO_IClassFactory_AddRef(iface);
+        IClassFactory_AddRef(iface);
         return S_OK;
     }
 
@@ -57,7 +59,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
 
 static ULONG WINAPI MSO_TO_OO_IClassFactory_Release(LPCLASSFACTORY iface)
 {
-    ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
+    ClassFactoryImpl *This = CLASSFACTORY_THIS(iface);
     ULONG ref;
 
     if (This == NULL) return E_POINTER;
@@ -76,7 +78,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
         REFIID riid,
         LPVOID *ppvObj)
 {
-    ClassFactoryImpl *This = (ClassFactoryImpl *)iface;
+    ClassFactoryImpl *This = CLASSFACTORY_THIS(iface);
     HRESULT res;
     IUnknown *punk = NULL;
     TRACE_IN;
@@ -114,6 +116,8 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_LockServer(
     TRACE_OUT;
     return S_OK;
 }
+
+#undef CLASSFACTORY_THIS
 
 static const IClassFactoryVtbl IClassFactory_Vtbl =
 {

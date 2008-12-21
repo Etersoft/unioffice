@@ -38,122 +38,199 @@ HRESULT MSO_TO_OO_I_Workbooks_Initialize(
     return S_OK;
 }
 
-
+#define FONT_THIS(iface) DEFINE_THIS(FontImpl, font, iface)
+#define RANGE_THIS(iface) DEFINE_THIS(RangeImpl, range, iface)
 HRESULT MSO_TO_OO_I_Font_Initialize(
         I_Font* iface,
         I_Range *range)
 {
-    _FontImpl *This = (_FontImpl*)iface;
+    FontImpl *This = FONT_THIS(iface);
+    RangeImpl *This_range = RANGE_THIS(range);
     TRACE_IN;
 
-    if (This == NULL) {
-        TRACE("ERROR THIS = NULL \n");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_POINTER;
     }
 
-    if (This->prange!=NULL) {
-         I_Range_Release((I_Range*)(This->prange));
+    if (This->pRange) {
+         I_Range_Release(This->pRange);
     }
+    This->pRange = range;
+    if (This->pRange) I_Range_AddRef(This->pRange);
 
-    This->prange = (IDispatch*)range;
-    if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
+    if (This->pOORange) {
+         IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_range->pOORange;
+    if (This->pOORange) IDispatch_AddRef(This->pOORange);
+
 
     TRACE_OUT;
     return S_OK;
 }
+#undef RANGE_THIS
+#undef FONT_THIS
 
+#define INTERIOR_THIS(iface) DEFINE_THIS(InteriorImpl, interior, iface)
+#define RANGE_THIS(iface) DEFINE_THIS(RangeImpl, range, iface)
 HRESULT MSO_TO_OO_I_Interior_Initialize(
         I_Interior* iface,
         I_Range *range)
 {
-    InteriorImpl *This = (InteriorImpl*)iface;
+    InteriorImpl *This = INTERIOR_THIS(iface);
+    RangeImpl *This_range = RANGE_THIS(range);
     TRACE_IN;
 
-    if (This == NULL) {
-        TRACE("ERROR THIS = NULL \n");
+    if (!This) {
+        ERR("Object is NULL \n");
         return E_POINTER;
     }
-
-    if (This->prange!=NULL) {
-        I_Range_Release((I_Range*)(This->prange));
+    
+    if (!This_range) {
+        ERR("This_range is NULL \n");
+        return E_POINTER;
     }
+    
+    if (This->pRange) {
+        I_Range_Release(This->pRange);
+    }
+    This->pRange = range;
+    if (This->pRange) I_Range_AddRef((This->pRange));
 
-    This->prange = (IDispatch*)range;
-    if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
+    if (This->pOORange) {
+        IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_range->pOORange;
+    if (This->pOORange) IDispatch_AddRef((This->pOORange));
+
 
     TRACE_OUT;
     return S_OK;
 }
+#undef RANGE_THIS
+#undef INTERIOR_THIS
 
+#define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface)
 HRESULT MSO_TO_OO_I_Borders_Initialize(
         I_Borders* iface,
         I_Range *range)
 {
-    BordersImpl *This = (BordersImpl*)iface;
+    BordersImpl *This = BORDERS_THIS(iface);
+    RangeImpl* This_range = (RangeImpl*)range;
     TRACE_IN;
 
-    if (This == NULL) {
-        TRACE("ERROR THIS = NULL \n");
+    if (!This) {
+        ERR("object is NULL \n");
         return E_POINTER;
     }
 
-    if (This->prange!=NULL) {
-        I_Range_Release((I_Range*)(This->prange));
+    if (This->pRange) {
+        I_Range_Release((This->pRange));
     }
+    This->pRange = range;
+    if (This->pRange) I_Range_AddRef(This->pRange);
 
-    This->prange = (IDispatch*)range;
-    if (This->prange != NULL) I_Range_AddRef((I_Range*)(This->prange));
+    if (This->pOORange) {
+        IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_range->pOORange;
+    if (This->pOORange) IDispatch_AddRef((This->pOORange));
 
     TRACE_OUT;
     return S_OK;
 }
+#undef BORDERS_THIS
 
+#define BORDER_THIS(iface) DEFINE_THIS(BorderImpl, border, iface)
+#define BORDERS_THIS(iface) DEFINE_THIS(BordersImpl, borders, iface)
 HRESULT MSO_TO_OO_I_Border_Initialize(
         I_Border* iface,
         I_Borders *borders,
         XlBordersIndex key)
 {
-    BorderImpl *This = (BorderImpl*)iface;
+    BorderImpl *This = BORDER_THIS(iface);
+    BordersImpl *This_borders = BORDERS_THIS(borders);
     TRACE_IN;
 
-    if (This == NULL) {
+    if (!This) {
         TRACE("ERROR THIS = NULL \n");
         return E_POINTER;
     }
 
-    if (This->pborders!=NULL) {
-        I_Range_Release((I_Range*)(This->pborders));
+    if (This->pBorders) {
+        I_Borders_Release(This->pBorders);
+    }
+    This->pBorders = borders;
+    if (This->pBorders) 
+        I_Borders_AddRef(This->pBorders);
+    else {
+        TRACE("ERROR parent object is NULL \n");
+        return E_FAIL;    
     }
 
-    This->pborders = (IDispatch*)borders;
-    if (This->pborders != NULL) I_Range_AddRef((I_Range*)(This->pborders));
+    if (This->pOORange) {
+        IDispatch_Release(This->pOORange);
+    }
+    This->pOORange = This_borders->pOORange;
+    if (This->pOORange) 
+        IDispatch_AddRef(This->pOORange);
+    else {
+        TRACE("ERROR OORange object is NULL \n");
+        return E_FAIL;    
+    }
 
     This->key = key;
 
     TRACE_OUT;
     return S_OK;
 }
+#undef BORDER_THIS
+#undef BORDERS_THIS
 
+#define PAGESETUP_THIS(iface) DEFINE_THIS(PageSetupImpl, pagesetup, iface)
+#define WORKSHEET_THIS(iface) DEFINE_THIS(WorksheetImpl, worksheet, iface)
+#define WORKBOOK_THIS(iface) DEFINE_THIS(WorkbookImpl, workbook, iface)
 HRESULT MSO_TO_OO_I_PageSetup_Initialize(
      I_PageSetup* pPageSetup,
      I_Worksheet* wsh)
 {
-    PageSetupImpl *this = (PageSetupImpl*) pPageSetup;
-    WorksheetImpl *parent_wsh = (WorksheetImpl*) wsh;
-    WorkbookImpl *wb = (WorkbookImpl*) parent_wsh->pwb;
+    PageSetupImpl *This = PAGESETUP_THIS(pPageSetup);
+    WorksheetImpl *This_worksheet = WORKSHEET_THIS(wsh);
+    WorkbookImpl *This_workbook = WORKBOOK_THIS(This_worksheet->pwb);
+    
     TRACE_IN;
 
-    if (this->pwsheet!=NULL) {
-        I_Worksheet_Release((I_Worksheet*)this->pwsheet);
+    if (This->pWorksheet) {
+        I_Worksheet_Release(This->pWorksheet);
     }
-    this->pwsheet = (IDispatch*)wsh;
-    if (this->pwsheet!=NULL) {
-        I_Worksheet_AddRef((I_Worksheet*)this->pwsheet);
+    This->pWorksheet = wsh;
+    if (This->pWorksheet) {
+        I_Worksheet_AddRef(This->pWorksheet);
+    }
+
+    if (This->pOOSheet) {
+        IDispatch_Release(This->pOOSheet);
+    }
+    This->pOOSheet = This_worksheet->pOOSheet;
+    if (This->pOOSheet) {
+        IDispatch_AddRef(This->pOOSheet);
+    }
+
+    if (This->pOODocument) {
+        IDispatch_Release(This->pOODocument);
+    }
+    This->pOODocument = This_workbook->pDoc;
+    if (This->pOODocument) {
+        IDispatch_AddRef(This->pOODocument);
     }
 
     TRACE_OUT;
     return S_OK;
 }
+#undef WORKBOOK_THIS
+#undef WORKSHEET_THIS
+#undef PAGESETUP_THIS
 
 HRESULT MSO_TO_OO_I_Workbook_Initialize(
         I_Workbook* iface,
@@ -377,8 +454,8 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
     HRESULT hres;
     TRACE_IN;
 
-    This->pwb = (IDispatch*)wb;
-    IDispatch_AddRef(This->pwb);
+    This->pwb = wb;
+    I_Workbook_AddRef(This->pwb);
     This->pOOSheet = oosheet;
     IDispatch_AddRef(This->pOOSheet);
 
@@ -1116,8 +1193,15 @@ HRESULT MSO_TO_OO_CorrectArg(
          VARIANT *retval)
 {
 VariantInit(retval);
-if (V_ISBYREF(&value)) {
-    switch(V_VT(&value) - VT_BYREF) {
+if (V_ISBYREF(&value)) {  
+                       
+    if ((V_VT(&value) - VT_BYREF) & VT_ARRAY) {
+       V_VT(retval) = V_VT(&value) - VT_BYREF;
+       V_ARRAY(retval) =*(V_ARRAYREF(&value));   
+       return S_OK;           
+    }  
+              
+    switch(V_VT(&value) - VT_BYREF) {                    
     case VT_EMPTY:{
         V_VT(retval) = VT_EMPTY;
         break;
@@ -1197,11 +1281,11 @@ if (V_ISBYREF(&value)) {
         V_VT(retval) = VT_ERROR;
         break;
         }
-    case VT_ARRAY:{
+/*    case VT_ARRAY:{
         V_VT(retval) = VT_ARRAY;
         V_ARRAY(retval) =*(V_ARRAYREF(&value));
         break;
-        }
+        }*/
     }
 } else {
     *retval = value; 
@@ -1660,22 +1744,33 @@ HRESULT MSO_TO_OO_Workbook_SetVisible(
     return S_OK;
 }
 
+#define OUTLINE_THIS(iface) DEFINE_THIS(OutlineImpl, outline, iface)
+#define WORKSHEET_THIS(iface) DEFINE_THIS(WorksheetImpl, worksheet, iface)
 HRESULT MSO_TO_OO_I_Outline_Initialize(
         I_Outline* iface,
         I_Worksheet *iwsh)
 {
-    OutlineImpl *This = (OutlineImpl*)iface;
+    OutlineImpl *This = OUTLINE_THIS(iface);
+    WorksheetImpl *This_worksheet = WORKSHEET_THIS(iwsh);
     TRACE_IN;
 
-    if (This->pwsh!=NULL) {
-        I_Worksheet_Release((I_Worksheet*)This->pwsh);
+    if (This->pWorksheet) {
+        I_Worksheet_Release(This->pWorksheet);
     }
-    This->pwsh = (IDispatch*)iwsh;
-    I_Worksheet_AddRef((I_Worksheet*)This->pwsh);
+    This->pWorksheet = iwsh;
+    I_Worksheet_AddRef(This->pWorksheet);
+
+    if (This->pOOSheet) {
+        IDispatch_Release(This->pOOSheet);
+    }
+    This->pOOSheet = This_worksheet->pOOSheet;
+    IDispatch_AddRef(This->pOOSheet);
 
     TRACE_OUT;
     return S_OK;
 }
+#undef WORKSHEET_THIS
+#undef OUTLINE_THIS
 
 HRESULT MSO_TO_OO_Name_Initialize_By_Name(
         Name* iface,
