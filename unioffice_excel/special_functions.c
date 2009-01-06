@@ -883,12 +883,13 @@ HRESULT MSO_TO_OO_I_Range_Initialize(
          I_Range *pParentRange,
          struct CELL_COORD topLeft,
          struct CELL_COORD bottomRight)
-{
+{         
     RangeImpl *This = (RangeImpl*)iface;
     RangeImpl *This_parent = (RangeImpl*)pParentRange;
     TRACE_IN;
 
     if (This_parent->pOORange == NULL) {
+        ERR("Object is NULL \n");                          
        return E_POINTER;
     }
 
@@ -965,6 +966,11 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
         return E_POINTER;
     }
 
+    if (oosheet == NULL) {
+        TRACE("ERROR oosheet= NULL \n");
+        return E_POINTER;
+    }    
+
     if (This->pOORange != NULL) {
         IDispatch_Release(This->pOORange);
         This->pOORange = NULL;
@@ -972,14 +978,18 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
     This->pOORange = oosheet;
     if (This->pOORange != NULL) {
         IDispatch_AddRef(This->pOORange);
-        TRACE_OUT;
-        return S_OK;
     }
 
+    if (This->pwsheet != NULL) {
+        IDispatch_Release(This->pwsheet);
+        This->pwsheet = NULL;
+    }
     This->pwsheet = psheet;
-    IDispatch_AddRef(psheet);
+    if (This->pwsheet != NULL) {
+        IDispatch_AddRef(This->pwsheet);
+    }
 
-    return E_POINTER;
+    return S_OK;
 }
 
 HRESULT MSO_TO_OO_GetRangeAddress(
