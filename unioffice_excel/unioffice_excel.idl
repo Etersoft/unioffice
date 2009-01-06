@@ -835,6 +835,23 @@ import "wtypes.idl";
 		xlPageBreakPreview 		= 0x00000002
 	} XlWindowView;
 
+	typedef enum {
+		xlComments 			= -4144,
+		xlFormulas 			= -4123,
+		xlValues 			= -4163
+	} XlFindLookIn;
+
+	typedef enum {
+		xlPart 				= 2,
+		xlWhole 			= 1
+	} XlLookAt;
+
+	typedef enum {
+		xlByColumns 			= 2,
+		xlByRows 			= 1
+	} XlSearchOrder;
+
+
 //	typedef enum
 //	{
 //		xlBackgroundAutomatic   = 1,
