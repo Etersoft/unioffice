@@ -1050,9 +1050,19 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Shapes(
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Application(
         I_Worksheet* iface,
         IDispatch **RHS)
-{
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+{   
+    WorksheetImpl *This = (WorksheetImpl*)iface;
+    TRACE_IN;
+    
+    *RHS = NULL;
+    
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
+
+    TRACE_OUT;
+    return I_Workbook_get_Application((I_Workbook*)(This->pwb), RHS);  
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Creator(
