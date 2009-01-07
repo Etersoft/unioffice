@@ -11,7 +11,7 @@ Dim success, failed
 Dim otchetFile
 
 Function ERROR_MES ( mes_err )
-    otchetFile.WriteLine("[FAILED] " +  mes_err )    
+    otchetFile.WriteLine("!![FAILED]!! " +  mes_err )    
     failed = failed + 1
 End Function
 
@@ -22,7 +22,7 @@ Function OK_MES( mes_ok )
 End Function
 
 Function TEST_NAME( name_test )
-    otchetFile.WriteLine("+++++   " +  name_test  + "    +++++") 
+    otchetFile.WriteLine("==== " +  name_test  + " ====") 
 End Function
 
 success = 0
