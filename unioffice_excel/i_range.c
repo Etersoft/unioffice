@@ -2812,16 +2812,27 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Find(
     MSO_TO_OO_CorrectArg(MatchByte, &MatchByte);
     MSO_TO_OO_CorrectArg(SearchFormat, &SearchFormat); 
     
+    TRACE("parameter type What =  \n", V_VT(&What));
+    TRACE("parameter type After =  \n", V_VT(&After));    
+    TRACE("parameter type LookIn =  \n", V_VT(&LookIn));    
+    TRACE("parameter type LookAt =  \n", V_VT(&LookAt));    
+    TRACE("parameter type SearchOrder =  \n", V_VT(&SearchOrder));
+    TRACE("parameter type MatchCase =  \n", V_VT(&MatchCase));
+    TRACE("parameter type MatchByte =  \n", V_VT(&MatchByte));    
+    TRACE("parameter type SearchFormat =  \n", V_VT(&SearchFormat));    
+           
     if (V_VT(&What) != VT_BSTR) {
         ERR("Now not BSTR parameters not supported V_VT(What) = %i \n", V_VT(&What));
         return E_FAIL;            
-        }
-    
+        }    
+
+/*
     hres = VariantChangeTypeEx(&LookIn, &LookIn, 0, 0, VT_I4);
     if (FAILED(hres)) {
         TRACE("ERROR when VariantChangeTypeEx (LookIn) \n");
         return E_FAIL;
     }
+*/
     
     hres = AutoWrap(DISPATCH_METHOD, &oDescriptor, This->pOORange, L"createSearchDescriptor", 0);
     if (FAILED(hres)) {
