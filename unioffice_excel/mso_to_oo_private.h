@@ -184,8 +184,8 @@ typedef struct
     const IEnumVARIANTVtbl *penumeratorVtbl;
 
     LONG ref;
-    IDispatch *pwb;              /*указатель на Workbook*/
-    IDispatch *pOONames;         /*указатель на OpenOffice Names*/
+    IDispatch *pWorkbook;              /*pointer to Workbook*/
+    IDispatch *pOONames;               /*pointer to OpenOffice Names*/
     int enum_position;
 
 } NamesImpl;
@@ -195,11 +195,13 @@ typedef struct
 
 typedef struct
 {
-    const NameVtbl *nameVtbl;
+    const NameVtbl *pnameVtbl;
     LONG ref;
-    IDispatch *pnames;              /*указатель на Names*/
-    IDispatch *pOOName;         /*указатель на OpenOffice Name*/
+    IDispatch *pNames;              /*pointer to Names*/
+    IDispatch *pOOName;             /*pointer to OpenOffice Name*/
 } NameImpl;
+
+#define NAME_NAME(x) ((Name*)&(x)->pnameVtbl)
 
 typedef struct
 {

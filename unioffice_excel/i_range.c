@@ -2786,7 +2786,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Find(
     RangeImpl *This = (RangeImpl*)iface;
     HRESULT hres;
     VARIANT oDescriptor, param1, vRes, oFound;
-    IDispatch *pCell, *pApp;
+    IDispatch *pApp;
+    I_Range *pCell;
     IUnknown *punk;
     
     if (!This) {
@@ -2812,14 +2813,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Find(
     MSO_TO_OO_CorrectArg(MatchByte, &MatchByte);
     MSO_TO_OO_CorrectArg(SearchFormat, &SearchFormat); 
     
-    TRACE("parameter type What =  \n", V_VT(&What));
-    TRACE("parameter type After =  \n", V_VT(&After));    
-    TRACE("parameter type LookIn =  \n", V_VT(&LookIn));    
-    TRACE("parameter type LookAt =  \n", V_VT(&LookAt));    
-    TRACE("parameter type SearchOrder =  \n", V_VT(&SearchOrder));
-    TRACE("parameter type MatchCase =  \n", V_VT(&MatchCase));
-    TRACE("parameter type MatchByte =  \n", V_VT(&MatchByte));    
-    TRACE("parameter type SearchFormat =  \n", V_VT(&SearchFormat));    
+    TRACE("parameter type What = %i \n", V_VT(&What));
+    TRACE("parameter type After = %i \n", V_VT(&After));    
+    TRACE("parameter type LookIn = %i \n", V_VT(&LookIn));    
+    TRACE("parameter type LookAt = %i \n", V_VT(&LookAt));    
+    TRACE("parameter type SearchOrder = %i \n", V_VT(&SearchOrder));
+    TRACE("parameter type MatchCase = %i \n", V_VT(&MatchCase));
+    TRACE("parameter type MatchByte = %i \n", V_VT(&MatchByte));    
+    TRACE("parameter type SearchFormat = %i \n", V_VT(&SearchFormat));    
            
     if (V_VT(&What) != VT_BSTR) {
         ERR("Now not BSTR parameters not supported V_VT(What) = %i \n", V_VT(&What));
@@ -2885,8 +2886,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Find(
         return hres;
     }
 
-    hres = MSO_TO_OO_I_Range_Initialize3((I_Range*)pCell, V_DISPATCH(&oFound), This->pwsheet, pApp);
+    hres = MSO_TO_OO_I_Range_Initialize3(pCell, V_DISPATCH(&oFound), This->pwsheet, pApp);
     if (FAILED(hres)){
+        ERR(" Initialize3 \n");
         I_Range_Release(pCell);
         return hres;
     }
@@ -4418,11 +4420,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
         hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
 
         if (FAILED(hres)) {
-            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+            ERR(" wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
         }
         return hres;
     }
-    WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
+    WTRACE(L" dispIdMember = %i NOT REALIZE \n",dispIdMember);
     return E_NOTIMPL;
 }
 

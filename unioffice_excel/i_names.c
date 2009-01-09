@@ -47,21 +47,28 @@ HRESULT get_typeinfo_name(ITypeInfo **typeinfo)
 }
 
 /*Name interface*/
+
+#define NAME_THIS(iface) DEFINE_THIS(NameImpl, name, iface);
+
 /*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_Name_AddRef(
         Name* iface)
 {
-    NameImpl *This = (NameImpl*)iface;
+    NameImpl *This = NAME_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
     ref = InterlockedIncrement(&This->ref);
     if (ref == 1) {
         InterlockedIncrement(&dll_ref);
     }
+    
     return ref;
 }
 
@@ -70,16 +77,23 @@ static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    NameImpl *This = (NameImpl*)iface;
+    NameImpl *This = NAME_THIS(iface);
 
-    if (This == NULL || ppvObject == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is Null \n");
+        return E_POINTER;
+    }
+    
+    if (!ppvObject) {
+        ERR("Object is Null ppvObject \n");
+        return E_POINTER;
+    }
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_Name)) {
-        *ppvObject = &This->nameVtbl;
-        MSO_TO_OO_Name_AddRef(iface);
-        return S_OK;
+        *ppvObject = NAME_NAME(This);
+        return Name_AddRef((Name*)(*ppvObject));
     }
 
     return E_NOINTERFACE;
@@ -88,20 +102,23 @@ static HRESULT WINAPI MSO_TO_OO_Name_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_Name_Release(
         Name* iface)
 {
-    NameImpl *This = (NameImpl*)iface;
+    NameImpl *This = NAME_THIS(iface);
     ULONG ref;
 
     TRACE("REF = %i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is Null \n");
+        return E_POINTER;
+    }
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pnames != NULL) {
-            IDispatch_Release(This->pnames);
-            This->pnames = NULL;
+        if (This->pNames) {
+            IDispatch_Release(This->pNames);
+            This->pNames = NULL;
         }
-        if (This->pOOName != NULL) {
+        if (This->pOOName) {
             IDispatch_Release(This->pOOName);
             This->pOOName = NULL;
         }
@@ -118,10 +135,15 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Application(
         IDispatch **value)
 {
     TRACE_IN;
-    NameImpl *This = (NameImpl*)iface;
-    if (This==NULL) return E_POINTER;
+    NameImpl *This = NAME_THIS(iface);
+    
+    if (!This) {
+       ERR("Object is Null \n");
+       return E_POINTER;
+    }
+    
     TRACE_OUT;
-    return Names_get_Application((Names*)(This->pnames), value);
+    return Names_get_Application((Names*)(This->pNames), value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_Creator(
@@ -136,15 +158,20 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Parent(
         Name* iface,
         IDispatch **value)
 {
-    NameImpl *This = (NameImpl*)iface;
+    NameImpl *This = NAME_THIS(iface);
     TRACE_IN;
 
-    if (This==NULL) return E_POINTER;
-
-    if (value==NULL)
+    if (!This) {
+        ERR("Object is Null \n");           
         return E_POINTER;
+    }
 
-    *value = This->pnames;
+    if (!value) {
+        ERR("Object is Null value\n");        
+        return E_POINTER;
+    }
+
+    *value = This->pNames;
     IDispatch_AddRef(*value);
 
     TRACE_OUT;
@@ -229,7 +256,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
         LCID lcid,
         BSTR *value)
 {
-    NameImpl *This = (NameImpl*)iface;
+    NameImpl *This = NAME_THIS(iface);
     HRESULT hres;
     VARIANT vres;
     TRACE_IN;
@@ -238,7 +265,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Name(
 
     hres = AutoWrap(DISPATCH_METHOD, &vres, This->pOOName, L"getName", 0);
     if (FAILED(hres)) {
-        TRACE("ERROR when getName \n");
+        ERR("when getName \n");
         return hres;
     }
     *value = SysAllocString(V_BSTR(&vres));
@@ -253,7 +280,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
         LCID lcid,
         BSTR value)
 {
-    NameImpl *This = (NameImpl*)iface;
+    NameImpl *This = NAME_THIS(iface);
     HRESULT hres;
     VARIANT vres, param1;
     TRACE_IN;
@@ -266,7 +293,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_Name(
 
     hres = AutoWrap(DISPATCH_METHOD, &vres, This->pOOName, L"setName", 1, param1);
     if (FAILED(hres)) {
-        TRACE("ERROR when setName \n");
+        ERR("when setName \n");
     }
     VariantClear(&param1);
 
@@ -410,8 +437,8 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
         Name* iface,
         IDispatch **value)
 {
-    NameImpl *This = (NameImpl*)iface;
-    NamesImpl *onames = (NamesImpl*)This->pnames;
+    NameImpl *This = NAME_THIS(iface);
+    NamesImpl *onames = (NamesImpl*)This->pNames;
     I_Sheets *shs;
     I_Worksheet *wsh;
     int i, count=0;
@@ -425,16 +452,16 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
     V_VT(&vNull) = VT_NULL;
     VariantInit(&vname);
 
-    hres = I_Workbook_get_Sheets((I_Workbook*)onames->pwb,(IDispatch**) &shs);
+    hres = I_Workbook_get_Sheets((I_Workbook*)onames->pWorkbook,(IDispatch**) &shs);
     if (FAILED(hres)) {
-        TRACE("ERROR When get Sheets\n");
+        ERR("When get Sheets\n");
         I_Sheets_Release(shs);
         return E_FAIL;
     }
 
     I_Sheets_get_Count(shs, &count);
     if (FAILED(hres)) {
-        TRACE("ERROR When get count\n");
+        ERR("When get count\n");
         I_Sheets_Release(shs);
         return E_FAIL;
     }
@@ -442,7 +469,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
     /*получаем имя объекта name*/
     hres = Name_get_Name(iface, 0, &tmpname);
     if (FAILED(hres)) {
-        TRACE("ERROR When get name\n");
+        ERR("When get name\n");
         I_Sheets_Release(shs);
         return E_FAIL;
     }
@@ -456,7 +483,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
          V_I4(&index) = i+1;
          hres = I_Sheets_get_Item(shs, index,(IDispatch**)&wsh);
          if (FAILED(hres)) {
-             TRACE("ERROR When get Sheets\n");
+             ERR("When get Sheets\n");
              I_Sheets_Release(shs);
              VariantClear(&vname);
              return E_FAIL;
@@ -496,10 +523,12 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetTypeInfo(
         ITypeInfo **ppTInfo)
 {
     HRESULT hres = get_typeinfo_name(ppTInfo);
-    TRACE("\n");
+    TRACE_IN;
+    
     if (FAILED(hres))
-        TRACE("Error when GetTypeInfo");
+        ERR("when GetTypeInfo");
 
+    TRACE_OUT;
     return hres;
 }
 
@@ -520,8 +549,9 @@ static HRESULT WINAPI MSO_TO_OO_Name_GetIDsOfNames(
 
     hres = typeinfo->lpVtbl->GetIDsOfNames(typeinfo,rgszNames, cNames, rgDispId);
     if (FAILED(hres)) {
-        WTRACE(L"ERROR name = %s \n", *rgszNames);
+        WERR(L"name = %s \n", *rgszNames);
     }
+    
     TRACE_OUT;
     return hres;
 }
@@ -556,7 +586,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
     case dispid_name_name:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if (pDispParams->cArgs>1) {
-                TRACE("ERROR parameter referstorange\n");
+                ERR("parameter referstorange\n");
                 return E_FAIL;
             }
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vparam1);
@@ -584,7 +614,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
         hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
                             pVarResult, pExcepInfo, puArgErr);
         if (FAILED(hres)) {
-            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+            ERR("wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
         }
 
         return hres;
@@ -648,18 +678,20 @@ extern HRESULT _NameConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    name->nameVtbl = &MSO_TO_OO_NameVtbl;
+    name->pnameVtbl = &MSO_TO_OO_NameVtbl;
     name->ref = 0;
-    name->pnames = NULL;
+    name->pNames = NULL;
     name->pOOName = NULL;
 
-    *ppObj = &name->nameVtbl;
+    *ppObj = NAME_NAME(name);
     
     CREATE_OBJECT;
     
     TRACE_OUT;
     return S_OK;
 }
+
+#undef NAME_THIS
 
 /*Names interface*/
 
@@ -749,9 +781,9 @@ static ULONG WINAPI MSO_TO_OO_Names_Release(
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        if (This->pwb != NULL) {
-            IDispatch_Release(This->pwb);
-            This->pwb = NULL;
+        if (This->pWorkbook != NULL) {
+            IDispatch_Release(This->pWorkbook);
+            This->pWorkbook = NULL;
         }
         if (This->pOONames != NULL) {
             IDispatch_Release(This->pOONames);
@@ -773,7 +805,7 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Application(
     NamesImpl *This = NAMES_THIS(iface);
     if (This==NULL) return E_POINTER;
     TRACE_OUT;
-    return I_Workbook_get_Application((I_Workbook*)(This->pwb), value);
+    return I_Workbook_get_Application((I_Workbook*)(This->pWorkbook), value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_get_Count(
@@ -828,8 +860,8 @@ static HRESULT WINAPI MSO_TO_OO_Names_get_Parent(
     if (value==NULL)
         return E_POINTER;
 
-    *value = This->pwb;
-    IDispatch_AddRef(This->pwb);
+    *value = This->pWorkbook;
+    IDispatch_AddRef(This->pWorkbook);
 
     TRACE_OUT;
     return S_OK;
@@ -1188,7 +1220,7 @@ extern HRESULT _NamesConstructor(LPVOID *ppObj)
     names->pnamesVtbl = &MSO_TO_OO_NamesVtbl;
     names->penumeratorVtbl = &MSO_TO_OO_Names_enumvarVtbl;
     names->ref = 0;
-    names->pwb = NULL;
+    names->pWorkbook = NULL;
     names->pOONames = NULL;
     names->enum_position = 0;
 

@@ -989,6 +989,7 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
         IDispatch_AddRef(This->pwsheet);
     }
 
+    TRACE_OUT;
     return S_OK;
 }
 
@@ -1660,11 +1661,11 @@ HRESULT MSO_TO_OO_Names_Initialize(
         return E_POINTER;
     }
 
-    if (This->pwb!=NULL) {
-         I_Workbook_Release((I_Workbook*)(This->pwb));
+    if (This->pWorkbook!=NULL) {
+         I_Workbook_Release((I_Workbook*)(This->pWorkbook));
     }
-    This->pwb = (IDispatch*)wb;
-    if (This->pwb != NULL) I_Workbook_AddRef((I_Workbook*)(This->pwb));
+    This->pWorkbook = (IDispatch*)wb;
+    if (This->pWorkbook != NULL) I_Workbook_AddRef((I_Workbook*)(This->pWorkbook));
 
     if (wbi->pDoc==NULL) {
         TRACE("Object pDoc is NULL\n");
@@ -1789,7 +1790,7 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
 {
     NameImpl *This = (NameImpl*)iface;
     NamesImpl *onames = (NamesImpl*)pnames;
-    WorkbookImpl *wbi = (WorkbookImpl*)(onames->pwb);
+    WorkbookImpl *wbi = (WorkbookImpl*)(onames->pWorkbook);
     VARIANT vRet,vRet2;
     HRESULT hres;
     TRACE_IN;
@@ -1801,11 +1802,11 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Name(
         return E_POINTER;
     }
 
-    if (This->pnames!=NULL) {
-         Names_Release((Names*)(This->pnames));
+    if (This->pNames!=NULL) {
+         Names_Release((Names*)(This->pNames));
     }
-    This->pnames = (IDispatch*)pnames;
-    if (This->pnames != NULL) Names_AddRef((Names*)(This->pnames));
+    This->pNames = (IDispatch*)pnames;
+    if (This->pNames != NULL) Names_AddRef((Names*)(This->pNames));
 
     if (wbi->pDoc==NULL) {
         TRACE("Object pDoc is NULL\n");
@@ -1843,7 +1844,7 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Index(
 {
     NameImpl *This = (NameImpl*)iface;
     NamesImpl *onames = (NamesImpl*)pnames;
-    WorkbookImpl *wbi = (WorkbookImpl*)(onames->pwb);
+    WorkbookImpl *wbi = (WorkbookImpl*)(onames->pWorkbook);
     VARIANT vRet,vRet2;
     HRESULT hres;
     TRACE_IN;
@@ -1855,11 +1856,11 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Index(
         return E_POINTER;
     }
 
-    if (This->pnames!=NULL) {
-         Names_Release((Names*)(This->pnames));
+    if (This->pNames!=NULL) {
+         Names_Release((Names*)(This->pNames));
     }
-    This->pnames = (IDispatch*)pnames;
-    if (This->pnames != NULL) Names_AddRef((Names*)(This->pnames));
+    This->pNames = (IDispatch*)pnames;
+    if (This->pNames != NULL) Names_AddRef((Names*)(This->pNames));
 
     if (wbi->pDoc==NULL) {
         TRACE("Object pDoc is NULL\n");
