@@ -21,14 +21,15 @@
 #include "special_functions.h"
 
 
+#define WORKBOOKS_THIS(iface) DEFINE_THIS(WorkbooksImpl, workbooks, iface)
 HRESULT MSO_TO_OO_I_Workbooks_Initialize(
         I_Workbooks* iface,
         I_ApplicationExcel *app)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     TRACE_IN;
 
-    This->pApplication = (IDispatch*)app;
+    This->pApplication = app;
 /*    if (This->pApplication != NULL) I_ApplicationExcel_AddRef(This->pApplication);*/
     This->count_workbooks = 0;
     This->current_workbook = -1;
@@ -37,6 +38,8 @@ HRESULT MSO_TO_OO_I_Workbooks_Initialize(
     TRACE_OUT;
     return S_OK;
 }
+#undef WORKBOOKS_THIS
+
 
 #define FONT_THIS(iface) DEFINE_THIS(FontImpl, font, iface)
 #define RANGE_THIS(iface) DEFINE_THIS(RangeImpl, range, iface)

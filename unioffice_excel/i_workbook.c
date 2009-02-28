@@ -173,7 +173,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
     /*Find this workbook in array? and delete it*/
     int find_index=-1;
     for (i=0; i<This_wbks->count_workbooks; i++) {
-        if (This_wbks->pworkbook[i] == (IDispatch*)iface) {
+        if (This_wbks->pworkbook[i] == iface) {
             find_index = i;
         }
     }

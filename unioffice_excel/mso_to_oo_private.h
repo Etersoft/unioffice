@@ -227,17 +227,23 @@ typedef struct
 //    BSTR filename;            /*имя файла*/ 
 } WorkbookImpl;
 
+
 typedef struct
 {
-    const I_WorkbooksVtbl *_workbooksVtbl;
-    LONG ref;
-    IDispatch *pApplication;  /*Pointer to Application*/
+    const I_WorkbooksVtbl *pworkbooksVtbl;
+    const IEnumVARIANTVtbl *penumeratorVtbl;
     
-    IDispatch **pworkbook;    /*pointer to aray of workbook*/
-    int count_workbooks;      /*amount of workbook*/
-    int capasity_workbooks;   /*capasity (to work with memory) */
-    int current_workbook;     /*index of current workbook*/
+    LONG ref;
+    I_ApplicationExcel *pApplication;  /*Pointer to Application*/
+    
+    I_Workbook **pworkbook;            /*pointer to aray of workbook*/
+    int count_workbooks;               /*amount of workbook*/
+    int capasity_workbooks;            /*capasity (to work with memory) */
+    int current_workbook;              /*index of current workbook*/
 } WorkbooksImpl;
+
+#define WORKBOOKS_WORKBOOKS(x) ((I_Workbooks*)&(x)->pworkbooksVtbl)
+#define WORKBOOKS_ENUM(x) ((IEnumVARIANT*)&(x)->penumeratorVtbl)
 
 typedef struct
 {
