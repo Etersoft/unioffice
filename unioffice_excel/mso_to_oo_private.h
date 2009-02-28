@@ -240,6 +240,9 @@ typedef struct
     int count_workbooks;               /*amount of workbook*/
     int capasity_workbooks;            /*capasity (to work with memory) */
     int current_workbook;              /*index of current workbook*/
+    
+    int enum_position;
+    
 } WorkbooksImpl;
 
 #define WORKBOOKS_WORKBOOKS(x) ((I_Workbooks*)&(x)->pworkbooksVtbl)
