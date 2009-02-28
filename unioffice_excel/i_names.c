@@ -1076,6 +1076,8 @@ static ULONG WINAPI MSO_TO_OO_I_Names_EnumVAR_AddRef(
         IEnumVARIANT* iface)
 {
     NamesImpl *This = ENUMVAR_THIS(iface);
+    TRACE_IN;
+    TRACE_OUT;
     return Names_AddRef(NAMES_NAMES(This));
 }
 
@@ -1086,6 +1088,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_QueryInterface(
         void **ppvObject)
 {
     NamesImpl *This = ENUMVAR_THIS(iface);
+    TRACE_IN;
+    TRACE_OUT;
     return Names_QueryInterface(NAMES_NAMES(This), riid, ppvObject);
 }
 
@@ -1093,6 +1097,8 @@ static ULONG WINAPI MSO_TO_OO_I_Names_EnumVAR_Release(
         IEnumVARIANT* iface)
 {
     NamesImpl *This = ENUMVAR_THIS(iface);
+    TRACE_IN;
+    TRACE_OUT;
     return Names_Release(NAMES_NAMES(This));
 }
 
@@ -1111,7 +1117,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_Next(
     ULONG l2;
     IDispatch *dret;
     VARIANT varindex, vNull;
-
+    TRACE_IN;
+    
     VariantInit(&vNull);
     V_VT(&vNull) = VT_NULL;
 
@@ -1145,7 +1152,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_Next(
        *pCeltFetched = l2;
 
    This->enum_position = l1;
-
+   
+   TRACE_OUT;
+   
    return  (l2 < celt) ? S_FALSE : S_OK;
 
 error:
@@ -1179,7 +1188,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Names_EnumVAR_Reset(
         IEnumVARIANT* iface)
 {
     NamesImpl *This = ENUMVAR_THIS(iface);
+    TRACE_IN;
     This->enum_position = 0;
+    TRACE_OUT;
     return S_OK;
 }
 
