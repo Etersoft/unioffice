@@ -81,7 +81,7 @@ typedef struct
 {
     const I_BorderVtbl *pborderVtbl;
     LONG ref;
-    I_Borders *pBorders;           /*Указатель на Borders*/
+    I_Borders *pBorders;           /*pointer to Borders*/
     IDispatch *pOORange;           /*Pointer to OpenOffice range interface*/
     XlBordersIndex key;
 } BorderImpl;
@@ -122,8 +122,8 @@ typedef struct
 {
     const I_WorksheetVtbl *pworksheetVtbl;
     LONG ref;
-    IDispatch *pOOSheet;      /*Указатель на Sheet из OpenOffice*/
-    I_Workbook *pwb;           /*Указатель на Parent Workbook*/
+    IDispatch *pOOSheet;                   /*pointer to Sheet из OpenOffice*/
+    I_Workbook *pwb;                       /*pointer to Parent Workbook*/
     IDispatch *pAllRange;
 } WorksheetImpl;
 
@@ -133,8 +133,8 @@ typedef struct
     const IEnumVARIANTVtbl *penumeratorVtbl;
 
     LONG ref;
-    IDispatch *pwb;           /*Указатель на Workbook*/
-    IDispatch *pOOSheets;     /*Указатель на Sheets openoffice*/
+    IDispatch *pwb;                        /*pointer to Workbook*/
+    IDispatch *pOOSheets;                  /*pointer to Sheets openoffice*/
     int enum_position;
 
 } SheetsImpl;
@@ -146,8 +146,8 @@ typedef struct
 {
     const I_RangeVtbl *prangeVtbl;
     LONG ref;
-    IDispatch *pOORange;     /*Pointer to OO Range*/
-    IDispatch *pwsheet;      /*Указатель на worksheet*/
+    IDispatch *pOORange;                /*Pointer to OO Range*/
+    IDispatch *pwsheet;                 /*pointer to worksheet*/
     int is_release;
 } RangeImpl;
 
@@ -155,16 +155,16 @@ typedef struct
 {
     const I_ShapesVtbl *_shapesVtbl;
     LONG ref;
-    IDispatch *pOOPage;     /*Указатель на DrawPage openoffice*/
-    IDispatch *pwsheet;      /*Указатель на worksheet*/
+    IDispatch *pOOPage;                 /*pointer to DrawPage openoffice*/
+    IDispatch *pwsheet;                 /*pointer worksheet*/
 } ShapesImpl;
 
 typedef struct
 {
     const I_ShapeVtbl *_shapeVtbl;
     LONG ref;
-    IDispatch *pOOShape;     /*Указатель на OOShape openoffice*/
-    IDispatch *pShapes;      /*Указатель на Shapes*/
+    IDispatch *pOOShape;               /*pointer to OOShape openoffice*/
+    IDispatch *pShapes;                /*pointer to Shapes*/
 } ShapeImpl;
 
 typedef struct
@@ -207,24 +207,25 @@ typedef struct
 {
     const I_WindowsVtbl *_windowsVtbl;
     LONG ref;
-    IDispatch *pApplication;     /*указатель на Application*/
+    I_ApplicationExcel *pApplication;        /*pointer to Application*/
 } WindowsImpl;
 
 typedef struct
 {
     const I_WindowVtbl *_windowVtbl;
+    
     LONG ref;
-    IDispatch *pWindows;     /*указатель на IWindows*/
-} WindowImpl;
+    I_Windows *pWindows;                     /*pointer to IWindows*/
+} WindowImpl; 
 
 typedef struct
 {
     const I_WorkbookVtbl *pworkbookVtbl;
     LONG ref;
-    IDispatch *pworkbooks;    /*Указатель на Application*/
-    IDispatch *pDoc;          /*Указатель на Document*/
-    IDispatch *pSheets;       /*Указатель на Sheets*/
-//    BSTR filename;            /*имя файла*/ 
+    IDispatch *pworkbooks;                   /*pointer to Application*/
+    IDispatch *pDoc;                         /*pointer to Document*/
+    IDispatch *pSheets;                      /*pointer to Sheets*/
+//    BSTR filename;             
 } WorkbookImpl;
 
 
