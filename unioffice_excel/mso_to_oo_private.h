@@ -41,6 +41,9 @@
 #include "debug.h"
 #include "dispid_const.h"
 
+// Dispinterfaces
+#include "application_excel.h"
+
 
 #define VER_2 1
 #define VER_3 2
@@ -252,9 +255,10 @@ typedef struct
 typedef struct
 {
     const _ApplicationVtbl              *pApplicationVtbl;
+    const Disp_ApplicationVtbl          *pDispApplicationVtbl;
     const IConnectionPointContainerVtbl *pConnectionPointContainerVtbl;
     const IConnectionPointVtbl          *pConnectionPointVtbl;
-
+    
 
     LONG ref;
     IDispatch *pdOOApp;
@@ -269,6 +273,7 @@ typedef struct
 } _ApplicationImpl;
 
 #define APPEXCEL(x) ((_Application*) &(x)->pApplicationVtbl)
+#define DISPAPPEXCEL(x) ((Disp_Application*) &(x)->pDispApplicationVtbl)
 #define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)
 #define CONPOINT(x) ((IConnectionPoint*) &(x)->pConnectionPointVtbl)
 
