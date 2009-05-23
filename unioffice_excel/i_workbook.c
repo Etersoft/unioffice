@@ -242,7 +242,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
 
     /* Create PropertyValue with save-format-data */
     IDispatch *dpv;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(wbks->pApplication), &dpv);
+    MSO_TO_OO_GetDispatchPropertyValue((_Application*)(wbks->pApplication), &dpv);
     if (dpv == NULL)
         return E_FAIL;
 

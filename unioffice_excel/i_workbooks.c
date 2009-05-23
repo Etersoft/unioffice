@@ -316,7 +316,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Application(
     }
 
     *value = (IDispatch*) (This->pApplication);
-    I_ApplicationExcel_AddRef( This->pApplication );
+    _Application_AddRef( This->pApplication );
 
     if (!value) {
         ERR("value == NULL \n");

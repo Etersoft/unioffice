@@ -379,7 +379,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Activate(
     command = SysAllocString(L".uno:JumpToTable");
     /* Create PropertyValue with save-format-data */
     IDispatch *ooParams;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(parent_wbs->pApplication), &ooParams);
+    MSO_TO_OO_GetDispatchPropertyValue((_Application*)(parent_wbs->pApplication), &ooParams);
     if (ooParams == NULL)
         return E_FAIL;
 
@@ -703,7 +703,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
     VariantClear(&find_name);
     IDispatch *new_wsh;
     WorkbooksImpl *parent_wbs = (WorkbooksImpl*)(parent_wb->pworkbooks);
-    _ApplicationExcelImpl *app = (_ApplicationExcelImpl*)parent_wbs->pApplication;
+    _ApplicationImpl *app = (_ApplicationImpl*)parent_wbs->pApplication;
     IDispatch *range1,*range2, *range3;
     VARIANT cols,torange;
     TRACE_IN;
@@ -734,7 +734,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
         return S_OK;
     }
 
-    i = MSO_TO_OO_GlobalFindIndexWorksheetByName((I_ApplicationExcel*)app, tmp_name, &wb_find);
+    i = MSO_TO_OO_GlobalFindIndexWorksheetByName((_Application*)app, tmp_name, &wb_find);
     if (i<0) {
         TRACE("Target not find \n");
         return E_FAIL;

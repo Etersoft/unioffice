@@ -207,7 +207,7 @@ typedef struct
 {
     const I_WindowsVtbl *_windowsVtbl;
     LONG ref;
-    I_ApplicationExcel *pApplication;        /*pointer to Application*/
+    _Application *pApplication;        /*pointer to Application*/
 } WindowsImpl;
 
 typedef struct
@@ -235,7 +235,7 @@ typedef struct
     const IEnumVARIANTVtbl *penumeratorVtbl;
     
     LONG ref;
-    I_ApplicationExcel *pApplication;  /*Pointer to Application*/
+    _Application *pApplication;  /*Pointer to Application*/
     
     I_Workbook **pworkbook;            /*pointer to aray of workbook*/
     int count_workbooks;               /*amount of workbook*/
@@ -251,9 +251,9 @@ typedef struct
 
 typedef struct
 {
-    const I_ApplicationExcelVtbl *pApplicationExcelVtbl;
+    const _ApplicationVtbl              *pApplicationVtbl;
     const IConnectionPointContainerVtbl *pConnectionPointContainerVtbl;
-    const IConnectionPointVtbl *pConnectionPointVtbl;
+    const IConnectionPointVtbl          *pConnectionPointVtbl;
 
 
     LONG ref;
@@ -266,9 +266,9 @@ typedef struct
     VARIANT_BOOL visible;
     long sheetsinnewworkbook;
 
-} _ApplicationExcelImpl;
+} _ApplicationImpl;
 
-#define APPEXCEL(x) ((I_ApplicationExcel*) &(x)->pApplicationExcelVtbl)
+#define APPEXCEL(x) ((_Application*) &(x)->pApplicationVtbl)
 #define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)
 #define CONPOINT(x) ((IConnectionPoint*) &(x)->pConnectionPointVtbl)
 
@@ -284,7 +284,7 @@ extern ClassFactoryImpl OOFFICE_ClassFactory;
 
 /*Constructors*/
 
-extern HRESULT _ApplicationExcelConstructor(LPVOID *ppObj);
+extern HRESULT _ApplicationConstructor(LPVOID *ppObj);
 extern HRESULT _I_FontConstructor(LPVOID *ppObj);
 extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj);
 extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj);

@@ -105,7 +105,7 @@ __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVO
     int len,i=0;
     TRACE_IN;
 
-    if (IsEqualGUID(rclsid, &CLSID__ApplicationExcel)) {
+    if (IsEqualGUID(rclsid, &CLSID_Application)) {
         /*Начинаем запись лога если файл существует*/
         len = GetSystemDirectoryA(buf, MAX_PATH);
         if (len) {
