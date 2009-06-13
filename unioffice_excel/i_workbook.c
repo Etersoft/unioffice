@@ -173,7 +173,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Close(
     /*Find this workbook in array? and delete it*/
     int find_index=-1;
     for (i=0; i<This_wbks->count_workbooks; i++) {
-        if (This_wbks->pworkbook[i] == (IDispatch*)iface) {
+        if (This_wbks->pworkbook[i] == iface) {
             find_index = i;
         }
     }
@@ -242,7 +242,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
 
     /* Create PropertyValue with save-format-data */
     IDispatch *dpv;
-    MSO_TO_OO_GetDispatchPropertyValue((I_ApplicationExcel*)(wbks->pApplication), &dpv);
+    MSO_TO_OO_GetDispatchPropertyValue((_Application*)(wbks->pApplication), &dpv);
     if (dpv == NULL)
         return E_FAIL;
 
@@ -467,9 +467,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Names(
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Application(
         I_Workbook* iface,
         IDispatch **RHS)
-{
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+{   
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    TRACE_IN;
+    
+    *RHS = NULL;
+    
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
+
+    TRACE_OUT;
+    return I_Workbooks_get_Application((I_Workbooks*)(This->pworkbooks), RHS);
+    
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Creator(

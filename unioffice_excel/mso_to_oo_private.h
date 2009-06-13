@@ -41,6 +41,9 @@
 #include "debug.h"
 #include "dispid_const.h"
 
+// Dispinterfaces
+#include "application_excel.h"
+
 
 #define VER_2 1
 #define VER_3 2
@@ -81,7 +84,7 @@ typedef struct
 {
     const I_BorderVtbl *pborderVtbl;
     LONG ref;
-    I_Borders *pBorders;           /*Указатель на Borders*/
+    I_Borders *pBorders;           /*pointer to Borders*/
     IDispatch *pOORange;           /*Pointer to OpenOffice range interface*/
     XlBordersIndex key;
 } BorderImpl;
@@ -122,8 +125,8 @@ typedef struct
 {
     const I_WorksheetVtbl *pworksheetVtbl;
     LONG ref;
-    IDispatch *pOOSheet;      /*Указатель на Sheet из OpenOffice*/
-    I_Workbook *pwb;           /*Указатель на Parent Workbook*/
+    IDispatch *pOOSheet;                   /*pointer to Sheet из OpenOffice*/
+    I_Workbook *pwb;                       /*pointer to Parent Workbook*/
     IDispatch *pAllRange;
 } WorksheetImpl;
 
@@ -133,8 +136,8 @@ typedef struct
     const IEnumVARIANTVtbl *penumeratorVtbl;
 
     LONG ref;
-    IDispatch *pwb;           /*Указатель на Workbook*/
-    IDispatch *pOOSheets;     /*Указатель на Sheets openoffice*/
+    IDispatch *pwb;                        /*pointer to Workbook*/
+    IDispatch *pOOSheets;                  /*pointer to Sheets openoffice*/
     int enum_position;
 
 } SheetsImpl;
@@ -146,8 +149,8 @@ typedef struct
 {
     const I_RangeVtbl *prangeVtbl;
     LONG ref;
-    IDispatch *pOORange;     /*Pointer to OO Range*/
-    IDispatch *pwsheet;      /*Указатель на worksheet*/
+    IDispatch *pOORange;                /*Pointer to OO Range*/
+    IDispatch *pwsheet;                 /*pointer to worksheet*/
     int is_release;
 } RangeImpl;
 
@@ -155,16 +158,16 @@ typedef struct
 {
     const I_ShapesVtbl *_shapesVtbl;
     LONG ref;
-    IDispatch *pOOPage;     /*Указатель на DrawPage openoffice*/
-    IDispatch *pwsheet;      /*Указатель на worksheet*/
+    IDispatch *pOOPage;                 /*pointer to DrawPage openoffice*/
+    IDispatch *pwsheet;                 /*pointer worksheet*/
 } ShapesImpl;
 
 typedef struct
 {
     const I_ShapeVtbl *_shapeVtbl;
     LONG ref;
-    IDispatch *pOOShape;     /*Указатель на OOShape openoffice*/
-    IDispatch *pShapes;      /*Указатель на Shapes*/
+    IDispatch *pOOShape;               /*pointer to OOShape openoffice*/
+    IDispatch *pShapes;                /*pointer to Shapes*/
 } ShapeImpl;
 
 typedef struct
@@ -184,8 +187,8 @@ typedef struct
     const IEnumVARIANTVtbl *penumeratorVtbl;
 
     LONG ref;
-    IDispatch *pwb;              /*указатель на Workbook*/
-    IDispatch *pOONames;         /*указатель на OpenOffice Names*/
+    IDispatch *pWorkbook;              /*pointer to Workbook*/
+    IDispatch *pOONames;               /*pointer to OpenOffice Names*/
     int enum_position;
 
 } NamesImpl;
@@ -195,54 +198,67 @@ typedef struct
 
 typedef struct
 {
-    const NameVtbl *nameVtbl;
+    const NameVtbl *pnameVtbl;
     LONG ref;
-    IDispatch *pnames;              /*указатель на Names*/
-    IDispatch *pOOName;         /*указатель на OpenOffice Name*/
+    IDispatch *pNames;              /*pointer to Names*/
+    IDispatch *pOOName;             /*pointer to OpenOffice Name*/
 } NameImpl;
+
+#define NAME_NAME(x) ((Name*)&(x)->pnameVtbl)
 
 typedef struct
 {
     const I_WindowsVtbl *_windowsVtbl;
     LONG ref;
-    IDispatch *pApplication;     /*указатель на Application*/
+    _Application *pApplication;        /*pointer to Application*/
 } WindowsImpl;
 
 typedef struct
 {
     const I_WindowVtbl *_windowVtbl;
+    
     LONG ref;
-    IDispatch *pWindows;     /*указатель на IWindows*/
-} WindowImpl;
+    I_Windows *pWindows;                     /*pointer to IWindows*/
+} WindowImpl; 
 
 typedef struct
 {
     const I_WorkbookVtbl *pworkbookVtbl;
     LONG ref;
-    IDispatch *pworkbooks;    /*Указатель на Application*/
-    IDispatch *pDoc;          /*Указатель на Document*/
-    IDispatch *pSheets;       /*Указатель на Sheets*/
-//    BSTR filename;            /*имя файла*/ 
+    IDispatch *pworkbooks;                   /*pointer to Application*/
+    IDispatch *pDoc;                         /*pointer to Document*/
+    IDispatch *pSheets;                      /*pointer to Sheets*/
+//    BSTR filename;             
 } WorkbookImpl;
 
+
 typedef struct
 {
-    const I_WorkbooksVtbl *_workbooksVtbl;
-    LONG ref;
-    IDispatch *pApplication;  /*Pointer to Application*/
+    const I_WorkbooksVtbl *pworkbooksVtbl;
+    const IEnumVARIANTVtbl *penumeratorVtbl;
     
-    IDispatch **pworkbook;    /*pointer to aray of workbook*/
-    int count_workbooks;      /*amount of workbook*/
-    int capasity_workbooks;   /*capasity (to work with memory) */
-    int current_workbook;     /*index of current workbook*/
+    LONG ref;
+    _Application *pApplication;  /*Pointer to Application*/
+    
+    I_Workbook **pworkbook;            /*pointer to aray of workbook*/
+    int count_workbooks;               /*amount of workbook*/
+    int capasity_workbooks;            /*capasity (to work with memory) */
+    int current_workbook;              /*index of current workbook*/
+    
+    int enum_position;
+    
 } WorkbooksImpl;
 
+#define WORKBOOKS_WORKBOOKS(x) ((I_Workbooks*)&(x)->pworkbooksVtbl)
+#define WORKBOOKS_ENUM(x) ((IEnumVARIANT*)&(x)->penumeratorVtbl)
+
 typedef struct
 {
-    const I_ApplicationExcelVtbl *pApplicationExcelVtbl;
+    const _ApplicationVtbl              *pApplicationVtbl;
+    const Disp_ApplicationVtbl          *pDispApplicationVtbl;
     const IConnectionPointContainerVtbl *pConnectionPointContainerVtbl;
-    const IConnectionPointVtbl *pConnectionPointVtbl;
-
+    const IConnectionPointVtbl          *pConnectionPointVtbl;
+    
 
     LONG ref;
     IDispatch *pdOOApp;
@@ -254,9 +270,10 @@ typedef struct
     VARIANT_BOOL visible;
     long sheetsinnewworkbook;
 
-} _ApplicationExcelImpl;
+} _ApplicationImpl;
 
-#define APPEXCEL(x) ((I_ApplicationExcel*) &(x)->pApplicationExcelVtbl)
+#define APPEXCEL(x) ((_Application*) &(x)->pApplicationVtbl)
+#define DISPAPPEXCEL(x) ((Disp_Application*) &(x)->pDispApplicationVtbl)
 #define CONPOINTCONT(x) ((IConnectionPointContainer*) &(x)->pConnectionPointContainerVtbl)
 #define CONPOINT(x) ((IConnectionPoint*) &(x)->pConnectionPointVtbl)
 
@@ -272,7 +289,7 @@ extern ClassFactoryImpl OOFFICE_ClassFactory;
 
 /*Constructors*/
 
-extern HRESULT _ApplicationExcelConstructor(LPVOID *ppObj);
+extern HRESULT _ApplicationConstructor(LPVOID *ppObj);
 extern HRESULT _I_FontConstructor(LPVOID *ppObj);
 extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj);
 extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj);

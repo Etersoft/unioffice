@@ -73,3 +73,7 @@ TEST 5
 		IApplication->Selection (GET)
 		IRange->Range[Range, Range]  (GET)
 		IRange->Resize()
+
+TEST 7
+	test_3.vbs
+		(IEnumVARIANT)  Construction of "For Each V in Excel.Wokbooks"

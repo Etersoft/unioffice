@@ -49,16 +49,21 @@ HRESULT get_typeinfo_workbooks(ITypeInfo **typeinfo)
 
 static WCHAR const str_pusto[]= {0};
 
+#define WORKBOOKS_THIS(iface) DEFINE_THIS(WorkbooksImpl, workbooks, iface)
+
 /*** IUnknown methods ***/
 
 static ULONG WINAPI MSO_TO_OO_I_Workbooks_AddRef(
         I_Workbooks* iface)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     ULONG ref;
     TRACE("REF=%i \n", This->ref);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
 
     ref = InterlockedIncrement(&This->ref);
 
@@ -74,15 +79,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_QueryInterface(
         REFIID riid,
         void **ppvObject)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
 
-    if (This == NULL || ppvObject == NULL) return E_POINTER;
+    if (!This) {
+        ERR("object is null \n");
+        return E_POINTER;
+    }
 
+    if (!ppvObject) {
+        ERR("object ppvObject is null \n");
+        return E_POINTER;
+    }
+    
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_I_Workbooks)) {
-        *ppvObject = &This->_workbooksVtbl;
-        MSO_TO_OO_I_Workbooks_AddRef(iface);
+        *ppvObject = WORKBOOKS_WORKBOOKS(This);
+        I_Workbooks_AddRef(iface);
+        return S_OK;
+    }
+
+    if (IsEqualGUID(riid, &IID_IEnumVARIANT)) {
+        *ppvObject = WORKBOOKS_ENUM(This);
+        IUnknown_AddRef((IUnknown*)(*ppvObject));
         return S_OK;
     }
 
@@ -93,11 +112,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_QueryInterface(
 static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
         I_Workbooks* iface)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     ULONG ref;
     int i;
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("object is null \n");
+        return E_POINTER;
+    }
 
     TRACE("REF = %i \n", This->ref);
 
@@ -109,7 +131,7 @@ static ULONG WINAPI MSO_TO_OO_I_Workbooks_Release(
             This->pApplication==NULL;
 /*        }*/
         for (i=0;i<This->count_workbooks;i++)
-            if (This->pworkbook[i]!=NULL) IDispatch_Release(This->pworkbook[i]);
+            if (This->pworkbook[i]!=NULL) I_Workbook_Release(This->pworkbook[i]);
         if (This->count_workbooks>0) HeapFree(GetProcessHeap(),HEAP_ZERO_MEMORY,This->pworkbook);
         InterlockedDecrement(&dll_ref);
         HeapFree(GetProcessHeap(), 0, This);
@@ -125,28 +147,32 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
         VARIANT varTemplate,
         IDispatch **ppWorkbook)
 {
-/*TODO подумать как добавить поддержку шаблонов*/
+/*TODO :use of templates*/
 
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     IUnknown *punk = NULL;
     HRESULT hres;
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(varTemplate, &varTemplate);
 
-    if (This == NULL) {
-        TRACE("ERROR Object is NULL \n");
+    if (!This) {
+        ERR("object is null \n");
         return E_POINTER;
     }
 
     hres = _I_WorkbookConstructor((LPVOID*) &punk);
-    if (FAILED(hres)) return E_NOINTERFACE;
+    if (FAILED(hres)) {
+        ERR("Constructor Failed \n");                  
+        return E_NOINTERFACE;
+    }
 
     if (This->capasity_workbooks == 0){
         This->count_workbooks = 1;       
         This->capasity_workbooks = This->count_workbooks;
         This->pworkbook = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, sizeof(WorkbookImpl*));
         if (!(This->pworkbook)) {
+            ERR("Out of memory \n");
             return E_OUTOFMEMORY;
         }
         This->current_workbook = 0;
@@ -157,6 +183,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
             This->pworkbook = HeapReAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, This->pworkbook, This->capasity_workbooks * sizeof(WorkbookImpl*));
         }
         if (!(This->pworkbook)) {
+            ERR("Out of memory \n");                    
             return E_OUTOFMEMORY;
         }
         This->current_workbook = This->count_workbooks - 1;
@@ -165,34 +192,34 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
     hres = I_Workbook_QueryInterface(punk, &IID_I_Workbook, (void**) &(This->pworkbook[This->current_workbook]));
 /*    I_Workbook_Release(punk);*/
     if (FAILED(hres)) {
-        TRACE("ERROR when QueryInterface\n");
+        ERR(" QueryInterface\n");
         return E_FAIL;
     }
     if (!ppWorkbook) {
-        /*подумать над правильностью такого решения*/
+        /*Alloc memory to object*/
         ppWorkbook = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, sizeof(WorkbookImpl*));
         TRACE(" AllocMemory \n");
-        *ppWorkbook = This->pworkbook[This->current_workbook];
+        *ppWorkbook = (IDispatch*)(This->pworkbook[This->current_workbook]);
     } else {
-        *ppWorkbook = This->pworkbook[This->current_workbook];
+        *ppWorkbook = (IDispatch*)(This->pworkbook[This->current_workbook]);
     }
 
     if ((Is_Variant_Null(varTemplate)) || (lstrlenW(V_BSTR(&varTemplate)) == 0)) {
         hres = MSO_TO_OO_I_Workbook_Initialize( This->pworkbook[This->current_workbook], iface);
     } else {
-       /* Необходимо преобразовать путь+имя в нужную форму
-       от C:\test test.xls
-       к file:///c:/test%20test.xls */
+       /* Prepare name of file to right view
+       From:    C:\test test.xls
+       To:      file:///c:/test%20test.xls */
        BSTR Filename;
        MSO_TO_OO_MakeURLFromFilename(V_BSTR(&varTemplate),&Filename);
-       /*преобразовали*/
+       /*Initialize object*/
        WTRACE(L"FILENAME ------>  %s \n",Filename);
        hres = MSO_TO_OO_I_Workbook_Initialize2( This->pworkbook[This->current_workbook], iface, Filename, VARIANT_TRUE);
        SysFreeString(Filename);
     }
     if (FAILED(hres)) {
         *ppWorkbook = NULL;
-        TRACE("ERROR when Workbook_Initialize");
+        ERR("Workbook_Initialize");
         return hres;
     }
     I_Workbook_AddRef(*ppWorkbook);
@@ -226,12 +253,15 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Close(
         I_Workbooks* iface,
         LCID lcid)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     int i;
     BSTR filename;
     TRACE_IN;
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("object is null \n");
+        return E_POINTER;
+    }
 
     filename = SysAllocString(L"");
 
@@ -259,10 +289,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Count(
         I_Workbooks* iface,
         int *count)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     TRACE_IN;
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("object is null \n");
+        return E_POINTER;
+    }
 
     *count = This->count_workbooks;
 
@@ -274,16 +307,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Application(
         I_Workbooks* iface,
         IDispatch **value)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     TRACE_IN;
 
-    if (This == NULL) return E_POINTER;
-
-    *value = This->pApplication;
-    I_ApplicationExcel_AddRef(This->pApplication);
-
-    if (value==NULL)
+    if (!This) {
+        ERR("object is null \n");
         return E_POINTER;
+    }
+
+    *value = (IDispatch*) (This->pApplication);
+    _Application_AddRef( This->pApplication );
+
+    if (!value) {
+        ERR("value == NULL \n");
+        return E_POINTER;
+    }
 
     TRACE_OUT;
     return S_OK;
@@ -293,19 +331,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Parent(
         I_Workbooks* iface,
         IDispatch **value)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
     TRACE_IN;
-
-    if (This == NULL) return E_POINTER;
-
-    *value = This->pApplication;
-    I_ApplicationExcel_AddRef(This->pApplication);
-
-    if (value==NULL)
-        return E_POINTER;
-
-    TRACE_OUT;
-    return S_OK;
+    return MSO_TO_OO_I_Workbooks_get_Application(iface, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
@@ -328,10 +355,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
         long Lcid,
         IDispatch **ppWorkbook)
 {
-/*TODO подумать как добавить поддержку остальных параметров
-в данный момент используется только имя файла*/
+/*TODO : use other parameters*/
 
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     IUnknown *punk = NULL;
     HRESULT hres;
     TRACE_IN;
@@ -351,16 +377,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     MSO_TO_OO_CorrectArg(Local, &Local);
     MSO_TO_OO_CorrectArg(CorruptLoad, &CorruptLoad);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("object is null \n");
+        return E_POINTER;
+    }
 
     hres = _I_WorkbookConstructor((LPVOID*) &punk);
-    if (FAILED(hres)) return E_NOINTERFACE;
-
+    if (FAILED(hres)) {
+        ERR("constructor failed \n ");
+        return E_NOINTERFACE;
+    }
+    
     if (This->capasity_workbooks == 0){
         This->count_workbooks = 1;
         This->capasity_workbooks = This->count_workbooks;
         This->pworkbook = HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, sizeof(WorkbookImpl*));
         if (!(This->pworkbook)) {
+            ERR("Out of memory \n");
             return E_OUTOFMEMORY;
         }
         This->current_workbook = 0;
@@ -371,6 +404,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
             This->pworkbook = HeapReAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY, This->pworkbook, This->capasity_workbooks * sizeof(WorkbookImpl*));
         }
         if (!(This->pworkbook)) {
+            ERR("Out of memory \n");
             return E_OUTOFMEMORY;
         }
         This->current_workbook = This->count_workbooks - 1;
@@ -379,21 +413,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     hres = I_Workbook_QueryInterface(punk, &IID_I_Workbook, (void**) &(This->pworkbook[This->current_workbook]));
 /*    I_Workbook_Release(punk);*/
     if (FAILED(hres)) return E_FAIL;
-    *ppWorkbook = This->pworkbook[This->current_workbook];
+    *ppWorkbook = (IDispatch*)(This->pworkbook[This->current_workbook]);
 
-    /* Необходимо преобразовать путь+имя в нужную форму
-    от C:\test test.xls
-    к file:///c:/test%20test.xls */
+    /* Prepare file name to right view 
+    From:   C:\test test.xls
+    To:     file:///c:/test%20test.xls */
     BSTR filenametmp;
     MSO_TO_OO_MakeURLFromFilename(Filename, &filenametmp);
-    /*преобразовали*/
+    /*Initialize*/
     WTRACE(L"FILENAME ------>  %s \n",filenametmp);
     VARIANT_BOOL astemp;
     astemp = VARIANT_FALSE;
 
-    hres = MSO_TO_OO_I_Workbook_Initialize2(This->pworkbook[This->current_workbook], iface, filenametmp,astemp);
+    hres = MSO_TO_OO_I_Workbook_Initialize2(This->pworkbook[This->current_workbook], iface, filenametmp, astemp);
     if (FAILED(hres)) {
         *ppWorkbook = NULL;
+        ERR("Workbook_Initialize2 failed \n");
         return hres;
     }
     SysFreeString(filenametmp);
@@ -538,9 +573,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__Default(
         VARIANT varIndex,
         IDispatch **ppSheet)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;    
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);    
     HRESULT hres;
     VARIANT i4_index;
+    TRACE_IN;
     
     if (!This) {
         ERR("Object is NULL \n");
@@ -556,11 +592,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__Default(
     VariantInit(&i4_index);
     
     if (V_VT(&varIndex) == VT_BSTR) {
-        TRACE(" BSTR parameters not supported \n");                
+        ERR(" BSTR parameters not supported \n");                
     } else {
         hres = VariantChangeTypeEx(&i4_index, &varIndex,0,0,VT_I4);
         if (FAILED(hres)) {
-            TRACE(" ERROR when VariantChangeTypeEx\n");
+            ERR(" ERROR when VariantChangeTypeEx\n");
             return E_FAIL;
         }       
            
@@ -569,12 +605,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__Default(
             return E_FAIL;               
         } 
         
-        *ppSheet = This->pworkbook[V_I4(&i4_index) - 1];
+        *ppSheet = (IDispatch*)(This->pworkbook[V_I4(&i4_index) - 1]);
         I_Workbook_AddRef((I_Workbook*)(*ppSheet));  
         return S_OK;
     }
     
     ERR(" parameters \n");
+    
+    TRACE_OUT;
     return E_FAIL;
 }
 
@@ -583,7 +621,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get_Item(
         VARIANT index,
         IDispatch **result)
 {
-    TRACE("-------> get__Default");
+    TRACE("-------> get__Default \n");
+    TRACE_IN;
+    TRACE_OUT;
     return I_Workbooks_get__Default(iface, index, result);
 }
 
@@ -614,8 +654,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__NewEnum(
         I_Workbooks* iface,
         IUnknown **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    TRACE_IN;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);    
+    *RHS = (IUnknown*)WORKBOOKS_ENUM(This);
+    IUnknown_AddRef(*RHS);
+    TRACE_OUT;
+    return S_OK;
 }
 
 /*** IDispatch methods ***/
@@ -679,7 +723,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
         EXCEPINFO *pExcepInfo,
         UINT *puArgErr)
 {
-    WorkbooksImpl *This = (WorkbooksImpl*)iface;
+    WorkbooksImpl *This = WORKBOOKS_THIS(iface);
     HRESULT hres;
     int iresult;
     IDispatch* iapp;
@@ -696,7 +740,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
     VariantInit(&astemp);
     VariantInit(&vresult);
 
-    if (This == NULL) return E_POINTER;
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;           
+    }
 
     switch (dispIdMember) {
         case dispid_workbooks__Open:
@@ -705,7 +752,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             /*Используем только имя файла*/
             VariantInit(&vnull);
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-1], &astemp);
-            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&astemp), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, l, &iapp);
+            hres = I_Workbooks_Open(iface, V_BSTR(&astemp), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, l, &iapp);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -718,7 +765,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             }
             return S_OK;
         case dispid_workbooks_Close:
-            MSO_TO_OO_I_Workbooks_Close(iface, l);
+            I_Workbooks_Close(iface, l);
             return S_OK;
         case dispid_workbooks_Open:
             /*Зависит от кол-ва посланных параметров*/
@@ -726,7 +773,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             /*Используем только имя файла*/
             VariantInit(&vnull);
             MSO_TO_OO_CorrectArg(pDispParams->rgvarg[pDispParams->cArgs-1], &astemp);
-            hres = MSO_TO_OO_I_Workbooks_Open(iface, V_BSTR(&astemp), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull,l, &iapp);
+            hres = I_Workbooks_Open(iface, V_BSTR(&astemp), vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull, vnull,l, &iapp);
             if (FAILED(hres)) {
                 pExcepInfo->bstrDescription=SysAllocString(str_error);
                 return hres;
@@ -770,7 +817,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
             hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams,
                             pVarResult, pExcepInfo, puArgErr);
             if (FAILED(hres)) {
-                TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+                ERR("wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
             }
 
             return hres;
@@ -778,6 +825,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
 
     return E_NOTIMPL;
 }
+
+#undef WORKBOOKS_THIS
 
 const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl =
 {
@@ -810,6 +859,144 @@ const I_WorkbooksVtbl MSO_TO_OO_I_WorkbooksVtbl =
     MSO_TO_OO_I_Workbooks_OpenXML
 };
 
+
+/*IEnumVARIANT interface*/
+
+#define ENUMVAR_THIS(iface) DEFINE_THIS(WorkbooksImpl, enumerator, iface);
+
+/*** IUnknown methods ***/
+static ULONG WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_AddRef(
+        IEnumVARIANT* iface)
+{
+    WorkbooksImpl *This = ENUMVAR_THIS(iface);
+    return I_Workbooks_AddRef(WORKBOOKS_WORKBOOKS(This));
+}
+
+
+static HRESULT WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_QueryInterface(
+        IEnumVARIANT* iface,
+        REFIID riid,
+        void **ppvObject)
+{
+    WorkbooksImpl *This = ENUMVAR_THIS(iface);
+    return I_Workbooks_QueryInterface(WORKBOOKS_WORKBOOKS(This), riid, ppvObject);
+}
+
+static ULONG WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_Release(
+        IEnumVARIANT* iface)
+{
+    WorkbooksImpl *This = ENUMVAR_THIS(iface);
+    return I_Workbooks_Release(WORKBOOKS_WORKBOOKS(This));
+}
+
+/*** IEnumVARIANT methods ***/
+static HRESULT WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_Next(
+        IEnumVARIANT* iface,
+        ULONG celt,
+        VARIANT *rgVar,
+        ULONG *pCeltFetched)
+{
+    WorkbooksImpl *This = ENUMVAR_THIS(iface);
+    HRESULT hres;
+    ULONG l;
+    long l1;
+    int count;
+    ULONG l2;
+    IDispatch *dret;
+    VARIANT varindex, vNull;
+
+    VariantInit(&vNull);
+    V_VT(&vNull) = VT_NULL;
+
+    if (This->enum_position<0)
+        return S_FALSE;
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = 0;
+
+    if (rgVar == NULL)
+       return E_INVALIDARG;
+
+    VariantInit(&varindex);
+    /*Init Array*/
+    for (l=0; l<celt; l++)
+       VariantInit(&rgVar[l]);
+
+    I_Workbooks_get_Count(WORKBOOKS_WORKBOOKS(This), &count);
+    V_VT(&varindex) = VT_I4;
+
+    for (l1=This->enum_position, l2=0; l1<count && l2<celt; l1++, l2++) {
+      V_I4(&varindex) = l1 + 1; //Because index of workbook start from 1
+      hres = I_Workbooks_get_Item(WORKBOOKS_WORKBOOKS(This), varindex, &dret);
+      V_VT(&rgVar[l2]) = VT_DISPATCH;
+      V_DISPATCH(&rgVar[l2]) = dret;
+      if (FAILED(hres))
+         goto error;
+    }
+
+    if (pCeltFetched != NULL)
+       *pCeltFetched = l2;
+
+   This->enum_position = l1;
+
+   return  (l2 < celt) ? S_FALSE : S_OK;
+
+error:
+   for (l=0; l<celt; l++)
+      VariantClear(&rgVar[l]);
+   VariantClear(&varindex);
+   return hres;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_Skip(
+        IEnumVARIANT* iface,
+        ULONG celt)
+{
+    WorkbooksImpl *This = ENUMVAR_THIS(iface);
+    int count;
+    TRACE_IN;
+
+    I_Workbooks_get_Count(WORKBOOKS_WORKBOOKS(This), &count);
+    This->enum_position += celt;
+
+    if (This->enum_position>=(count)) {
+        This->enum_position = count - 1;
+        TRACE_OUT;
+        return S_FALSE;
+    }
+    TRACE_OUT;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_Reset(
+        IEnumVARIANT* iface)
+{
+    WorkbooksImpl *This = ENUMVAR_THIS(iface);
+    This->enum_position = 0;
+    return S_OK;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_Clone(
+        IEnumVARIANT* iface,
+        IEnumVARIANT **ppEnum)
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL;
+}
+
+#undef ENUMVAR_THIS
+
+const IEnumVARIANTVtbl MSO_TO_OO_Workbooks_enumvarVtbl =
+{
+    MSO_TO_OO_I_Workbooks_EnumVAR_QueryInterface,
+    MSO_TO_OO_I_Workbooks_EnumVAR_AddRef,
+    MSO_TO_OO_I_Workbooks_EnumVAR_Release,
+    MSO_TO_OO_I_Workbooks_EnumVAR_Next,
+    MSO_TO_OO_I_Workbooks_EnumVAR_Skip,
+    MSO_TO_OO_I_Workbooks_EnumVAR_Reset,
+    MSO_TO_OO_I_Workbooks_EnumVAR_Clone
+};
+
 extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj)
 {
     WorkbooksImpl *workbooks;
@@ -821,15 +1008,17 @@ extern HRESULT _I_WorkbooksConstructor(LPVOID *ppObj)
         return E_OUTOFMEMORY;
     }
 
-    workbooks->_workbooksVtbl = &MSO_TO_OO_I_WorkbooksVtbl;
+    workbooks->pworkbooksVtbl = &MSO_TO_OO_I_WorkbooksVtbl;
+    workbooks->penumeratorVtbl = &MSO_TO_OO_Workbooks_enumvarVtbl;
     workbooks->ref = 0;
     workbooks->pApplication = NULL;
     workbooks->count_workbooks = 0;
     workbooks->pworkbook = NULL;
     workbooks->current_workbook = -1;
     workbooks->capasity_workbooks = 0;
+    workbooks->enum_position = 0;
 
-    *ppObj = &workbooks->_workbooksVtbl;
+    *ppObj = WORKBOOKS_WORKBOOKS(workbooks);
     
     CREATE_OBJECT;
     

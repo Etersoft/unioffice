@@ -2782,9 +2782,130 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Find(
         VARIANT MatchByte,
         VARIANT SearchFormat,
         IDispatch **RHS)
-{
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+{      
+    RangeImpl *This = (RangeImpl*)iface;
+    HRESULT hres;
+    VARIANT oDescriptor, param1, vRes, oFound;
+    IDispatch *pApp;
+    I_Range *pCell;
+    IUnknown *punk;
+    
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
+    
+    WorksheetImpl* wsh = (WorksheetImpl*)(This->pwsheet);
+    TRACE_IN;
+
+    VariantInit(&oDescriptor);
+    VariantInit(&param1); 
+    VariantInit(&vRes);
+    VariantInit(&oFound); 
+
+
+    MSO_TO_OO_CorrectArg(What, &What);
+    MSO_TO_OO_CorrectArg(After, &After);
+    MSO_TO_OO_CorrectArg(LookIn, &LookIn);
+    MSO_TO_OO_CorrectArg(LookAt, &LookAt);    
+    MSO_TO_OO_CorrectArg(SearchOrder, &SearchOrder);
+    MSO_TO_OO_CorrectArg(MatchCase, &MatchCase);
+    MSO_TO_OO_CorrectArg(MatchByte, &MatchByte);
+    MSO_TO_OO_CorrectArg(SearchFormat, &SearchFormat); 
+    
+    TRACE("parameter type What = %i \n", V_VT(&What));
+    TRACE("parameter type After = %i \n", V_VT(&After));    
+    TRACE("parameter type LookIn = %i \n", V_VT(&LookIn));    
+    TRACE("parameter type LookAt = %i \n", V_VT(&LookAt));    
+    TRACE("parameter type SearchOrder = %i \n", V_VT(&SearchOrder));
+    TRACE("parameter type MatchCase = %i \n", V_VT(&MatchCase));
+    TRACE("parameter type MatchByte = %i \n", V_VT(&MatchByte));    
+    TRACE("parameter type SearchFormat = %i \n", V_VT(&SearchFormat));    
+           
+    if (V_VT(&What) != VT_BSTR) {
+        ERR("Now not BSTR parameters not supported V_VT(What) = %i \n", V_VT(&What));
+        return E_FAIL;            
+        }    
+
+/*
+    hres = VariantChangeTypeEx(&LookIn, &LookIn, 0, 0, VT_I4);
+    if (FAILED(hres)) {
+        TRACE("ERROR when VariantChangeTypeEx (LookIn) \n");
+        return E_FAIL;
+    }
+*/
+    
+    hres = AutoWrap(DISPATCH_METHOD, &oDescriptor, This->pOORange, L"createSearchDescriptor", 0);
+    if (FAILED(hres)) {
+        ERR ("ERROR when createSearchDescriptor \n");
+        return E_FAIL;
+    }
+    
+    /*Fill Search descriptor */
+    
+    V_VT(&param1) = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(V_BSTR(&What));
+    
+    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, V_DISPATCH(&oDescriptor), L"SearchString", 1, param1);
+    if (FAILED(hres)) {
+        ERR ("ERROR when PUT SearchString \n");
+        return E_FAIL;
+    } 
+         
+/*  TODO 
+    oDescriptor.SearchWords = bWholeWord
+    oDescriptor.SearchCaseSensitive = False
+*/ 
+    
+    /*Find Cell*/    
+    hres = AutoWrap(DISPATCH_METHOD, &oFound, This->pOORange, L"findFirst", 1, oDescriptor);
+    if (FAILED(hres)) {
+        ERR ("ERROR when findFirst \n");
+        return E_FAIL;
+    }  
+     
+    /* Create New Range */   
+    
+    hres = _I_RangeConstructor((LPVOID*) &punk);
+
+    if (FAILED(hres)) {
+        ERR("_I_RangeConstructor \n");
+        return E_NOINTERFACE;
+    }
+
+    hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
+
+    if (pCell == NULL) {
+        ERR("I_Range_QueryInterface \n");
+        return E_FAIL;
+    }
+
+    hres = I_Range_get_Application(iface, &pApp);
+    if (FAILED(hres)){
+        ERR("I_Range_get_Application \n");
+        return hres;
+    }
+
+    hres = MSO_TO_OO_I_Range_Initialize3(pCell, V_DISPATCH(&oFound), This->pwsheet, pApp);
+    if (FAILED(hres)){
+        ERR(" Initialize3 \n");
+        I_Range_Release(pCell);
+        return hres;
+    }
+
+    *RHS = (IDispatch*)pCell;
+    I_Range_AddRef((I_Range*)*RHS);
+    I_Range_Release(pCell);
+    
+        
+    VariantClear(&oDescriptor);
+    VariantClear(&param1); 
+    VariantClear(&vRes);
+    VariantClear(&oFound); 
+        
+    TRACE_OUT;    
+    
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_FindNext(
@@ -3204,6 +3325,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
     MSO_TO_OO_CorrectArg(RowOffset, &RowOffset);
     MSO_TO_OO_CorrectArg(ColumnOffset, &ColumnOffset);
 
+    if (!This) {
+        ERR("Object is NULL \n");
+        return E_POINTER;
+    }
+
+    if (!(This->pwsheet)) {
+        ERR("Object pwsheet is NULL \n");
+        return E_POINTER;
+    }
+    
     if (!Is_Variant_Null(RowOffset)) {
          hres = VariantChangeTypeEx(&RowOffset, &RowOffset, 0, 0, VT_I4);
          if (FAILED(hres)) {
@@ -3242,21 +3373,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
 
     hres = _I_RangeConstructor((LPVOID*) &punk);
 
-    if (FAILED(hres)) return E_NOINTERFACE;
+    if (FAILED(hres)) {
+        ERR("_I_RangeConstructor \n");              
+        return E_NOINTERFACE;
+    }
 
     hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
-
     if (pCell == NULL) {
         TRACE("ERROR when QueryInterface\n");
         return E_FAIL;
     }
 
-    hres = MSO_TO_OO_I_Range_Initialize((I_Range*)pCell, (I_Range*)wsh->pAllRange, lefttop, rightbottom);
-        if (FAILED(hres)){
-            TRACE("ERROR when initialize\n");
-            I_Range_Release(pCell);
-            return hres;
-        }
+    hres = MSO_TO_OO_I_Range_Initialize((I_Range*)pCell, (I_Range*)(wsh->pAllRange), lefttop, rightbottom);
+    if (FAILED(hres)){
+        TRACE("ERROR when initialize\n");
+        I_Range_Release(pCell);
+        return hres;
+    }
     *RHS = pCell;
 
     TRACE_OUT;
@@ -4287,11 +4420,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
         hres = typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
 
         if (FAILED(hres)) {
-            TRACE("ERROR wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
+            ERR(" wFlags = %i, cArgs = %i, dispIdMember = %i \n", wFlags,pDispParams->cArgs, dispIdMember);
         }
         return hres;
     }
-    WTRACE(L" dispIdMember = %i NOT REALIZE\n",dispIdMember);
+    WTRACE(L" dispIdMember = %i NOT REALIZE \n",dispIdMember);
     return E_NOTIMPL;
 }
 

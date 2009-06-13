@@ -92,39 +92,35 @@ End If
 'Здесь помещается текст тестового скрипта
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Set WB = Excel.Workbooks.Add
-If Err.Number <> 0 Then
-    ERROR_MES ("PUT Excel.Workbooks.Add")  
-    Err.Clear
-Else 
-    OK_MES ("PUT Excel.Workbooks.Add")   
-End If
+'Создаем несколько документов = 4
 
-For Each V in Excel.Range("A1:D4").Borders
-     V.LineStyle = 1
+For i=0 To 3
+    Excel.Workbooks.Add
+    If Err.Number <> 0 Then
+        ERROR_MES ("PUT Excel.Workbooks.Add")  
+        Err.Clear
+    Else 
+        OK_MES ("PUT Excel.Workbooks.Add")   
+    End If
+next
+
+Dim count
+
+For Each V in Excel.Workbooks    
+     count = V.Sheets.count
      If Err.Number <> 0 Then
-        ERROR_MES ("PUT Border->LineStyle")  
+        ERROR_MES ("Get Workbook.Sheets.count")  
         Err.Clear
      Else 
-        OK_MES ("PUT Border->LineStyle")  
+        OK_MES ("Get Workbook.Sheets.count")  
     End If     
-
-     V.ColorIndex = 10
-     If Err.Number <> 0 Then
-        ERROR_MES ( "PUT Border->ColorIndex")  
-        Err.Clear
-     Else 
-        OK_MES ("PUT Border->ColorIndex)")   
-    End If 
 Next
 If Err.Number <> 0 Then
-    ERROR_MES ("Borders (IEnumVARIANT)")  
+    ERROR_MES ("Wokrbooks (IEnumVARIANT)")  
     Err.Clear
 Else 
-    OK_MES ("Borders (IEnumVARIANT)")  
+    OK_MES ("Workbooks (IEnumVARIANT)")  
 End If
-
-
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 'конец кода теста

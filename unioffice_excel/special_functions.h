@@ -22,7 +22,7 @@
 
 HRESULT MSO_TO_OO_I_Workbooks_Initialize(
         I_Workbooks* iface,
-        I_ApplicationExcel *app);
+        _Application *app);
 
 HRESULT MSO_TO_OO_I_Font_Initialize(
         I_Font* iface,
@@ -69,15 +69,15 @@ HRESULT MSO_TO_OO_I_Worksheet_Initialize(
         IDispatch *oosheet);
 
 HRESULT MSO_TO_OO_GetDispatchPropertyValue(
-        I_ApplicationExcel *app,
+        _Application *app,
         IDispatch** pIDispatch);
 
 HRESULT MSO_TO_OO_GetDispatchHelper(
-        I_ApplicationExcel *app,
+        _Application *app,
         IDispatch** pIDispatch);
 
 HRESULT MSO_TO_OO_ExecuteDispatchHelper_ActiveWorkBook(
-        I_ApplicationExcel *app,
+        _Application *app,
         BSTR ooCommand,
         VARIANT ooParams);
 
@@ -140,7 +140,7 @@ long MSO_TO_OO_FindIndexWorksheetByName(
 
 /*возвращает Workbook и индекс*/
 long MSO_TO_OO_GlobalFindIndexWorksheetByName(
-        I_ApplicationExcel *app,
+        _Application *app,
         BSTR name,
         IDispatch **retval);
 

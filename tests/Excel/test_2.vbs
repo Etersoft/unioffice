@@ -7,20 +7,35 @@
 '         IApplication.SheetsInNewWorkbook
 '+++++++++++++++++++++++++++++++++++++++++++++
 
+
 Dim WshShell
 Dim fso
 Dim gsuccess, gfailed, show_excel, next_script
 Dim success, failed
 Dim otchetFile
 
+Function ERROR_MES ( mes_err )
+    otchetFile.WriteLine("!![FAILED]!! " +  mes_err )    
+    failed = failed + 1
+End Function
+
+
+Function OK_MES( mes_ok )
+    otchetFile.WriteLine("[SUCCESS] " +  mes_ok ) 
+    success = success + 1
+End Function
+
+Function TEST_NAME( name_test )
+    otchetFile.WriteLine("====" +  name_test  + " ====") 
+End Function
+
+success = 0
+failed = 0
 
 'Объект для запуска других скриптов
 Set WshShell = Wscript.CreateObject("Wscript.Shell")
 'объект для работы с файлами
 Set fso = WScript.CreateObject("Scripting.FileSystemObject")
-
-success = 0
-failed = 0
 
 If Wscript.Arguments.Count = 3 Then
     next_script = WScript.Arguments(0)
@@ -36,53 +51,45 @@ else
 End If
 
 'Не забыть скрыть Excel если этопотоковый запуск.
-otchetFile.WriteLine("++++++ TEST 2 ++++++")
+TEST_NAME ("TEST 2")
 On Error Resume Next
 
 'Создаем объект Excel.Application
 Set Excel = CreateObject("Excel.Application")
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] create Excel.Application")  
-    failed = failed + 1
+    ERROR_MES ("create Excel.Application")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] create Excel.Application")  
-    success = success + 1   
+    OK_MES ("create Excel.Application")     
 End If 
 
 If show_excel then
 'Показываем Excel
     Excel.Visible = TRUE
     If Err.Number <> 0 Then
-        otchetFile.WriteLine("[FAILED] PUT Excel.Visible")  
-        failed = failed + 1
+        ERROR_MES ("PUT Excel.Visible")  
         Err.Clear
     Else 
-        otchetFile.WriteLine("[SUCCESS] PUT Excel.Visible")  
-        success = success + 1   
+        OK_MES ("PUT Excel.Visible")     
     End If 
 Else
 'Не показываем Excel. По умолчанию он и так не покажеться, но для проверки свойства выполняем
     Excel.Visible = FALSE
     If Err.Number <> 0 Then
-        otchetFile.WriteLine("[FAILED] PUT Excel.Visible")  
-        failed = failed + 1
+        ERROR_MES ("PUT Excel.Visible")  
         Err.Clear
     Else 
-        otchetFile.WriteLine("[SUCCESS] PUT Excel.Visible")  
-        success = success + 1   
+        OK_MES ("PUT Excel.Visible")     
     End If 
 End If
 
 'Отключаем предупреждения
 Excel.DisplayAlerts = FALSE
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] PUT Excel.DisplayAlerts")  
-    failed = failed + 1
+    ERROR_MES ("PUT Excel.DisplayAlerts")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] PUT Excel.DisplayAlerts")  
-    success = success + 1 
+    OK_MES ("PUT Excel.DisplayAlerts")  
 End If
 
 '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -91,40 +98,32 @@ End If
 
 Excel.SheetsInNewWorkbook = 2
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] PUT Excel.SheetsInNewWorkbook")  
-    failed = failed + 1
+    ERROR_MES ("PUT Excel.SheetsInNewWorkbook")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] PUT Excel.SheetsInNewWorkbook")  
-    success = success + 1 
+    OK_MES("PUT Excel.SheetsInNewWorkbook")   
 End If
 
 Set WB = Excel.Workbooks.Add
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] Excel.Workbooks.Add")  
-    failed = failed + 1
+    ERROR_MES ("Excel.Workbooks.Add")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] Excel.Workbooks.Add")  
-    success = success + 1 
+    OK_MES ("Excel.Workbooks.Add")   
 End If
 
 Dim count
 count = Excel.Sheets.count
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] GET Excel.Sheets.count")  
-    failed = failed + 1
+    ERROR_MES ("GET Excel.Sheets.count")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] GET Excel.Sheets.count")  
-    success = success + 1 
+    OK_MES ("GET Excel.Sheets.count")  
 End If
 If count<>2 then
-    otchetFile.WriteLine("[FAILED] NOT EQUAL Excel.Sheets.count = 2")  
-    failed = failed + 1
+    ERROR_MES ("NOT EQUAL Excel.Sheets.count = 2")  
 Else
-   otchetFile.WriteLine("[SUCCESS] EQUAL Excel.Sheets.count = 2")  
-    success = success + 1 
+   OK_MES ("EQUAL Excel.Sheets.count = 2")   
 End If
 
 Excel.Sheets(1).Range("B1:H9").Group
@@ -132,12 +131,10 @@ Excel.Sheets(1).Range("C2:G8").Group
 Excel.Sheets(1).Range("B11:B15").Rows.Group
 Excel.Sheets(1).Range("C12:D14").Rows.Group
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] GET IRange.Group")  
-    failed = failed + 1
+    ERROR_MES ("GET IRange.Group")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] GET IRange.Group")  
-    success = success + 1 
+    OK_MES ("GET IRange.Group")  
 End If
 
 Excel.Sheets(2).Range("B1:H9").Group
@@ -145,43 +142,35 @@ Excel.Sheets(2).Range("C2:G8").Group
 Excel.Sheets(2).Range("B11:B15").Rows.Group
 Excel.Sheets(2).Range("C12:D14").Rows.Group
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] GET IRange.Group")  
-    failed = failed + 1
+    ERROR_MES ("GET IRange.Group")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] GET IRange.Group")  
-    success = success + 1 
+    OK_MES("GET IRange.Group")  
 End If
 
 Excel.Sheets(2).Range("C2:G8").Ungroup
 Excel.Sheets(2).Range("C12:D14").Rows.Ungroup
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] GET IRange.Ungroup")  
-    failed = failed + 1
+    ERROR_MES ("GET IRange.Ungroup")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] GET IRange.Ungroup")  
-    success = success + 1 
+    OK_MES ("GET IRange.Ungroup")  
 End If
 
 Set outline = Excel.Sheets(1).Outline
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] GET IWorksheet.Outline")  
-    failed = failed + 1
+    ERROR_MES ("GET IWorksheet.Outline")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] GET IWorksheet.Outline")  
-    success = success + 1 
+    OK_MES ("GET IWorksheet.Outline")   
 End If
 
 outline.Showlevels 1,1
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] GET IOutline.Showlevels")  
-    failed = failed + 1
+    ERROR_MES ("GET IOutline.Showlevels")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] GET IOutline.Showlevels")  
-    success = success + 1 
+    OK_MES ("GET IOutline.Showlevels")   
 End If
 
 
@@ -196,12 +185,10 @@ End If
 'Закрываем Excel
 Excel.Quit
 If Err.Number <> 0 Then
-    otchetFile.WriteLine("[FAILED] Excel.Quit")  
-    failed = failed + 1
+    ERROR_MES ("Excel.Quit")  
     Err.Clear
 Else 
-    otchetFile.WriteLine("[SUCCESS] Excel.Quit")  
-    success = success + 1   
+    OK_MES ("Excel.Quit")     
 End If 
 
 
