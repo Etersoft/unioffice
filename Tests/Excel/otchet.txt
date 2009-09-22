@@ -1,0 +1,34 @@
+==== TEST 1 (IFont) ====
+[SUCCESS] create Excel.Application
+[SUCCESS] PUT Excel.Visible
+[SUCCESS] PUT Excel.DisplayAlerts
+[SUCCESS] create Excel.Workbooks.Add
+!![FAILED]!! PUT IFont.Italic
+!![FAILED]!! GET IFont.Italic
+!![FAILED]!! PUT IFont.Bold
+!![FAILED]!! GET IFont.Bold
+!![FAILED]!! PUT IFont.Strikethrough
+!![FAILED]!! GET IFont.Strikethrough
+!![FAILED]!! PUT IFont.Underline
+!![FAILED]!! GET IFont.Underline
+!![FAILED]!! PUT IFont.SubScript
+!![FAILED]!! GET IFont.SubScript
+!![FAILED]!! PUT IFont.SuperScript
+!![FAILED]!! GET IFont.SuperScript
+!![FAILED]!! PUT IFont.FontStyle
+!![FAILED]!! GET IFont.FontStyle
+!![FAILED]!! GET IFont.Bold
+!![FAILED]!! PUT IFont.Name
+!![FAILED]!! GET IFont.Name
+!![FAILED]!! PUT IFont.Shadow
+!![FAILED]!! GET IFont.Shadow
+!![FAILED]!! PUT IFont.Size
+!![FAILED]!! GET IFont.Size
+!![FAILED]!! PUT IFont.Color
+!![FAILED]!! GET IFont.Color
+!![FAILED]!! PUT IFont.ColorIndex
+!![FAILED]!! GET IFont.ColorIndex
+!![FAILED]!! PUT IFont.OutlineFont
+!![FAILED]!! GET IFont.OutlineFont
+[SUCCESS] Excel.Quit
+Всего тестов - 32  Успешно - 5  Провалено - 27

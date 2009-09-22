@@ -1,0 +1,73 @@
+# Project: unioffice_excel
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o $(RES)
+LINKOBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" --no-export-all-symbols --add-stdcall-alias -ladvapi32  -lole32  -loleaut32  -luser32  -lkernel32  -lshell32  -luuid  -lshlwapi  -lmsvcrt  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
+BIN  = unioffice_excel.dll
+CXXFLAGS = $(CXXINCS) -DBUILDING_DLL=1  
+CFLAGS = $(INCS) -DBUILDING_DLL=1  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before unioffice_excel.dll all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+DLLWRAP=dllwrap.exe
+DEFFILE=libunioffice_excel.def
+STATICLIB=libunioffice_excel.a
+
+$(BIN): $(LINKOBJ)
+	$(DLLWRAP) --output-def $(DEFFILE) --driver-name c++ --implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+unioffice_excel_i.o: unioffice_excel_i.c
+	$(CPP) -c unioffice_excel_i.c -o unioffice_excel_i.o $(CXXFLAGS)
+
+regsvr.o: regsvr.c
+	$(CPP) -c regsvr.c -o regsvr.o $(CXXFLAGS)
+
+factory.o: factory.cpp
+	$(CPP) -c factory.cpp -o factory.o $(CXXFLAGS)
+
+application.o: application.cpp
+	$(CPP) -c application.cpp -o application.o $(CXXFLAGS)
+
+../OOWrappers/oo_servicemanager.o: ../OOWrappers/oo_servicemanager.cpp
+	$(CPP) -c ../OOWrappers/oo_servicemanager.cpp -o ../OOWrappers/oo_servicemanager.o $(CXXFLAGS)
+
+../Common/tools.o: ../Common/tools.cpp
+	$(CPP) -c ../Common/tools.cpp -o ../Common/tools.o $(CXXFLAGS)
+
+../OOWrappers/oo_desktop.o: ../OOWrappers/oo_desktop.cpp
+	$(CPP) -c ../OOWrappers/oo_desktop.cpp -o ../OOWrappers/oo_desktop.o $(CXXFLAGS)
+
+workbooks.o: workbooks.cpp
+	$(CPP) -c workbooks.cpp -o workbooks.o $(CXXFLAGS)
+
+workbook.o: workbook.cpp
+	$(CPP) -c workbook.cpp -o workbook.o $(CXXFLAGS)
+
+../Common/special_functions.o: ../Common/special_functions.cpp
+	$(CPP) -c ../Common/special_functions.cpp -o ../Common/special_functions.o $(CXXFLAGS)
+
+../OOWrappers/oo_document.o: ../OOWrappers/oo_document.cpp
+	$(CPP) -c ../OOWrappers/oo_document.cpp -o ../OOWrappers/oo_document.o $(CXXFLAGS)
+
+../OOWrappers/wrap_property_array.o: ../OOWrappers/wrap_property_array.cpp
+	$(CPP) -c ../OOWrappers/wrap_property_array.cpp -o ../OOWrappers/wrap_property_array.o $(CXXFLAGS)
+
+../OOWrappers/oo_property_value.o: ../OOWrappers/oo_property_value.cpp
+	$(CPP) -c ../OOWrappers/oo_property_value.cpp -o ../OOWrappers/oo_property_value.o $(CXXFLAGS)

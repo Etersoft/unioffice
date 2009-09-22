@@ -74,6 +74,10 @@ TEST 5
 		IRange->Range[Range, Range]  (GET)
 		IRange->Resize()
 
+TEST 6
+	test_6.vbs
+		
+
 TEST 7
-	test_3.vbs
+	test_7.vbs
 		(IEnumVARIANT)  Construction of "For Each V in Excel.Wokbooks"

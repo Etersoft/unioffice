@@ -47,7 +47,7 @@ else
 End If
 
 'Не забыть скрыть Excel если этопотоковый запуск.
-TEST_NAME("TEST 3 (IBorders, IBorder)")
+TEST_NAME("TEST 7 (IEnumVARIANT)")
 On Error Resume Next
 
 'Создаем объект Excel.Application

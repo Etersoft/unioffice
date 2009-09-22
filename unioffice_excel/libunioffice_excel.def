@@ -1,0 +1,12 @@
+; c:\Dev-Cpp\Bin\dlltool --base-file C:/DOCUME~1/Ivan/LOCALS~1/Temp/cca01240.base --output-exp unioffice_excel.exp --dllname unioffice_excel.dll --output-def libunioffice_excel.def --no-export-all-symbols --add-stdcall-alias --exclude-symbol=DllMainCRTStartup@12 --def C:/DOCUME~1/Ivan/LOCALS~1/Temp/cca01240.def --output-lib libunioffice_excel.a
+EXPORTS
+	DllCanUnloadNow = DllCanUnloadNow@0 @ 1
+	DllCanUnloadNow@0 @ 2
+	DllGetClassObject = DllGetClassObject@12 @ 3
+	DllGetClassObject@12 @ 4
+	DllMain = DllMain@12 @ 5
+	DllMain@12 @ 6
+	DllRegisterServer = DllRegisterServer@0 @ 7
+	DllRegisterServer@0 @ 8
+	DllUnregisterServer = DllUnregisterServer@0 @ 9
+	DllUnregisterServer@0 @ 10
