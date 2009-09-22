@@ -1,7 +1,0 @@
-Action	Type	Source	Target
-s72	i2	S72	S255
-CustomAction	Action
-RegOofficeWin	34	SystemFolder	regsvr32.exe [MYDIR]unioffice_excel.dll
-RegOofficeWine	34	SystemFolder	wine regsvr32.exe unioffice_excel.dll
-UnregOofficeWin	34	SystemFolder	regsvr32.exe /u [MYDIR]unioffice_excel.dll
-UnregOofficeWine	34	SystemFolder	wine regsvr32.exe unioffice_excel.dll /u
