@@ -1,7 +1,7 @@
 /*
  * Debug functions
  *
- * Copyright (C) 2008 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
+ * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
+ 
 #include <stdio.h>
 
 #ifndef __UNIOFFICE_EXCEL_DEBUG_H__

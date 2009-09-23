@@ -1,7 +1,7 @@
 /*
  * Tools functions
  *
- * Copyright (C) 2008 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
+ * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
