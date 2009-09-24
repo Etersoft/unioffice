@@ -2357,6 +2357,8 @@ HRESULT STDMETHODCALLTYPE Workbook::ProtectSharing(
 HRESULT Workbook::Init()
 {
      HRESULT hr = S_OK;   
+     
+     m_sheets.Put_Parent( (void*)this );
       
      if (m_pITypeInfo == NULL)
      {
@@ -2395,6 +2397,8 @@ HRESULT Workbook::Put_Visible( VARIANT_BOOL RHS )
 HRESULT Workbook::Put_Application( void* p_application )
 {
     m_p_application = p_application;
+    
+    m_sheets.Put_Application( p_application );
         
     return S_OK;      
 }
