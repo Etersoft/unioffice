@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o $(RES)
-LINKOBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o $(RES)
+OBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o $(RES)
+LINKOBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o $(RES)
 LIBS =  -L"C:/Dev-Cpp/lib" --no-export-all-symbols --add-stdcall-alias -ladvapi32  -lole32  -loleaut32  -luser32  -lkernel32  -lshell32  -luuid  -lshlwapi  -lmsvcrt  
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
@@ -71,3 +71,6 @@ workbook.o: workbook.cpp
 
 ../OOWrappers/oo_property_value.o: ../OOWrappers/oo_property_value.cpp
 	$(CPP) -c ../OOWrappers/oo_property_value.cpp -o ../OOWrappers/oo_property_value.o $(CXXFLAGS)
+
+sheets.o: sheets.cpp
+	$(CPP) -c sheets.cpp -o sheets.o $(CXXFLAGS)

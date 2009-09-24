@@ -23,6 +23,7 @@
 
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/oo_document.h"
+#include "sheets.h"
 
 class Workbook : public _Workbook
 {
@@ -1042,6 +1043,8 @@ private:
        void*        m_p_parent;
               
        OODocument   m_oo_document;        
+       
+       CSheets      m_sheets;
 };
 
 
