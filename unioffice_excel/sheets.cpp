@@ -37,7 +37,7 @@ HRESULT STDMETHODCALLTYPE CSheets::QueryInterface(const IID& iid, void** ppv)
     
     if ( iid == IID_Sheets ) {
         TRACE("_Workbook \n");
-        *ppv = static_cast<_Workbook*>(this);
+        *ppv = static_cast<Sheets*>(this);
     } 
       
     if ( *ppv != NULL ) 
@@ -79,8 +79,8 @@ ULONG STDMETHODCALLTYPE CSheets::Release()
        // IDispatch    
 HRESULT STDMETHODCALLTYPE CSheets::GetTypeInfoCount( UINT * pctinfo )
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+    *pctinfo = 1;
+    return S_OK;          
 }
 
 HRESULT STDMETHODCALLTYPE CSheets::GetTypeInfo(
@@ -88,8 +88,17 @@ HRESULT STDMETHODCALLTYPE CSheets::GetTypeInfo(
                LCID lcid,
                ITypeInfo ** ppTInfo)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+    *ppTInfo = NULL;
+    
+    if(iTInfo != 0)
+    {
+        return DISP_E_BADINDEX;
+    }
+    
+    m_pITypeInfo->AddRef();
+    *ppTInfo = m_pITypeInfo;
+    
+    return S_OK;            
 }
 
 HRESULT STDMETHODCALLTYPE CSheets::GetIDsOfNames(
@@ -99,8 +108,19 @@ HRESULT STDMETHODCALLTYPE CSheets::GetIDsOfNames(
                LCID lcid,
                DISPID * rgDispId)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+    if (riid != IID_NULL )
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->GetIDsOfNames(rgszNames, cNames, rgDispId);
+    
+    if ( FAILED(hr) )
+    {
+     ERR( " name = %s \n", *rgszNames );     
+    }
+    
+    return hr;             
 }
 
 HRESULT STDMETHODCALLTYPE CSheets::Invoke(
@@ -113,8 +133,26 @@ HRESULT STDMETHODCALLTYPE CSheets::Invoke(
                EXCEPINFO * pExcepInfo,
                UINT * puArgErr)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+    if ( riid != IID_NULL)
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->Invoke(
+                 static_cast<IDispatch*>(this), 
+                 dispIdMember, 
+                 wFlags, 
+                 pDispParams, 
+                 pVarResult, 
+                 pExcepInfo, 
+                 puArgErr);
+      
+    if ( FAILED(hr) )
+    {
+     ERR( " dispIdMember = %i \n", dispIdMember );     
+    }  
+                 
+    return hr;           
 } 
                
         // Sheets
