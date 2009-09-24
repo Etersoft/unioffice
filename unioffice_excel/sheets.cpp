@@ -20,6 +20,9 @@
 
 #include "sheets.h"
 
+#include "application.h"
+#include "workbook.h"
+
        // IUnknown
 HRESULT STDMETHODCALLTYPE CSheets::QueryInterface(const IID& iid, void** ppv)
 {
@@ -159,22 +162,52 @@ HRESULT STDMETHODCALLTYPE CSheets::Invoke(
 HRESULT STDMETHODCALLTYPE CSheets::get_Application( 
             /* [retval][out] */ Application	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+   TRACE_IN;             
+   
+   if ( m_p_application == NULL )
+   {
+       ERR( " m_p_application == NULL \n " ); 
+       TRACE_OUT;
+       return ( S_FALSE );    
+   }
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<Application*>( m_p_application ))->get_Application( RHS );          
+             
+   TRACE_OUT;
+   return hr;            
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::get_Creator( 
             /* [retval][out] */ XlCreator *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+   TRACE_IN;
+   
+   *RHS = xlCreatorCode;
+   
+   TRACE_OUT;
+   return S_OK;            
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::get_Parent( 
             /* [retval][out] */ IDispatch **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+   TRACE_IN;             
+    
+   if ( m_p_parent == NULL )
+   {
+       ERR( " m_p_parent == NULL \n " ); 
+       TRACE_OUT;
+       return ( S_FALSE );    
+   }    
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<Workbook*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
+             
+   TRACE_OUT;
+   return hr;          
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::Add( 
