@@ -411,8 +411,19 @@ HRESULT CSheets::Reset( )
 
 HRESULT CSheets::Clone(IEnumVARIANT** ppEnum)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   TRACE_IN;
+   
+   HRESULT hr = S_OK;
+   
+   hr = QueryInterface( IID_IEnumVARIANT, (void**)ppEnum );
+   
+   if ( FAILED( hr ) )
+   {
+        ERR( " FAILED get IID_IEnumVARIANT \n" );    
+   }
+   
+   TRACE_OUT;
+   return hr;        
 }
 
 
