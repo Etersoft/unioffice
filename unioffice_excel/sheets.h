@@ -204,7 +204,7 @@ public:
 
 private:
  
-       long m_cRef; 
+       long         m_cRef; 
        
        ITypeInfo*   m_pITypeInfo;               
        
