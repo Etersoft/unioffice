@@ -1210,11 +1210,21 @@ HRESULT STDMETHODCALLTYPE Workbook::_SaveAs(
    return E_NOTIMPL;        
 }
         
-  /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Workbook::get_Sheets( 
+HRESULT STDMETHODCALLTYPE Workbook::get_Sheets( 
             /* [retval][out] */ Sheets **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   TRACE_IN;
+   HRESULT hr;
+   
+   hr = m_sheets.QueryInterface( IID_Sheets, (void**) RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " m_sheets.QueryInterface \n" );     
+   }
+   
+   TRACE_OUT;
+   return ( hr );        
 }
         
   /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Workbook::get_ShowConflictHistory( 
