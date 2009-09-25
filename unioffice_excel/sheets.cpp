@@ -39,7 +39,7 @@ HRESULT STDMETHODCALLTYPE CSheets::QueryInterface(const IID& iid, void** ppv)
     }     
     
     if ( iid == IID_Sheets ) {
-        TRACE("_Workbook \n");
+        TRACE("Sheets \n");
         *ppv = static_cast<Sheets*>(this);
     } 
       
@@ -258,8 +258,17 @@ HRESULT STDMETHODCALLTYPE CSheets::get_Item(
             /* [in] */ VARIANT Index,
             /* [retval][out] */ IDispatch **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+   TRACE_IN;
+   
+   HRESULT hr = get__Default( Index, RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " call get__Default \n" );     
+   }
+   
+   TRACE_OUT;
+   return ( hr );            
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::Move( 
