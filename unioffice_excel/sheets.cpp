@@ -30,7 +30,7 @@ HRESULT STDMETHODCALLTYPE CSheets::QueryInterface(const IID& iid, void** ppv)
         
     if ( iid == IID_IUnknown ) {
         TRACE("IUnknown \n");
-        *ppv = static_cast<IUnknown*>(this);
+        *ppv = static_cast<IUnknown*>(static_cast<Sheets*>(this));
     }
         
     if ( iid == IID_IDispatch ) {
@@ -42,6 +42,11 @@ HRESULT STDMETHODCALLTYPE CSheets::QueryInterface(const IID& iid, void** ppv)
         TRACE("Sheets \n");
         *ppv = static_cast<Sheets*>(this);
     } 
+    
+    if ( iid == IID_IEnumVARIANT ) {
+        TRACE(" IEnumVARIANT \n");
+        *ppv = static_cast<IEnumVARIANT*>(this);
+    }   
       
     if ( *ppv != NULL ) 
     {
@@ -386,7 +391,29 @@ HRESULT STDMETHODCALLTYPE CSheets::PrintOut(
    return E_NOTIMPL;            
 }
             
-            
+HRESULT CSheets::Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched)
+{
+   TRACE_NOTIMPL;
+   return E_NOTIMPL;        
+}
+        
+HRESULT CSheets::Skip ( ULONG celt)
+{
+   TRACE_NOTIMPL;
+   return E_NOTIMPL;        
+}
+
+HRESULT CSheets::Reset( )
+{
+   TRACE_NOTIMPL;
+   return E_NOTIMPL;        
+}
+
+HRESULT CSheets::Clone(IEnumVARIANT** ppEnum)
+{
+   TRACE_NOTIMPL;
+   return E_NOTIMPL;        
+}
 
 
 

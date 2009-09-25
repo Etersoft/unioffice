@@ -23,7 +23,7 @@
 
 #include "unioffice_excel_private.h"
 
-class CSheets : public Sheets
+class CSheets : public Sheets, public IEnumVARIANT
 {
 public:
 
@@ -158,6 +158,11 @@ public:
             /* [optional][in] */ VARIANT PrToFileName,
             /* [optional][in] */ VARIANT IgnorePrintAreas,
             /* [lcid][in] */ long lcid);
+           
+       	virtual HRESULT Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched);
+	    virtual HRESULT Skip ( ULONG celt);
+	    virtual HRESULT Reset( );
+	    virtual HRESULT Clone(IEnumVARIANT** ppEnum);
                
        CSheets()
        {
