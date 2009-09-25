@@ -405,8 +405,12 @@ HRESULT CSheets::Skip ( ULONG celt)
 
 HRESULT CSheets::Reset( )
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   TRACE_IN;
+   
+   enum_position = 0;
+   
+   TRACE_OUT;
+   return S_OK;       
 }
 
 HRESULT CSheets::Clone(IEnumVARIANT** ppEnum)

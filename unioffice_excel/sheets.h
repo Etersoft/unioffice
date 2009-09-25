@@ -173,6 +173,8 @@ public:
             m_p_application = NULL;
             m_p_parent = NULL;
             
+            enum_position = 0;
+            
             HRESULT hr = Init();
             
             if ( FAILED(hr) )
@@ -209,7 +211,7 @@ private:
        void*        m_p_application;
        void*        m_p_parent;
        
-       
+       int          enum_position;
        
                
 };
