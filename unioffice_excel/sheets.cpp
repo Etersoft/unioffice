@@ -288,8 +288,19 @@ HRESULT STDMETHODCALLTYPE CSheets::Move(
 HRESULT STDMETHODCALLTYPE CSheets::get__NewEnum( 
             /* [retval][out] */ IUnknown **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+   TRACE_IN;
+   
+   HRESULT hr = S_OK;
+   
+   hr = QueryInterface( IID_IEnumVARIANT, (void**)RHS );
+   
+   if ( FAILED( hr ) )
+   {
+        ERR( " FAILED get IID_IEnumVARIANT \n" );    
+   }
+   
+   TRACE_OUT;
+   return hr;           
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::__PrintOut( 
