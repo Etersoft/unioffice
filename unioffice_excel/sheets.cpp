@@ -400,38 +400,43 @@ HRESULT STDMETHODCALLTYPE CSheets::get__Default(
              // but openoffice start from 0.... 
              index--;
              
-             Worksheet worksheet;
+             Worksheet* p_worksheet = new Worksheet;
              
-             worksheet.Put_Application( m_p_application );
-             worksheet.Put_Parent( m_p_parent );
+             p_worksheet->Put_Application( m_p_application );
+             p_worksheet->Put_Parent( m_p_parent );
              
-             worksheet.InitWrapper( m_oo_sheets.getByIndex( index ) );
+             p_worksheet->InitWrapper( m_oo_sheets.getByIndex( index ) );
              
-             hr = worksheet.QueryInterface( IID_IDispatch, (void**)RHS );
+             hr = p_worksheet->QueryInterface( IID_IDispatch, (void**)RHS );
              
              if ( FAILED( hr ) )
              {
                  ERR( " worksheet.QueryInterface \n" );     
              }
+             
+             p_worksheet->Release();
                         
          }
          break;
          
     case VT_BSTR:
          {            
-             Worksheet worksheet;
+             Worksheet* p_worksheet = new Worksheet;
              
-             worksheet.Put_Application( m_p_application );
-             worksheet.Put_Parent( m_p_parent );
+             p_worksheet->Put_Application( m_p_application );
+             p_worksheet->Put_Parent( m_p_parent );
              
-             worksheet.InitWrapper( m_oo_sheets.getByName( SysAllocString( V_BSTR( &Index ) ) ) );
+             p_worksheet->InitWrapper( m_oo_sheets.getByName( SysAllocString( V_BSTR( &Index ) ) ) );
              
-             hr = worksheet.QueryInterface( IID_IDispatch, (void**)RHS );
+             hr = p_worksheet->QueryInterface( IID_IDispatch, (void**)RHS );
              
              if ( FAILED( hr ) )
              {
                  ERR( " worksheet.QueryInterface \n" );     
-             }           
+             } 
+             
+             p_worksheet->Release();
+                       
          }
          break;
          
