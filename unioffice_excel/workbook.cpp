@@ -2468,6 +2468,25 @@ HRESULT Workbook::NewDocument( )
     }                                                    
     
     reinterpret_cast<IDispatch*>(application)->Release();
+    
+    ////////////////////////////////////////////
+    // Init OOSheets
+    IDispatch* p_disp;
+    
+    p_disp = m_oo_document.getSheets();
+    
+    if ( p_disp != NULL)
+    {
+        m_sheets.InitWrapper( p_disp );
+        
+        p_disp->Release();
+    } else
+    {
+        ERR( " failed to init m_sheets p_disp == NULL \n" );      
+        hr = E_FAIL;
+    }
+    // Init OOSheets
+    ///////////////////////////////////////////
         
     TRACE_OUT;    
     return ( hr );        
