@@ -32,6 +32,12 @@ OODocument::OODocument()
 OODocument::OODocument(const OODocument &obj)
 {
    TRACE_IN;
+         
+   if ( m_pd_document != NULL )
+   {
+       m_pd_document->Release();
+       m_pd_document = NULL;        
+   }        
                                
    m_pd_document = obj.m_pd_document;
    if ( m_pd_document != NULL )
