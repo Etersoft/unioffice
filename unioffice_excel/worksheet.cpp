@@ -1468,3 +1468,7 @@ HRESULT Worksheet::Put_Parent( void* p_parent )
    return S_OK;     
 }
 
+HRESULT Worksheet::InitWrapper( OOSheet _oo_sheet)
+{
+    m_oo_sheet = _oo_sheet;      
+}

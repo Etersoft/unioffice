@@ -23,6 +23,7 @@
 #define __UNIOFFICE_EXCEL_WORKSHEET_H__
 
 #include "unioffice_excel_private.h"
+#include "../OOWrappers/oo_sheet.h"
 
 class Worksheet: public _Worksheet
 {
@@ -741,6 +742,8 @@ public:
        HRESULT Put_Application( void* );
        HRESULT Put_Parent( void* );
        
+       HRESULT InitWrapper( OOSheet );
+       
 private:
         
        long m_cRef; 
@@ -748,7 +751,10 @@ private:
        ITypeInfo* m_pITypeInfo;
       
        void*        m_p_application;
-       void*        m_p_parent;      
+       void*        m_p_parent;  
+       
+       OOSheet      m_oo_sheet;
+           
 };
 
 #endif //__UNIOFFICE_EXCEL_WORKSHEET_H__
