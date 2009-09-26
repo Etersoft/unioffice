@@ -32,13 +32,7 @@ OOSheet::OOSheet()
 
 OOSheet::OOSheet(const OOSheet &obj)
 {
-   TRACE_IN;
-         
-   if ( m_pd_sheet != NULL )
-   {
-       m_pd_sheet->Release();
-       m_pd_sheet = NULL;        
-   }        
+   TRACE_IN;    
                                
    m_pd_sheet = obj.m_pd_sheet;
    if ( m_pd_sheet != NULL )

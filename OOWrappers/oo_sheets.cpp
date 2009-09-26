@@ -31,13 +31,7 @@ OOSheets::OOSheets()
 
 OOSheets::OOSheets(const OOSheets &obj)
 {
-   TRACE_IN;
-         
-   if ( m_pd_sheets != NULL )
-   {
-       m_pd_sheets->Release();
-       m_pd_sheets = NULL;        
-   }        
+   TRACE_IN;      
                                
    m_pd_sheets = obj.m_pd_sheets;
    if ( m_pd_sheets != NULL )
@@ -141,15 +135,20 @@ long OOSheets::getCount( )
    return ( count );     
 }
 
-OOSheet OOSheets::getByIndex( long _index )
+HRESULT OOSheets::getByIndex( long _index, OOSheet &oo_sheet )
 {
     TRACE_IN; 
-    OOSheet oo_sheet;
     HRESULT hr;
     VARIANT res, var_index;
     
     VariantInit( &res );
     VariantInit( &var_index );
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        return ( E_FAIL );     
+    }
     
     V_VT( &res ) = VT_I4;
     V_I4( &var_index ) = _index;
@@ -168,18 +167,23 @@ OOSheet OOSheets::getByIndex( long _index )
     VariantClear( &var_index );
  
     TRACE_OUT;
-    return oo_sheet;    
+    return ( hr );    
 }
 
-OOSheet OOSheets::getByName( BSTR _sheet_name )
+HRESULT OOSheets::getByName( BSTR _sheet_name, OOSheet &oo_sheet )
 {
     TRACE_IN; 
-    OOSheet oo_sheet;
     HRESULT hr;
     VARIANT res, var_index;
     
     VariantInit( &res );
     VariantInit( &var_index );
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        return ( E_FAIL );     
+    }
     
     V_VT( &res ) = VT_BSTR;
     V_BSTR( &var_index ) = SysAllocString( _sheet_name );
@@ -198,7 +202,7 @@ OOSheet OOSheets::getByName( BSTR _sheet_name )
     VariantClear( &var_index );
  
     TRACE_OUT;
-    return oo_sheet;           
+    return ( hr );           
 }
 
 HRESULT OOSheets::insertNewByName( BSTR _name, long _index )
@@ -211,6 +215,12 @@ HRESULT OOSheets::insertNewByName( BSTR _name, long _index )
     VariantInit( &param1 );
     VariantInit( &param2 );
     VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        return ( E_FAIL );     
+    }
     
     V_VT( &param1 ) = VT_BSTR;
     V_BSTR( &param1 ) = SysAllocString( _name );
@@ -242,6 +252,12 @@ HRESULT OOSheets::removeByName( BSTR _name )
     
     VariantInit( &param1 );
     VariantInit( &res );
+
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        return ( E_FAIL );     
+    }
     
     V_VT( &param1 ) = VT_BSTR;
     V_BSTR( &param1 ) = SysAllocString( _name );

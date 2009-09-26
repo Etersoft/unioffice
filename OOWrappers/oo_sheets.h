@@ -43,8 +43,8 @@ public:
   
   long getCount( );
   
-  OOSheet getByIndex( long );
-  OOSheet getByName( BSTR );  
+  HRESULT getByIndex( long, OOSheet& );
+  HRESULT getByName( BSTR, OOSheet& );  
   
   HRESULT insertNewByName( BSTR, long );
   HRESULT removeByName( BSTR );
