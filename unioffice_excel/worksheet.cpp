@@ -205,7 +205,7 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Parent(
    {
        ERR( " m_p_parent == NULL \n " ); 
        TRACE_OUT;
-       return ( S_FALSE );    
+       return ( E_FAIL );    
    }    
             
    HRESULT hr = S_OK;
