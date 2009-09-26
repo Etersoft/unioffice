@@ -22,6 +22,7 @@
 #define __UNIOFFICE_EXCEL_SHEETS_H__
 
 #include "unioffice_excel_private.h"
+#include "../OOWrappers/oo_sheets.h"
 
 class CSheets : public Sheets, public IEnumVARIANT
 {
@@ -213,7 +214,7 @@ private:
        
        int          enum_position;
        
-               
+       OOSheets     m_oo_sheets;        
 };
 
 
