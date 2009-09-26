@@ -263,8 +263,17 @@ HRESULT STDMETHODCALLTYPE Application::get_ActiveWindow(
 HRESULT STDMETHODCALLTYPE Application::get_ActiveWorkbook( 
             /* [retval][out] */ Workbook **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_IN;
+   HRESULT hr;
+   
+   hr = m_workbooks.GetActiveWorkbook( RHS );
+   if ( FAILED( hr ) )
+   {
+       ERR( " m_workbooks.GetActiveWorkbook \n" );
+   }
+   
+   TRACE_OUT;
+   return hr;             
 }
         
 HRESULT STDMETHODCALLTYPE Application::get_AddIns( 
