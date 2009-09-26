@@ -1711,6 +1711,16 @@ HRESULT STDMETHODCALLTYPE Workbook::SaveAs(
     WrapPropertyArray   wrap_property_array;
     
     CorrectArg(Filename, &Filename);
+    CorrectArg(FileFormat, &FileFormat);
+    CorrectArg(Password, &Password);
+    CorrectArg(WriteResPassword, &WriteResPassword);
+    CorrectArg(ReadOnlyRecommended, &ReadOnlyRecommended);
+    CorrectArg(CreateBackup, &CreateBackup);
+    CorrectArg(ConflictResolution, &ConflictResolution);
+    CorrectArg(AddToMru, &AddToMru);
+    CorrectArg(TextCodepage, &TextCodepage);
+    CorrectArg(TextVisualLayout, &TextVisualLayout);
+    CorrectArg(Local, &Local); 
         
     if ( V_VT(&Filename) != VT_BSTR ) {
         ERR(" Filename != BSTR \n");
