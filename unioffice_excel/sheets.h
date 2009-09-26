@@ -204,7 +204,9 @@ public:
        HRESULT InitWrapper( IDispatch* ); 
 
        long FindIndexWorksheetByName( BSTR );
-
+ 
+       HRESULT RemoveWorksheetByName( BSTR );
+       
 private:
  
        long         m_cRef; 

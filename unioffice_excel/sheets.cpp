@@ -961,6 +961,19 @@ long CSheets::FindIndexWorksheetByName( BSTR _name )
     return ( -1 );     
 }
 
+HRESULT CSheets::RemoveWorksheetByName( BSTR _name )
+{
+    TRACE_IN;
+    HRESULT hr;
+    
+    hr = m_oo_sheets.removeByName( _name );
+    if ( FAILED( hr ) )
+    {
+        ERR( " m_oo_sheets.removeByName \n" );     
+    }
 
+    TRACE_OUT;       
+    return ( hr );
+} 
 
 
