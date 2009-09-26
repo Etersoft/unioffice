@@ -179,3 +179,36 @@ HRESULT OODocument::Close( VARIANT_BOOL _hard_close )
     TRACE_OUT;        
     return ( hr );          
 }
+
+IDispatch* OODocument::getSheets()
+{
+    TRACE_IN;
+    IDispatch* p_disp;
+    VARIANT res;
+    HRESULT hr;
+     
+    VariantClear(&res);
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        VariantClear( &res );
+        return ( NULL );      
+    } 
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"getSheets", 0);
+
+    p_disp = V_DISPATCH( &res );
+    
+    if ( FAILED(hr) ) {
+        ERR(" getSheets \n ");
+        return ( NULL );
+    }
+    
+    p_disp->AddRef();
+    
+    VariantClear( &res );
+     
+    TRACE_OUT;    
+    return ( p_disp );       
+}

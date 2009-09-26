@@ -44,6 +44,8 @@ public:
   HRESULT StoreAsURL( BSTR ,WrapPropertyArray& );
   
   HRESULT Close( VARIANT_BOOL );
+  
+  IDispatch* getSheets();
        
 private:            
    
