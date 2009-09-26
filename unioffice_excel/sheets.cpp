@@ -22,6 +22,7 @@
 
 #include "application.h"
 #include "workbook.h"
+#include "worksheet.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE CSheets::QueryInterface(const IID& iid, void** ppv)
@@ -379,8 +380,72 @@ HRESULT STDMETHODCALLTYPE CSheets::get__Default(
             /* [in] */ VARIANT Index,
             /* [retval][out] */ IDispatch **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+    TRACE_IN;        
+            
+    HRESULT hr;
+    
+    CorrectArg( Index, &Index );
+     
+    // Try to change type to VT_I4 (long)        
+    hr = VariantChangeTypeEx(&Index, &Index, 0, 0, VT_I4);        
+            
+    switch ( V_VT( &Index ) )
+    {
+    case VT_I4:
+         {
+             long index = V_I4( &Index );
+             
+             // we need to do that, bacause
+             // Excel start from 1
+             // but openoffice start from 0.... 
+             index--;
+             
+             Worksheet worksheet;
+             
+             worksheet.Put_Application( m_p_application );
+             worksheet.Put_Parent( m_p_parent );
+             
+             worksheet.InitWrapper( m_oo_sheets.getByIndex( index ) );
+             
+             hr = worksheet.QueryInterface( IID_IDispatch, (void**)RHS );
+             
+             if ( FAILED( hr ) )
+             {
+                 ERR( " worksheet.QueryInterface \n" );     
+             }
+                        
+         }
+         break;
+         
+    case VT_BSTR:
+         {            
+             Worksheet worksheet;
+             
+             worksheet.Put_Application( m_p_application );
+             worksheet.Put_Parent( m_p_parent );
+             
+             worksheet.InitWrapper( m_oo_sheets.getByName( SysAllocString( V_BSTR( &Index ) ) ) );
+             
+             hr = worksheet.QueryInterface( IID_IDispatch, (void**)RHS );
+             
+             if ( FAILED( hr ) )
+             {
+                 ERR( " worksheet.QueryInterface \n" );     
+             }           
+         }
+         break;
+         
+    default:
+         {
+             ERR( " Unknown type of Index     V_VT( Index ) = %i \n", V_VT( &Index ) );
+             *RHS = NULL;
+             hr = E_FAIL;            
+         }
+         break;       
+    }        
+                  
+    TRACE_OUT;
+    return ( hr );            
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::_PrintOut( 
