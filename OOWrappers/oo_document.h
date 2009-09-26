@@ -47,6 +47,10 @@ public:
   HRESULT Close( VARIANT_BOOL );
   
   IDispatch* getSheets();
+  
+  HRESULT protect( BSTR );
+  HRESULT unprotect( BSTR );
+  
        
 private:            
    

@@ -232,3 +232,58 @@ IDispatch* OODocument::getSheets()
     TRACE_OUT;    
     return ( p_disp );       
 }
+
+HRESULT OODocument::protect( BSTR _password )
+{
+   TRACE_IN;
+   HRESULT hr;
+   VARIANT res;
+   VARIANT param1;
+   
+   VariantInit( &res );
+   VariantInit( &param1 );
+   
+   V_VT( &param1 )   = VT_BSTR;
+   V_BSTR( &param1 ) = SysAllocString( _password );
+   
+   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"protect", 1, param1);
+   if ( FAILED( hr ) )
+   {
+       ERR( " protect \n" );     
+   }
+   
+   VariantClear( &res );
+   VariantClear( &param1 );
+   
+   TRACE_OUT;
+   return ( hr );         
+}
+
+HRESULT OODocument::unprotect( BSTR _password )
+{
+   TRACE_IN;
+   HRESULT hr;
+   VARIANT res;
+   VARIANT param1;
+   
+   VariantInit( &res );
+   VariantInit( &param1 );
+   
+   V_VT( &param1 )   = VT_BSTR;
+   V_BSTR( &param1 ) = SysAllocString( _password );
+   
+   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"unprotect", 1, param1);
+   if ( FAILED( hr ) )
+   {
+       ERR( " unprotect \n" );     
+   }
+   
+   VariantClear( &res );
+   VariantClear( &param1 );
+   
+   TRACE_OUT;
+   return ( hr );        
+}
+
+
+
