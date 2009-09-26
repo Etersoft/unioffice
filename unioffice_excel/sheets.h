@@ -196,12 +196,12 @@ public:
             DELETE_OBJECT;             
        }               
                
-       HRESULT Init();                      
+       HRESULT Init( );                      
        
        HRESULT Put_Application( void* );
        HRESULT Put_Parent( void* );       
        
-       
+       HRESULT InitWrapper( IDispatch* ); 
 
 private:
  

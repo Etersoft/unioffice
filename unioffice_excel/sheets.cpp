@@ -608,7 +608,12 @@ HRESULT CSheets::Put_Parent( void* p_parent )
    return S_OK;     
 }
 
-
+HRESULT CSheets::InitWrapper( IDispatch* p_disp )
+{
+    m_oo_sheets.Init( p_disp );    
+    
+    return S_OK;    
+}
 
 
 
