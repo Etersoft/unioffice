@@ -19,7 +19,8 @@
  */
 
 #include "worksheet.h"
-
+#include "application.h"
+#include "sheets.h"
 
 
        // IUnknown
@@ -164,25 +165,55 @@ HRESULT STDMETHODCALLTYPE Worksheet::Invoke(
        
        
        // _Worksheet
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Application( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Application( 
             /* [retval][out] */ Application	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;             
+   
+   if ( m_p_application == NULL )
+   {
+       ERR( " m_p_application == NULL \n " ); 
+       TRACE_OUT;
+       return ( S_FALSE );    
+   }
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<Application*>( m_p_application ))->get_Application( RHS );          
+             
+   TRACE_OUT;
+   return hr;                           
 }
-        
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Creator( 
+
+HRESULT STDMETHODCALLTYPE Worksheet::get_Creator( 
             /* [retval][out] */ XlCreator *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   
+   *RHS = xlCreatorCode;
+   
+   TRACE_OUT;
+   return S_OK;                             
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Parent( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Parent( 
             /* [retval][out] */ IDispatch **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;             
+    
+   if ( m_p_parent == NULL )
+   {
+       ERR( " m_p_parent == NULL \n " ); 
+       TRACE_OUT;
+       return ( S_FALSE );    
+   }    
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<CSheets*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
+             
+   TRACE_OUT;
+   return hr;                           
 }
         
         /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Activate( 
