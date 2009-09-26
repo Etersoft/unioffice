@@ -86,8 +86,8 @@ ULONG STDMETHODCALLTYPE Worksheet::Release()
        // IDispatch    
 HRESULT STDMETHODCALLTYPE Worksheet::GetTypeInfoCount( UINT * pctinfo )
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+    *pctinfo = 1;
+    return S_OK;                           
 }
 
 HRESULT STDMETHODCALLTYPE Worksheet::GetTypeInfo(
@@ -95,8 +95,17 @@ HRESULT STDMETHODCALLTYPE Worksheet::GetTypeInfo(
                LCID lcid,
                ITypeInfo ** ppTInfo)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+    *ppTInfo = NULL;
+    
+    if(iTInfo != 0)
+    {
+        return DISP_E_BADINDEX;
+    }
+    
+    m_pITypeInfo->AddRef();
+    *ppTInfo = m_pITypeInfo;
+    
+    return S_OK;                        
 }
                
 HRESULT STDMETHODCALLTYPE Worksheet::GetIDsOfNames(
@@ -106,8 +115,19 @@ HRESULT STDMETHODCALLTYPE Worksheet::GetIDsOfNames(
                LCID lcid,
                DISPID * rgDispId)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+    if (riid != IID_NULL )
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->GetIDsOfNames(rgszNames, cNames, rgDispId);
+    
+    if ( FAILED(hr) )
+    {
+     ERR( " name = %s \n", *rgszNames );     
+    }
+    
+    return hr;                           
 }
                
 HRESULT STDMETHODCALLTYPE Worksheet::Invoke(
@@ -120,8 +140,26 @@ HRESULT STDMETHODCALLTYPE Worksheet::Invoke(
                EXCEPINFO * pExcepInfo,
                UINT * puArgErr)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+    if ( riid != IID_NULL)
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->Invoke(
+                 static_cast<IDispatch*>(this), 
+                 dispIdMember, 
+                 wFlags, 
+                 pDispParams, 
+                 pVarResult, 
+                 pExcepInfo, 
+                 puArgErr);
+      
+    if ( FAILED(hr) )
+    {
+     ERR( " dispIdMember = %i \n", dispIdMember );     
+    }  
+                 
+    return hr;                          
 } 
        
        
