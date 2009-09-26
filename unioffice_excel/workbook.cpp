@@ -1070,8 +1070,17 @@ HRESULT STDMETHODCALLTYPE Workbook::Close(
 HRESULT STDMETHODCALLTYPE Workbook::Save( 
             /* [lcid][in] */ long lcid)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;
+   TRACE_IN;
+   HRESULT hr;
+   
+   hr = m_oo_document.Store( );
+   if ( FAILED( hr ) )
+   {
+       ERR( " m_oo_document.Store \n" );     
+   }
+   
+   TRACE_OUT;
+   return ( hr );
 }
         
 HRESULT STDMETHODCALLTYPE Workbook::_SaveAs( 
