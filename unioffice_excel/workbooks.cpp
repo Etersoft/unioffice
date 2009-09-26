@@ -823,3 +823,26 @@ HRESULT CWorkbooks::DeleteWorkbookFromVector( Workbook* _workbook_to_delete )
     TRACE_OUT;
     return ( hr );       
 }
+
+HRESULT CWorkbooks::GetActiveWorkbook( Workbook** RHS )
+{
+    TRACE_IN;
+    HRESULT hr;
+    
+    if ( m_it_of_workbook == m_lst_of_workbook.end() )
+    {
+        ERR( "" );
+        hr = E_FAIL;     
+    } else
+    {
+        hr = (*m_it_of_workbook)->QueryInterface( CLSID_Workbook, (void**)RHS );  
+        
+        if ( FAILED( hr ) )
+        {
+            ERR( " (*m_it_of_workbook)->QueryInterface \n" );     
+        }
+    }
+    
+    TRACE_OUT; 
+    return ( hr );       
+}

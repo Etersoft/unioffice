@@ -266,6 +266,7 @@ public:
        HRESULT Put_Parent( void* );
        
        HRESULT DeleteWorkbookFromVector( Workbook* );
+       HRESULT GetActiveWorkbook( Workbook** );
        
 private:
         
