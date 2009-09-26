@@ -1368,8 +1368,8 @@ HRESULT STDMETHODCALLTYPE Workbook::get_Windows(
 HRESULT STDMETHODCALLTYPE Workbook::get_Worksheets( 
             /* [retval][out] */ Sheets **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   TRACE( "  -> get_Sheets \n" );
+   return get_Sheets( RHS );        
 }
         
 HRESULT STDMETHODCALLTYPE Workbook::get_WriteReserved( 
