@@ -231,3 +231,30 @@ HRESULT OOSheets::insertNewByName( BSTR _name, long _index )
     TRACE_OUT;
     return E_NOTIMPL;          
 }
+
+HRESULT OOSheets::removeByName( BSTR _name )
+{
+    TRACE_IN;
+    HRESULT hr;
+    
+    VARIANT param1;
+    VARIANT res;
+    
+    VariantInit( &param1 );
+    VariantInit( &res );
+    
+    V_VT( &param1 ) = VT_BSTR;
+    V_BSTR( &param1 ) = SysAllocString( _name );
+
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheets, L"removeByName", 1, param1);
+    if ( FAILED( hr ) ) 
+    {
+        ERR(" removeByName \n");
+    }
+
+    VariantClear( &param1 );
+    VariantClear( &res );
+       
+    TRACE_OUT;
+    return ( hr );
+}

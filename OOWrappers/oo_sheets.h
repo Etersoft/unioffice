@@ -47,6 +47,7 @@ public:
   OOSheet getByName( BSTR );  
   
   HRESULT insertNewByName( BSTR, long );
+  HRESULT removeByName( BSTR );
          
 private:            
    
