@@ -239,8 +239,20 @@ HRESULT STDMETHODCALLTYPE CSheets::Copy(
 HRESULT STDMETHODCALLTYPE CSheets::get_Count( 
             /* [retval][out] */ long *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+    TRACE_IN;
+    HRESULT hr;
+
+    *RHS = m_oo_sheets.getCount();
+
+    if ( *RHS < 0 )
+    {
+        ERR( "\n" );
+        *RHS = 0;
+        hr = E_FAIL;     
+    } 
+
+    TRACE_OUT;
+    return ( hr );             
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::Delete( 
