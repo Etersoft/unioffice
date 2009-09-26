@@ -951,13 +951,13 @@ HRESULT STDMETHODCALLTYPE Workbook::Close(
    return E_NOTIMPL;        
 }
         
-  /* [helpcontext][hidden][id] */ HRESULT STDMETHODCALLTYPE Workbook::_Protect( 
+HRESULT STDMETHODCALLTYPE Workbook::_Protect( 
             /* [optional][in] */ VARIANT Password,
             /* [optional][in] */ VARIANT Structure,
             /* [optional][in] */ VARIANT Windows)
 {
    TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   return E_NOTIMPL;       
 }
         
   /* [helpcontext][hidden][id] */ HRESULT STDMETHODCALLTYPE Workbook::_ProtectSharing( 
@@ -1295,8 +1295,37 @@ HRESULT STDMETHODCALLTYPE Workbook::Unprotect(
             /* [optional][in] */ VARIANT Password,
             /* [lcid][in] */ long lcid)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   TRACE_IN;
+   HRESULT hr;
+   
+   CorrectArg(Password, &Password);
+   
+   if ( Is_Variant_Null(Password) ) 
+   {
+       hr = m_oo_document.unprotect( SysAllocString( L"" ) );                    
+       if ( FAILED( hr ) )
+       {
+           ERR( " m_oo_document.unprotect \n" );     
+       }
+         
+   } else
+   {
+       if ( V_VT( &Password ) == VT_BSTR )
+       {  
+           hr = m_oo_document.unprotect( SysAllocString( V_BSTR( &Password ) ) );                    
+           if ( FAILED( hr ) )
+           {
+               ERR( " m_oo_document.unprotect \n" );     
+           }
+       } else
+       {
+           ERR( " V_VT( &Password ) != VT_BSTR \n" );  
+           hr = E_FAIL;    
+       }      
+   }
+   
+   TRACE_OUT;
+   return ( hr );          
 }
         
 HRESULT STDMETHODCALLTYPE Workbook::UnprotectSharing( 
@@ -1939,8 +1968,39 @@ HRESULT STDMETHODCALLTYPE Workbook::Protect(
             /* [optional][in] */ VARIANT Structure,
             /* [optional][in] */ VARIANT Windows)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   TRACE_IN;
+   HRESULT hr;
+   
+   CorrectArg(Password, &Password);
+   CorrectArg(Structure, &Structure);
+   CorrectArg(Windows, &Windows);
+   
+   if ( Is_Variant_Null(Password) ) 
+   {
+       hr = m_oo_document.protect( SysAllocString( L"" ) );                    
+       if ( FAILED( hr ) )
+       {
+           ERR( " m_oo_document.protect \n" );     
+       }
+         
+   } else
+   {
+       if ( V_VT( &Password ) == VT_BSTR )
+       {  
+           hr = m_oo_document.protect( SysAllocString( V_BSTR( &Password ) ) );                    
+           if ( FAILED( hr ) )
+           {
+               ERR( " m_oo_document.protect \n" );     
+           }
+       } else
+       {
+           ERR( " V_VT( &Password ) != VT_BSTR \n" );  
+           hr = E_FAIL;    
+       }      
+   }
+   
+   TRACE_OUT;
+   return ( hr );        
 }
         
 HRESULT STDMETHODCALLTYPE Workbook::get_SmartTagOptions( 
