@@ -200,3 +200,34 @@ OOSheet OOSheets::getByName( BSTR _sheet_name )
     TRACE_OUT;
     return oo_sheet;           
 }
+
+HRESULT OOSheets::insertNewByName( BSTR _name, long _index )
+{
+    TRACE_IN;
+    HRESULT hr;
+    VARIANT param1, param2;
+    VARIANT res;
+    
+    VariantInit( &param1 );
+    VariantInit( &param2 );
+    VariantInit( &res );
+    
+    V_VT( &param1 ) = VT_BSTR;
+    V_BSTR( &param1 ) = SysAllocString( _name );
+    
+    V_VT( &param2 ) = VT_I4;
+    V_I4( &param2 ) = _index;
+
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheets, L"insertNewByName", 2, param2, param1);
+    if ( FAILED( hr ) ) 
+    {
+        ERR(" insertNewByName\n");
+    }
+
+    VariantClear( &param1 );
+    VariantClear( &param2 );
+    VariantClear( &res );
+    
+    TRACE_OUT;
+    return E_NOTIMPL;          
+}

@@ -45,6 +45,8 @@ public:
   
   OOSheet getByIndex( long );
   OOSheet getByName( BSTR );  
+  
+  HRESULT insertNewByName( BSTR, long );
          
 private:            
    
