@@ -24,6 +24,8 @@
 #include <ole2.h>
 #include <oaidl.h>
 #include "../Common/debug.h"
+#include "../Common/tools.h"
+
 
 class OOSheets
 {

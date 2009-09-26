@@ -110,6 +110,24 @@ bool OOSheets::IsNull()
   
 long OOSheets::getCount( )
 {
-   TRACE_NOTIMPL;
-   return ( -1 );     
+   TRACE_IN;
+   VARIANT res;
+   HRESULT hr;
+   long count = -1;
+   
+   VariantInit( &res );
+   
+   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheets, L"getCount", 0);
+   
+   if ( FAILED( hr ) ) 
+   {
+       ERR(" getCount \n");
+       count = -1;
+   } else
+   {
+       count = V_I4( &res );        
+   }
+   
+   TRACE_OUT;
+   return ( count );     
 }
