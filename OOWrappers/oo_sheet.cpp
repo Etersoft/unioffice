@@ -108,3 +108,55 @@ bool OOSheet::IsNull()
 {
     return ( (m_pd_sheet == NULL) ? true : false );     
 }
+
+BSTR OOSheet::getName( )
+{
+    TRACE_IN;
+    HRESULT hr;
+    VARIANT res;
+    BSTR result;
+    
+    VariantInit( &res );
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"getName", 0);
+    if ( FAILED( hr ) )
+    {
+        ERR( " getName \n" );     
+        result = SysAllocString( L"" );
+    } else
+    {
+        result = SysAllocString( V_BSTR( &res ) );      
+    }
+    
+    VariantClear( &res );
+    
+    TRACE_OUT;     
+    return ( result );
+}
+
+HRESULT OOSheet::setName( BSTR bstr_name )
+{
+    TRACE_IN;
+    
+    HRESULT hr;
+    VARIANT param1, res;
+    
+    VariantInit( &param1 );
+    VariantInit( &res );  
+        
+    V_VT(&param1)   = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(bstr_name);
+
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"setName", 1, param1);
+    
+    if ( FAILED( hr ) )
+    {
+        ERR( " setName \n" );     
+    }    
+    
+    VariantClear( &res );
+    VariantClear(&param1 );
+    
+    TRACE_OUT;
+    return ( hr );      
+}
