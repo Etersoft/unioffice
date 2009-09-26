@@ -605,6 +605,9 @@ HRESULT STDMETHODCALLTYPE Application::get_Sheets(
        return ( hr ); 
    }
    
+   p_workbook->Release();
+   p_workbook = NULL;
+   
    TRACE_OUT;
    return ( hr );             
 }
