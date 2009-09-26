@@ -277,18 +277,44 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Parent(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Name( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Name( 
             /* [retval][out] */ BSTR *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   BSTR result;
+   
+   result = SysAllocString( m_oo_sheet.getName( ) );
+
+   if ( lstrlenW( result ) == 0 )
+   {
+       ERR( " m_oo_sheet.getName \n" );  
+       hr = E_FAIL;   
+   } else
+   {
+      *RHS = SysAllocString( result );       
+   }
+
+   SysFreeString( result );
+
+   TRACE_OUT;
+   return ( hr );                           
 }
         
-        /* [helpcontext][propput][id] */ HRESULT STDMETHODCALLTYPE Worksheet::put_Name( 
+HRESULT STDMETHODCALLTYPE Worksheet::put_Name( 
             /* [in] */ BSTR RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   
+   hr = m_oo_sheet.setName( SysAllocString( RHS ) );
+   if ( FAILED( hr ) )
+   {
+       ERR( " m_oo_sheet.setName \n" );     
+   }
+   
+   TRACE_OUT;
+   return ( hr );                           
 }
         
         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Next( 
