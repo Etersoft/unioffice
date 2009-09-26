@@ -203,6 +203,8 @@ public:
        
        HRESULT InitWrapper( IDispatch* ); 
 
+       long FindIndexWorksheetByName( BSTR );
+
 private:
  
        long         m_cRef; 

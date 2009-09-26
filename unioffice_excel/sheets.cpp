@@ -224,8 +224,206 @@ HRESULT STDMETHODCALLTYPE CSheets::Add(
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ IDispatch **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;            
+   TRACE_IN;
+   HRESULT hr;
+   long index;
+   BSTR new_name;
+   BSTR tmp_str;
+   long count;
+   
+   enum
+   {
+       none,
+       before,
+       after,    
+   } e_type_add = none;
+   
+      
+   CorrectArg(Before, &Before);
+   CorrectArg(After, &After);
+   CorrectArg(Count, &Count);
+   CorrectArg(Type, &Type);
+   
+   if ( Is_Variant_Null(Before) ) {
+       VariantClear(&Before);
+   } else {
+      // Convert to VT_I4
+      hr = VariantChangeTypeEx(&Before, &Before, 0, 0, VT_I4);
+      
+      e_type_add = before;
+   }
+   
+   if ( Is_Variant_Null(After) ) {
+       VariantClear(&After);
+   } else {
+       // Convert to VT_I4
+       hr = VariantChangeTypeEx(&After, &After, 0, 0, VT_I4);
+ 
+       e_type_add = after;
+   }
+   
+   if ( Is_Variant_Null(Count) ) {
+       VariantClear(&Count);
+       V_VT(&Count) = VT_I4;
+       V_I4(&Count) = 1;
+   } else {
+       // Convert to VT_I4
+       hr = VariantChangeTypeEx(&Count, &Count, 0, 0, VT_I4);
+       if ( FAILED( hr ) ) {
+           ERR(" VariantChangeTypeEx -Count- \n");
+       }
+   }
+   
+   if ( Is_Variant_Null( Type ) ) {
+       VariantClear( &Type );
+       V_VT(&Type) = VT_I4;
+       V_I4(&Type) = xlWorksheet;
+   } else {
+       // Convert to VT_I4
+       hr = VariantChangeTypeEx(&Type, &Type, 0, 0, VT_I4);
+       if (FAILED(hr)) {
+           ERR(" VariantChangeTypeEx -Type-\n");
+       }
+       // only xlWorksheet are supported
+       switch ( V_I4( &Type ) ) 
+       {
+       case xlWorksheet: 
+            break;
+       default :
+           ERR(" This Type not implemented type = %i \n", V_I4(&Type) );
+           return E_FAIL;
+       }
+   }
+   
+   index = 0;
+   
+   // get Count of worksheets
+   hr = get_Count( &count );
+   if ( FAILED( hr ) )
+   {
+       ERR( " get_Count \n" );     
+   }
+   
+   switch ( e_type_add )
+   {
+   case before:
+        {
+            WTRACE(L" before element %s \n",V_BSTR(&Before) );
+            if ( V_VT(&Before) == VT_I4 ) {
+                index = V_I4(&Before) - 1;
+            } else {                   
+                int i = FindIndexWorksheetByName( V_BSTR(&Before) );
+                
+                if ( i >= 0 ) 
+                    index = i; 
+                else 
+                    index = 0;
+            }   
+        }
+        break;
+        
+   case after:
+        {
+            WTRACE( L"after element %s\n", V_BSTR( &After ) );
+            if ( V_VT(&After) == VT_I4 ) {
+               index = V_I4(&After);
+            } else {
+               int i = FindIndexWorksheetByName( V_BSTR(&After) );
+               
+               if ( i >= 0 ) 
+                   index = i+1; 
+               else 
+                   index = 0;
+            } 
+        }
+        break;
+        
+   case none:
+        {
+            TRACE(" to the begining of the list \n");
+            index = 0;    
+        }
+        break;        
+                   
+   }
+  
+   for ( int i = V_I4( &Count ); i > 0; i--) 
+   {      
+       int j = 0;
+       do 
+       {          
+           SysFreeString( new_name );
+           new_name = SysAllocString( L"Sheet" );
+ 
+           hr = VarBstrFromI4( count + i + j, 0, 0, &tmp_str);
+           
+           if ( FAILED( hr ) ) {
+                ERR( " VarBSTRFromI4 \n" );
+                tmp_str = SysAllocString( L"4" );
+           }
+          
+           VarBstrCat( new_name, tmp_str, &new_name );
+          
+           SysFreeString(tmp_str);
+          
+           j++;
+          
+           VARIANT param1;
+           IDispatch *p_disp = NULL;
+          
+           VariantInit( &param1 );
+           V_VT( &param1 )   = VT_BSTR;
+           V_BSTR( &param1 ) = SysAllocString( new_name );
+          
+           hr = get__Default( param1, &p_disp );
+                    
+           if ( p_disp != NULL ) 
+           {
+               p_disp->Release(); 
+          
+               p_disp = NULL;
+           }
+          
+           VariantClear( &param1 );
+          
+       } while ( !FAILED( hr ) );
+
+       hr = m_oo_sheets.insertNewByName( new_name, index );
+       if ( FAILED( hr ) )
+       {
+           ERR( " m_pd_sheets.insertNewByName \n" ); 
+           SysFreeString(new_name);
+           return ( hr );     
+       }
+ 
+       SysFreeString(new_name);
+        
+   } // for( i = V_I4( &Count ); i > 0; i--) 
+   
+   index++;
+   
+   VARIANT param1;
+   VariantInit( &param1 );
+   V_VT( &param1 ) = VT_I4;
+   V_I4( &param1 ) = index;
+   
+   hr = get__Default( param1, RHS );
+   if ( FAILED( hr ) )
+   {
+       ERR( " get__Default \n" );     
+   } else
+   {
+       hr = reinterpret_cast<Worksheet*>( *RHS )->Activate( 0 );       
+       if ( FAILED( hr ) )
+       {
+           ERR( " Activate() \n" );     
+       }
+   }
+     
+   VariantClear( &param1 );
+   
+   TRACE_OUT;
+   return ( hr );            
 }
         
 HRESULT STDMETHODCALLTYPE CSheets::Copy( 
@@ -685,7 +883,83 @@ HRESULT CSheets::InitWrapper( IDispatch* p_disp )
     return S_OK;    
 }
 
-
+long CSheets::FindIndexWorksheetByName( BSTR _name )
+{
+    TRACE_IN; 
+    HRESULT hr;
+    long count;
+    VARIANT par_tmp;
+    BSTR tmp_name;
+    
+    VariantInit( &par_tmp );
+    
+    hr = get_Count( &count);
+    if ( FAILED( hr ) ) {
+        ERR(" get_Count\n");
+        return ( -1 );
+    }
+     
+    int i = 1;
+    
+    while ( i <= count ) 
+    {
+        IDispatch* p_disp = NULL;  
+        
+        VariantClear( &par_tmp );
+        V_VT( &par_tmp ) = VT_I4;
+        V_I4( &par_tmp ) = i;
+        
+        hr = get__Default( par_tmp, &p_disp);      
+        if ( !FAILED( hr ) )
+        {
+            hr = reinterpret_cast<Worksheet*>( p_disp )->get_Name( &tmp_name ); 
+            if ( !FAILED(hr) ) {
+                if ( !lstrcmpiW( tmp_name, _name ) ) {
+                     
+                    SysFreeString( tmp_name );
+                    VariantClear( &par_tmp );
+                    
+                    if ( p_disp != NULL )
+                    {
+                        p_disp->Release();
+                        p_disp = NULL;     
+                    }  
+                    
+                    TRACE_OUT;
+                    return (i - 1);
+                }
+                
+                SysFreeString( tmp_name );
+                
+            } else
+            {
+                ERR( " get_Name \n" );
+                
+                if ( p_disp != NULL )
+                {
+                    p_disp->Release();
+                    p_disp = NULL;     
+                } 
+            }
+             
+        } else
+        { 
+            if ( p_disp != NULL )
+            {
+                p_disp->Release();
+                p_disp = NULL;     
+            }      
+        }    
+        
+        VariantClear( &par_tmp );
+          
+        i++;   
+    }
+    
+    ERR( " NOT FIND \n" );
+    TRACE_OUT; 
+    return ( -1 );     
+}
 
 
 
