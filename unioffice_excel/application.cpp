@@ -579,11 +579,34 @@ HRESULT STDMETHODCALLTYPE Application::Evaluate(
    return E_NOTIMPL;             
 }
         
-         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_Sheets( 
+HRESULT STDMETHODCALLTYPE Application::get_Sheets( 
             /* [retval][out] */ Sheets **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_IN;
+   HRESULT hr;
+   
+   Workbook* p_workbook = NULL;
+   
+   hr = get_ActiveWorkbook( &p_workbook );
+   if ( FAILED( hr ) || ( p_workbook == NULL))
+   {
+       ERR( " get_ActiveWorkbook \n" );     
+       p_workbook = NULL;
+       return ( hr ); 
+   }
+   
+   hr = p_workbook->get_Sheets( RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_workbook->get_Sheets \n" );     
+       p_workbook->Release();
+       p_workbook = NULL;
+       return ( hr ); 
+   }
+   
+   TRACE_OUT;
+   return ( hr );             
 }
         
          /* [helpcontext][hidden][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_ShortcutMenus( 
