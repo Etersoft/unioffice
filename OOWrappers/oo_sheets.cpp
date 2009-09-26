@@ -140,3 +140,63 @@ long OOSheets::getCount( )
    TRACE_OUT;
    return ( count );     
 }
+
+OOSheet OOSheets::getByIndex( long _index )
+{
+    TRACE_IN; 
+    OOSheet oo_sheet;
+    HRESULT hr;
+    VARIANT res, var_index;
+    
+    VariantInit( &res );
+    VariantInit( &var_index );
+    
+    V_VT( &res ) = VT_I4;
+    V_I4( &var_index ) = _index;
+    
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_sheets, L"getByIndex", 1, var_index);
+    if ( FAILED( hr ) )
+    {
+        ERR( " getByIndex \n" );
+    } else
+    {
+        oo_sheet.Init( V_DISPATCH( &res ) );      
+    }
+    
+ 
+    VariantClear( &res );
+    VariantClear( &var_index );
+ 
+    TRACE_OUT;
+    return oo_sheet;    
+}
+
+OOSheet OOSheets::getByName( BSTR _sheet_name )
+{
+    TRACE_IN; 
+    OOSheet oo_sheet;
+    HRESULT hr;
+    VARIANT res, var_index;
+    
+    VariantInit( &res );
+    VariantInit( &var_index );
+    
+    V_VT( &res ) = VT_BSTR;
+    V_BSTR( &var_index ) = SysAllocString( _sheet_name );
+    
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_sheets, L"getByName", 1, var_index);
+    if ( FAILED( hr ) )
+    {
+        ERR( " getByIndex \n" );
+    } else
+    {
+        oo_sheet.Init( V_DISPATCH( &res ) );      
+    }
+    
+ 
+    VariantClear( &res );
+    VariantClear( &var_index );
+ 
+    TRACE_OUT;
+    return oo_sheet;           
+}

@@ -25,7 +25,7 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-
+#include "../OOWrappers/oo_sheet.h"
 
 class OOSheets
 {
@@ -42,6 +42,9 @@ public:
   bool IsNull();
   
   long getCount( );
+  
+  OOSheet getByIndex( long );
+  OOSheet getByName( BSTR );  
          
 private:            
    
