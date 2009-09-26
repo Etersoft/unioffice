@@ -232,11 +232,43 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Parent(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Delete( 
+HRESULT STDMETHODCALLTYPE Worksheet::Delete( 
             /* [lcid][in] */ long lcid)
-{
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+{         
+   TRACE_IN;
+   HRESULT hr;
+   
+   BSTR name;
+   IDispatch* p_disp = NULL;
+   
+   hr = get_Name( &name );
+   if ( FAILED( hr ) )
+   {
+       ERR( " get_Name \n" );     
+   }
+   
+   hr = get_Parent( &p_disp );
+   if ( FAILED( hr ) )
+   {
+       ERR( " get_Parent \n" );     
+   }   
+   
+   hr = reinterpret_cast<CSheets*>(p_disp)->RemoveWorksheetByName( name );
+   if ( FAILED( hr ) )
+   {
+       ERR( " RemoveWorksheetByName \n" );     
+   }    
+   
+   if ( p_disp != NULL )
+   {
+       p_disp->Release();
+       p_disp = NULL;     
+   }
+   
+   SysFreeString( name );
+   
+   TRACE_OUT;
+   return ( hr );                           
 }
         
         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_CodeName( 
