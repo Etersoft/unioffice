@@ -3,4 +3,5 @@
 *.dll
 unioffice_excel/libunioffice_excel.def
 unioffice_excel/unioffice_excel.layout
+Tests/Excel/otchet.txt
 
