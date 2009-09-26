@@ -1423,5 +1423,17 @@ HRESULT Worksheet::Init()
     return ( hr );     
 }
 
+HRESULT Worksheet::Put_Application( void* p_application )
+{
+    m_p_application = p_application;
+            
+    return S_OK;      
+}
 
+HRESULT Worksheet::Put_Parent( void* p_parent )
+{
+   m_p_parent = p_parent;
+   
+   return S_OK;     
+}
 

@@ -714,6 +714,9 @@ public:
             m_cRef = 1;
             m_pITypeInfo = NULL;
             
+            m_p_application = NULL;
+            m_p_parent = NULL;
+            
             HRESULT hr = Init();
             
             if ( FAILED(hr) )
@@ -726,12 +729,17 @@ public:
         virtual ~Worksheet() 
         { 
             InterlockedDecrement(&g_cComponents);    
+            
+            m_p_application = NULL;
+            m_p_parent = NULL;            
                 
             DELETE_OBJECT; 
         } 
 
-        HRESULT Init();
+       HRESULT Init();
         
+       HRESULT Put_Application( void* );
+       HRESULT Put_Parent( void* );
        
 private:
         
@@ -739,6 +747,8 @@ private:
        
        ITypeInfo* m_pITypeInfo;
       
+       void*        m_p_application;
+       void*        m_p_parent;      
 };
 
 #endif //__UNIOFFICE_EXCEL_WORKSHEET_H__
