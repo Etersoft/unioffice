@@ -152,6 +152,26 @@ HRESULT OODocument::StoreAsURL( BSTR _filename, WrapPropertyArray& _property_arr
     return ( hr );    
 } 
 
+HRESULT OODocument::Store( )
+{
+    TRACE_IN;
+    HRESULT hr;
+    VARIANT res;
+    
+    VariantInit( &res );
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"Store", 0);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Store() \n" );     
+    }
+    
+    VariantClear( &res );
+    
+    TRACE_OUT;
+    return ( hr );    
+}
+
 HRESULT OODocument::Close( VARIANT_BOOL _hard_close )
 {
     HRESULT hr;

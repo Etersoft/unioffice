@@ -42,6 +42,7 @@ public:
   bool IsNull();
   
   HRESULT StoreAsURL( BSTR ,WrapPropertyArray& );
+  HRESULT Store( );
   
   HRESULT Close( VARIANT_BOOL );
   
