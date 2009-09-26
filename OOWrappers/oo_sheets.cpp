@@ -117,6 +117,13 @@ long OOSheets::getCount( )
    
    VariantInit( &res );
    
+   if ( IsNull() )
+   {
+       ERR( " IsNull() == true \n" );
+       VariantClear( &res );
+       return ( -1 );     
+   }
+   
    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheets, L"getCount", 0);
    
    if ( FAILED( hr ) ) 
@@ -127,6 +134,8 @@ long OOSheets::getCount( )
    {
        count = V_I4( &res );        
    }
+   
+   VariantClear( &res );
    
    TRACE_OUT;
    return ( count );     
