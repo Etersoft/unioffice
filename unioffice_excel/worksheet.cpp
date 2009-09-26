@@ -216,11 +216,11 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Parent(
    return hr;                           
 }
         
-        /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Activate( 
+HRESULT STDMETHODCALLTYPE Worksheet::Activate( 
             /* [lcid][in] */ long lcid)
 {
    TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   return E_NOTIMPL;                         
 }
         
         /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Copy( 

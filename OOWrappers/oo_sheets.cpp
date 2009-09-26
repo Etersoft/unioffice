@@ -239,7 +239,7 @@ HRESULT OOSheets::insertNewByName( BSTR _name, long _index )
     VariantClear( &res );
     
     TRACE_OUT;
-    return E_NOTIMPL;          
+    return ( hr );          
 }
 
 HRESULT OOSheets::removeByName( BSTR _name )

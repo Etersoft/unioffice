@@ -393,6 +393,7 @@ HRESULT STDMETHODCALLTYPE CSheets::Add(
        {
            ERR( " m_pd_sheets.insertNewByName \n" ); 
            SysFreeString(new_name);
+           TRACE_OUT;
            return ( hr );     
        }
  
@@ -417,6 +418,8 @@ HRESULT STDMETHODCALLTYPE CSheets::Add(
        if ( FAILED( hr ) )
        {
            ERR( " Activate() \n" );     
+           reinterpret_cast<Worksheet*>( *RHS )->Release();
+           *RHS = NULL;
        }
    }
      
@@ -601,9 +604,22 @@ HRESULT STDMETHODCALLTYPE CSheets::get__Default(
              Worksheet* p_worksheet = new Worksheet;
              
              p_worksheet->Put_Application( m_p_application );
-             p_worksheet->Put_Parent( m_p_parent );
+             p_worksheet->Put_Parent( this );
              
-             p_worksheet->InitWrapper( m_oo_sheets.getByIndex( index ) );
+             OOSheet oo_sheet;
+             
+             hr = m_oo_sheets.getByIndex( index, oo_sheet );
+             if ( FAILED( hr ) )
+             {
+                ERR( " m_oo_sheets.getByIndex \n" );
+                if ( p_worksheet != NULL )
+                    p_worksheet->Release();
+                    
+                TRACE_OUT;    
+                return ( hr );    
+             }
+             
+             p_worksheet->InitWrapper( oo_sheet );
              
              hr = p_worksheet->QueryInterface( IID_IDispatch, (void**)RHS );
              
@@ -612,8 +628,9 @@ HRESULT STDMETHODCALLTYPE CSheets::get__Default(
                  ERR( " worksheet.QueryInterface \n" );     
              }
              
-             p_worksheet->Release();
-                        
+             if ( p_worksheet != NULL )
+                 p_worksheet->Release();
+                      
          }
          break;
          
@@ -622,9 +639,23 @@ HRESULT STDMETHODCALLTYPE CSheets::get__Default(
              Worksheet* p_worksheet = new Worksheet;
              
              p_worksheet->Put_Application( m_p_application );
-             p_worksheet->Put_Parent( m_p_parent );
+             p_worksheet->Put_Parent( this );
              
-             p_worksheet->InitWrapper( m_oo_sheets.getByName( SysAllocString( V_BSTR( &Index ) ) ) );
+             OOSheet oo_sheet;
+             
+             hr = m_oo_sheets.getByName( V_BSTR( &Index ), oo_sheet );
+             
+             if ( FAILED( hr ) )
+             {
+                ERR( " m_oo_sheets.getByName \n" );
+                if ( p_worksheet != NULL )
+                    p_worksheet->Release();
+                    
+                TRACE_OUT;    
+                return ( hr );    
+             }
+
+             p_worksheet->InitWrapper( oo_sheet );
              
              hr = p_worksheet->QueryInterface( IID_IDispatch, (void**)RHS );
              
