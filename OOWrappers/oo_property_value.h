@@ -45,6 +45,7 @@ public:
   
   HRESULT Set_PropertyValue( VARIANT_BOOL );
   
+  bool IsNull();
        
 private:            
    

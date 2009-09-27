@@ -118,6 +118,13 @@ HRESULT OOPropertyValue::Set_PropertyName( BSTR _name )
     VARIANT res;
     
     TRACE_IN;
+
+    if ( IsNull() )
+    {
+        ERR( " m_pd_property_value is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
     
     VariantInit(&param);
     VariantInit(&res);
@@ -147,6 +154,13 @@ HRESULT OOPropertyValue::Set_PropertyValue( BSTR _value )
     VARIANT res;
     
     TRACE_IN;
+
+    if ( IsNull() )
+    {
+        ERR( " m_pd_property_value is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
     
     VariantInit(&param);
     VariantInit(&res);
@@ -176,6 +190,13 @@ HRESULT OOPropertyValue::Set_PropertyValue( VARIANT_BOOL _value)
     VARIANT res;
     
     TRACE_IN;
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_property_value is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
     
     VariantInit(&param);
     VariantInit(&res);
@@ -220,4 +241,9 @@ HRESULT OOPropertyValue::Set_Property( BSTR _name, BSTR _value )
     
     TRACE_OUT;
     return ( hr );         
+}
+
+bool OOPropertyValue::IsNull()
+{
+    return ( m_pd_property_value == NULL ? true : false ); 	 
 }
