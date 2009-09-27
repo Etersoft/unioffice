@@ -2509,7 +2509,7 @@ HRESULT Workbook::NewDocument( )
     
     HRESULT hr;
     
-    Application*        application;
+    Application*        application = NULL;
     WrapPropertyArray   wrap_property_array;
     
     hr = get_Application( &application );
@@ -2553,21 +2553,28 @@ HRESULT Workbook::NewDocument( )
     // Fill properties
     ////////////////////////////
     
-    m_oo_document = application->m_oo_desktop.LoadComponentFromURL( 
-                                                    SysAllocString(L"private:factory/scalc"), 
-                                                    SysAllocString(L"_blank"), 
+    hr = application->m_oo_desktop.LoadComponentFromURL( 
+                                                    L"private:factory/scalc", 
+                                                    L"_blank", 
                                                     0,
-                                                    wrap_property_array );
-      
-    hr = S_OK;  
-                                                                                                     
-    if ( m_oo_document.IsNull() )
+                                                    wrap_property_array,
+													m_oo_document );
+    if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_desktop.LoadComponentFromURL \n" );
+		if ( application != NULL )
+    	{
+            reinterpret_cast<IDispatch*>(application)->Release();
+		}
+		
+		TRACE_OUT;
+		return ( hr );   	 
+    }   
+	                                                                                                                                                      
+    if ( application != NULL )
     {
-        ERR( " m_oo_document not load \n" );
-        hr = E_FAIL;     
-    }                                                    
-    
-    reinterpret_cast<IDispatch*>(application)->Release();
+        reinterpret_cast<IDispatch*>(application)->Release();
+	}
     
     ////////////////////////////////////////////
     // Init OOSheets

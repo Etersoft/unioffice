@@ -42,7 +42,9 @@ public:
     
     void Init( IDispatch* p_oo_desktop );  
     
-    OODocument LoadComponentFromURL( BSTR, BSTR, long, WrapPropertyArray& );
+    bool IsNull();
+    
+    HRESULT LoadComponentFromURL( BSTR, BSTR, long, WrapPropertyArray&, OODocument& );
     
     HRESULT terminate();
        

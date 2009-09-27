@@ -33,6 +33,7 @@ OOServiceManager::OOServiceManager()
     hr = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
     if (FAILED(hr)) {
         ERR(" CLSIDFromProgID  com.sun.star.ServiceManager \n");
+        TRACE_OUT;
         return;
     }
 
@@ -40,6 +41,7 @@ OOServiceManager::OOServiceManager()
     hr = CoCreateInstance( clsid, NULL, CLSCTX_LOCAL_SERVER | CLSCTX_INPROC_SERVER, IID_IDispatch, (void**) &m_pd_servicemanager);
     if (FAILED(hr)) {
         ERR(" CoCreateInstance \n");
+        TRACE_OUT;
         return;
     }
     

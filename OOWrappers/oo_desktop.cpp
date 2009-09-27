@@ -92,21 +92,29 @@ void OODesktop::Init( IDispatch* p_oo_desktop )
    if ( p_oo_desktop == NULL )
    {
        ERR( " p_oo_desktop == NULL \n" );
+       TRACE_OUT;
        return;     
    }
    
    m_pd_desktop = p_oo_desktop;
    m_pd_desktop->AddRef();
    
-   TRACE_OUT;
-   
+   TRACE_OUT;   
    return;
 }
 
 HRESULT OODesktop::terminate()
 {
+ 	TRACE_IN;	
     VARIANT res;
     HRESULT hr = S_OK;
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_desktop is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
     
     VariantInit( &res );
     
@@ -115,20 +123,36 @@ HRESULT OODesktop::terminate()
     if ( FAILED( hr ) )
     {
         ERR( " m_pd_desktop -> terminate \n" );
-        return S_FALSE;     
+        VariantClear( &res );
+        
+        TRACE_OUT;
+        return ( hr );     
     }
     
+    VariantClear( &res );
+    
+    TRACE_OUT;
     return ( hr );
 }
 
-OODocument OODesktop::LoadComponentFromURL( BSTR _type_doc, BSTR _template, long _not_used, WrapPropertyArray& _property_array )
+HRESULT OODesktop::LoadComponentFromURL( 
+		BSTR _type_doc, 
+	 	BSTR _template, 
+	 	long _not_used, 
+	 	WrapPropertyArray& _property_array, 
+	 	OODocument& document )
 {
+    TRACE_IN;
     HRESULT hr;
-    VARIANT param0,param1,param2,param3;
-    OODocument document;  
+    VARIANT param0,param1,param2,param3; 
     VARIANT resultDoc;
   
-    TRACE_IN;
+    if ( IsNull() )
+    {
+        ERR( " m_pd_desktop is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
   
     VariantInit(&param0);
     VariantInit(&param1);
@@ -155,11 +179,16 @@ OODocument OODesktop::LoadComponentFromURL( BSTR _type_doc, BSTR _template, long
     
     if ( FAILED(hr) ) {
         ERR( " LoadComponentFromURL \n" ); 
-        return ( document );
+        VariantClear(&param0);
+	    VariantClear(&param1);
+        VariantClear(&param2);
+        VariantClear(&param3);
+		VariantClear(&resultDoc);
+		TRACE_OUT;
+        return ( hr );
     }
   
     document.Init( resultDoc.pdispVal );
-  
     
     VariantClear(&param0);
     VariantClear(&param1);
@@ -167,8 +196,11 @@ OODocument OODesktop::LoadComponentFromURL( BSTR _type_doc, BSTR _template, long
     VariantClear(&param3);
     VariantClear(&resultDoc);
   
-    TRACE_OUT;
-  
-    return ( document );      
+    TRACE_OUT; 
+    return ( hr );      
 }
 
+bool OODesktop::IsNull()
+{
+    return ( m_pd_desktop == NULL ? true : false ); 	 
+}    
