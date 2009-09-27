@@ -907,11 +907,11 @@ HRESULT CSheets::Put_Parent( void* p_parent )
    return S_OK;     
 }
 
-HRESULT CSheets::InitWrapper( IDispatch* p_disp )
+HRESULT CSheets::InitWrapper( OOSheets oo_sheets )
 {
-    m_oo_sheets.Init( p_disp );    
+    m_oo_sheets = oo_sheets;    
     
-    return S_OK;    
+    return ( S_OK );    
 }
 
 long CSheets::FindIndexWorksheetByName( BSTR _name )

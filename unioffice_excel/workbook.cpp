@@ -23,6 +23,7 @@
 #include "application.h"
 #include "workbooks.h"
 #include "../OOWrappers/wrap_property_array.h"
+#include "../OOWrappers/oo_sheets.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE Workbook::QueryInterface(const IID& iid, void** ppv)
@@ -393,7 +394,7 @@ HRESULT STDMETHODCALLTYPE Workbook::Close(
     //////////////////////////////////////
     if ( !lstrcmpiW( _filename, L"" ) ) 
     {
-        hr = m_oo_document.Close( hard_close );
+        hr = m_oo_document.close( hard_close );
 
         if ( FAILED( hr ) )
         { 
@@ -461,7 +462,7 @@ HRESULT STDMETHODCALLTYPE Workbook::Close(
             
         // close
             
-        hr = m_oo_document.Close( hard_close );
+        hr = m_oo_document.close( hard_close );
 
         if ( FAILED( hr ) )
         { 
@@ -2578,20 +2579,19 @@ HRESULT Workbook::NewDocument( )
     
     ////////////////////////////////////////////
     // Init OOSheets
-    IDispatch* p_disp;
+    OOSheets oo_sheets;
     
-    p_disp = m_oo_document.getSheets();
+    hr = m_oo_document.getSheets( oo_sheets );
     
-    if ( p_disp != NULL)
+    if ( FAILED( hr ) )
     {
-        m_sheets.InitWrapper( p_disp );
-        
-        p_disp->Release();
-    } else
-    {
-        ERR( " failed to init m_sheets p_disp == NULL \n" );      
-        hr = E_FAIL;
+	    ERR( " m_oo_document.getSheets \n" );
+	    TRACE_OUT;
+		return ( hr );   	 
     }
+    
+    m_sheets.InitWrapper( oo_sheets );
+    
     // Init OOSheets
     ///////////////////////////////////////////
         

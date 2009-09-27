@@ -87,6 +87,7 @@ void OODocument::Init( IDispatch* p_oo_document )
    if ( p_oo_document == NULL )
    {
        ERR( " p_oo_document == NULL \n" );
+       TRACE_OUT;
        return;     
    }
    
@@ -110,6 +111,13 @@ HRESULT OODocument::StoreAsURL( BSTR _filename, WrapPropertyArray& _property_arr
     VARIANT result;
   
     TRACE_IN;
+
+    if ( IsNull() )
+    {
+        ERR( " m_pd_document is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
   
     VariantInit(&param0);
     VariantInit(&param1);
@@ -133,7 +141,8 @@ HRESULT OODocument::StoreAsURL( BSTR _filename, WrapPropertyArray& _property_arr
     hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_document, L"StoreAsURL", 2, param1, param0);
     
     if ( FAILED( hr ) ) {
-        ERR( " StoreAsURL \n" ); 
+        ERR( " StoreAsURL \n" );
+		TRACE_OUT; 
         return ( E_FAIL );
     }
     
@@ -151,6 +160,13 @@ HRESULT OODocument::Store( )
     TRACE_IN;
     HRESULT hr;
     VARIANT res;
+
+    if ( IsNull() )
+    {
+        ERR( " m_pd_document is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
     
     VariantInit( &res );
     
@@ -166,13 +182,20 @@ HRESULT OODocument::Store( )
     return ( hr );    
 }
 
-HRESULT OODocument::Close( VARIANT_BOOL _hard_close )
+HRESULT OODocument::close( VARIANT_BOOL _hard_close )
 {
     HRESULT hr;
     VARIANT res;
     VARIANT hard_close;
     
     TRACE_IN;
+
+    if ( IsNull() )
+    {
+        ERR( " m_pd_document is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
     
     VariantInit( &hard_close );
     VariantInit( &res );
@@ -194,7 +217,7 @@ HRESULT OODocument::Close( VARIANT_BOOL _hard_close )
     return ( hr );          
 }
 
-IDispatch* OODocument::getSheets()
+HRESULT OODocument::getSheets( OOSheets& oo_sheets )
 {
     TRACE_IN;
     IDispatch* p_disp;
@@ -207,24 +230,33 @@ IDispatch* OODocument::getSheets()
     {
         ERR( " IsNull() == true \n" );
         VariantClear( &res );
-        return ( NULL );      
+        TRACE_OUT;
+        return ( E_FAIL );      
     } 
     
     hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"getSheets", 0);
 
     p_disp = V_DISPATCH( &res );
     
-    if ( FAILED(hr) ) {
+    if ( FAILED( hr ) ) {
         ERR(" getSheets \n ");
-        return ( NULL );
+        TRACE_OUT;
+        return ( hr );
     }
     
-    p_disp->AddRef();
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_sheets.Init( p_disp );
     
     VariantClear( &res );
      
     TRACE_OUT;    
-    return ( p_disp );       
+    return ( hr );       
 }
 
 HRESULT OODocument::protect( BSTR _password )
@@ -233,6 +265,13 @@ HRESULT OODocument::protect( BSTR _password )
    HRESULT hr;
    VARIANT res;
    VARIANT param1;
+
+    if ( IsNull() )
+    {
+        ERR( " m_pd_document is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
+    }
    
    VariantInit( &res );
    VariantInit( &param1 );
@@ -259,6 +298,13 @@ HRESULT OODocument::unprotect( BSTR _password )
    HRESULT hr;
    VARIANT res;
    VARIANT param1;
+
+   if ( IsNull() )
+   {
+       ERR( " m_pd_document is NULL \n" );
+       TRACE_OUT; 
+       return ( E_FAIL );     
+   }
    
    VariantInit( &res );
    VariantInit( &param1 );

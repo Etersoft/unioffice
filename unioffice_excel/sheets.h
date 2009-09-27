@@ -201,7 +201,7 @@ public:
        HRESULT Put_Application( void* );
        HRESULT Put_Parent( void* );       
        
-       HRESULT InitWrapper( IDispatch* ); 
+       HRESULT InitWrapper( OOSheets ); 
 
        long FindIndexWorksheetByName( BSTR );
  

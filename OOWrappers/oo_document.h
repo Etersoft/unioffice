@@ -26,6 +26,7 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 #include "../OOWrappers/wrap_property_array.h"
+#include "../OOWrappers/oo_sheets.h"
 
 class OODocument
 {
@@ -44,9 +45,9 @@ public:
   HRESULT StoreAsURL( BSTR ,WrapPropertyArray& );
   HRESULT Store( );
   
-  HRESULT Close( VARIANT_BOOL );
+  HRESULT close( VARIANT_BOOL );
   
-  IDispatch* getSheets();
+  HRESULT getSheets( OOSheets& );
   
   HRESULT protect( BSTR );
   HRESULT unprotect( BSTR );
