@@ -101,3 +101,44 @@ bool OOController::IsNull()
 {
     return ( (m_pd_controller == NULL) ? true : false );     
 }
+
+HRESULT OOController::getFrame( OOFrame& oo_frame)
+{
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_disp;
+    VARIANT res;
+     
+    VariantInit(&res);
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        TRACE_OUT;
+        return ( E_FAIL );      
+    } 
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_controller, L"getFrame", 0);
+    
+    p_disp = V_DISPATCH( &res );
+    
+    if ( FAILED( hr ) ) {
+        ERR(" getFrame \n ");
+        TRACE_OUT;
+        return ( hr );
+    }
+    
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_frame.Init( p_disp );
+    
+    VariantClear( &res ); 
+    
+    TRACE_OUT;
+    return ( hr ); 		
+}
