@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o $(RES)
-LINKOBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o $(RES)
+OBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o ../OOWrappers/oo_dispatch_provider.o $(RES)
+LINKOBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o ../OOWrappers/oo_dispatch_provider.o $(RES)
 LIBS =  -L"C:/Dev-Cpp/lib" --no-export-all-symbols --add-stdcall-alias -ladvapi32  -lole32  -loleaut32  -luser32  -lkernel32  -lshell32  -luuid  -lshlwapi  -lmsvcrt  
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
@@ -92,3 +92,6 @@ worksheet.o: worksheet.cpp
 
 ../OOWrappers/oo_frame.o: ../OOWrappers/oo_frame.cpp
 	$(CPP) -c ../OOWrappers/oo_frame.cpp -o ../OOWrappers/oo_frame.o $(CXXFLAGS)
+
+../OOWrappers/oo_dispatch_provider.o: ../OOWrappers/oo_dispatch_provider.cpp
+	$(CPP) -c ../OOWrappers/oo_dispatch_provider.cpp -o ../OOWrappers/oo_dispatch_provider.o $(CXXFLAGS)

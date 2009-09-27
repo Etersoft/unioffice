@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=42
+UnitCount=44
 Type=3
 Ver=1
 ObjFiles=
@@ -459,6 +459,26 @@ BuildCmd=
 
 [Unit42]
 FileName=..\OOWrappers\oo_frame.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit43]
+FileName=..\OOWrappers\oo_dispatch_provider.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit44]
+FileName=..\OOWrappers\oo_dispatch_provider.h
 CompileCpp=1
 Folder=
 Compile=1
