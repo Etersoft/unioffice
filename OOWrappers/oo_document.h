@@ -27,6 +27,7 @@
 #include "../Common/tools.h"
 #include "../OOWrappers/wrap_property_array.h"
 #include "../OOWrappers/oo_sheets.h"
+#include "../OOWrappers/oo_controller.h"
 
 class OODocument
 {
@@ -51,6 +52,9 @@ public:
   
   HRESULT protect( BSTR );
   HRESULT unprotect( BSTR );
+  
+  HRESULT getCurrentController( OOController& );
+  
   
        
 private:            

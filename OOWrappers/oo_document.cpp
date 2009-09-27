@@ -224,7 +224,7 @@ HRESULT OODocument::getSheets( OOSheets& oo_sheets )
     VARIANT res;
     HRESULT hr;
      
-    VariantClear(&res);
+    VariantInit(&res);
     
     if ( IsNull() )
     {
@@ -325,5 +325,44 @@ HRESULT OODocument::unprotect( BSTR _password )
    return ( hr );        
 }
 
-
+HRESULT OODocument::getCurrentController( OOController& oo_controller)
+{
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_disp;
+    VARIANT res;
+     
+    VariantInit(&res);
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        TRACE_OUT;
+        return ( E_FAIL );      
+    } 
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"getCurrentController", 0);
+    
+    p_disp = V_DISPATCH( &res );
+    
+    if ( FAILED( hr ) ) {
+        ERR(" getCurrentController \n ");
+        TRACE_OUT;
+        return ( hr );
+    }
+    
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_controller.Init( p_disp );
+    
+    VariantClear( &res ); 
+    
+    TRACE_OUT;
+    return ( hr );
+}
 

@@ -40,7 +40,7 @@ public:
   
   bool IsNull();
   
-  BSTR getName( );
+  BSTR    getName( );
   HRESULT setName( BSTR );
   
 private:
