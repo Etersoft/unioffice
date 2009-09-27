@@ -36,12 +36,14 @@ public:
   OOServiceManager();
   virtual ~OOServiceManager();     
   
-  IDispatch* CreateInstance( BSTR );
-  IDispatch* Bridge_GetStruct( BSTR ); 
+  HRESULT CreateInstance( BSTR, IDispatch** );
+  HRESULT Bridge_GetStruct( BSTR, IDispatch** ); 
    
-  OODesktop         Get_Desktop( ); 
-  OOPropertyValue   Get_PropertyValue(  );
-  OODispatchHelper  Get_DispatchHeplper(  );
+  HRESULT Get_Desktop( OODesktop& ); 
+  HRESULT Get_PropertyValue( OOPropertyValue& );
+  HRESULT Get_DispatchHeplper( OODispatchHelper& );
+  
+  bool IsNull();
        
 private:            
    

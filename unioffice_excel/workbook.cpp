@@ -1774,10 +1774,14 @@ HRESULT STDMETHODCALLTYPE Workbook::SaveAs(
     
     ////////////////////////////
     // Fill properties
-    OOPropertyValue property_1 = application->m_oo_service_manager.Get_PropertyValue();
-    hr = property_1.Set_Property( SysAllocString(L"FilterName"), 
-                                  SysAllocString(L"MS Excel 97") );
-    
+    OOPropertyValue property_1;
+	hr = application->m_oo_service_manager.Get_PropertyValue( property_1 );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_service_manager.Get_PropertyValue \n" );   	 
+    }
+		 
+    hr = property_1.Set_Property( L"FilterName", L"MS Excel 97" );
     if ( FAILED( hr ) )
     {
         ERR( " Set_Property \n" );     
@@ -2517,15 +2521,32 @@ HRESULT Workbook::NewDocument( )
     
     ////////////////////////////
     // Fill properties
-    OOPropertyValue property_1 = application->m_oo_service_manager.Get_PropertyValue();
-    property_1.Set_PropertyName( SysAllocString(L"Hidden") );
-    VARIANT_BOOL _visible;
-    hr = application->get_Visible( /*lcid*/ 0, &_visible );
+    OOPropertyValue property_1;
+    
+	hr = application->m_oo_service_manager.Get_PropertyValue( property_1 );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_service_manager.Get_PropertyValue \n" );   	 
+    }
+	
+    hr = property_1.Set_PropertyName( L"Hidden" );
     if ( FAILED( hr ) )
     {
         ERR( "  \n" );     
     }
-    property_1.Set_PropertyValue( _visible );
+    
+    VARIANT_BOOL _visible;
+    hr = application->get_Visible( /*lcid*/ 0, &_visible );
+    if ( FAILED( hr ) )
+    {
+        ERR( " get_Visible \n" );     
+    }
+    
+    hr = property_1.Set_PropertyValue( _visible );
+    if ( FAILED( hr ) )
+    {
+        ERR( " property_1.Set_PropertyValue \n" );     
+    }    
     
     wrap_property_array.Clear();
     wrap_property_array.Add( property_1 );

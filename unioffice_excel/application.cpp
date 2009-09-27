@@ -3653,13 +3653,16 @@ HRESULT Application::Init( )
         
      // Start OpenOffice
         
-     m_oo_desktop = m_oo_service_manager.Get_Desktop( );    
+     hr = m_oo_service_manager.Get_Desktop( m_oo_desktop );    
+     if ( FAILED( hr ) )
+     {
+	     ERR( " m_oo_service_manager.Get_Desktop \n" ); 	  
+     }
      
      /*
      TODO:  сделать определение версии OpenOffice
      */   
-     OOVersion = VER_3;   
-            
+     OOVersion = VER_3;           
                 
-     return hr;
+     return ( hr );
 }

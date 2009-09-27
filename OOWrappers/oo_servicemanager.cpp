@@ -59,14 +59,18 @@ OOServiceManager::~OOServiceManager()
    TRACE_OUT;
 }
   
-OODesktop OOServiceManager::Get_Desktop( )
+HRESULT OOServiceManager::Get_Desktop( OODesktop& ret_val )
 {
-    OODesktop   ret_val;
+    TRACE_IN;
+    HRESULT hr;
     IDispatch*  p_disp = NULL;
     
-    TRACE_IN;
+    hr = CreateInstance( L"com.sun.star.frame.Desktop", &p_disp );
     
-    p_disp = CreateInstance( L"com.sun.star.frame.Desktop" );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " CreateInstance \n" );   	 
+    }
     
     if ( p_disp == NULL )
     {
@@ -75,25 +79,26 @@ OODesktop OOServiceManager::Get_Desktop( )
     
     ret_val.Init( p_disp );
     
-    p_disp->Release();
+    if ( p_disp != NULL )
+    {
+        p_disp->Release();
+    }
     
-    TRACE_OUT;
-    
-    return ( ret_val );   
+    TRACE_OUT;    
+    return ( hr );   
 }
 
-IDispatch* OOServiceManager::CreateInstance( BSTR str_value )
+HRESULT OOServiceManager::CreateInstance( BSTR str_value, IDispatch** pp_disp )
 {
+    TRACE_IN;
     VARIANT     param1, result;
     HRESULT     hr;
-    IDispatch*  p_disp = NULL;
     
-    TRACE_IN;
-    
-    if ( m_pd_servicemanager == NULL )
+    if ( IsNull() )
     {
-        ERR( " m_pd_servicemanager is NULL \n" ); 
-        return ( NULL );     
+        ERR( " m_pd_servicemanager is NULL \n" );
+		TRACE_OUT; 
+        return ( E_FAIL );     
     }
     
     VariantInit( &param1 );
@@ -105,39 +110,43 @@ IDispatch* OOServiceManager::CreateInstance( BSTR str_value )
     /* Get Desktop and its assoc. IDispatch...*/
     hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_servicemanager, L"CreateInstance", 1, param1);
     
-    if (FAILED(hr)) {
+    if ( FAILED( hr ) ) {
         ERR(" CreateInstance \n");
-        return ( NULL );
+        VariantClear( &param1 );
+        VariantClear( &result );
+        TRACE_OUT;
+        return ( hr );
     }
     
-    p_disp = result.pdispVal;
-    if ( p_disp == NULL )
+    *pp_disp = result.pdispVal;
+    if ( *pp_disp == NULL )
     {
-        ERR( "p_disp == NULL \n" ); 
-        return ( NULL );      
+        ERR( " *pp_disp == NULL \n" );
+        VariantClear( &param1 );
+        VariantClear( &result );
+		TRACE_OUT; 
+        return ( E_FAIL );      
     }
-    p_disp->AddRef();
+    (*pp_disp)->AddRef();
     
     VariantClear( &param1 );
     VariantClear( &result );
     
-    TRACE_OUT;
-    
-    return ( p_disp );   
+    TRACE_OUT;    
+    return ( hr );   
 }
 
-IDispatch* OOServiceManager::Bridge_GetStruct( BSTR str_value )
+HRESULT OOServiceManager::Bridge_GetStruct( BSTR str_value, IDispatch** pp_disp )
 {
+ 	TRACE_IN;	
     VARIANT     param1, result;
-    HRESULT     hr;
-    IDispatch*  p_disp = NULL;
-    
-    TRACE_IN;
-    
-    if ( m_pd_servicemanager == NULL )
+    HRESULT     hr;    
+ 
+    if ( IsNull() )
     {
         ERR( " m_pd_servicemanager is NULL \n" ); 
-        return ( NULL );     
+        TRACE_OUT;
+        return ( E_FAIL );     
     }
     
     VariantInit( &param1 );
@@ -149,35 +158,44 @@ IDispatch* OOServiceManager::Bridge_GetStruct( BSTR str_value )
     /* Get Desktop and its assoc. IDispatch...*/
     hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_servicemanager, L"Bridge_GetStruct", 1, param1);
     
-    if (FAILED(hr)) {
+    if ( FAILED( hr ) ) {
         ERR(" CreateInstance \n");
-        return ( NULL );
+        VariantClear( &param1 );
+        VariantClear( &result );
+        TRACE_OUT;
+        return ( hr );
     }
     
-    p_disp = result.pdispVal;
-    if ( p_disp == NULL )
+    *pp_disp = result.pdispVal;
+    if ( *pp_disp == NULL )
     {
-        ERR( "p_disp == NULL \n" );   
-        return ( NULL );  
+        ERR( " *pp_disp == NULL \n" );
+        VariantClear( &param1 );
+        VariantClear( &result ); 
+		TRACE_OUT;  
+        return ( E_FAIL );  
     }
-    p_disp->AddRef();
+    (*pp_disp)->AddRef();
     
     VariantClear( &param1 );
     VariantClear( &result );
     
-    TRACE_OUT;
-    
-    return ( p_disp );   
+    TRACE_OUT;    
+    return ( hr );   
 }
 
-OOPropertyValue OOServiceManager::Get_PropertyValue( )
+HRESULT OOServiceManager::Get_PropertyValue( OOPropertyValue& ret_val )
 {
-    OOPropertyValue   ret_val;
+    TRACE_IN;
+    HRESULT hr;
     IDispatch*        p_disp = NULL;
+ 
+    hr = Bridge_GetStruct( L"com.sun.star.beans.PropertyValue", &p_disp );
     
-    TRACE_IN;
-    
-    p_disp = Bridge_GetStruct( L"com.sun.star.beans.PropertyValue" );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " CreateInstance \n" );   	 
+    }
     
     if ( p_disp == NULL )
     {
@@ -186,21 +204,27 @@ OOPropertyValue OOServiceManager::Get_PropertyValue( )
     
     ret_val.Init( p_disp );
     
-    p_disp->Release();
+    if ( p_disp != NULL )
+    {
+        p_disp->Release();
+    }
     
     TRACE_OUT;
-    
-    return ( ret_val );   
+    return ( hr );   
 }
 
-OODispatchHelper  OOServiceManager::Get_DispatchHeplper(  )
+HRESULT OOServiceManager::Get_DispatchHeplper( OODispatchHelper& ret_val )
 {
-    OODispatchHelper   ret_val;
-    IDispatch*         p_disp = NULL;
-    
     TRACE_IN;
+    HRESULT      hr;
+    IDispatch*   p_disp = NULL;
     
-    p_disp = CreateInstance( L"com.sun.star.frame.DispatchHelper" );
+    hr = CreateInstance( L"com.sun.star.frame.DispatchHelper", &p_disp );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " CreateInstance \n" );   	 
+    }
     
     if ( p_disp == NULL )
     {
@@ -209,9 +233,16 @@ OODispatchHelper  OOServiceManager::Get_DispatchHeplper(  )
     
     ret_val.Init( p_disp );
     
-    p_disp->Release();
+    if ( p_disp != NULL )
+    {
+        p_disp->Release();
+    }
     
     TRACE_OUT;
-    
-    return ( ret_val );  				  
+    return ( hr );  				  
+}
+
+bool OOServiceManager::IsNull()
+{
+    return ( m_pd_servicemanager == NULL ? true : false ); 	 
 }
