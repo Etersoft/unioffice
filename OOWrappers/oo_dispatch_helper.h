@@ -25,6 +25,8 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
+#include "../OOWrappers/wrap_property_array.h"
+#include "../OOWrappers/oo_dispatch_provider.h"
 
 class OODispatchHelper
 {
@@ -39,6 +41,8 @@ public:
   void Init( IDispatch* );
   
   bool IsNull();
+  
+  HRESULT executeDispatch( OODispatchProvider, BSTR, BSTR, long, WrapPropertyArray& );
          
 private:            
    
