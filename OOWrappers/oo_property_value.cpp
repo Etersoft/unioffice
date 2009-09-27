@@ -123,7 +123,7 @@ HRESULT OOPropertyValue::Set_PropertyName( BSTR _name )
     VariantInit(&res);
     
     V_VT(&param) = VT_BSTR;
-    V_BSTR(&param) = _name;
+    V_BSTR(&param) = SysAllocString(_name);
     
     hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_property_value, L"Name", 1, param);
     
@@ -152,7 +152,7 @@ HRESULT OOPropertyValue::Set_PropertyValue( BSTR _value )
     VariantInit(&res);
     
     V_VT(&param) = VT_BSTR;
-    V_BSTR(&param) = _value;
+    V_BSTR(&param) = SysAllocString(_value);
     
     hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_property_value, L"Value", 1, param);
     
@@ -201,9 +201,8 @@ HRESULT OOPropertyValue::Set_PropertyValue( VARIANT_BOOL _value)
         
 HRESULT OOPropertyValue::Set_Property( BSTR _name, BSTR _value )
 {
-    HRESULT hr = S_OK;
-    
     TRACE_IN;
+    HRESULT hr = S_OK;
     
     hr = Set_PropertyName( _name );
     
@@ -220,6 +219,5 @@ HRESULT OOPropertyValue::Set_Property( BSTR _name, BSTR _value )
     }
     
     TRACE_OUT;
-    
     return ( hr );         
 }
