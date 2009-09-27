@@ -27,6 +27,7 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 #include "../OOWrappers/oo_desktop.h"
+#include "../OOWrappers/oo_dispatch_helper.h"
 
 class OOServiceManager
 {
@@ -40,6 +41,7 @@ public:
    
   OODesktop         Get_Desktop( ); 
   OOPropertyValue   Get_PropertyValue(  );
+  OODispatchHelper  Get_DispatchHeplper(  );
        
 private:            
    

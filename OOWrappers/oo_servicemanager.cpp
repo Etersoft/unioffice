@@ -66,7 +66,7 @@ OODesktop OOServiceManager::Get_Desktop( )
     
     TRACE_IN;
     
-    p_disp = CreateInstance( SysAllocString( L"com.sun.star.frame.Desktop" ) );
+    p_disp = CreateInstance( L"com.sun.star.frame.Desktop" );
     
     if ( p_disp == NULL )
     {
@@ -100,7 +100,7 @@ IDispatch* OOServiceManager::CreateInstance( BSTR str_value )
     VariantInit( &result );
     
     V_VT(&param1) = VT_BSTR;
-    V_BSTR(&param1) = str_value;
+    V_BSTR(&param1) = SysAllocString( str_value );
     
     /* Get Desktop and its assoc. IDispatch...*/
     hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_servicemanager, L"CreateInstance", 1, param1);
@@ -144,7 +144,7 @@ IDispatch* OOServiceManager::Bridge_GetStruct( BSTR str_value )
     VariantInit( &result );
     
     V_VT(&param1) = VT_BSTR;
-    V_BSTR(&param1) = str_value;
+    V_BSTR(&param1) = SysAllocString( str_value );
     
     /* Get Desktop and its assoc. IDispatch...*/
     hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_servicemanager, L"Bridge_GetStruct", 1, param1);
@@ -177,7 +177,7 @@ OOPropertyValue OOServiceManager::Get_PropertyValue( )
     
     TRACE_IN;
     
-    p_disp = Bridge_GetStruct( SysAllocString( L"com.sun.star.beans.PropertyValue" ) );
+    p_disp = Bridge_GetStruct( L"com.sun.star.beans.PropertyValue" );
     
     if ( p_disp == NULL )
     {
@@ -191,4 +191,27 @@ OOPropertyValue OOServiceManager::Get_PropertyValue( )
     TRACE_OUT;
     
     return ( ret_val );   
+}
+
+OODispatchHelper  OOServiceManager::Get_DispatchHeplper(  )
+{
+    OODispatchHelper   ret_val;
+    IDispatch*         p_disp = NULL;
+    
+    TRACE_IN;
+    
+    p_disp = CreateInstance( L"com.sun.star.frame.DispatchHelper" );
+    
+    if ( p_disp == NULL )
+    {
+        ERR( " p_disp == NULL \n" );     
+    }
+    
+    ret_val.Init( p_disp );
+    
+    p_disp->Release();
+    
+    TRACE_OUT;
+    
+    return ( ret_val );  				  
 }
