@@ -25,6 +25,7 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
+#include "../OOWrappers/oo_dispatch_provider.h"
 
 class OOFrame
 {
@@ -39,6 +40,8 @@ public:
   void Init( IDispatch* );
   
   bool IsNull();
+  
+  OODispatchProvider GetDispatchProvider( );
          
 private:            
    

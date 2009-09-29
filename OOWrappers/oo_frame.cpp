@@ -101,3 +101,19 @@ bool OOFrame::IsNull()
 {
     return ( (m_pd_frame == NULL) ? true : false );     
 }
+
+OODispatchProvider OOFrame::GetDispatchProvider( )
+{
+ 	TRACE_IN;
+	OODispatchProvider ret_val;
+	
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_frame is Null \n" );   	 
+    }
+	
+	ret_val.Init( m_pd_frame );
+	 			   
+ 	TRACE_OUT;			   
+    return ( ret_val ); 				   
+}
