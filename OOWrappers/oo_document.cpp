@@ -325,7 +325,7 @@ HRESULT OODocument::unprotect( BSTR _password )
    return ( hr );        
 }
 
-HRESULT OODocument::getCurrentController( OOController& oo_controller)
+HRESULT OODocument::getCurrentController( OOController& oo_controller )
 {
     TRACE_IN;
     HRESULT hr;

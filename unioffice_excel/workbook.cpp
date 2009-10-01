@@ -1776,7 +1776,7 @@ HRESULT STDMETHODCALLTYPE Workbook::SaveAs(
     ////////////////////////////
     // Fill properties
     OOPropertyValue property_1;
-	hr = application->m_oo_service_manager.Get_PropertyValue( property_1 );
+	hr = application->GetOOServiceManager().Get_PropertyValue( property_1 );
 	if ( FAILED( hr ) )
 	{
 	    ERR( " m_oo_service_manager.Get_PropertyValue \n" );   	 
@@ -2524,7 +2524,7 @@ HRESULT Workbook::NewDocument( )
     // Fill properties
     OOPropertyValue property_1;
     
-	hr = application->m_oo_service_manager.Get_PropertyValue( property_1 );
+	hr = application->GetOOServiceManager().Get_PropertyValue( property_1 );
 	if ( FAILED( hr ) )
 	{
 	    ERR( " m_oo_service_manager.Get_PropertyValue \n" );   	 
@@ -2554,7 +2554,7 @@ HRESULT Workbook::NewDocument( )
     // Fill properties
     ////////////////////////////
     
-    hr = application->m_oo_desktop.LoadComponentFromURL( 
+    hr = application->GetOODesktop().LoadComponentFromURL( 
                                                     L"private:factory/scalc", 
                                                     L"_blank", 
                                                     0,

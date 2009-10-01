@@ -3666,3 +3666,13 @@ HRESULT Application::Init( )
                 
      return ( hr );
 }
+
+OOServiceManager& Application::GetOOServiceManager( )
+{
+    return ( m_oo_service_manager ); 	  
+}
+
+OODesktop& Application::GetOODesktop( )
+{
+    return ( m_oo_desktop ); 	  
+}

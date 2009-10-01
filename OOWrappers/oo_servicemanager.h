@@ -28,6 +28,7 @@
 #include "../Common/tools.h"
 #include "../OOWrappers/oo_desktop.h"
 #include "../OOWrappers/oo_dispatch_helper.h"
+#include "../OOWrappers/wrap_property_array.h"
 
 class OOServiceManager
 {

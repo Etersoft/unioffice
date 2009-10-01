@@ -27,7 +27,7 @@
 
 #include "../OOWrappers/oo_servicemanager.h"
 #include "../OOWrappers/oo_desktop.h"
-
+#include "../OOWrappers/wrap_property_array.h"
 
 class Application : public _Application
 {
@@ -1814,9 +1814,9 @@ public:
        
         HRESULT Init();
         
-        OOServiceManager m_oo_service_manager; 
-        OODesktop        m_oo_desktop;
-             
+		OOServiceManager& GetOOServiceManager( );
+		OODesktop&        GetOODesktop( );
+		              
 private:
         
        long m_cRef; 
@@ -1828,7 +1828,10 @@ private:
        VARIANT_BOOL m_b_visible;
        long         m_l_sheetsinnewworkbook; 
              
-       CWorkbooks       m_workbooks;            
+       CWorkbooks       m_workbooks;   
+	   
+	   OOServiceManager m_oo_service_manager;
+	   OODesktop        m_oo_desktop;         
 };
 
 #endif //__UNIOFFICE_EXCEL_APPLICATION_H__
