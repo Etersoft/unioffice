@@ -729,8 +729,34 @@ ULONG STDMETHODCALLTYPE CPageSetup::Release()
 
 HRESULT CPageSetup::Init( )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+     HRESULT hr = S_OK;   
+      
+     if (m_pITypeInfo == NULL)
+     {
+        ITypeLib* pITypeLib = NULL;
+        hr = LoadRegTypeLib(LIBID_Office,
+                                1, 0, // Номера версии
+                                0x00,
+                                &pITypeLib); 
+        
+       if (FAILED(hr))
+       {
+           ERR( " Typelib not register \n" );
+           return hr;
+       } 
+        
+       // Получить информацию типа для интерфейса объекта
+       hr = pITypeLib->GetTypeInfoOfGuid(IID_IPageSetup, &m_pITypeInfo);
+       pITypeLib->Release();
+       if (FAILED(hr))
+       {
+          ERR(" GetTypeInfoOfGuid \n ");
+          return hr;
+       }
+       
+     }
+
+     return hr;    		
 }
        
 HRESULT CPageSetup::Put_Application( void* _application)
