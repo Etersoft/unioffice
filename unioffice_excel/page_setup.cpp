@@ -21,7 +21,7 @@
 #include "page_setup.h"
 
 #include "application.h"
-
+#include "worksheet.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE CPageSetup::QueryInterface(const IID& iid, void** ppv)
@@ -195,11 +195,24 @@ HRESULT STDMETHODCALLTYPE CPageSetup::get_Creator(
    return S_OK;  		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_Parent( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_Parent( 
             /* [retval][out] */ IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;             
+    
+   if ( m_p_parent == NULL )
+   {
+       ERR( " m_p_parent == NULL \n " ); 
+       TRACE_OUT;
+       return ( S_FALSE );    
+   }    
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<Worksheet*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
+             
+   TRACE_OUT;
+   return hr;   		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_BlackAndWhite( 
