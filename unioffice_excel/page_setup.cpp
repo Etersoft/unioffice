@@ -184,11 +184,15 @@ HRESULT STDMETHODCALLTYPE CPageSetup::get_Application(
    return hr; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_Creator( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_Creator( 
             /* [retval][out] */ XlCreator *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;
+   
+   *RHS = xlCreatorCode;
+   
+   TRACE_OUT;
+   return S_OK;  		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_Parent( 
