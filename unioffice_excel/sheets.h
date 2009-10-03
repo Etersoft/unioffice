@@ -24,7 +24,7 @@
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/oo_sheets.h"
 
-class CSheets : public Sheets, public IEnumVARIANT
+class CSheets : public Sheets, public IWorksheets, public Worksheets, public IEnumVARIANT
 {
 public:
 

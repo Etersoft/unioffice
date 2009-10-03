@@ -36,12 +36,22 @@ HRESULT STDMETHODCALLTYPE CSheets::QueryInterface(const IID& iid, void** ppv)
         
     if ( iid == IID_IDispatch ) {
         TRACE("IDispatch \n");
-        *ppv = static_cast<IDispatch*>(this);
+        *ppv = static_cast<IDispatch*>(static_cast<Sheets*>(this));
     }     
     
     if ( iid == IID_Sheets ) {
         TRACE("Sheets \n");
         *ppv = static_cast<Sheets*>(this);
+    } 
+
+    if ( iid == IID_IWorksheets ) {
+        TRACE("IWorksheets \n");
+        *ppv = static_cast<IWorksheets*>(this);
+    } 
+    
+    if ( iid == DIID_Worksheets ) {
+        TRACE("Worksheets \n");
+        *ppv = static_cast<Worksheets*>(this);
     } 
     
     if ( iid == IID_IEnumVARIANT ) {
@@ -148,7 +158,7 @@ HRESULT STDMETHODCALLTYPE CSheets::Invoke(
     }
     
     HRESULT hr = m_pITypeInfo->Invoke(
-                 static_cast<IDispatch*>(this), 
+                 static_cast<IDispatch*>(static_cast<Sheets*>(this)), 
                  dispIdMember, 
                  wFlags, 
                  pDispParams, 
