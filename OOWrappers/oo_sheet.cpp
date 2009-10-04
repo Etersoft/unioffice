@@ -109,6 +109,11 @@ BSTR OOSheet::getName( )
     HRESULT hr;
     VARIANT res;
     BSTR result;
+
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
     
     VariantInit( &res );
     
@@ -134,6 +139,11 @@ HRESULT OOSheet::setName( BSTR bstr_name )
     
     HRESULT hr;
     VARIANT param1, res;
+
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
     
     VariantInit( &param1 );
     VariantInit( &res );  
@@ -154,3 +164,33 @@ HRESULT OOSheet::setName( BSTR bstr_name )
     TRACE_OUT;
     return ( hr );      
 }
+
+HRESULT OOSheet::unprotect( BSTR _password )
+{
+    TRACE_IN;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+	V_VT( &param1 )   = VT_BSTR;
+	V_BSTR( &param1 ) = SysAllocString( _password );
+	
+	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"unprotect", 1, param1);
+    if ( FAILED( hr ) )
+    {
+	    ERR( " unprotect \n" );   	 
+    }
+
+	VariantClear( &res );
+	VariantClear( &param1 );
+	
+	TRACE_OUT;
+	return ( hr );   		  
+} 

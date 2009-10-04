@@ -43,6 +43,8 @@ public:
   BSTR    getName( );
   HRESULT setName( BSTR );
   
+  HRESULT unprotect( BSTR );
+  
 private:
   
    IDispatch*   m_pd_sheet;
