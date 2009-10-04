@@ -1401,7 +1401,7 @@ HRESULT STDMETHODCALLTYPE Worksheet::Unprotect(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Protect( 
+HRESULT STDMETHODCALLTYPE Worksheet::Protect( 
             /* [optional][in] */ VARIANT Password,
             /* [optional][in] */ VARIANT DrawingObjects,
             /* [optional][in] */ VARIANT Contents,
@@ -1419,8 +1419,45 @@ HRESULT STDMETHODCALLTYPE Worksheet::Unprotect(
             /* [optional][in] */ VARIANT AllowFiltering,
             /* [optional][in] */ VARIANT AllowUsingPivotTables)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+    TRACE_IN;
+	HRESULT hr; 			
+ 	
+    CorrectArg(Password,                 &Password);
+    CorrectArg(DrawingObjects,           &DrawingObjects);
+    CorrectArg(Contents,                 &Contents);
+    CorrectArg(Scenarios,                &Scenarios);
+    CorrectArg(UserInterfaceOnly,        &UserInterfaceOnly);
+    CorrectArg(AllowFormattingCells,     &AllowFormattingCells);
+    CorrectArg(AllowFormattingColumns,   &AllowFormattingColumns);
+    CorrectArg(AllowFormattingRows,      &AllowFormattingRows);
+    CorrectArg(AllowInsertingColumns,    &AllowInsertingColumns);
+    CorrectArg(AllowInsertingRows,       &AllowInsertingRows);
+    CorrectArg(AllowInsertingHyperlinks, &AllowInsertingHyperlinks);
+    CorrectArg(AllowDeletingColumns,     &AllowDeletingColumns);
+    CorrectArg(AllowDeletingRows,        &AllowDeletingRows);
+    CorrectArg(AllowSorting,             &AllowSorting);
+    CorrectArg(AllowFiltering,           &AllowFiltering);
+    CorrectArg(AllowUsingPivotTables,    &AllowUsingPivotTables); 
+	
+	if ( Is_Variant_Null( Password ) ) 
+	{
+	    hr = m_oo_sheet.protect( L"" );   	 
+	    if ( FAILED( hr ) )
+	    {
+		    ERR( " _oo_sheet.protect \n" );   	 
+        }
+	    
+    } else
+	{
+	    hr = m_oo_sheet.protect( V_BSTR( &Password ) );   	 
+	    if ( FAILED( hr ) )
+	    {
+		    ERR( " _oo_sheet.protect \n" );   	 
+        }	  	  
+    }  
+		 		
+    TRACE_OUT;
+    return ( hr );                           
 }
         
         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_ListObjects( 
