@@ -508,12 +508,34 @@ HRESULT STDMETHODCALLTYPE Worksheet::put_Name(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Unprotect( 
+HRESULT STDMETHODCALLTYPE Worksheet::Unprotect( 
             /* [optional][in] */ VARIANT Password,
             /* [lcid][in] */ long lcid)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+    TRACE_IN;
+    HRESULT hr;
+   
+    CorrectArg(Password, &Password);
+   	
+	if ( Is_Variant_Null(Password) ) 
+	{
+	    hr = m_oo_sheet.unprotect( L"" );   	 
+	    if ( FAILED( hr ) )
+	    {
+		    ERR( " _oo_sheet.unprotect \n" );   	 
+        }
+	    
+    } else
+	{
+	    hr = m_oo_sheet.unprotect( V_BSTR( &Password ) );   	 
+	    if ( FAILED( hr ) )
+	    {
+		    ERR( " _oo_sheet.unprotect \n" );   	 
+        }	  	  
+    }     	
+			
+    TRACE_OUT;
+    return ( hr );                           
 }
         
         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Visible( 
