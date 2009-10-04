@@ -44,6 +44,7 @@ public:
   HRESULT setName( BSTR );
   
   HRESULT unprotect( BSTR );
+  HRESULT protect( BSTR );
   
 private:
   

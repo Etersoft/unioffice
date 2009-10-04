@@ -194,3 +194,33 @@ HRESULT OOSheet::unprotect( BSTR _password )
 	TRACE_OUT;
 	return ( hr );   		  
 } 
+
+HRESULT OOSheet::protect( BSTR _password )
+{
+    TRACE_IN;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+	V_VT( &param1 )   = VT_BSTR;
+	V_BSTR( &param1 ) = SysAllocString( _password );
+	
+	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"protect", 1, param1);
+    if ( FAILED( hr ) )
+    {
+	    ERR( " protect \n" );   	 
+    }
+
+	VariantClear( &res );
+	VariantClear( &param1 );
+	
+	TRACE_OUT;
+	return ( hr );   		  
+} 
