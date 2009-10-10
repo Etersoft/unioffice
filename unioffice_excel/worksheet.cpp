@@ -538,20 +538,59 @@ HRESULT STDMETHODCALLTYPE Worksheet::Unprotect(
     return ( hr );                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Visible( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Visible( 
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ XlSheetVisibility *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr = S_OK;
+    
+   VARIANT_BOOL b_visible;
+    
+   b_visible = m_oo_sheet.isVisible( );
+   
+   switch ( b_visible ) {
+       case VARIANT_TRUE:
+           *RHS = xlSheetVisible;
+           break;
+       case VARIANT_FALSE:
+           *RHS = xlSheetHidden;
+           break;
+   }
+   
+   TRACE_OUT
+   return ( hr );                           
 }
         
-        /* [helpcontext][propput][id] */ HRESULT STDMETHODCALLTYPE Worksheet::put_Visible( 
+HRESULT STDMETHODCALLTYPE Worksheet::put_Visible( 
             /* [lcid][in] */ long lcid,
             /* [in] */ XlSheetVisibility RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   
+   VARIANT_BOOL b_visible;
+   
+   switch ( RHS )
+   {
+        case xlSheetVeryHidden:
+        case xlSheetHidden:
+            b_visible = VARIANT_FALSE;
+            break;
+        case xlSheetVisible:
+            b_visible = VARIANT_TRUE;
+            break;
+   }
+   
+   hr = m_oo_sheet.isVisible( b_visible );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " m_oo_sheet.isVisible \n" );	  	
+   }
+   
+   TRACE_OUT;
+   return ( hr );                           
 }
         
         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Shapes( 
