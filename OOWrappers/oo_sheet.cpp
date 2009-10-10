@@ -234,6 +234,9 @@ HRESULT OOSheet::isVisible( VARIANT_BOOL _value )
 	VariantInit( &res );
 	VariantInit( &param1 );
 		
+	V_VT( &param1 ) = VT_BOOL;
+	V_BOOL( &param1 ) = _value;	
+		
     hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_sheet, L"IsVisible", 1, param1); 		
     
     if ( FAILED( hr ) )
