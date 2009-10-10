@@ -230,6 +230,11 @@ HRESULT OOSheet::isVisible( VARIANT_BOOL _value )
  	TRACE_IN;
 	HRESULT hr;
 	VARIANT res, param1;
+
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
 	
 	VariantInit( &res );
 	VariantInit( &param1 );
@@ -257,6 +262,11 @@ VARIANT_BOOL OOSheet::isVisible()
 	HRESULT hr;
 	VARIANT res;
 	VARIANT_BOOL result = VARIANT_TRUE;
+
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
 	
 	VariantInit( &res );
 		
@@ -288,6 +298,11 @@ BSTR    OOSheet::PageStyle()
 	BSTR result = SysAllocString(L"");
 	HRESULT hr;
 	VARIANT res;
+
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
 	
 	hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_sheet, L"PageStyle",0);
 	if ( FAILED( hr ) )
