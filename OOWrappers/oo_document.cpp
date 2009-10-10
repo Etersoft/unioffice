@@ -366,3 +366,43 @@ HRESULT OODocument::getCurrentController( OOController& oo_controller )
     return ( hr );
 }
 
+HRESULT OODocument::StyleFamilies( OOStyleFamilies& oo_style_families )
+{
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_disp;
+    VARIANT res;
+     
+    VariantInit(&res);
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        TRACE_OUT;
+        return ( E_FAIL );      
+    } 
+	
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_document, L"StyleFamilies", 0);
+    
+    p_disp = V_DISPATCH( &res );
+    	
+    if ( FAILED( hr ) ) {
+        ERR(" DISPATCH_PROPERTYGET - StyleFamilies \n ");
+        TRACE_OUT;
+        return ( hr );
+    }
+    
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_style_families.Init( p_disp );
+    
+    VariantClear( &res ); 
+    
+    TRACE_OUT;
+    return ( hr );		 		
+}
