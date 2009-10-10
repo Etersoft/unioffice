@@ -224,3 +224,57 @@ HRESULT OOSheet::protect( BSTR _password )
 	TRACE_OUT;
 	return ( hr );   		  
 } 
+
+HRESULT OOSheet::isVisible( VARIANT_BOOL _value )
+{
+ 	TRACE_IN;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+		
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_sheet, L"IsVisible", 1, param1); 		
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " DISPATCH_PROPERTYPUT - IsVisible \n" );   	 
+    }
+    
+    VariantClear( &res );
+    VariantClear( &param1 );
+    
+    TRACE_OUT;
+    return ( hr );
+}
+
+VARIANT_BOOL OOSheet::isVisible()
+{
+ 	TRACE_IN;
+	HRESULT hr;
+	VARIANT res;
+	VARIANT_BOOL result = VARIANT_TRUE;
+	
+	VariantInit( &res );
+		
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_sheet, L"IsVisible", 0); 		
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " DISPATCH_PROPERTYGET - IsVisible \n" );   	 
+    }
+       
+    hr = VariantChangeTypeEx(&res, &res, 0, 0, VT_BOOL);
+    if ( FAILED( hr ) ) {
+        ERR( " VariantChangeTypeEx \n" );
+        TRACE_OUT;
+        return ( result );    
+	}
+    
+    result = V_BOOL( &res );
+    
+    VariantClear( &res );
+    
+    TRACE_OUT;
+    return ( result );
+}
