@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=50
+UnitCount=52
 Type=3
 Ver=1
 ObjFiles=
@@ -539,6 +539,26 @@ BuildCmd=
 
 [Unit50]
 FileName=..\OOWrappers\oo_page_styles.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit51]
+FileName=..\OOWrappers\oo_style_families.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit52]
+FileName=..\OOWrappers\oo_style_families.h
 CompileCpp=1
 Folder=
 Compile=1
