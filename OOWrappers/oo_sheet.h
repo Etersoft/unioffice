@@ -49,6 +49,8 @@ public:
   HRESULT isVisible( VARIANT_BOOL );
   VARIANT_BOOL isVisible();
   
+  BSTR    PageStyle();
+  
 private:
   
    IDispatch*   m_pd_sheet;

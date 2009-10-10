@@ -281,3 +281,25 @@ VARIANT_BOOL OOSheet::isVisible()
     TRACE_OUT;
     return ( result );
 }
+
+BSTR    OOSheet::PageStyle()
+{
+    TRACE_IN;
+	BSTR result = SysAllocString(L"");
+	HRESULT hr;
+	VARIANT res;
+	
+	hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_sheet, L"PageStyle",0);
+	if ( FAILED( hr ) )
+	{
+	    ERR( " PageStyle \n" );   	 
+	    TRACE_OUT;
+	    return ( result );
+    }
+	
+	SysFreeString( result );
+	result = SysAllocString( V_BSTR( &res ) );
+	
+	TRACE_OUT; 		
+	return ( result );
+}
