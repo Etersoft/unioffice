@@ -102,3 +102,49 @@ bool OOPageStyles::IsNull()
 {
     return ( (m_pd_page_styles == NULL) ? true : false );     
 }
+
+HRESULT OOPageStyles::getByName( BSTR _name_of_style, OOPageStyle& oo_page_style )
+{
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_disp;
+    VARIANT res, param1;
+     
+    VariantInit(&res);
+    VariantInit(&param1);
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        TRACE_OUT;
+        return ( E_FAIL );      
+    } 
+	
+	V_VT( &param1 ) = VT_BSTR;
+	V_BSTR( &param1 ) = SysAllocString( _name_of_style );
+	
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_page_styles, L"getByName", 1, param1);
+    
+    p_disp = V_DISPATCH( &res );
+    	
+    if ( FAILED( hr ) ) {
+        ERR(" getByName \n ");
+        TRACE_OUT;
+        return ( hr );
+    }
+    
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_page_style.Init( p_disp );
+    
+    VariantClear( &res ); 
+    VariantClear( &param1 );
+    
+    TRACE_OUT;
+    return ( hr ); 	 		
+}
