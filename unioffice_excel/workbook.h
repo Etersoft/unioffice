@@ -1033,6 +1033,8 @@ public:
        HRESULT NewDocument( );
        HRESULT NewDocumentAsTemplate( BSTR );  
        
+       OODocument&        GetOODocument( );
+       
 private:               
  
        long m_cRef; 

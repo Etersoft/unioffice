@@ -2621,3 +2621,8 @@ HRESULT Workbook::NewDocumentAsTemplate( BSTR template_name )
     TRACE_OUT;    
     return ( hr );       
 } 
+
+OODocument& Workbook::GetOODocument( )
+{
+    return ( m_oo_document ); 				   
+}
