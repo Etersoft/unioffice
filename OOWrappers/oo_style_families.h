@@ -25,6 +25,7 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
+#include "../OOWrappers/oo_page_styles.h"
 
 class OOStyleFamilies
 {
@@ -39,6 +40,8 @@ public:
   void Init( IDispatch* );
   
   bool IsNull();
+  
+  HRESULT getPageStyles( OOPageStyles& );
   
 private:
   
