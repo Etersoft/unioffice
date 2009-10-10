@@ -425,18 +425,37 @@ HRESULT STDMETHODCALLTYPE CPageSetup::get_Parent(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_LeftMargin( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_LeftMargin( 
             /* [retval][out] */ double *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    *RHS = m_oo_page_style.LeftMargin( );
+    if ( (*RHS) < 0 )
+    {
+	    ERR( " LeftMargin < 0 \n" );   	 
+	    hr = E_FAIL;
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CPageSetup::put_LeftMargin( 
+HRESULT STDMETHODCALLTYPE CPageSetup::put_LeftMargin( 
             /* [in] */ double RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    hr = m_oo_page_style.LeftMargin( RHS );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " LeftMargin \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_Order( 
