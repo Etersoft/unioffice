@@ -628,18 +628,37 @@ HRESULT STDMETHODCALLTYPE CPageSetup::put_LeftMargin(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_RightMargin( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_RightMargin( 
             /* [retval][out] */ double *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    *RHS = m_oo_page_style.RightMargin( );
+    if ( (*RHS) < 0 )
+    {
+	    ERR( " RightMargin < 0 \n" );   	 
+	    hr = E_FAIL;
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 			
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CPageSetup::put_RightMargin( 
+HRESULT STDMETHODCALLTYPE CPageSetup::put_RightMargin( 
             /* [in] */ double RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    hr = m_oo_page_style.RightMargin( RHS );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " RightMargin \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_TopMargin( 
