@@ -40,6 +40,11 @@ public:
   
   bool IsNull();
   
+  double  LeftMargin( );
+  HRESULT LeftMargin( double );
+  
+  
+  
 private:
   
    IDispatch*   m_pd_page_style;
