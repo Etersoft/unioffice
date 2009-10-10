@@ -43,7 +43,8 @@ public:
   double  LeftMargin( );
   HRESULT LeftMargin( double );
   
-  
+  double  RightMargin( );
+  HRESULT RightMargin( double );  
   
 private:
   
