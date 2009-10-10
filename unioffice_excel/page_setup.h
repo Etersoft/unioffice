@@ -22,7 +22,7 @@
 #define __UNIOFFICE_EXCEL_PAGE_SETUP_H__
 
 #include "unioffice_excel_private.h"
-
+#include "../OOWrappers/oo_page_style.h"
 
 class CPageSetup : public IPageSetup, public PageSetup
 {
@@ -350,7 +350,7 @@ public:
        HRESULT Put_Application( void* );
        HRESULT Put_Parent( void* ); 
 
-
+       HRESULT InitWrapper( OOPageStyle& );
 
 private:
 
@@ -360,6 +360,8 @@ private:
        
        void*        m_p_application;
        void*        m_p_parent;
+	
+	   OOPageStyle  m_oo_page_style;
 		
 };
 

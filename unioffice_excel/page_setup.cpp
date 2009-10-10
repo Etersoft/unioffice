@@ -850,5 +850,10 @@ HRESULT CPageSetup::Put_Parent( void* p_parent)
    return S_OK;  		
 } 
 
-
+HRESULT CPageSetup::InitWrapper( OOPageStyle& oo_page_style)
+{
+    m_oo_page_style = oo_page_style;
+	
+	return ( S_OK ); 		
+}
 
