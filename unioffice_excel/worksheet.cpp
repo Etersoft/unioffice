@@ -21,7 +21,12 @@
 #include "worksheet.h"
 #include "application.h"
 #include "sheets.h"
-
+#include "page_setup.h"
+#include "workbook.h"
+#include "../OOWrappers/oo_document.h"
+#include "../OOWrappers/oo_page_style.h"
+#include "../OOWrappers/oo_page_styles.h"
+#include "../OOWrappers/oo_style_families.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE Worksheet::QueryInterface(const IID& iid, void** ppv)
@@ -404,11 +409,86 @@ HRESULT STDMETHODCALLTYPE Worksheet::put_Name(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_PageSetup( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_PageSetup( 
             /* [retval][out] */ PageSetup	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   
+   CPageSetup* p_page_setup = new CPageSetup;
+   
+   p_page_setup->Put_Application( m_p_application );
+   p_page_setup->Put_Parent( this );
+
+   Workbook* workbook = NULL;
+   
+   hr = (static_cast<CSheets*>( m_p_parent ))->get_Parent( (IDispatch**)&workbook );   
+         
+   OODocument oo_document = workbook->GetOODocument( ); 
+
+   if ( workbook != NULL )
+   {
+       workbook->Release( );
+	   workbook = NULL;   	  	
+   }
+
+   BSTR style_name = m_oo_sheet.PageStyle( );
+
+   OOStyleFamilies oo_style_families; 
+   hr = oo_document.StyleFamilies( oo_style_families );  
+   if ( FAILED( hr ) )
+   {
+       ERR( " oo_style_families.getPageStyles \n" );
+       if ( p_page_setup != NULL )
+           p_page_setup->Release();
+           
+       SysFreeString( style_name );          
+	   TRACE_OUT;
+	   return ( hr );	  	
+   }          
+   
+   OOPageStyles oo_page_styles;
+   hr = oo_style_families.getPageStyles( oo_page_styles );
+   if ( FAILED( hr ) )
+   {
+       ERR( " oo_style_families.getPageStyles \n" );
+       if ( p_page_setup != NULL )
+           p_page_setup->Release();
+           
+       SysFreeString( style_name );          
+	   TRACE_OUT;
+	   return ( hr );	  	
+   }
+
+   OOPageStyle oo_page_style;
+   hr = oo_page_styles.getByName( style_name , oo_page_style );
+   if ( FAILED( hr ) )
+   {
+       ERR( " oo_page_styles.getByName \n" );
+       if ( p_page_setup != NULL )
+           p_page_setup->Release();
+           
+       SysFreeString( style_name );          
+	   TRACE_OUT;
+	   return ( hr );	  	
+   }
+   
+   p_page_setup->InitWrapper( oo_page_style );
+             
+   hr = p_page_setup->QueryInterface( DIID_PageSetup, (void**)RHS );
+             
+   if ( FAILED( hr ) )
+   {
+       ERR( " page_setup.QueryInterface \n" );     
+   }
+             
+   if ( p_page_setup != NULL )
+       p_page_setup->Release();
+   
+   SysFreeString( style_name );
+   
+   TRACE_OUT;
+   return ( hr );                           
 }
         
         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Previous( 
