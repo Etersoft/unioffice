@@ -45,6 +45,9 @@ public:
   
   double  RightMargin( );
   HRESULT RightMargin( double );  
+
+  double  TopMargin( );
+  HRESULT TopMargin( double );  
   
 private:
   
