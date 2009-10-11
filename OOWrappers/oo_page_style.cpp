@@ -145,7 +145,6 @@ double OOPageStyle::LeftMargin( )
 HRESULT OOPageStyle::LeftMargin( double _value )
 {
     TRACE_IN;
-	double result;
 	HRESULT hr;
 	VARIANT res, param1;
 	
@@ -218,7 +217,6 @@ double OOPageStyle::RightMargin( )
 HRESULT OOPageStyle::RightMargin( double _value )
 {
     TRACE_IN;
-	double result;
 	HRESULT hr;
 	VARIANT res, param1;
 	
@@ -291,7 +289,6 @@ double OOPageStyle::TopMargin( )
 HRESULT OOPageStyle::TopMargin( double _value )
 {
     TRACE_IN;
-	double result;
 	HRESULT hr;
 	VARIANT res, param1;
 	
@@ -364,7 +361,6 @@ double OOPageStyle::BottomMargin( )
 HRESULT OOPageStyle::BottomMargin( double _value )
 {
     TRACE_IN;
-	double result;
 	HRESULT hr;
 	VARIANT res, param1;
 	
@@ -393,4 +389,68 @@ HRESULT OOPageStyle::BottomMargin( double _value )
 	
 	TRACE_OUT;
 	return ( hr );  		
+}
+
+VARIANT_BOOL OOPageStyle::IsLandscape( )
+{
+    TRACE_IN;
+	VARIANT_BOOL result = VARIANT_FALSE;
+	HRESULT hr;
+	VARIANT res;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( result ) ;   	 
+    }
+	
+	VariantInit( &res );
+	
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"IsLandscape", 0);
+    if ( FAILED( hr ) ) {
+        ERR(" IsLandscape (GET) \n");
+        TRACE_OUT;
+        return ( result );
+    } 
+        
+    result = V_BOOL( &res );    
+        
+	VariantClear( &res );
+	
+	TRACE_OUT;
+	return ( result ); 			 
+}
+
+HRESULT OOPageStyle::IsLandscape( VARIANT_BOOL _value )
+{
+    TRACE_IN;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( hr ) ;   	 
+    }
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+    V_VT( &param1 ) = VT_BOOL;
+    V_BOOL( &param1 ) = _value;
+		
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"IsLandscape", 1, param1);
+    if ( FAILED( hr ) ) {
+        ERR(" IsLandscape (PUT) \n");
+        TRACE_OUT;
+        return ( hr );
+    } 
+    
+	VariantClear( &res );
+	VariantClear( &param1 );
+	
+	TRACE_OUT;
+	return ( hr );   			 
 }

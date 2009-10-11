@@ -51,6 +51,9 @@ public:
 
   double  BottomMargin( );
   HRESULT BottomMargin( double );
+
+  VARIANT_BOOL IsLandscape( );
+  HRESULT      IsLandscape( VARIANT_BOOL );
   
 private:
   
