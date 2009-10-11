@@ -749,18 +749,51 @@ HRESULT STDMETHODCALLTYPE CPageSetup::put_TopMargin(
     return ( hr );		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_Zoom( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_Zoom( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    short result;
+    
+    result = m_oo_page_style.PageScale( );
+    if ( result < 0 )
+    {
+	    ERR( " PageScale < 0 \n" );   	 
+	    hr = E_FAIL;
+    }
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I2;
+    V_I2( RHS ) = result;
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CPageSetup::put_Zoom( 
+HRESULT STDMETHODCALLTYPE CPageSetup::put_Zoom( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    short value;
+    
+    hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I2);
+    if ( FAILED( hr ) ) {
+        ERR(" VariantChangeType \n");
+        return ( hr );
+    }
+    
+    value = V_I2( &RHS );
+    
+    hr = m_oo_page_style.PageScale( value );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " PageScale \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr );	 		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_PrintComments( 
