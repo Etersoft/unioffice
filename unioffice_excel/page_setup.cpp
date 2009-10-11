@@ -491,18 +491,54 @@ HRESULT STDMETHODCALLTYPE CPageSetup::put_LeftMargin(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_Orientation( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_Orientation( 
             /* [retval][out] */ XlPageOrientation *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    VARIANT_BOOL result = VARIANT_FALSE;
+    
+    result = m_oo_page_style.IsLandscape( );
+
+    switch ( result )
+    {
+	    case VARIANT_TRUE:
+			 *RHS = xlLandscape;
+			 break;
+		case VARIANT_FALSE: 
+			 *RHS = xlPortrait;
+			 break; 	   
+    }
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CPageSetup::put_Orientation( 
+HRESULT STDMETHODCALLTYPE CPageSetup::put_Orientation( 
             /* [in] */ XlPageOrientation RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    VARIANT_BOOL value;
+    
+    switch ( RHS )
+    {
+	    case xlLandscape:
+			 value = VARIANT_TRUE;
+			 break;
+		case xlPortrait:
+			value = VARIANT_FALSE; 
+			break; 	   
+    }
+    
+    hr = m_oo_page_style.IsLandscape( value );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " IsLandscape \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_PaperSize( 
