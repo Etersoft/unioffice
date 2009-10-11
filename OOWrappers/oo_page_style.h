@@ -66,6 +66,9 @@ public:
 
   double  HeaderHeight( );
   HRESULT HeaderHeight( double );
+
+  double  FooterHeight( );
+  HRESULT FooterHeight( double );
   
 private:
   
