@@ -54,6 +54,9 @@ public:
 
   VARIANT_BOOL IsLandscape( );
   HRESULT      IsLandscape( VARIANT_BOOL );
+
+  short    PageScale();
+  HRESULT  PageScale( short );
   
 private:
   

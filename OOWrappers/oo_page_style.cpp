@@ -454,3 +454,68 @@ HRESULT OOPageStyle::IsLandscape( VARIANT_BOOL _value )
 	TRACE_OUT;
 	return ( hr );   			 
 }
+
+short  OOPageStyle::PageScale()
+{
+    TRACE_IN;
+	short result;
+	HRESULT hr;
+	VARIANT res;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( -1 ) ;   	 
+    }
+	
+	VariantInit( &res );
+	
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"PageScale", 0);
+    if ( FAILED( hr ) ) {
+        ERR(" PageScale (GET) \n");
+        TRACE_OUT;
+        return ( -1 );
+    } 
+        
+    result = V_I2( &res );    
+        
+	VariantClear( &res );
+	
+	TRACE_OUT;
+	return ( result );  		 
+}
+
+HRESULT  OOPageStyle::PageScale( short _value )
+{
+    TRACE_IN;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( hr ) ;   	 
+    }
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+    V_VT( &param1 ) = VT_I2;
+    V_I2( &param1 ) = _value;
+		
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"PageScale", 1, param1);
+    if ( FAILED( hr ) ) {
+        ERR(" PageScale (PUT) \n");
+        TRACE_OUT;
+        return ( hr );
+    } 
+    
+	VariantClear( &res );
+	VariantClear( &param1 );
+	
+	TRACE_OUT;
+	return ( hr ); 		 
+}
+
