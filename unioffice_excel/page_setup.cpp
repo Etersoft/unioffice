@@ -474,7 +474,7 @@ HRESULT STDMETHODCALLTYPE CPageSetup::get_HeaderMargin(
     TRACE_IN;
     HRESULT hr = S_OK;
     
-    *RHS = m_oo_page_style.LeftMargin( );
+    *RHS = m_oo_page_style.HeaderHeight( );
     if ( (*RHS) < 0 )
     {
 	    ERR( " LeftMargin < 0 \n" );   	 
@@ -491,7 +491,7 @@ HRESULT STDMETHODCALLTYPE CPageSetup::put_HeaderMargin(
     TRACE_IN;
     HRESULT hr = S_OK;
     
-    hr = m_oo_page_style.LeftMargin( RHS );
+    hr = m_oo_page_style.HeaderHeight( RHS );
     if ( FAILED( hr ) )
     {
 	    ERR( " LeftMargin \n" );   	 
