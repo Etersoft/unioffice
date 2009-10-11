@@ -290,18 +290,33 @@ HRESULT STDMETHODCALLTYPE CPageSetup::put_BottomMargin(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_CenterHorizontally( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_CenterHorizontally( 
             /* [retval][out] */ VARIANT_BOOL *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    *RHS = m_oo_page_style.CenterHorizontally( );
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CPageSetup::put_CenterHorizontally( 
+HRESULT STDMETHODCALLTYPE CPageSetup::put_CenterHorizontally( 
             /* [in] */ VARIANT_BOOL RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    hr = m_oo_page_style.CenterHorizontally( RHS );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " CenterHorizontally \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_CenterVertically( 
