@@ -167,11 +167,24 @@ HRESULT STDMETHODCALLTYPE CRange::Invoke(
          
                
         // IRange       
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Application( 
+HRESULT STDMETHODCALLTYPE CRange::get_Application( 
             /* [retval][out] */ Application	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;             
+   
+   if ( m_p_application == NULL )
+   {
+       ERR( " m_p_application == NULL \n " ); 
+       TRACE_OUT;
+       return ( S_FALSE );    
+   }
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<Application*>( m_p_application ))->get_Application( RHS );          
+             
+   TRACE_OUT;
+   return hr;  		
 }
         
         
