@@ -72,6 +72,9 @@ public:
 
   VARIANT_BOOL CenterHorizontally( );
   HRESULT      CenterHorizontally( VARIANT_BOOL );
+
+  VARIANT_BOOL CenterVertically( );
+  HRESULT      CenterVertically( VARIANT_BOOL );
   
 private:
   
