@@ -2090,16 +2090,24 @@ HRESULT CRange::Init( )
      return hr; 		
 }
          
-HRESULT CRange::Put_Application( void* )
+HRESULT CRange::Put_Application( void* p_application)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    
+    m_p_application = p_application;
+    
+    TRACE_OUT;    
+    return S_OK;   		
 }
         
-HRESULT CRange::Put_Parent( void* )
+HRESULT CRange::Put_Parent( void* p_parent)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;  
+      
+   m_p_parent = p_parent;
+   
+   TRACE_OUT;
+   return S_OK; 		
 }
         
 
