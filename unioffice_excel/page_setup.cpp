@@ -360,18 +360,51 @@ HRESULT STDMETHODCALLTYPE CPageSetup::put_BottomMargin(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_FitToPagesTall( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_FitToPagesTall( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    short result;
+    
+    result = m_oo_page_style.ScaleToPagesY( );
+    if ( result < 0 )
+    {
+	    ERR( " ScaleToPagesY < 0 \n" );   	 
+	    hr = E_FAIL;
+    }
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I2;
+    V_I2( RHS ) = result;
+    
+    TRACE_OUT;
+    return ( hr );			
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CPageSetup::put_FitToPagesTall( 
+HRESULT STDMETHODCALLTYPE CPageSetup::put_FitToPagesTall( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    short value;
+    
+    hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I2);
+    if ( FAILED( hr ) ) {
+        ERR(" VariantChangeType \n");
+        return ( hr );
+    }
+    
+    value = V_I2( &RHS );
+    
+    hr = m_oo_page_style.ScaleToPagesY( value );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " ScaleToPagesY \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_FitToPagesWide( 
