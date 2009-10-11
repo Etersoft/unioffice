@@ -790,3 +790,67 @@ HRESULT OOPageStyle::FooterHeight( double _value )
 	TRACE_OUT;
 	return ( hr );  		
 }
+
+VARIANT_BOOL OOPageStyle::CenterHorizontally( )
+{
+    TRACE_IN;
+	VARIANT_BOOL result = VARIANT_FALSE;
+	HRESULT hr;
+	VARIANT res;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( result ) ;   	 
+    }
+	
+	VariantInit( &res );
+	
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"CenterHorizontally", 0);
+    if ( FAILED( hr ) ) {
+        ERR(" CenterHorizontally (GET) \n");
+        TRACE_OUT;
+        return ( result );
+    } 
+        
+    result = V_BOOL( &res );    
+        
+	VariantClear( &res );
+	
+	TRACE_OUT;
+	return ( result ); 			 
+}
+
+HRESULT OOPageStyle::CenterHorizontally( VARIANT_BOOL _value )
+{
+    TRACE_IN;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( hr ) ;   	 
+    }
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+    V_VT( &param1 ) = VT_BOOL;
+    V_BOOL( &param1 ) = _value;
+		
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"CenterHorizontally", 1, param1);
+    if ( FAILED( hr ) ) {
+        ERR(" CenterHorizontally (PUT) \n");
+        TRACE_OUT;
+        return ( hr );
+    } 
+    
+	VariantClear( &res );
+	VariantClear( &param1 );
+	
+	TRACE_OUT;
+	return ( hr );   			 
+}

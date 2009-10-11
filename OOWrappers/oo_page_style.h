@@ -69,6 +69,9 @@ public:
 
   double  FooterHeight( );
   HRESULT FooterHeight( double );
+
+  VARIANT_BOOL CenterHorizontally( );
+  HRESULT      CenterHorizontally( VARIANT_BOOL );
   
 private:
   
