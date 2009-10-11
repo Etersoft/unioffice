@@ -57,6 +57,9 @@ public:
 
   short    PageScale();
   HRESULT  PageScale( short );
+
+  short    ScaleToPagesY();
+  HRESULT  ScaleToPagesY( short );
   
 private:
   
