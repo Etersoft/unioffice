@@ -319,18 +319,33 @@ HRESULT STDMETHODCALLTYPE CPageSetup::put_CenterHorizontally(
     return ( hr );  		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_CenterVertically( 
+HRESULT STDMETHODCALLTYPE CPageSetup::get_CenterVertically( 
             /* [retval][out] */ VARIANT_BOOL *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    *RHS = m_oo_page_style.CenterVertically( );
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CPageSetup::put_CenterVertically( 
+HRESULT STDMETHODCALLTYPE CPageSetup::put_CenterVertically( 
             /* [in] */ VARIANT_BOOL RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = S_OK;
+    
+    hr = m_oo_page_style.CenterVertically( RHS );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " CenterVertically \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         /* [helpcontext][hidden][propget] */ HRESULT STDMETHODCALLTYPE CPageSetup::get_ChartSize( 
