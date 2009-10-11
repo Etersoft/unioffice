@@ -194,7 +194,7 @@ double OOPageStyle::RightMargin( )
 	
     hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"RightMargin", 0);
     if ( FAILED( hr ) ) {
-        ERR(" LeftMargin (GET) \n");
+        ERR(" RightMargin (GET) \n");
         TRACE_OUT;
         return ( -1.0 );
     } 
@@ -237,7 +237,7 @@ HRESULT OOPageStyle::RightMargin( double _value )
 		
     hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"RightMargin", 1, param1);
     if ( FAILED( hr ) ) {
-        ERR(" LeftMargin (PUT) \n");
+        ERR(" RightMargin (PUT) \n");
         TRACE_OUT;
         return ( hr );
     } 
@@ -267,7 +267,7 @@ double OOPageStyle::TopMargin( )
 	
     hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"TopMargin", 0);
     if ( FAILED( hr ) ) {
-        ERR(" LeftMargin (GET) \n");
+        ERR(" TopMargin (GET) \n");
         TRACE_OUT;
         return ( -1.0 );
     } 
@@ -310,7 +310,80 @@ HRESULT OOPageStyle::TopMargin( double _value )
 		
     hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"TopMargin", 1, param1);
     if ( FAILED( hr ) ) {
-        ERR(" LeftMargin (PUT) \n");
+        ERR(" TopMargin (PUT) \n");
+        TRACE_OUT;
+        return ( hr );
+    } 
+    
+	VariantClear( &res );
+	VariantClear( &param1 );
+	
+	TRACE_OUT;
+	return ( hr );  		
+}
+
+double OOPageStyle::BottomMargin( )
+{
+    TRACE_IN;
+	double result;
+	HRESULT hr;
+	VARIANT res;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( -1.0 ) ;   	 
+    }
+	
+	VariantInit( &res );
+	
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"BottomMargin", 0);
+    if ( FAILED( hr ) ) {
+        ERR(" BottomMargin (GET) \n");
+        TRACE_OUT;
+        return ( -1.0 );
+    } 
+    
+    hr = VariantChangeTypeEx(&res, &res, 0, 0, VT_R8);
+    if ( FAILED( hr ) ) {
+        ERR(" VariantChangeType \n");
+        return ( -1.0 );
+    }
+
+    result = V_R8(&res) / 1000 * 28;
+    
+    VarR8Round( result, 0, &result );
+    
+	VariantClear( &res );
+	
+	TRACE_OUT;
+	return ( result ); 	   
+}
+
+HRESULT OOPageStyle::BottomMargin( double _value )
+{
+    TRACE_IN;
+	double result;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( hr ) ;   	 
+    }
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
+		
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"BottomMargin", 1, param1);
+    if ( FAILED( hr ) ) {
+        ERR(" BottomMargin (PUT) \n");
         TRACE_OUT;
         return ( hr );
     } 
