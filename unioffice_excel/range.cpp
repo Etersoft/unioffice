@@ -87,33 +87,53 @@ ULONG STDMETHODCALLTYPE CRange::Release( )
         
        
        // IDispatch    
-       HRESULT STDMETHODCALLTYPE CRange::GetTypeInfoCount( UINT * pctinfo )
+HRESULT STDMETHODCALLTYPE CRange::GetTypeInfoCount( UINT * pctinfo )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    *pctinfo = 1;
+    return S_OK; 		
 }
         
-       HRESULT STDMETHODCALLTYPE CRange::GetTypeInfo(
+HRESULT STDMETHODCALLTYPE CRange::GetTypeInfo(
                UINT iTInfo,
                LCID lcid,
                ITypeInfo ** ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    *ppTInfo = NULL;
+    
+    if(iTInfo != 0)
+    {
+        return DISP_E_BADINDEX;
+    }
+    
+    m_pITypeInfo->AddRef();
+    *ppTInfo = m_pITypeInfo;
+    
+    return S_OK;   		
 }
         
-       HRESULT STDMETHODCALLTYPE CRange::GetIDsOfNames(
+HRESULT STDMETHODCALLTYPE CRange::GetIDsOfNames(
                REFIID riid,
                LPOLESTR * rgszNames,
                UINT cNames,
                LCID lcid,
                DISPID * rgDispId)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    if (riid != IID_NULL )
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->GetIDsOfNames(rgszNames, cNames, rgDispId);
+    
+    if ( FAILED(hr) )
+    {
+     ERR( " name = %s \n", *rgszNames );     
+    }
+    
+    return hr;  		
 }
         
-       HRESULT STDMETHODCALLTYPE CRange::Invoke(
+HRESULT STDMETHODCALLTYPE CRange::Invoke(
                DISPID dispIdMember,
                REFIID riid,
                LCID lcid,
@@ -123,8 +143,26 @@ ULONG STDMETHODCALLTYPE CRange::Release( )
                EXCEPINFO * pExcepInfo,
                UINT * puArgErr)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    if ( riid != IID_NULL)
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->Invoke(
+                 static_cast<IDispatch*>(static_cast<IRange*>(this)), 
+                 dispIdMember, 
+                 wFlags, 
+                 pDispParams, 
+                 pVarResult, 
+                 pExcepInfo, 
+                 puArgErr);
+      
+    if ( FAILED(hr) )
+    {
+     ERR( " dispIdMember = %i \n", dispIdMember );     
+    }  
+                 
+    return hr;  		
 }
          
                
