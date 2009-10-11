@@ -647,3 +647,74 @@ HRESULT  OOPageStyle::ScaleToPagesX( short _value )
 	return ( hr ); 		 
 }
 
+double OOPageStyle::HeaderHeight( )
+{
+    TRACE_IN;
+	double result;
+	HRESULT hr;
+	VARIANT res;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( -1.0 ) ;   	 
+    }
+	
+	VariantInit( &res );
+	
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"HeaderHeight", 0);
+    if ( FAILED( hr ) ) {
+        ERR(" HeaderHeight (GET) \n");
+        TRACE_OUT;
+        return ( -1.0 );
+    } 
+    
+    hr = VariantChangeTypeEx(&res, &res, 0, 0, VT_R8);
+    if ( FAILED( hr ) ) {
+        ERR(" VariantChangeType \n");
+        return ( -1.0 );
+    }
+
+    result = V_R8(&res) / 1000 * 28;
+    
+    VarR8Round( result, 0, &result );
+    
+	VariantClear( &res );
+	
+	TRACE_OUT;
+	return ( result ); 	   
+}
+
+HRESULT OOPageStyle::HeaderHeight( double _value )
+{
+    TRACE_IN;
+	HRESULT hr;
+	VARIANT res, param1;
+	
+	if ( IsNull() )
+	{
+	    ERR( " wrapper is null \n" );
+	    TRACE_OUT;
+		return ( hr ) ;   	 
+    }
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
+		
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"HeaderHeight", 1, param1);
+    if ( FAILED( hr ) ) {
+        ERR(" HeaderHeight (PUT) \n");
+        TRACE_OUT;
+        return ( hr );
+    } 
+    
+	VariantClear( &res );
+	VariantClear( &param1 );
+	
+	TRACE_OUT;
+	return ( hr );  		
+}

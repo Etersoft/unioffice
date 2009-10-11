@@ -63,6 +63,9 @@ public:
 
   short    ScaleToPagesX();
   HRESULT  ScaleToPagesX( short );
+
+  double  HeaderHeight( );
+  HRESULT HeaderHeight( double );
   
 private:
   
