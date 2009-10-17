@@ -216,11 +216,13 @@ HRESULT STDMETHODCALLTYPE COutline::get_Parent(
    return hr;  		
 }
         
-         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE COutline::get_AutomaticStyles( 
+HRESULT STDMETHODCALLTYPE COutline::get_AutomaticStyles( 
             /* [retval][out] */ VARIANT_BOOL *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    *RHS = VARIANT_FALSE;
+    TRACE_OUT;
+    return S_OK;  		
 }
         
          /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE COutline::put_AutomaticStyles( 
