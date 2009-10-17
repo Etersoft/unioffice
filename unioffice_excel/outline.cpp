@@ -85,19 +85,28 @@ ULONG STDMETHODCALLTYPE COutline::Release()
 }
        
        // IDispatch    
-        HRESULT STDMETHODCALLTYPE COutline::GetTypeInfoCount( UINT * pctinfo )
+HRESULT STDMETHODCALLTYPE COutline::GetTypeInfoCount( UINT * pctinfo )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    *pctinfo = 1;
+    return S_OK;	
 }
 
-        HRESULT STDMETHODCALLTYPE COutline::GetTypeInfo(
+HRESULT STDMETHODCALLTYPE COutline::GetTypeInfo(
                UINT iTInfo,
                LCID lcid,
                ITypeInfo ** ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    *ppTInfo = NULL;
+    
+    if(iTInfo != 0)
+    {
+        return DISP_E_BADINDEX;
+    }
+    
+    m_pITypeInfo->AddRef();
+    *ppTInfo = m_pITypeInfo;
+    
+    return S_OK;  		
 }
 
         HRESULT STDMETHODCALLTYPE COutline::GetIDsOfNames(
