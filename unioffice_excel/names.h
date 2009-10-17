@@ -24,7 +24,7 @@
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/oo_named_ranges.h"
 
-class CNames : public INames, public Names
+class CNames : public INames, public Names, public IEnumVARIANT
 {
 public:
 	   
@@ -100,6 +100,10 @@ public:
         virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get__NewEnum( 
             /* [retval][out] */ IUnknown **RHS);
 	  
+ 	    virtual HRESULT Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched);
+	    virtual HRESULT Skip ( ULONG celt);
+	    virtual HRESULT Reset( );
+	    virtual HRESULT Clone(IEnumVARIANT** ppEnum);
 	  
        CNames()
        {

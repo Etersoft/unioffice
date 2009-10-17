@@ -46,7 +46,12 @@ HRESULT STDMETHODCALLTYPE CNames::QueryInterface(const IID& iid, void** ppv)
     if ( iid == DIID_Names ) {
         TRACE("Names \n");
         *ppv = static_cast<Names*>(this);
-    }   
+    }
+	
+    if ( iid == IID_IEnumVARIANT ) {
+        TRACE("IEnumVARIANT \n");
+        *ppv = static_cast<IEnumVARIANT*>(this);
+    }    
       
     if ( *ppv != NULL ) 
     {
@@ -303,6 +308,30 @@ HRESULT CNames::Init( )
      }
 
      return hr;		
+}
+ 
+HRESULT CNames::Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched)
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL; 		
+}
+
+HRESULT CNames::Skip ( ULONG celt)
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL; 		
+}
+
+HRESULT CNames::Reset( )
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL; 		
+}
+
+HRESULT CNames::Clone(IEnumVARIANT** ppEnum)
+{
+    TRACE_NOTIMPL;
+    return E_NOTIMPL; 		
 }
        
 HRESULT CNames::Put_Application( void* p_application )
