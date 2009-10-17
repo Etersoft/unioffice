@@ -61,16 +61,24 @@ HRESULT STDMETHODCALLTYPE CNames::QueryInterface(const IID& iid, void** ppv)
     }		
 }
 
-       ULONG STDMETHODCALLTYPE CNames::AddRef()
+ULONG STDMETHODCALLTYPE CNames::AddRef()
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      return InterlockedIncrement(&m_cRef);	
 }
 
-       ULONG STDMETHODCALLTYPE CNames::Release()
+ULONG STDMETHODCALLTYPE CNames::Release()
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      if (InterlockedDecrement(&m_cRef) == 0)
+      {
+              delete this;
+              return 0;
+      }
+      
+      return m_cRef; 		
 }
        
        // IDispatch    
