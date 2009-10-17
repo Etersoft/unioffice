@@ -29,6 +29,7 @@
 #include "../OOWrappers/oo_sheets.h"
 #include "../OOWrappers/oo_controller.h"
 #include "../OOWrappers/oo_style_families.h"
+#include "../OOWrappers/oo_named_ranges.h"
 
 class OODocument
 {
@@ -57,7 +58,10 @@ public:
   HRESULT getCurrentController( OOController& );
   
   HRESULT StyleFamilies( OOStyleFamilies& );
-       
+    
+  HRESULT NamedRanges( OONamedRanges& );
+  
+     
 private:            
    
    IDispatch*   m_pd_document;  

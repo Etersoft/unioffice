@@ -406,3 +406,44 @@ HRESULT OODocument::StyleFamilies( OOStyleFamilies& oo_style_families )
     TRACE_OUT;
     return ( hr );		 		
 }
+
+HRESULT OODocument::NamedRanges( OONamedRanges& oo_named_ranges)
+{
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_disp;
+    VARIANT res;
+     
+    VariantInit(&res);
+    
+    if ( IsNull() )
+    {
+        ERR( " IsNull() == true \n" );
+        TRACE_OUT;
+        return ( E_FAIL );      
+    } 
+	
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_document, L"NamedRanges", 0);
+    
+    p_disp = V_DISPATCH( &res );
+    	
+    if ( FAILED( hr ) ) {
+        ERR(" DISPATCH_PROPERTYGET - NamedRanges \n ");
+        TRACE_OUT;
+        return ( hr );
+    }
+    
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_named_ranges.Init( p_disp );
+    
+    VariantClear( &res ); 
+    
+    TRACE_OUT;
+    return ( hr );			
+}
