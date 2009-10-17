@@ -1,5 +1,5 @@
 /*
- * Main header file
+ * header file - OpenOffice Constants
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -17,43 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
-
-#define _WIN32_WINNT 0x0600
-
-#ifndef __UNIOFFICE_EXCEL_PRIVATE_H__
-#define __UNIOFFICE_EXCEL_PRIVATE_H__
-
-#include <stdarg.h>
-
-#include <windows.h>
-#include <windef.h>
-#include <winbase.h>
-#include <winuser.h>
-#include <winreg.h>
-#include <ole2.h>
-#include <ocidl.h>
-#include <oaidl.h>
-#include <stddef.h>
-#include "unioffice_excel.h"
-
-#include "../Common/debug.h"
-#include "../Common/tools.h"
-#include "../Common/special_functions.h"
-#include "../OOWrappers/oo_constants.h"
-
-#define VER_2 1
-#define VER_3 2
-
-extern LONG g_cServerLocks;
-extern LONG g_cComponents;
-
-extern LONG OOVersion;
-
-
-
-
-
-
-
-
-#endif //__UNIOFFICE_EXCEL_PRIVATE_H__
+ 
+ 
+const long toCOLUMNS = 0;
+const long toROWS    = 1;

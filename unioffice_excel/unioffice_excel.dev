@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=56
+UnitCount=57
 Type=3
 Ver=1
 ObjFiles=
@@ -599,6 +599,16 @@ BuildCmd=
 
 [Unit56]
 FileName=outline.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit57]
+FileName=..\OOWrappers\oo_constants.h
 CompileCpp=1
 Folder=
 Compile=1
