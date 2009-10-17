@@ -232,13 +232,54 @@ HRESULT STDMETHODCALLTYPE COutline::get_AutomaticStyles(
     return E_NOTIMPL;  		
 }
         
-         /* [helpcontext] */ HRESULT STDMETHODCALLTYPE COutline::ShowLevels( 
+HRESULT STDMETHODCALLTYPE COutline::ShowLevels( 
             /* [optional][in] */ VARIANT RowLevels,
             /* [optional][in] */ VARIANT ColumnLevels,
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    VARIANT param1, param2, res;
+    long amount = 1;
+	long type = toROWS;
+	VARIANT param;
+	
+	VariantInit( &param );
+
+    CorrectArg(RowLevels, &RowLevels);
+    CorrectArg(ColumnLevels, &ColumnLevels);
+    
+    if ( !Is_Variant_Null( RowLevels ) ) {
+        hr = VariantChangeTypeEx(&param, &RowLevels, 0, 0, VT_I4);
+        if ( FAILED( hr ) ) {
+            ERR(" VariantChangeTypeEx   %08x\n ", hr);
+            VariantClear( &param );
+            TRACE_OUT;
+            return ( hr );
+        }
+        amount = V_I4( &param );
+        type = toROWS;
+    } else {
+        hr = VariantChangeTypeEx(&param, &ColumnLevels, 0, 0, VT_I4);
+        if ( FAILED( hr ) ) {
+            ERR("VariantChangeTypeEx   %08x\n", hr);
+            VariantClear( &param );
+            TRACE_OUT;
+            return ( hr );
+        }
+        amount = V_I4( &param );
+		type = toCOLUMNS;
+    }
+
+    hr = m_oo_sheet.showLevel( amount, type );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_sheet.showLevel \n" );   	 
+    }
+	
+	VariantClear( &param );	
+    TRACE_OUT;
+    return ( hr );  		
 }
         
 HRESULT STDMETHODCALLTYPE COutline::get_SummaryColumn( 
