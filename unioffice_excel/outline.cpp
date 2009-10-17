@@ -185,18 +185,35 @@ HRESULT STDMETHODCALLTYPE COutline::get_Application(
    return hr;  		
 }
         
-         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE COutline::get_Creator( 
+HRESULT STDMETHODCALLTYPE COutline::get_Creator( 
             /* [retval][out] */ XlCreator *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+   TRACE_IN;
+   
+   *RHS = xlCreatorCode;
+   
+   TRACE_OUT;
+   return S_OK; 		
 }
         
-         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE COutline::get_Parent( 
+HRESULT STDMETHODCALLTYPE COutline::get_Parent( 
             /* [retval][out] */ IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+   TRACE_IN;             
+    
+   if ( m_p_parent == NULL )
+   {
+       ERR( " m_p_parent == NULL \n " ); 
+       TRACE_OUT;
+       return ( S_FALSE );    
+   }    
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<Worksheet*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
+             
+   TRACE_OUT;
+   return hr;  		
 }
         
          /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE COutline::get_AutomaticStyles( 
