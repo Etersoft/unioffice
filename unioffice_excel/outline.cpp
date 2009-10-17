@@ -64,16 +64,24 @@ HRESULT STDMETHODCALLTYPE COutline::QueryInterface(const IID& iid, void** ppv)
     }  		
 }
 
-        ULONG STDMETHODCALLTYPE COutline::AddRef()
+ULONG STDMETHODCALLTYPE COutline::AddRef()
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      return InterlockedIncrement(&m_cRef);   		
 }
 
-        ULONG STDMETHODCALLTYPE COutline::Release()
+ULONG STDMETHODCALLTYPE COutline::Release()
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      if (InterlockedDecrement(&m_cRef) == 0)
+      {
+              delete this;
+              return 0;
+      }
+      
+      return m_cRef; 		
 }
        
        // IDispatch    
