@@ -318,3 +318,37 @@ BSTR    OOSheet::PageStyle()
 	TRACE_OUT; 		
 	return ( result );
 }
+
+HRESULT OOSheet::showLevel( long amount, long type )
+{
+    TRACE_IN;
+    HRESULT hr;
+    VARIANT param1, param2, res;
+    
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_sheet is NULL \n" );   	 
+    }
+	    
+    VariantInit( &param1 );
+    VariantInit( &param2 );
+    VariantInit( &res );    
+    
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = amount;
+    
+    V_VT( &param2 ) = VT_I4;
+    V_I4( &param2 ) = type;    
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"showLevel", 2, param2, param1);
+    if ( FAILED( hr ) ) {
+        ERR("showLevel \n");
+    }    
+    
+    VariantClear( &param1 );
+    VariantClear( &param2 );
+    VariantClear( &res );
+ 		
+ 	TRACE_OUT;	
+    return ( hr );
+}

@@ -51,6 +51,8 @@ public:
   
   BSTR    PageStyle();
   
+  HRESULT showLevel( long, long );
+  
 private:
   
    IDispatch*   m_pd_sheet;
