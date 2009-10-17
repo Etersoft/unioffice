@@ -330,8 +330,19 @@ HRESULT CNames::Reset( )
 
 HRESULT CNames::Clone(IEnumVARIANT** ppEnum)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;
+   
+   HRESULT hr = S_OK;
+   
+   hr = QueryInterface( IID_IEnumVARIANT, (void**)ppEnum );
+   
+   if ( FAILED( hr ) )
+   {
+        ERR( " FAILED get IID_IEnumVARIANT \n" );    
+   }
+   
+   TRACE_OUT;
+   return hr; 		
 }
        
 HRESULT CNames::Put_Application( void* p_application )
