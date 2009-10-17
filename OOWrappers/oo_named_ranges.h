@@ -39,6 +39,8 @@ public:
   void Init( IDispatch* );
   
   bool IsNull();
+
+  long getCount( );
   
 private:
   

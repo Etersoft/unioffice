@@ -102,3 +102,49 @@ bool OONamedRanges::IsNull()
 {
     return ( (m_pd_named_ranges == NULL) ? true : false );     
 }
+
+long OONamedRanges::getCount( )
+{
+    TRACE_IN;
+    long count = -1;
+    HRESULT hr;
+    VARIANT res;
+    
+    if ( IsNull() )
+    {
+	    ERR(" m_pd_named_ranges is null \n");   	 
+	    
+	    TRACE_OUT;
+	   	return ( -1 );
+    }
+    
+    VariantInit( &res );
+    
+	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_ranges, L"getCount", 0);
+	if ( FAILED( hr ) )
+	{
+        ERR( " getCount \n" );
+        
+        VariantClear( &res );
+        TRACE_OUT;
+        return ( -1 );
+    }
+	
+	if ( V_VT( &res ) != VT_I4 )
+	{
+        hr = VariantChangeTypeEx(&res, &res, 0, 0, VT_I4);
+        if ( FAILED( hr ) ) {
+            ERR( "Error when VariantChangeTypeEx \n" );
+            VariantClear( &res );
+            TRACE_OUT;        
+            return ( -1 );
+        }
+    }	   	  
+    
+	count = V_I4( &res );	
+	
+	VariantClear( &res );
+	
+	TRACE_OUT;
+	return ( count );	 
+}
