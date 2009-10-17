@@ -263,12 +263,27 @@ HRESULT STDMETHODCALLTYPE CNames::Item(
     TRACE_NOTIMPL;
     return E_NOTIMPL; 		
 }
-        
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CNames::get_Count( 
+       
+HRESULT STDMETHODCALLTYPE CNames::get_Count( 
             /* [retval][out] */ long *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    long count = -1;
+    
+    count = m_oo_named_ranges.getCount( );
+    
+    if ( count < 0 )
+    {
+	    ERR( " m_oo_named_ranges.getCount \n" );  
+		hr = E_FAIL; 	 
+    } else
+    {
+        hr = S_OK;	  	  
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
 HRESULT STDMETHODCALLTYPE CNames::get__NewEnum( 
