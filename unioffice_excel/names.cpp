@@ -219,15 +219,19 @@ HRESULT STDMETHODCALLTYPE CNames::get_Creator(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CNames::Item( 
+HRESULT STDMETHODCALLTYPE CNames::Item( 
             /* [optional][in] */ VARIANT Index,
             /* [optional][in] */ VARIANT IndexLocal,
             /* [optional][in] */ VARIANT RefersTo,
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ Name	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    
+    HRESULT hr = _Default( Index, IndexLocal, RefersTo, lcid, RHS);
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CNames::_Default( 
