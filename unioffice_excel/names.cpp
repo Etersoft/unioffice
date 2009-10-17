@@ -271,11 +271,22 @@ HRESULT STDMETHODCALLTYPE CNames::Item(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CNames::get__NewEnum( 
+HRESULT STDMETHODCALLTYPE CNames::get__NewEnum( 
             /* [retval][out] */ IUnknown **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;
+   
+   HRESULT hr = S_OK;
+   
+   hr = QueryInterface( IID_IEnumVARIANT, (void**)RHS );
+   
+   if ( FAILED( hr ) )
+   {
+        ERR( " FAILED get IID_IEnumVARIANT \n" );    
+   }
+   
+   TRACE_OUT;
+   return hr;		
 }
 			
 HRESULT CNames::Init( )
