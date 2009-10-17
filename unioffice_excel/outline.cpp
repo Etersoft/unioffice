@@ -239,32 +239,36 @@ HRESULT STDMETHODCALLTYPE COutline::get_Parent(
     return E_NOTIMPL;  		
 }
         
-         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE COutline::get_SummaryColumn( 
+HRESULT STDMETHODCALLTYPE COutline::get_SummaryColumn( 
             /* [retval][out] */ XlSummaryColumn *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    *RHS = xlSummaryOnLeft;
+    TRACE_OUT;
+    return S_OK;  		
 }
         
-         /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE COutline::put_SummaryColumn( 
+HRESULT STDMETHODCALLTYPE COutline::put_SummaryColumn( 
             /* [in] */ XlSummaryColumn RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_STUB;
+    return S_OK;  		
 }
         
-         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE COutline::get_SummaryRow( 
+HRESULT STDMETHODCALLTYPE COutline::get_SummaryRow( 
             /* [retval][out] */ XlSummaryRow *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    *RHS = xlSummaryAbove;
+    TRACE_OUT;
+    return S_OK;  		
 }
         
-         /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE COutline::put_SummaryRow( 
+HRESULT STDMETHODCALLTYPE COutline::put_SummaryRow( 
             /* [in] */ XlSummaryRow RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_STUB;
+    return S_OK;  		
 }
             
             
