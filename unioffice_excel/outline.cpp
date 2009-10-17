@@ -325,3 +325,12 @@ HRESULT COutline::Put_Parent( void* p_parent)
    TRACE_OUT;
    return S_OK;		
 }
+
+HRESULT COutline::InitWrapper( OOSheet oo_sheet )
+{
+    TRACE_IN;
+    
+    m_oo_sheet= oo_sheet;
+	
+	TRACE_OUT; 		
+}

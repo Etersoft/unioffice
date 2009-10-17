@@ -22,7 +22,7 @@
 #define __UNIOFFICE_EXCEL_OUTLINE_H__
 
 #include "unioffice_excel_private.h"
-
+#include "../OOWrappers/oo_sheet.h"
 
 class COutline : public IOutline, public Outline
 {
@@ -122,7 +122,9 @@ public:
        HRESULT Init( ); 
        
        HRESULT Put_Application( void* );
-       HRESULT Put_Parent( void* ); 			   
+       HRESULT Put_Parent( void* ); 
+	   
+	   HRESULT InitWrapper( OOSheet );			   
 	   
  	  
 private:
@@ -134,7 +136,7 @@ private:
        void*        m_p_application;
        void*        m_p_parent;			
 
-
+       OOSheet      m_oo_sheet;
 		  
 };
 
