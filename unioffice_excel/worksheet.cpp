@@ -23,6 +23,7 @@
 #include "sheets.h"
 #include "page_setup.h"
 #include "workbook.h"
+#include "outline.h"
 #include "../OOWrappers/oo_document.h"
 #include "../OOWrappers/oo_page_style.h"
 #include "../OOWrappers/oo_page_styles.h"
@@ -1095,11 +1096,31 @@ HRESULT STDMETHODCALLTYPE Worksheet::put_Visible(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Outline( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Outline( 
             /* [retval][out] */ Outline	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   
+   COutline* p_outline = new COutline;
+   
+   p_outline->Put_Application( m_p_application );
+   p_outline->Put_Parent( this );
+   
+   p_outline->InitWrapper( m_oo_sheet );
+             
+   hr = p_outline->QueryInterface( DIID_Outline, (void**)RHS );
+             
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_outline.QueryInterface \n" );     
+   }
+             
+   if ( p_outline != NULL )
+       p_outline->Release();
+   
+   TRACE_OUT;
+   return ( hr );                          
 }
         
         /* [helpcontext][hidden][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Ovals( 
