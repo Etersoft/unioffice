@@ -282,6 +282,8 @@ HRESULT STDMETHODCALLTYPE CNames::get_Count(
         hr = S_OK;	  	  
     }
     
+    *RHS = count;
+    
     TRACE_OUT;
     return ( hr ); 		
 }
