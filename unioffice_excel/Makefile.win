@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o ../OOWrappers/oo_dispatch_provider.o page_setup.o ../OOWrappers/oo_page_style.o ../OOWrappers/oo_page_styles.o ../OOWrappers/oo_style_families.o range.o outline.o names.o $(RES)
-LINKOBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o ../OOWrappers/oo_dispatch_provider.o page_setup.o ../OOWrappers/oo_page_style.o ../OOWrappers/oo_page_styles.o ../OOWrappers/oo_style_families.o range.o outline.o names.o $(RES)
+OBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o ../OOWrappers/oo_dispatch_provider.o page_setup.o ../OOWrappers/oo_page_style.o ../OOWrappers/oo_page_styles.o ../OOWrappers/oo_style_families.o range.o outline.o names.o ../OOWrappers/oo_named_ranges.o $(RES)
+LINKOBJ  = main.o unioffice_excel_i.o regsvr.o factory.o application.o ../OOWrappers/oo_servicemanager.o ../Common/tools.o ../OOWrappers/oo_desktop.o workbooks.o workbook.o ../Common/special_functions.o ../OOWrappers/oo_document.o ../OOWrappers/wrap_property_array.o ../OOWrappers/oo_property_value.o sheets.o ../OOWrappers/oo_sheets.o worksheet.o ../OOWrappers/oo_sheet.o ../OOWrappers/oo_dispatch_helper.o ../OOWrappers/oo_controller.o ../OOWrappers/oo_frame.o ../OOWrappers/oo_dispatch_provider.o page_setup.o ../OOWrappers/oo_page_style.o ../OOWrappers/oo_page_styles.o ../OOWrappers/oo_style_families.o range.o outline.o names.o ../OOWrappers/oo_named_ranges.o $(RES)
 LIBS =  -L"C:/Dev-Cpp/lib" --no-export-all-symbols --add-stdcall-alias -ladvapi32  -lole32  -loleaut32  -luser32  -lkernel32  -lshell32  -luuid  -lshlwapi  -lmsvcrt  
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
@@ -116,3 +116,6 @@ outline.o: outline.cpp
 
 names.o: names.cpp
 	$(CPP) -c names.cpp -o names.o $(CXXFLAGS)
+
+../OOWrappers/oo_named_ranges.o: ../OOWrappers/oo_named_ranges.cpp
+	$(CPP) -c ../OOWrappers/oo_named_ranges.cpp -o ../OOWrappers/oo_named_ranges.o $(CXXFLAGS)
