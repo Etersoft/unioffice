@@ -24,10 +24,12 @@
 #include "page_setup.h"
 #include "workbook.h"
 #include "outline.h"
+#include "names.h"
 #include "../OOWrappers/oo_document.h"
 #include "../OOWrappers/oo_page_style.h"
 #include "../OOWrappers/oo_page_styles.h"
 #include "../OOWrappers/oo_style_families.h"
+#include "../OOWrappers/oo_named_ranges.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE Worksheet::QueryInterface(const IID& iid, void** ppv)
@@ -1023,11 +1025,57 @@ HRESULT STDMETHODCALLTYPE Worksheet::put_Visible(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Names( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Names( 
             /* [retval][out] */ Names	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   
+   CNames* p_names = new CNames;
+   
+   p_names->Put_Application( m_p_application );
+   p_names->Put_Parent( this );
+   
+   Workbook* workbook = NULL;
+   
+   hr = (static_cast<CSheets*>( m_p_parent ))->get_Parent( (IDispatch**)&workbook );   
+         
+   OODocument oo_document = workbook->GetOODocument( ); 
+
+   if ( workbook != NULL )
+   {
+       workbook->Release( );
+	   workbook = NULL;   	  	
+   } 
+  
+   OONamedRanges    oo_named_ranges;
+   
+   hr = oo_document.NamedRanges( oo_named_ranges );
+   if ( FAILED( hr ) )
+   {
+       ERR( " oo_document.GetNamedRanges \n" );	  
+	   
+       if ( p_names != NULL )
+           p_names->Release();	 
+		     
+	   TRACE_OUT;
+	   return ( hr );	
+   }
+   
+   p_names->InitWrapper( oo_named_ranges );
+             
+   hr = p_names->QueryInterface( DIID_Names, (void**)RHS );
+             
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_names.QueryInterface \n" );     
+   }
+             
+   if ( p_names != NULL )
+       p_names->Release();
+   
+   TRACE_OUT;
+   return ( hr );                          
 }
         
         /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::OLEObjects( 
