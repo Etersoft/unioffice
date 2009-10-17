@@ -158,16 +158,54 @@
 			
 HRESULT CNames::Init( )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+     HRESULT hr = S_OK;   
+      
+     if (m_pITypeInfo == NULL)
+     {
+        ITypeLib* pITypeLib = NULL;
+        hr = LoadRegTypeLib(LIBID_Office,
+                                1, 0, // Номера версии
+                                0x00,
+                                &pITypeLib); 
+        
+       if (FAILED(hr))
+       {
+           ERR( " Typelib not register \n" );
+           return hr;
+       } 
+        
+       // Получить информацию типа для интерфейса объекта
+       hr = pITypeLib->GetTypeInfoOfGuid(IID_INames, &m_pITypeInfo);
+       pITypeLib->Release();
+       if (FAILED(hr))
+       {
+          ERR(" GetTypeInfoOfGuid \n ");
+          return hr;
+       }
+       
+     }
+
+     return hr;		
 }
        
 HRESULT CNames::Put_Application( void* p_application )
 {
+    TRACE_IN;
+    
+    m_p_application = p_application;
+    
+    TRACE_OUT;    
+    return S_OK;
 }
 
 HRESULT CNames::Put_Parent( void* p_parent )
 {
+   TRACE_IN;  
+      
+   m_p_parent = p_parent;
+   
+   TRACE_OUT;
+   return S_OK;	
 }
 
 		               
