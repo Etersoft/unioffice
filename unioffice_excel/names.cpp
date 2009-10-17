@@ -324,8 +324,12 @@ HRESULT CNames::Skip ( ULONG celt)
 
 HRESULT CNames::Reset( )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;
+   
+   enum_position = 0;
+   
+   TRACE_OUT;
+   return S_OK; 		
 }
 
 HRESULT CNames::Clone(IEnumVARIANT** ppEnum)

@@ -150,6 +150,8 @@ private:
        void*        m_p_application;
        void*        m_p_parent;	
        
+       int          enum_position;
+       
        OONamedRanges  m_oo_named_ranges;
 	   	
 };
