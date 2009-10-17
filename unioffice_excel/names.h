@@ -22,6 +22,7 @@
 #define __UNIOFFICE_EXCEL_NAMES_H__
 
 #include "unioffice_excel_private.h"
+#include "../OOWrappers/oo_named_ranges.h"
 
 class CNames : public INames, public Names
 {
@@ -132,7 +133,9 @@ public:
        HRESULT Init( ); 
        
        HRESULT Put_Application( void* );
-       HRESULT Put_Parent( void* ); 	  		
+       HRESULT Put_Parent( void* );
+	   
+	   HRESULT InitWrapper( OONamedRanges );	  		
 			
 private:
 	
@@ -142,8 +145,9 @@ private:
        
        void*        m_p_application;
        void*        m_p_parent;	
+       
+       OONamedRanges  m_oo_named_ranges;
 	   	
-		
 };
 
 

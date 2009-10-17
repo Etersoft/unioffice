@@ -325,4 +325,11 @@ HRESULT CNames::Put_Parent( void* p_parent )
    return S_OK;	
 }
 
-		               
+HRESULT CNames::InitWrapper( OONamedRanges oo_named_ranges )
+{
+    TRACE_IN;
+    
+    m_oo_named_ranges = oo_named_ranges;
+	
+	TRACE_OUT; 		
+}		               
