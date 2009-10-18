@@ -107,18 +107,29 @@ HRESULT STDMETHODCALLTYPE CName::GetTypeInfo(
     return S_OK;		
 }
 
-       HRESULT STDMETHODCALLTYPE CName::GetIDsOfNames(
+HRESULT STDMETHODCALLTYPE CName::GetIDsOfNames(
                REFIID riid,
                LPOLESTR * rgszNames,
                UINT cNames,
                LCID lcid,
                DISPID * rgDispId)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    if (riid != IID_NULL )
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->GetIDsOfNames(rgszNames, cNames, rgDispId);
+    
+    if ( FAILED(hr) )
+    {
+     ERR( " name = %s \n", *rgszNames );     
+    }
+    
+    return hr; 		
 }
 
-       HRESULT STDMETHODCALLTYPE CName::Invoke(
+HRESULT STDMETHODCALLTYPE CName::Invoke(
                DISPID dispIdMember,
                REFIID riid,
                LCID lcid,
@@ -128,8 +139,26 @@ HRESULT STDMETHODCALLTYPE CName::GetTypeInfo(
                EXCEPINFO * pExcepInfo,
                UINT * puArgErr)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    if ( riid != IID_NULL)
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->Invoke(
+                 static_cast<IDispatch*>(static_cast<IName*>(this)), 
+                 dispIdMember, 
+                 wFlags, 
+                 pDispParams, 
+                 pVarResult, 
+                 pExcepInfo, 
+                 puArgErr);
+      
+    if ( FAILED(hr) )
+    {
+     ERR( " dispIdMember = %i \n", dispIdMember );     
+    }  
+                 
+    return hr;		
 }
 		
 		
