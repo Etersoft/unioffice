@@ -350,9 +350,21 @@ HRESULT CName::Init( )
        
 HRESULT CName::Put_Application( void* p_application)
 {
+    TRACE_IN;
+    
+    m_p_application = p_application;
+    
+    TRACE_OUT;    
+    return S_OK;
 }
 
 HRESULT CName::Put_Parent( void* p_parent)
 {
+    TRACE_IN;
+    
+    ü_p_parent = p_parent;
+    
+    TRACE_OUT;    
+    return S_OK;
 }
 
