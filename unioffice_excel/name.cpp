@@ -474,3 +474,12 @@ HRESULT CName::Put_Parent( void* p_parent)
     return S_OK;
 }
 
+HRESULT CName::InitWrapper( OONamedRange oo_named_range )
+{
+    TRACE_IN;
+    
+    m_oo_named_range = oo_named_range;
+	
+	TRACE_OUT; 		
+}
+
