@@ -468,7 +468,7 @@ HRESULT CName::Put_Parent( void* p_parent)
 {
     TRACE_IN;
     
-    ü_p_parent = p_parent;
+    m_p_parent = p_parent;
     
     TRACE_OUT;    
     return S_OK;
