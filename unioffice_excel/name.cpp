@@ -248,20 +248,46 @@ HRESULT STDMETHODCALLTYPE CName::Invoke(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CName::get_Name( 
+HRESULT STDMETHODCALLTYPE CName::get_Name( 
             /* [lcid][in] */ long lcidIn,
             /* [retval][out] */ BSTR *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;
+   HRESULT hr;
+   BSTR result;
+   
+   result = SysAllocString( m_oo_named_range.getName( ) );
+
+   if ( lstrlenW( result ) == 0 )
+   {
+       ERR( " m_oo_named_range.getName \n" );  
+       hr = E_FAIL;   
+   } else
+   {
+      *RHS = SysAllocString( result );       
+   }
+
+   SysFreeString( result );
+
+   TRACE_OUT;
+   return ( hr );		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CName::put_Name( 
+HRESULT STDMETHODCALLTYPE CName::put_Name( 
             /* [lcid][in] */ long lcidIn,
             /* [in] */ BSTR RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;
+   HRESULT hr;
+   
+   hr = m_oo_named_range.setName( SysAllocString( RHS ) );
+   if ( FAILED( hr ) )
+   {
+       ERR( " m_oo_named_range.setName \n" );     
+   }
+   
+   TRACE_OUT;
+   return ( hr );		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CName::get_RefersTo( 
