@@ -102,3 +102,65 @@ bool OONamedRange::IsNull()
 {
     return ( (m_pd_named_range == NULL) ? true : false );     
 }
+
+BSTR OONamedRange::getName( )
+{
+    TRACE_IN;
+    HRESULT hr;
+    VARIANT res;
+    BSTR result;
+
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_named_range is NULL \n" );   	 
+    }
+    
+    VariantInit( &res );
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_range, L"getName", 0);
+    if ( FAILED( hr ) )
+    {
+        ERR( " getName \n" );     
+        result = SysAllocString( L"" );
+    } else
+    {
+        result = SysAllocString( V_BSTR( &res ) );      
+    }
+    
+    VariantClear( &res );
+    
+    TRACE_OUT;     
+    return ( result );
+}
+
+HRESULT OONamedRange::setName( BSTR bstr_name )
+{
+    TRACE_IN;
+    
+    HRESULT hr;
+    VARIANT param1, res;
+
+	if ( IsNull() )
+	{
+	    ERR( " m_pd_named_range is NULL \n" );   	 
+    }
+    
+    VariantInit( &param1 );
+    VariantInit( &res );  
+        
+    V_VT(&param1)   = VT_BSTR;
+    V_BSTR(&param1) = SysAllocString(bstr_name);
+
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_range, L"setName", 1, param1);
+    
+    if ( FAILED( hr ) )
+    {
+        ERR( " setName \n" );     
+    }    
+    
+    VariantClear( &res );
+    VariantClear( &param1 );
+    
+    TRACE_OUT;
+    return ( hr );      
+}

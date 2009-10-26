@@ -40,6 +40,9 @@ public:
   
   bool IsNull();
   
+  BSTR    getName( );
+  HRESULT setName( BSTR );
+  
 private:
   
    IDispatch*   m_pd_named_range;
