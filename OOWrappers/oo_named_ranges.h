@@ -25,6 +25,7 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
+#include "../OOWrappers/oo_named_range.h"
 
 class OONamedRanges
 {
@@ -41,6 +42,9 @@ public:
   bool IsNull();
 
   long getCount( );
+  
+  HRESULT getNameByName( VARIANT, OONamedRange& );
+  HRESULT getNameByIndex( VARIANT, OONamedRange& );
   
 private:
   

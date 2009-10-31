@@ -148,3 +148,89 @@ long OONamedRanges::getCount( )
 	TRACE_OUT;
 	return ( count );	 
 }
+
+HRESULT OONamedRanges::getNameByName( VARIANT index, OONamedRange& oo_name )
+{
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_disp;
+    VARIANT res;
+     
+    VariantInit(&res);
+	    
+    if ( IsNull() )
+    {
+	    ERR(" m_pd_named_ranges is null \n");   	 
+	    
+	    TRACE_OUT;
+	   	return ( E_FAIL );
+    }    
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_ranges, L"getByName", 1, index );
+    
+    if (FAILED(hr)) {
+        TRACE(" when getByIndex \n");
+        
+        TRACE_OUT;
+        return ( hr );
+    }
+    
+    p_disp = V_DISPATCH( &res );
+    
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_name.Init( p_disp );
+    
+    VariantClear( &res ); 
+    
+    TRACE_OUT;
+    return ( hr );		
+}
+
+HRESULT OONamedRanges::getNameByIndex( VARIANT index, OONamedRange& oo_name)
+{
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_disp;
+    VARIANT res;
+     
+    VariantInit(&res);
+	    
+    if ( IsNull() )
+    {
+	    ERR(" m_pd_named_ranges is null \n");   	 
+	    
+	    TRACE_OUT;
+	   	return ( E_FAIL );
+    }    
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_ranges, L"getByIndex", 1, index );
+    
+    if (FAILED(hr)) {
+        TRACE(" when getByIndex \n");
+        
+        TRACE_OUT;
+        return ( hr );
+    }
+    
+    p_disp = V_DISPATCH( &res );
+    
+    if ( p_disp == NULL )
+    {
+	    ERR( " p_disp == NULL \n" );
+		TRACE_OUT;   	 
+	    return ( E_FAIL );
+    }
+    
+    oo_name.Init( p_disp );
+    
+    VariantClear( &res ); 
+    
+    TRACE_OUT;
+    return ( hr );	 		
+}
