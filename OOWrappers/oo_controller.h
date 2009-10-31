@@ -25,31 +25,23 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/oo_frame.h"
+#include "./oo_frame.h"
 
-class OOController
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOController: public XBase
 {
 public:
        
   OOController();
-  OOController(const OOController &);
   virtual ~OOController();     
-   
-  OOController& operator=( const OOController &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
 
   HRESULT getFrame( OOFrame& );
          
 private:            
-   
-   IDispatch*   m_pd_controller;  
-      
+					     
 };
-
-
-
 
 #endif //__UNIOFFICE_OO_WRAP_CONTROLLER_H__

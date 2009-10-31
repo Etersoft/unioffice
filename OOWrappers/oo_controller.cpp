@@ -18,89 +18,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_controller.h"
+#include "./oo_controller.h"
 
-OOController::OOController()
-{
-    TRACE_IN;
-                                    
-    m_pd_controller = NULL;                                   
-    
-    TRACE_OUT;                    
-}
+using namespace com::sun::star::uno;
 
-OOController::OOController(const OOController &obj)
-{
-   TRACE_IN;      
-                               
-   m_pd_controller = obj.m_pd_controller;
-   if ( m_pd_controller != NULL )
-       m_pd_controller->AddRef();  
-       
-   TRACE_OUT;                         
+OOController::OOController():XBase()
+{                  
 }
 
 OOController::~OOController()
-{
-   TRACE_IN;                    
-                     
-   if ( m_pd_controller != NULL )
-   {
-       m_pd_controller->Release();
-       m_pd_controller = NULL;        
-   }
-   
-   TRACE_OUT;                        
+{                        
 }    
-   
-OOController& OOController::operator=( const OOController &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_controller != NULL )
-   {
-       m_pd_controller->Release();
-       m_pd_controller = NULL;        
-   } 
-   
-   m_pd_controller = obj.m_pd_controller;
-   if ( m_pd_controller != NULL )
-       m_pd_controller->AddRef();
-   
-   return ( *this );           
-}
-  
-void OOController::Init( IDispatch* p_oo_controller)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_controller != NULL )
-   {
-       m_pd_controller->Release();
-       m_pd_controller = NULL;        
-   } 
-   
-   if ( p_oo_controller == NULL )
-   {
-       ERR( " p_oo_controller == NULL \n" );
-       return;     
-   }
-   
-   m_pd_controller = p_oo_controller;
-   m_pd_controller->AddRef();
-   
-   TRACE_OUT;
-   
-   return;     
-}
-  
-bool OOController::IsNull()
-{
-    return ( (m_pd_controller == NULL) ? true : false );     
-}
 
 HRESULT OOController::getFrame( OOFrame& oo_frame)
 {
@@ -118,7 +46,7 @@ HRESULT OOController::getFrame( OOFrame& oo_frame)
         return ( E_FAIL );      
     } 
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_controller, L"getFrame", 0);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getFrame", 0);
     
     p_disp = V_DISPATCH( &res );
     

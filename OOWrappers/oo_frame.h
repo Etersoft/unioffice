@@ -25,27 +25,22 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/oo_dispatch_provider.h"
+#include "./oo_dispatch_provider.h"
 
-class OOFrame
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOFrame: public XBase
 {
 public:
        
   OOFrame();
-  OOFrame(const OOFrame &);
   virtual ~OOFrame();     
-   
-  OOFrame& operator=( const OOFrame &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   OODispatchProvider GetDispatchProvider( );
          
-private:            
-   
-   IDispatch*   m_pd_frame;  
+private:             
       
 };
 

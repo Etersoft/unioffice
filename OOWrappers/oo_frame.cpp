@@ -18,89 +18,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_frame.h"
+#include "./oo_frame.h"
 
-OOFrame::OOFrame()
-{
-    TRACE_IN;
-                                    
-    m_pd_frame = NULL;                                   
-    
-    TRACE_OUT;                    
-}
+using namespace com::sun::star::uno;
 
-OOFrame::OOFrame(const OOFrame &obj)
-{
-   TRACE_IN;      
-                               
-   m_pd_frame = obj.m_pd_frame;
-   if ( m_pd_frame != NULL )
-       m_pd_frame->AddRef();  
-       
-   TRACE_OUT;                         
+OOFrame::OOFrame():XBase()
+{                    
 }
 
 OOFrame::~OOFrame()
-{
-   TRACE_IN;                    
-                     
-   if ( m_pd_frame != NULL )
-   {
-       m_pd_frame->Release();
-       m_pd_frame = NULL;        
-   }
-   
-   TRACE_OUT;                        
+{                       
 }    
-   
-OOFrame& OOFrame::operator=( const OOFrame &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_frame != NULL )
-   {
-       m_pd_frame->Release();
-       m_pd_frame = NULL;        
-   } 
-   
-   m_pd_frame = obj.m_pd_frame;
-   if ( m_pd_frame != NULL )
-       m_pd_frame->AddRef();
-   
-   return ( *this );           
-}
-  
-void OOFrame::Init( IDispatch* p_oo_frame)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_frame != NULL )
-   {
-       m_pd_frame->Release();
-       m_pd_frame = NULL;        
-   } 
-   
-   if ( p_oo_frame == NULL )
-   {
-       ERR( " p_oo_frame == NULL \n" );
-       return;     
-   }
-   
-   m_pd_frame = p_oo_frame;
-   m_pd_frame->AddRef();
-   
-   TRACE_OUT;
-   
-   return;     
-}
-  
-bool OOFrame::IsNull()
-{
-    return ( (m_pd_frame == NULL) ? true : false );     
-}
 
 OODispatchProvider OOFrame::GetDispatchProvider( )
 {
@@ -112,7 +40,7 @@ OODispatchProvider OOFrame::GetDispatchProvider( )
 	    ERR( " m_pd_frame is Null \n" );   	 
     }
 	
-	ret_val.Init( m_pd_frame );
+	ret_val.Init( m_pd_wrapper );
 	 			   
  	TRACE_OUT;			   
     return ( ret_val ); 				   
