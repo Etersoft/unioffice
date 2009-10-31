@@ -18,89 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_sheet.h"
+#include "./oo_sheet.h"
 
+using namespace com::sun::star::uno;
 
-OOSheet::OOSheet()
-{
-    TRACE_IN;
-                                    
-    m_pd_sheet = NULL;                                   
-    
-    TRACE_OUT;                   
-}
-
-OOSheet::OOSheet(const OOSheet &obj)
-{
-   TRACE_IN;    
-                               
-   m_pd_sheet = obj.m_pd_sheet;
-   if ( m_pd_sheet != NULL )
-       m_pd_sheet->AddRef();  
-       
-   TRACE_OUT;                        
+OOSheet::OOSheet():XBase()
+{                 
 }
                        
 OOSheet::~OOSheet()
 {
-   TRACE_IN;                    
-                     
-   if ( m_pd_sheet != NULL )
-   {
-       m_pd_sheet->Release();
-       m_pd_sheet = NULL;        
-   }
-   
-   TRACE_OUT;
-}
-   
-OOSheet& OOSheet::operator=( const OOSheet &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_sheet != NULL )
-   {
-       m_pd_sheet->Release();
-       m_pd_sheet = NULL;        
-   } 
-   
-   m_pd_sheet = obj.m_pd_sheet;
-   if ( m_pd_sheet != NULL )
-       m_pd_sheet->AddRef();
-   
-   return ( *this );         
-}
-  
-void OOSheet::Init( IDispatch* p_oo_sheet)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_sheet != NULL )
-   {
-       m_pd_sheet->Release();
-       m_pd_sheet = NULL;        
-   } 
-   
-   if ( p_oo_sheet == NULL )
-   {
-       ERR( " p_oo_sheet == NULL \n" );
-       return;     
-   }
-   
-   m_pd_sheet = p_oo_sheet;
-   m_pd_sheet->AddRef();
-   
-   TRACE_OUT;
-   
-   return;          
-}
-  
-bool OOSheet::IsNull()
-{
-    return ( (m_pd_sheet == NULL) ? true : false );     
 }
 
 BSTR OOSheet::getName( )
@@ -112,12 +39,12 @@ BSTR OOSheet::getName( )
 
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
     
     VariantInit( &res );
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"getName", 0);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getName", 0);
     if ( FAILED( hr ) )
     {
         ERR( " getName \n" );     
@@ -142,7 +69,7 @@ HRESULT OOSheet::setName( BSTR bstr_name )
 
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
     
     VariantInit( &param1 );
@@ -151,7 +78,7 @@ HRESULT OOSheet::setName( BSTR bstr_name )
     V_VT(&param1)   = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(bstr_name);
 
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"setName", 1, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"setName", 1, param1);
     
     if ( FAILED( hr ) )
     {
@@ -173,7 +100,7 @@ HRESULT OOSheet::unprotect( BSTR _password )
 	
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
 	
 	VariantInit( &res );
@@ -182,7 +109,7 @@ HRESULT OOSheet::unprotect( BSTR _password )
 	V_VT( &param1 )   = VT_BSTR;
 	V_BSTR( &param1 ) = SysAllocString( _password );
 	
-	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"unprotect", 1, param1);
+	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"unprotect", 1, param1);
     if ( FAILED( hr ) )
     {
 	    ERR( " unprotect \n" );   	 
@@ -203,7 +130,7 @@ HRESULT OOSheet::protect( BSTR _password )
 	
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
 	
 	VariantInit( &res );
@@ -212,7 +139,7 @@ HRESULT OOSheet::protect( BSTR _password )
 	V_VT( &param1 )   = VT_BSTR;
 	V_BSTR( &param1 ) = SysAllocString( _password );
 	
-	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"protect", 1, param1);
+	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"protect", 1, param1);
     if ( FAILED( hr ) )
     {
 	    ERR( " protect \n" );   	 
@@ -233,7 +160,7 @@ HRESULT OOSheet::isVisible( VARIANT_BOOL _value )
 
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
 	
 	VariantInit( &res );
@@ -242,7 +169,7 @@ HRESULT OOSheet::isVisible( VARIANT_BOOL _value )
 	V_VT( &param1 ) = VT_BOOL;
 	V_BOOL( &param1 ) = _value;	
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_sheet, L"IsVisible", 1, param1); 		
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"IsVisible", 1, param1); 		
     
     if ( FAILED( hr ) )
     {
@@ -265,12 +192,12 @@ VARIANT_BOOL OOSheet::isVisible()
 
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
 	
 	VariantInit( &res );
 		
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_sheet, L"IsVisible", 0); 		
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"IsVisible", 0); 		
     
     if ( FAILED( hr ) )
     {
@@ -301,10 +228,10 @@ BSTR    OOSheet::PageStyle()
 
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
 	
-	hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_sheet, L"PageStyle",0);
+	hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"PageStyle",0);
 	if ( FAILED( hr ) )
 	{
 	    ERR( " PageStyle \n" );   	 
@@ -327,7 +254,7 @@ HRESULT OOSheet::showLevel( long amount, long type )
     
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_sheet is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   	 
     }
 	    
     VariantInit( &param1 );
@@ -340,7 +267,7 @@ HRESULT OOSheet::showLevel( long amount, long type )
     V_VT( &param2 ) = VT_I4;
     V_I4( &param2 ) = type;    
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheet, L"showLevel", 2, param2, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"showLevel", 2, param2, param1);
     if ( FAILED( hr ) ) {
         ERR("showLevel \n");
     }    

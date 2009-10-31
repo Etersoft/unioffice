@@ -26,19 +26,16 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
-class OOSheet
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOSheet: public XBase
 {
 public:
 
   OOSheet();
-  OOSheet(const OOSheet &);
   virtual ~OOSheet();     
-   
-  OOSheet& operator=( const OOSheet &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   BSTR    getName( );
   HRESULT setName( BSTR );
@@ -54,8 +51,6 @@ public:
   HRESULT showLevel( long, long );
   
 private:
-  
-   IDispatch*   m_pd_sheet;
            
 };          
 

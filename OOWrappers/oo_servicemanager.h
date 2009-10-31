@@ -26,11 +26,15 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/oo_desktop.h"
-#include "../OOWrappers/oo_dispatch_helper.h"
-#include "../OOWrappers/wrap_property_array.h"
+#include "./oo_desktop.h"
+#include "./oo_dispatch_helper.h"
+#include "./wrap_property_array.h"
 
-class OOServiceManager
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOServiceManager: public XBase
 {
 public:
        
@@ -43,12 +47,8 @@ public:
   HRESULT Get_Desktop( OODesktop& ); 
   HRESULT Get_PropertyValue( OOPropertyValue& );
   HRESULT Get_DispatchHeplper( OODispatchHelper& );
-  
-  bool IsNull();
        
 private:            
-   
-   IDispatch*   m_pd_servicemanager;  
       
 };
 

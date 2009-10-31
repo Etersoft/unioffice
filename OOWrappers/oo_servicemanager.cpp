@@ -18,17 +18,18 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_servicemanager.h"
+#include "./oo_servicemanager.h"
 
+using namespace com::sun::star::uno;
 
-OOServiceManager::OOServiceManager()
+OOServiceManager::OOServiceManager():XBase()
 {
     CLSID clsid;                                
     HRESULT hr;
     
     TRACE_IN;
                                     
-    m_pd_servicemanager = NULL;                                   
+    m_pd_wrapper = NULL;                                   
     
     hr = CLSIDFromProgID(L"com.sun.star.ServiceManager", &clsid);
     if (FAILED(hr)) {
@@ -38,7 +39,7 @@ OOServiceManager::OOServiceManager()
     }
 
     /* Start server and get IDispatch...*/
-    hr = CoCreateInstance( clsid, NULL, CLSCTX_LOCAL_SERVER | CLSCTX_INPROC_SERVER, IID_IDispatch, (void**) &m_pd_servicemanager);
+    hr = CoCreateInstance( clsid, NULL, CLSCTX_LOCAL_SERVER | CLSCTX_INPROC_SERVER, IID_IDispatch, (void**) &m_pd_wrapper);
     if (FAILED(hr)) {
         ERR(" CoCreateInstance \n");
         TRACE_OUT;
@@ -50,15 +51,6 @@ OOServiceManager::OOServiceManager()
 
 OOServiceManager::~OOServiceManager()
 {
-   TRACE_IN;
-   
-   if ( m_pd_servicemanager != NULL )
-   {
-       m_pd_servicemanager->Release();
-       m_pd_servicemanager = NULL;        
-   }                                  
-   
-   TRACE_OUT;
 }
   
 HRESULT OOServiceManager::Get_Desktop( OODesktop& ret_val )
@@ -98,7 +90,7 @@ HRESULT OOServiceManager::CreateInstance( BSTR str_value, IDispatch** pp_disp )
     
     if ( IsNull() )
     {
-        ERR( " m_pd_servicemanager is NULL \n" );
+        ERR( " m_pd_wrapper is NULL \n" );
 		TRACE_OUT; 
         return ( E_FAIL );     
     }
@@ -110,7 +102,7 @@ HRESULT OOServiceManager::CreateInstance( BSTR str_value, IDispatch** pp_disp )
     V_BSTR(&param1) = SysAllocString( str_value );
     
     /* Get Desktop and its assoc. IDispatch...*/
-    hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_servicemanager, L"CreateInstance", 1, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_wrapper, L"CreateInstance", 1, param1);
     
     if ( FAILED( hr ) ) {
         ERR(" CreateInstance \n");
@@ -146,7 +138,7 @@ HRESULT OOServiceManager::Bridge_GetStruct( BSTR str_value, IDispatch** pp_disp 
  
     if ( IsNull() )
     {
-        ERR( " m_pd_servicemanager is NULL \n" ); 
+        ERR( " m_pd_wrapper is NULL \n" ); 
         TRACE_OUT;
         return ( E_FAIL );     
     }
@@ -158,7 +150,7 @@ HRESULT OOServiceManager::Bridge_GetStruct( BSTR str_value, IDispatch** pp_disp 
     V_BSTR(&param1) = SysAllocString( str_value );
     
     /* Get Desktop and its assoc. IDispatch...*/
-    hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_servicemanager, L"Bridge_GetStruct", 1, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_wrapper, L"Bridge_GetStruct", 1, param1);
     
     if ( FAILED( hr ) ) {
         ERR(" CreateInstance \n");
@@ -242,9 +234,4 @@ HRESULT OOServiceManager::Get_DispatchHeplper( OODispatchHelper& ret_val )
     
     TRACE_OUT;
     return ( hr );  				  
-}
-
-bool OOServiceManager::IsNull()
-{
-    return ( m_pd_servicemanager == NULL ? true : false ); 	 
 }
