@@ -26,25 +26,20 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
-class OODispatchProvider
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OODispatchProvider: public XBase
 {
 public:
        
   OODispatchProvider();
-  OODispatchProvider(const OODispatchProvider &);
   virtual ~OODispatchProvider();     
-   
-  OODispatchProvider& operator=( const OODispatchProvider &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   IDispatch* GetIDispatch();
          
-private:            
-   
-   IDispatch*   m_pd_dispatch_provider;  
+private:             
       
 };
 

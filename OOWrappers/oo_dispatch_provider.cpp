@@ -18,89 +18,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_dispatch_provider.h"
+#include "./oo_dispatch_provider.h"
 
-OODispatchProvider::OODispatchProvider()
-{
-    TRACE_IN;
-                                    
-    m_pd_dispatch_provider = NULL;                                   
-    
-    TRACE_OUT;                    
-}
+using namespace com::sun::star::uno;
 
-OODispatchProvider::OODispatchProvider(const OODispatchProvider &obj)
-{
-   TRACE_IN;      
-                               
-   m_pd_dispatch_provider = obj.m_pd_dispatch_provider;
-   if ( m_pd_dispatch_provider != NULL )
-       m_pd_dispatch_provider->AddRef();  
-       
-   TRACE_OUT;                         
+OODispatchProvider::OODispatchProvider():XBase()
+{                    
 }
 
 OODispatchProvider::~OODispatchProvider()
-{
-   TRACE_IN;                    
-                     
-   if ( m_pd_dispatch_provider != NULL )
-   {
-       m_pd_dispatch_provider->Release();
-       m_pd_dispatch_provider = NULL;        
-   }
-   
-   TRACE_OUT;                        
+{                      
 }    
-   
-OODispatchProvider& OODispatchProvider::operator=( const OODispatchProvider &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_dispatch_provider != NULL )
-   {
-       m_pd_dispatch_provider->Release();
-       m_pd_dispatch_provider = NULL;        
-   } 
-   
-   m_pd_dispatch_provider = obj.m_pd_dispatch_provider;
-   if ( m_pd_dispatch_provider != NULL )
-       m_pd_dispatch_provider->AddRef();
-   
-   return ( *this );           
-}
-  
-void OODispatchProvider::Init( IDispatch* p_oo_dispatch_provider)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_dispatch_provider != NULL )
-   {
-       m_pd_dispatch_provider->Release();
-       m_pd_dispatch_provider = NULL;        
-   } 
-   
-   if ( p_oo_dispatch_provider == NULL )
-   {
-       ERR( " p_oo_dispatch_provider == NULL \n" );
-       return;     
-   }
-   
-   m_pd_dispatch_provider = p_oo_dispatch_provider;
-   m_pd_dispatch_provider->AddRef();
-   
-   TRACE_OUT;
-   
-   return;     
-}
-  
-bool OODispatchProvider::IsNull()
-{
-    return ( (m_pd_dispatch_provider == NULL) ? true : false );     
-}
 
 IDispatch* OODispatchProvider::GetIDispatch()
 {
@@ -108,9 +36,9 @@ IDispatch* OODispatchProvider::GetIDispatch()
 	
 	if ( !IsNull() )
 	{
-	    m_pd_dispatch_provider->AddRef();       	 
+	    m_pd_wrapper->AddRef();       	 
     }
 	
 	TRACE_OUT;
-	return ( m_pd_dispatch_provider ); 		   
+	return ( m_pd_wrapper ); 		   
 }
