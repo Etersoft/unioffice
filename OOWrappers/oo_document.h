@@ -25,11 +25,11 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/wrap_property_array.h"
-#include "../OOWrappers/oo_sheets.h"
-#include "../OOWrappers/oo_controller.h"
-#include "../OOWrappers/oo_style_families.h"
-#include "../OOWrappers/oo_named_ranges.h"
+#include "./wrap_property_array.h"
+#include "./oo_sheets.h"
+#include "./oo_controller.h"
+#include "./oo_style_families.h"
+#include "./oo_named_ranges.h"
 
 #include "./com/sun/star/uno/x_base.h"
 
