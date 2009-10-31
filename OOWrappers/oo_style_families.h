@@ -25,28 +25,23 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/oo_page_styles.h"
+#include "./oo_page_styles.h"
 
-class OOStyleFamilies
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOStyleFamilies: public XBase
 {
 public:
 
   OOStyleFamilies();
-  OOStyleFamilies(const OOStyleFamilies &);
   virtual ~OOStyleFamilies();     
-   
-  OOStyleFamilies& operator=( const OOStyleFamilies &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   HRESULT getPageStyles( OOPageStyles& );
   
 private:
-  
-   IDispatch*   m_pd_style_families;
-           
+         
 };  
 
 #endif // __UNIOFFICE_OO_WRAP_STYLE_FAMILIES_H__

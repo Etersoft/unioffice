@@ -24,7 +24,7 @@
 #include <ole2.h>
 #include <oaidl.h>
 #include "../Common/debug.h"
-#include "../OOWrappers/oo_property_value.h"
+#include "./oo_property_value.h"
 #include <vector>
 
 using namespace std;

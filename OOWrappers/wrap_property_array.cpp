@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/wrap_property_array.h"
+#include "./wrap_property_array.h"
 
 
 WrapPropertyArray::WrapPropertyArray()
