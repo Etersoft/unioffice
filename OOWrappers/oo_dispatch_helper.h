@@ -25,29 +25,24 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/wrap_property_array.h"
-#include "../OOWrappers/oo_dispatch_provider.h"
+#include "./wrap_property_array.h"
+#include "./oo_dispatch_provider.h"
 
-class OODispatchHelper
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OODispatchHelper: public XBase
 {
 public:
        
   OODispatchHelper();
-  OODispatchHelper(const OODispatchHelper &);
   virtual ~OODispatchHelper();     
-   
-  OODispatchHelper& operator=( const OODispatchHelper &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   HRESULT executeDispatch( OODispatchProvider, BSTR, BSTR, long, WrapPropertyArray& );
          
 private:            
-   
-   IDispatch*   m_pd_dispatch_helper;  
-      
+     
 };
 
 

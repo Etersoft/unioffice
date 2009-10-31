@@ -20,87 +20,15 @@
 
 #include "../OOWrappers/oo_dispatch_helper.h"
 
-OODispatchHelper::OODispatchHelper()
-{
-    TRACE_IN;
-                                    
-    m_pd_dispatch_helper = NULL;                                   
-    
-    TRACE_OUT;                    
-}
+using namespace com::sun::star::uno;
 
-OODispatchHelper::OODispatchHelper(const OODispatchHelper &obj)
-{
-   TRACE_IN;      
-                               
-   m_pd_dispatch_helper = obj.m_pd_dispatch_helper;
-   if ( m_pd_dispatch_helper != NULL )
-       m_pd_dispatch_helper->AddRef();  
-       
-   TRACE_OUT;                         
+OODispatchHelper::OODispatchHelper():XBase()
+{                    
 }
 
 OODispatchHelper::~OODispatchHelper()
-{
-   TRACE_IN;                    
-                     
-   if ( m_pd_dispatch_helper != NULL )
-   {
-       m_pd_dispatch_helper->Release();
-       m_pd_dispatch_helper = NULL;        
-   }
-   
-   TRACE_OUT;                        
+{                      
 }    
-   
-OODispatchHelper& OODispatchHelper::operator=( const OODispatchHelper &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_dispatch_helper != NULL )
-   {
-       m_pd_dispatch_helper->Release();
-       m_pd_dispatch_helper = NULL;        
-   } 
-   
-   m_pd_dispatch_helper = obj.m_pd_dispatch_helper;
-   if ( m_pd_dispatch_helper != NULL )
-       m_pd_dispatch_helper->AddRef();
-   
-   return ( *this );           
-}
-  
-void OODispatchHelper::Init( IDispatch* p_oo_dispatch_helper)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_dispatch_helper != NULL )
-   {
-       m_pd_dispatch_helper->Release();
-       m_pd_dispatch_helper = NULL;        
-   } 
-   
-   if ( p_oo_dispatch_helper == NULL )
-   {
-       ERR( " p_oo_dispatch_helper == NULL \n" );
-       return;     
-   }
-   
-   m_pd_dispatch_helper = p_oo_dispatch_helper;
-   m_pd_dispatch_helper->AddRef();
-   
-   TRACE_OUT;
-   
-   return;     
-}
-  
-bool OODispatchHelper::IsNull()
-{
-    return ( (m_pd_dispatch_helper == NULL) ? true : false );     
-}
 
 HRESULT OODispatchHelper::executeDispatch( 
 		OODispatchProvider dispatch_provider, 
@@ -142,7 +70,7 @@ HRESULT OODispatchHelper::executeDispatch(
 	hr = AutoWrap (
 		 DISPATCH_METHOD, 
 		 &res, 
-		 m_pd_dispatch_helper, 
+		 m_pd_wrapper, 
 		 L"executeDispatch", 
 		 5, 
 		 param5, 
