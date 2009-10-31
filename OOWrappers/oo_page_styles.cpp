@@ -18,89 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_page_styles.h"
+#include "./oo_page_styles.h"
 
+using namespace com::sun::star::uno;
 
-OOPageStyles::OOPageStyles()
-{
-    TRACE_IN;
-                                    
-    m_pd_page_styles = NULL;                                   
-    
-    TRACE_OUT;                   
-}
-
-OOPageStyles::OOPageStyles(const OOPageStyles &obj)
-{
-   TRACE_IN;    
-                               
-   m_pd_page_styles = obj.m_pd_page_styles;
-   if ( m_pd_page_styles != NULL )
-       m_pd_page_styles->AddRef();  
-       
-   TRACE_OUT;                        
+OOPageStyles::OOPageStyles():XBase()
+{                  
 }
                        
 OOPageStyles::~OOPageStyles()
 {
-   TRACE_IN;                    
-                     
-   if ( m_pd_page_styles != NULL )
-   {
-       m_pd_page_styles->Release();
-       m_pd_page_styles = NULL;        
-   }
-   
-   TRACE_OUT;
-}
-   
-OOPageStyles& OOPageStyles::operator=( const OOPageStyles &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_page_styles != NULL )
-   {
-       m_pd_page_styles->Release();
-       m_pd_page_styles = NULL;        
-   } 
-   
-   m_pd_page_styles = obj.m_pd_page_styles;
-   if ( m_pd_page_styles != NULL )
-       m_pd_page_styles->AddRef();
-   
-   return ( *this );         
-}
-  
-void OOPageStyles::Init( IDispatch* p_oo_page_styles)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_page_styles != NULL )
-   {
-       m_pd_page_styles->Release();
-       m_pd_page_styles = NULL;        
-   } 
-   
-   if ( p_oo_page_styles == NULL )
-   {
-       ERR( " p_oo_page_styles == NULL \n" );
-       return;     
-   }
-   
-   m_pd_page_styles = p_oo_page_styles;
-   m_pd_page_styles->AddRef();
-   
-   TRACE_OUT;
-   
-   return;          
-}
-  
-bool OOPageStyles::IsNull()
-{
-    return ( (m_pd_page_styles == NULL) ? true : false );     
 }
 
 HRESULT OOPageStyles::getByName( BSTR _name_of_style, OOPageStyle& oo_page_style )
@@ -123,7 +50,7 @@ HRESULT OOPageStyles::getByName( BSTR _name_of_style, OOPageStyle& oo_page_style
 	V_VT( &param1 ) = VT_BSTR;
 	V_BSTR( &param1 ) = SysAllocString( _name_of_style );
 	
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_page_styles, L"getByName", 1, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getByName", 1, param1);
     
     p_disp = V_DISPATCH( &res );
     	

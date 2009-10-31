@@ -25,27 +25,22 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/oo_page_style.h"
+#include "./oo_page_style.h"
 
-class OOPageStyles
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOPageStyles: public XBase
 {
 public:
 
   OOPageStyles();
-  OOPageStyles(const OOPageStyles &);
   virtual ~OOPageStyles();     
-   
-  OOPageStyles& operator=( const OOPageStyles &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   HRESULT getByName( BSTR, OOPageStyle& );
   
 private:
-  
-   IDispatch*   m_pd_page_styles;
            
 };  
 

@@ -18,89 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_page_style.h"
+#include "./oo_page_style.h"
 
+using namespace com::sun::star::uno;
 
-OOPageStyle::OOPageStyle()
-{
-    TRACE_IN;
-                                    
-    m_pd_page_style = NULL;                                   
-    
-    TRACE_OUT;                   
-}
-
-OOPageStyle::OOPageStyle(const OOPageStyle &obj)
-{
-   TRACE_IN;    
-                               
-   m_pd_page_style = obj.m_pd_page_style;
-   if ( m_pd_page_style != NULL )
-       m_pd_page_style->AddRef();  
-       
-   TRACE_OUT;                        
+OOPageStyle::OOPageStyle():XBase()
+{                   
 }
                        
 OOPageStyle::~OOPageStyle()
 {
-   TRACE_IN;                    
-                     
-   if ( m_pd_page_style != NULL )
-   {
-       m_pd_page_style->Release();
-       m_pd_page_style = NULL;        
-   }
-   
-   TRACE_OUT;
-}
-   
-OOPageStyle& OOPageStyle::operator=( const OOPageStyle &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_page_style != NULL )
-   {
-       m_pd_page_style->Release();
-       m_pd_page_style = NULL;        
-   } 
-   
-   m_pd_page_style = obj.m_pd_page_style;
-   if ( m_pd_page_style != NULL )
-       m_pd_page_style->AddRef();
-   
-   return ( *this );         
-}
-  
-void OOPageStyle::Init( IDispatch* p_oo_page_style)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_page_style != NULL )
-   {
-       m_pd_page_style->Release();
-       m_pd_page_style = NULL;        
-   } 
-   
-   if ( p_oo_page_style == NULL )
-   {
-       ERR( " p_oo_page_style == NULL \n" );
-       return;     
-   }
-   
-   m_pd_page_style = p_oo_page_style;
-   m_pd_page_style->AddRef();
-   
-   TRACE_OUT;
-   
-   return;          
-}
-  
-bool OOPageStyle::IsNull()
-{
-    return ( (m_pd_page_style == NULL) ? true : false );     
 }
 
 double OOPageStyle::LeftMargin( )
@@ -119,7 +46,7 @@ double OOPageStyle::LeftMargin( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"LeftMargin", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"LeftMargin", 0);
     if ( FAILED( hr ) ) {
         ERR(" LeftMargin (GET) \n");
         TRACE_OUT;
@@ -161,7 +88,7 @@ HRESULT OOPageStyle::LeftMargin( double _value )
     V_VT( &param1 ) = VT_I4;
     V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"LeftMargin", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"LeftMargin", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" LeftMargin (PUT) \n");
         TRACE_OUT;
@@ -191,7 +118,7 @@ double OOPageStyle::RightMargin( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"RightMargin", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"RightMargin", 0);
     if ( FAILED( hr ) ) {
         ERR(" RightMargin (GET) \n");
         TRACE_OUT;
@@ -233,7 +160,7 @@ HRESULT OOPageStyle::RightMargin( double _value )
     V_VT( &param1 ) = VT_I4;
     V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"RightMargin", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"RightMargin", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" RightMargin (PUT) \n");
         TRACE_OUT;
@@ -263,7 +190,7 @@ double OOPageStyle::TopMargin( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"TopMargin", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"TopMargin", 0);
     if ( FAILED( hr ) ) {
         ERR(" TopMargin (GET) \n");
         TRACE_OUT;
@@ -305,7 +232,7 @@ HRESULT OOPageStyle::TopMargin( double _value )
     V_VT( &param1 ) = VT_I4;
     V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"TopMargin", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"TopMargin", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" TopMargin (PUT) \n");
         TRACE_OUT;
@@ -335,7 +262,7 @@ double OOPageStyle::BottomMargin( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"BottomMargin", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"BottomMargin", 0);
     if ( FAILED( hr ) ) {
         ERR(" BottomMargin (GET) \n");
         TRACE_OUT;
@@ -377,7 +304,7 @@ HRESULT OOPageStyle::BottomMargin( double _value )
     V_VT( &param1 ) = VT_I4;
     V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"BottomMargin", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"BottomMargin", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" BottomMargin (PUT) \n");
         TRACE_OUT;
@@ -407,7 +334,7 @@ VARIANT_BOOL OOPageStyle::IsLandscape( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"IsLandscape", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"IsLandscape", 0);
     if ( FAILED( hr ) ) {
         ERR(" IsLandscape (GET) \n");
         TRACE_OUT;
@@ -441,7 +368,7 @@ HRESULT OOPageStyle::IsLandscape( VARIANT_BOOL _value )
     V_VT( &param1 ) = VT_BOOL;
     V_BOOL( &param1 ) = _value;
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"IsLandscape", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"IsLandscape", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" IsLandscape (PUT) \n");
         TRACE_OUT;
@@ -471,7 +398,7 @@ short  OOPageStyle::PageScale()
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"PageScale", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"PageScale", 0);
     if ( FAILED( hr ) ) {
         ERR(" PageScale (GET) \n");
         TRACE_OUT;
@@ -505,7 +432,7 @@ HRESULT  OOPageStyle::PageScale( short _value )
     V_VT( &param1 ) = VT_I2;
     V_I2( &param1 ) = _value;
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"PageScale", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"PageScale", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" PageScale (PUT) \n");
         TRACE_OUT;
@@ -535,7 +462,7 @@ short  OOPageStyle::ScaleToPagesY()
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"ScaleToPagesY", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"ScaleToPagesY", 0);
     if ( FAILED( hr ) ) {
         ERR(" ScaleToPagesY (GET) \n");
         TRACE_OUT;
@@ -569,7 +496,7 @@ HRESULT  OOPageStyle::ScaleToPagesY( short _value )
     V_VT( &param1 ) = VT_I2;
     V_I2( &param1 ) = _value;
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"ScaleToPagesY", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"ScaleToPagesY", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" ScaleToPagesY (PUT) \n");
         TRACE_OUT;
@@ -599,7 +526,7 @@ short  OOPageStyle::ScaleToPagesX()
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"ScaleToPagesX", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"ScaleToPagesX", 0);
     if ( FAILED( hr ) ) {
         ERR(" ScaleToPagesX (GET) \n");
         TRACE_OUT;
@@ -633,7 +560,7 @@ HRESULT  OOPageStyle::ScaleToPagesX( short _value )
     V_VT( &param1 ) = VT_I2;
     V_I2( &param1 ) = _value;
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"ScaleToPagesX", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"ScaleToPagesX", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" ScaleToPagesX (PUT) \n");
         TRACE_OUT;
@@ -663,7 +590,7 @@ double OOPageStyle::HeaderHeight( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"HeaderHeight", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"HeaderHeight", 0);
     if ( FAILED( hr ) ) {
         ERR(" HeaderHeight (GET) \n");
         TRACE_OUT;
@@ -705,7 +632,7 @@ HRESULT OOPageStyle::HeaderHeight( double _value )
     V_VT( &param1 ) = VT_I4;
     V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"HeaderHeight", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"HeaderHeight", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" HeaderHeight (PUT) \n");
         TRACE_OUT;
@@ -735,7 +662,7 @@ double OOPageStyle::FooterHeight( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"FooterHeight", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"FooterHeight", 0);
     if ( FAILED( hr ) ) {
         ERR(" FooterHeight (GET) \n");
         TRACE_OUT;
@@ -777,7 +704,7 @@ HRESULT OOPageStyle::FooterHeight( double _value )
     V_VT( &param1 ) = VT_I4;
     V_I4( &param1 ) = static_cast<long>( _value / 28 * 1000 );
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"FooterHeight", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"FooterHeight", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" FooterHeight (PUT) \n");
         TRACE_OUT;
@@ -807,7 +734,7 @@ VARIANT_BOOL OOPageStyle::CenterHorizontally( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"CenterHorizontally", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CenterHorizontally", 0);
     if ( FAILED( hr ) ) {
         ERR(" CenterHorizontally (GET) \n");
         TRACE_OUT;
@@ -841,7 +768,7 @@ HRESULT OOPageStyle::CenterHorizontally( VARIANT_BOOL _value )
     V_VT( &param1 ) = VT_BOOL;
     V_BOOL( &param1 ) = _value;
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"CenterHorizontally", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CenterHorizontally", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" CenterHorizontally (PUT) \n");
         TRACE_OUT;
@@ -871,7 +798,7 @@ VARIANT_BOOL OOPageStyle::CenterVertically( )
 	
 	VariantInit( &res );
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_page_style, L"CenterVertically", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CenterVertically", 0);
     if ( FAILED( hr ) ) {
         ERR(" CenterVertically (GET) \n");
         TRACE_OUT;
@@ -905,7 +832,7 @@ HRESULT OOPageStyle::CenterVertically( VARIANT_BOOL _value )
     V_VT( &param1 ) = VT_BOOL;
     V_BOOL( &param1 ) = _value;
 		
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_page_style, L"CenterVertically", 1, param1);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CenterVertically", 1, param1);
     if ( FAILED( hr ) ) {
         ERR(" CenterVertically (PUT) \n");
         TRACE_OUT;

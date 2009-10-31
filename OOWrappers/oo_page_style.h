@@ -26,19 +26,16 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
-class OOPageStyle
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOPageStyle: public XBase
 {
 public:
 
   OOPageStyle();
-  OOPageStyle(const OOPageStyle &);
   virtual ~OOPageStyle();     
-   
-  OOPageStyle& operator=( const OOPageStyle &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   double  LeftMargin( );
   HRESULT LeftMargin( double );
@@ -77,8 +74,6 @@ public:
   HRESULT      CenterVertically( VARIANT_BOOL );
   
 private:
-  
-   IDispatch*   m_pd_page_style;
            
 };  
 
