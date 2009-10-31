@@ -23,34 +23,28 @@
 
 #include <ole2.h>
 #include <oaidl.h>
-
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
-#include "../OOWrappers/oo_document.h"
-#include "../OOWrappers/wrap_property_array.h"
+#include "./oo_document.h"
+#include "./wrap_property_array.h"
 
-class OODesktop
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OODesktop: public XBase
 {
 public:
        
     OODesktop();
-    OODesktop( const OODesktop & );
-    virtual ~OODesktop();       
-    
-    OODesktop &operator=(const OODesktop& );
-    
-    void Init( IDispatch* p_oo_desktop );  
-    
-    bool IsNull();
+	virtual ~OODesktop();       
     
     HRESULT LoadComponentFromURL( BSTR, BSTR, long, WrapPropertyArray&, OODocument& );
     
     HRESULT terminate();
        
 private:             
-      
-   IDispatch*   m_pd_desktop;      
       
 };
 

@@ -18,89 +18,18 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_desktop.h"
+#include "./oo_desktop.h"
 
+using namespace com::sun::star::uno;
 
-OODesktop::OODesktop()
+OODesktop::OODesktop():XBase()
 {    
-    TRACE_IN;
-                                    
-    m_pd_desktop = NULL;                                   
-    
-    TRACE_OUT;
+
 }
-
-
-OODesktop::OODesktop(const OODesktop &obj)
-{
-   TRACE_IN;
-                               
-   m_pd_desktop = obj.m_pd_desktop;
-   if ( m_pd_desktop != NULL )
-       m_pd_desktop->AddRef();  
-       
-   TRACE_OUT;                      
-}
-
 
 OODesktop::~OODesktop()
 {
-   TRACE_IN;
-   
-   if ( m_pd_desktop != NULL )
-   {
-       m_pd_desktop->Release();
-       m_pd_desktop = NULL;        
-   }                                  
-   
-   TRACE_OUT;
-}
 
-
-
-OODesktop& OODesktop::operator=(const OODesktop &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_desktop != NULL )
-   {
-       m_pd_desktop->Release();
-       m_pd_desktop = NULL;        
-   } 
-   
-   m_pd_desktop = obj.m_pd_desktop;
-   if ( m_pd_desktop != NULL )
-       m_pd_desktop->AddRef();
-   
-   return ( *this );          
-    
-}
-
-void OODesktop::Init( IDispatch* p_oo_desktop )
-{
-    TRACE_IN; 
-     
-   if ( m_pd_desktop != NULL )
-   {
-       m_pd_desktop->Release();
-       m_pd_desktop = NULL;        
-   } 
-   
-   if ( p_oo_desktop == NULL )
-   {
-       ERR( " p_oo_desktop == NULL \n" );
-       TRACE_OUT;
-       return;     
-   }
-   
-   m_pd_desktop = p_oo_desktop;
-   m_pd_desktop->AddRef();
-   
-   TRACE_OUT;   
-   return;
 }
 
 HRESULT OODesktop::terminate()
@@ -118,7 +47,7 @@ HRESULT OODesktop::terminate()
     
     VariantInit( &res );
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_desktop, L"terminate", 0);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"terminate", 0);
 
     if ( FAILED( hr ) )
     {
@@ -175,7 +104,7 @@ HRESULT OODesktop::LoadComponentFromURL(
     V_VT(&param3) = VT_ARRAY | VT_DISPATCH;
     V_ARRAY(&param3) = _property_array.Get_SafeArray();
   
-    hr = AutoWrap(DISPATCH_METHOD, &resultDoc, m_pd_desktop, L"loadComponentFromURL", 4, param3, param2, param1, param0);
+    hr = AutoWrap(DISPATCH_METHOD, &resultDoc, m_pd_wrapper, L"loadComponentFromURL", 4, param3, param2, param1, param0);
     
     if ( FAILED(hr) ) {
         ERR( " LoadComponentFromURL \n" ); 
@@ -199,8 +128,3 @@ HRESULT OODesktop::LoadComponentFromURL(
     TRACE_OUT; 
     return ( hr );      
 }
-
-bool OODesktop::IsNull()
-{
-    return ( m_pd_desktop == NULL ? true : false ); 	 
-}    
