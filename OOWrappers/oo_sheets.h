@@ -25,21 +25,18 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/oo_sheet.h"
+#include "./oo_sheet.h"
 
-class OOSheets
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOSheets: public XBase
 {
 public:
        
   OOSheets();
-  OOSheets(const OOSheets &);
   virtual ~OOSheets();     
-   
-  OOSheets& operator=( const OOSheets &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   long getCount( );
   
@@ -51,8 +48,6 @@ public:
          
 private:            
    
-   IDispatch*   m_pd_sheets;  
-      
 };
 
 

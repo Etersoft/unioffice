@@ -20,88 +20,16 @@
 
 #include "../OOWrappers/oo_sheets.h"
 
-OOSheets::OOSheets()
-{
-    TRACE_IN;
-                                    
-    m_pd_sheets = NULL;                                   
-    
-    TRACE_OUT;                    
-}
+using namespace com::sun::star::uno;
 
-OOSheets::OOSheets(const OOSheets &obj)
-{
-   TRACE_IN;      
-                               
-   m_pd_sheets = obj.m_pd_sheets;
-   if ( m_pd_sheets != NULL )
-       m_pd_sheets->AddRef();  
-       
-   TRACE_OUT;                         
+OOSheets::OOSheets():XBase()
+{                   
 }
 
 OOSheets::~OOSheets()
-{
-   TRACE_IN;                    
-                     
-   if ( m_pd_sheets != NULL )
-   {
-       m_pd_sheets->Release();
-       m_pd_sheets = NULL;        
-   }
-   
-   TRACE_OUT;                        
+{                       
 }    
-   
-OOSheets& OOSheets::operator=( const OOSheets &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_sheets != NULL )
-   {
-       m_pd_sheets->Release();
-       m_pd_sheets = NULL;        
-   } 
-   
-   m_pd_sheets = obj.m_pd_sheets;
-   if ( m_pd_sheets != NULL )
-       m_pd_sheets->AddRef();
-   
-   return ( *this );           
-}
-  
-void OOSheets::Init( IDispatch* p_oo_sheets)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_sheets != NULL )
-   {
-       m_pd_sheets->Release();
-       m_pd_sheets = NULL;        
-   } 
-   
-   if ( p_oo_sheets == NULL )
-   {
-       ERR( " p_oo_sheets == NULL \n" );
-       return;     
-   }
-   
-   m_pd_sheets = p_oo_sheets;
-   m_pd_sheets->AddRef();
-   
-   TRACE_OUT;
-   
-   return;     
-}
-  
-bool OOSheets::IsNull()
-{
-    return ( (m_pd_sheets == NULL) ? true : false );     
-}
-  
+
 long OOSheets::getCount( )
 {
    TRACE_IN;
@@ -118,7 +46,7 @@ long OOSheets::getCount( )
        return ( -1 );     
    }
    
-   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheets, L"getCount", 0);
+   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getCount", 0);
    
    if ( FAILED( hr ) ) 
    {
@@ -153,7 +81,7 @@ HRESULT OOSheets::getByIndex( long _index, OOSheet &oo_sheet )
     V_VT( &res ) = VT_I4;
     V_I4( &var_index ) = _index;
     
-    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_sheets, L"getByIndex", 1, var_index);
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"getByIndex", 1, var_index);
     if ( FAILED( hr ) )
     {
         ERR( " getByIndex \n" );
@@ -188,7 +116,7 @@ HRESULT OOSheets::getByName( BSTR _sheet_name, OOSheet &oo_sheet )
     V_VT( &res ) = VT_BSTR;
     V_BSTR( &var_index ) = SysAllocString( _sheet_name );
     
-    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_sheets, L"getByName", 1, var_index);
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"getByName", 1, var_index);
     if ( FAILED( hr ) )
     {
         ERR( " getByIndex \n" );
@@ -228,7 +156,7 @@ HRESULT OOSheets::insertNewByName( BSTR _name, long _index )
     V_VT( &param2 ) = VT_I4;
     V_I4( &param2 ) = _index;
 
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheets, L"insertNewByName", 2, param2, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"insertNewByName", 2, param2, param1);
     if ( FAILED( hr ) ) 
     {
         ERR(" insertNewByName\n");
@@ -262,7 +190,7 @@ HRESULT OOSheets::removeByName( BSTR _name )
     V_VT( &param1 ) = VT_BSTR;
     V_BSTR( &param1 ) = SysAllocString( _name );
 
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_sheets, L"removeByName", 1, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"removeByName", 1, param1);
     if ( FAILED( hr ) ) 
     {
         ERR(" removeByName \n");
