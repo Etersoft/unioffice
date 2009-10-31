@@ -20,88 +20,14 @@
 
 #include "../OOWrappers/oo_document.h"
 
-OODocument::OODocument()
-{
-    TRACE_IN;
-                                    
-    m_pd_document = NULL;                                   
-    
-    TRACE_OUT;                        
-}
+using namespace com::sun::star::uno;
 
-OODocument::OODocument(const OODocument &obj)
-{
-   TRACE_IN;            
-                               
-   m_pd_document = obj.m_pd_document;
-   if ( m_pd_document != NULL )
-       m_pd_document->AddRef();  
-       
-   TRACE_OUT;                      
+OODocument::OODocument():XBase()
+{                       
 }
 
 OODocument::~OODocument()
-{
-   TRACE_IN;
-   
-   if ( m_pd_document != NULL )
-   {
-       m_pd_document->Release();
-       m_pd_document = NULL;        
-   }                                  
-   
-   TRACE_OUT;                         
-}
-
-OODocument& OODocument::operator=( const OODocument &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_document != NULL )
-   {
-       m_pd_document->Release();
-       m_pd_document = NULL;        
-   } 
-   
-   m_pd_document = obj.m_pd_document;
-   if ( m_pd_document != NULL )
-       m_pd_document->AddRef();
-   
-   return ( *this );          
-    
-}
-
-void OODocument::Init( IDispatch* p_oo_document )
-{
-   TRACE_IN; 
-     
-   if ( m_pd_document != NULL )
-   {
-       m_pd_document->Release();
-       m_pd_document = NULL;        
-   } 
-   
-   if ( p_oo_document == NULL )
-   {
-       ERR( " p_oo_document == NULL \n" );
-       TRACE_OUT;
-       return;     
-   }
-   
-   m_pd_document = p_oo_document;
-   m_pd_document->AddRef();
-   
-   TRACE_OUT;
-   
-   return;
-}
-
-bool OODocument::IsNull()
-{
-    return ( (m_pd_document == NULL) ? true : false );     
+{                        
 }
 
 HRESULT OODocument::StoreAsURL( BSTR _filename, WrapPropertyArray& _property_array )
@@ -138,7 +64,7 @@ HRESULT OODocument::StoreAsURL( BSTR _filename, WrapPropertyArray& _property_arr
     }
     WTRACE_HARD(L"\n");
         
-    hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_document, L"StoreAsURL", 2, param1, param0);
+    hr = AutoWrap(DISPATCH_METHOD, &result, m_pd_wrapper, L"StoreAsURL", 2, param1, param0);
     
     if ( FAILED( hr ) ) {
         ERR( " StoreAsURL \n" );
@@ -163,14 +89,14 @@ HRESULT OODocument::Store( )
 
     if ( IsNull() )
     {
-        ERR( " m_pd_document is NULL \n" );
+        ERR( " m_pd_wrapper is NULL \n" );
 		TRACE_OUT; 
         return ( E_FAIL );     
     }
     
     VariantInit( &res );
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"Store", 0);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"Store", 0);
     if ( FAILED( hr ) )
     {
         ERR( " Store() \n" );     
@@ -192,7 +118,7 @@ HRESULT OODocument::close( VARIANT_BOOL _hard_close )
 
     if ( IsNull() )
     {
-        ERR( " m_pd_document is NULL \n" );
+        ERR( " m_pd_wrapper is NULL \n" );
 		TRACE_OUT; 
         return ( E_FAIL );     
     }
@@ -203,7 +129,7 @@ HRESULT OODocument::close( VARIANT_BOOL _hard_close )
     V_VT( &hard_close )   = VT_BOOL;
     V_BOOL( &hard_close ) = _hard_close;
     
-    hr = AutoWrap( DISPATCH_METHOD, &res, m_pd_document, L"close", 1, hard_close );
+    hr = AutoWrap( DISPATCH_METHOD, &res, m_pd_wrapper, L"close", 1, hard_close );
 
     if ( FAILED( hr ) )
     { 
@@ -234,7 +160,7 @@ HRESULT OODocument::getSheets( OOSheets& oo_sheets )
         return ( E_FAIL );      
     } 
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"getSheets", 0);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getSheets", 0);
 
     p_disp = V_DISPATCH( &res );
     
@@ -268,7 +194,7 @@ HRESULT OODocument::protect( BSTR _password )
 
     if ( IsNull() )
     {
-        ERR( " m_pd_document is NULL \n" );
+        ERR( " m_pd_wrapper is NULL \n" );
 		TRACE_OUT; 
         return ( E_FAIL );     
     }
@@ -279,7 +205,7 @@ HRESULT OODocument::protect( BSTR _password )
    V_VT( &param1 )   = VT_BSTR;
    V_BSTR( &param1 ) = SysAllocString( _password );
    
-   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"protect", 1, param1);
+   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"protect", 1, param1);
    if ( FAILED( hr ) )
    {
        ERR( " protect \n" );     
@@ -301,7 +227,7 @@ HRESULT OODocument::unprotect( BSTR _password )
 
    if ( IsNull() )
    {
-       ERR( " m_pd_document is NULL \n" );
+       ERR( " m_pd_wrapper is NULL \n" );
        TRACE_OUT; 
        return ( E_FAIL );     
    }
@@ -312,7 +238,7 @@ HRESULT OODocument::unprotect( BSTR _password )
    V_VT( &param1 )   = VT_BSTR;
    V_BSTR( &param1 ) = SysAllocString( _password );
    
-   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"unprotect", 1, param1);
+   hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"unprotect", 1, param1);
    if ( FAILED( hr ) )
    {
        ERR( " unprotect \n" );     
@@ -341,7 +267,7 @@ HRESULT OODocument::getCurrentController( OOController& oo_controller )
         return ( E_FAIL );      
     } 
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_document, L"getCurrentController", 0);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getCurrentController", 0);
     
     p_disp = V_DISPATCH( &res );
     
@@ -382,7 +308,7 @@ HRESULT OODocument::StyleFamilies( OOStyleFamilies& oo_style_families )
         return ( E_FAIL );      
     } 
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_document, L"StyleFamilies", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"StyleFamilies", 0);
     
     p_disp = V_DISPATCH( &res );
     	
@@ -423,7 +349,7 @@ HRESULT OODocument::NamedRanges( OONamedRanges& oo_named_ranges)
         return ( E_FAIL );      
     } 
 	
-    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_document, L"NamedRanges", 0);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"NamedRanges", 0);
     
     p_disp = V_DISPATCH( &res );
     	

@@ -31,19 +31,16 @@
 #include "../OOWrappers/oo_style_families.h"
 #include "../OOWrappers/oo_named_ranges.h"
 
-class OODocument
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OODocument: public XBase
 {
 public:
        
   OODocument();
-  OODocument(const OODocument &);
   virtual ~OODocument();     
-   
-  OODocument& operator=( const OODocument &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   HRESULT StoreAsURL( BSTR ,WrapPropertyArray& );
   HRESULT Store( );
@@ -60,11 +57,8 @@ public:
   HRESULT StyleFamilies( OOStyleFamilies& );
     
   HRESULT NamedRanges( OONamedRanges& );
-  
-     
-private:            
    
-   IDispatch*   m_pd_document;  
+private:              
       
 };
 
