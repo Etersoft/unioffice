@@ -26,17 +26,17 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
-class OOPropertyValue
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OOPropertyValue: public XBase
 {
 public:
        
   OOPropertyValue();
-  OOPropertyValue(const OOPropertyValue &);
   virtual ~OOPropertyValue();     
    
-  OOPropertyValue& operator=( const OOPropertyValue &); 
-  
-  void Init( IDispatch* );  
   IDispatch* GetOOProperty();
   
   HRESULT Set_PropertyName( BSTR );
@@ -44,8 +44,6 @@ public:
   HRESULT Set_Property( BSTR, BSTR ); 
   
   HRESULT Set_PropertyValue( VARIANT_BOOL );
-  
-  bool IsNull();
        
 private:            
    

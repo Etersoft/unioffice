@@ -18,97 +18,29 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_property_value.h"
+#include "./oo_property_value.h"
 
-OOPropertyValue::OOPropertyValue()
-{
-    TRACE_IN;
-                                    
-    m_pd_property_value = NULL;                                   
-    
-    TRACE_OUT;                        
-}
+using namespace com::sun::star::uno;
 
-OOPropertyValue::OOPropertyValue(const OOPropertyValue &obj)
-{
-   TRACE_IN;
-                               
-   m_pd_property_value = obj.m_pd_property_value;
-   if ( m_pd_property_value != NULL )
-       m_pd_property_value->AddRef();  
-       
-   TRACE_OUT;                      
+OOPropertyValue::OOPropertyValue():XBase()
+{                        
 }
 
 OOPropertyValue::~OOPropertyValue()
-{
-   TRACE_IN;
-   
-   if ( m_pd_property_value != NULL )
-   {
-       m_pd_property_value->Release();
-       m_pd_property_value = NULL;        
-   }                                  
-   
-   TRACE_OUT;                         
-}
-
-OOPropertyValue& OOPropertyValue::operator=( const OOPropertyValue &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_property_value != NULL )
-   {
-       m_pd_property_value->Release();
-       m_pd_property_value = NULL;        
-   } 
-   
-   m_pd_property_value = obj.m_pd_property_value;
-   if ( m_pd_property_value != NULL )
-       m_pd_property_value->AddRef();
-   
-   return ( *this );          
-    
-}
-
-void OOPropertyValue::Init( IDispatch* p_oo_property_value  )
-{
-   TRACE_IN; 
-     
-   if ( m_pd_property_value != NULL )
-   {
-       m_pd_property_value->Release();
-       m_pd_property_value = NULL;        
-   } 
-   
-   if ( p_oo_property_value == NULL )
-   {
-       ERR( " p_oo_property_value == NULL \n" );
-       return;     
-   }
-   
-   m_pd_property_value = p_oo_property_value;
-   m_pd_property_value->AddRef();
-   
-   TRACE_OUT;
-   
-   return;
+{                       
 }
 
 IDispatch* OOPropertyValue::GetOOProperty()
 {
-    if ( m_pd_property_value != NULL )
+    if ( m_pd_wrapper != NULL )
     {
-       m_pd_property_value->AddRef();     
+       m_pd_wrapper->AddRef();     
     } else
     {
-        ERR( " m_pd_property_value is NULL \n" );      
+        ERR( " m_pd_wrapper is NULL \n" );      
     }           
           
-    return ( m_pd_property_value );           
+    return ( m_pd_wrapper );           
 }
 
 HRESULT OOPropertyValue::Set_PropertyName( BSTR _name )
@@ -121,7 +53,7 @@ HRESULT OOPropertyValue::Set_PropertyName( BSTR _name )
 
     if ( IsNull() )
     {
-        ERR( " m_pd_property_value is NULL \n" );
+        ERR( " m_pd_wrapper is NULL \n" );
 		TRACE_OUT; 
         return ( E_FAIL );     
     }
@@ -132,7 +64,7 @@ HRESULT OOPropertyValue::Set_PropertyName( BSTR _name )
     V_VT(&param) = VT_BSTR;
     V_BSTR(&param) = SysAllocString(_name);
     
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_property_value, L"Name", 1, param);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"Name", 1, param);
     
     if ( FAILED( hr ) )
     {
@@ -157,7 +89,7 @@ HRESULT OOPropertyValue::Set_PropertyValue( BSTR _value )
 
     if ( IsNull() )
     {
-        ERR( " m_pd_property_value is NULL \n" );
+        ERR( " m_pd_wrapper is NULL \n" );
 		TRACE_OUT; 
         return ( E_FAIL );     
     }
@@ -168,7 +100,7 @@ HRESULT OOPropertyValue::Set_PropertyValue( BSTR _value )
     V_VT(&param) = VT_BSTR;
     V_BSTR(&param) = SysAllocString(_value);
     
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_property_value, L"Value", 1, param);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"Value", 1, param);
     
     if ( FAILED( hr ) )
     {
@@ -193,7 +125,7 @@ HRESULT OOPropertyValue::Set_PropertyValue( VARIANT_BOOL _value)
     
     if ( IsNull() )
     {
-        ERR( " m_pd_property_value is NULL \n" );
+        ERR( " m_pd_wrapper is NULL \n" );
 		TRACE_OUT; 
         return ( E_FAIL );     
     }
@@ -204,7 +136,7 @@ HRESULT OOPropertyValue::Set_PropertyValue( VARIANT_BOOL _value)
     V_VT(&param) = VT_BOOL;
     V_BOOL(&param) = _value;
     
-    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_property_value, L"Value", 1, param);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"Value", 1, param);
     
     if ( FAILED( hr ) )
     {
@@ -241,9 +173,4 @@ HRESULT OOPropertyValue::Set_Property( BSTR _name, BSTR _value )
     
     TRACE_OUT;
     return ( hr );         
-}
-
-bool OOPropertyValue::IsNull()
-{
-    return ( m_pd_property_value == NULL ? true : false ); 	 
 }
