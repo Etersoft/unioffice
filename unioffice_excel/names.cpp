@@ -22,6 +22,8 @@
 
 #include "application.h"
 #include "worksheet.h"
+#include "name.h"
+#include "../OOWrappers/oo_named_range.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE CNames::QueryInterface(const IID& iid, void** ppv)
@@ -253,15 +255,84 @@ HRESULT STDMETHODCALLTYPE CNames::Item(
     return ( hr ); 		
 }
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CNames::_Default( 
+HRESULT STDMETHODCALLTYPE CNames::_Default( 
             /* [optional][in] */ VARIANT Index,
             /* [optional][in] */ VARIANT IndexLocal,
             /* [optional][in] */ VARIANT RefersTo,
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ Name	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+   TRACE_IN;
+   HRESULT hr;
+   
+   CorrectArg(Index, &Index);
+   CorrectArg(IndexLocal, &IndexLocal);
+   CorrectArg(RefersTo, &RefersTo);
+   
+   CName* p_name = new CName;
+   
+   p_name->Put_Application( m_p_application );
+   p_name->Put_Parent( this );
+   
+   OONamedRange    oo_name;
+   
+   if ( V_VT( &Index ) == VT_BSTR ) 
+   {
+  	   hr = m_oo_named_ranges.getNameByName( Index , oo_name );
+  	   
+       if ( FAILED( hr ) ) 
+	   {
+          ERR( " m_oo_named_ranges.getNameByName \n" );
+          
+          if ( p_name != NULL )
+              p_name->Release();
+          
+          TRACE_OUT;
+          return ( hr );
+       }
+    } else 
+	{
+       if ( Is_Variant_Null( Index ) ) 
+	   {
+          ERR(" Empty param \n ");
+           
+          if ( p_name != NULL )
+             p_name->Release();
+          
+          TRACE_OUT;           
+          return E_FAIL;
+       } else 
+	   {
+           hr = m_oo_named_ranges.getNameByIndex( Index , oo_name );
+  	   
+           if ( FAILED( hr ) ) 
+	       {
+              ERR( " m_oo_named_ranges.getNameByIndex \n" );
+          
+              if ( p_name != NULL )
+                  p_name->Release();
+          
+              TRACE_OUT;
+              return ( hr );
+           }
+        }
+    }   
+   
+   p_name->InitWrapper( oo_name );
+             
+   hr = p_name->QueryInterface( DIID_Name, (void**)RHS );
+             
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_name.QueryInterface \n" );     
+   }
+             
+   if ( p_name != NULL )
+       p_name->Release();
+   
+   
+   TRACE_OUT;
+   return E_NOTIMPL; 		
 }
        
 HRESULT STDMETHODCALLTYPE CNames::get_Count( 
