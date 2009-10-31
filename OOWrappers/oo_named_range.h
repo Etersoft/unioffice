@@ -26,27 +26,22 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
-class OONamedRange
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OONamedRange: public XBase
 {
 public:
 
   OONamedRange();
-  OONamedRange(const OONamedRange &);
   virtual ~OONamedRange();     
-   
-  OONamedRange& operator=( const OONamedRange &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
   
   BSTR    getName( );
   HRESULT setName( BSTR );
   
 private:
-  
-   IDispatch*   m_pd_named_range;
-           
+		         
 };  
 
 

@@ -18,89 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "../OOWrappers/oo_named_range.h"
+#include "./oo_named_range.h"
 
+using namespace com::sun::star::uno;
 
-OONamedRange::OONamedRange()
-{
-    TRACE_IN;
-                                    
-    m_pd_named_range = NULL;                                   
-    
-    TRACE_OUT;                   
-}
-
-OONamedRange::OONamedRange(const OONamedRange &obj)
-{
-   TRACE_IN;    
-                               
-   m_pd_named_range = obj.m_pd_named_range;
-   if ( m_pd_named_range != NULL )
-       m_pd_named_range->AddRef();  
-       
-   TRACE_OUT;                        
+OONamedRange::OONamedRange():XBase()
+{                 
 }
                        
 OONamedRange::~OONamedRange()
 {
-   TRACE_IN;                    
-                     
-   if ( m_pd_named_range != NULL )
-   {
-       m_pd_named_range->Release();
-       m_pd_named_range = NULL;        
-   }
-   
-   TRACE_OUT;
-}
-   
-OONamedRange& OONamedRange::operator=( const OONamedRange &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_named_range != NULL )
-   {
-       m_pd_named_range->Release();
-       m_pd_named_range = NULL;        
-   } 
-   
-   m_pd_named_range = obj.m_pd_named_range;
-   if ( m_pd_named_range != NULL )
-       m_pd_named_range->AddRef();
-   
-   return ( *this );         
-}
-  
-void OONamedRange::Init( IDispatch* p_oo_named_range)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_named_range != NULL )
-   {
-       m_pd_named_range->Release();
-       m_pd_named_range = NULL;        
-   } 
-   
-   if ( p_oo_named_range == NULL )
-   {
-       ERR( " p_oo_named_range == NULL \n" );
-       return;     
-   }
-   
-   m_pd_named_range = p_oo_named_range;
-   m_pd_named_range->AddRef();
-   
-   TRACE_OUT;
-   
-   return;          
-}
-  
-bool OONamedRange::IsNull()
-{
-    return ( (m_pd_named_range == NULL) ? true : false );     
 }
 
 BSTR OONamedRange::getName( )
@@ -112,12 +39,14 @@ BSTR OONamedRange::getName( )
 
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_named_range is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" );   
+		TRACE_OUT;
+		return ( E_FAIL );	 
     }
     
     VariantInit( &res );
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_range, L"getName", 0);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getName", 0);
     if ( FAILED( hr ) )
     {
         ERR( " getName \n" );     
@@ -142,7 +71,9 @@ HRESULT OONamedRange::setName( BSTR bstr_name )
 
 	if ( IsNull() )
 	{
-	    ERR( " m_pd_named_range is NULL \n" );   	 
+	    ERR( " m_pd_wrapper is NULL \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
     }
     
     VariantInit( &param1 );
@@ -151,7 +82,7 @@ HRESULT OONamedRange::setName( BSTR bstr_name )
     V_VT(&param1)   = VT_BSTR;
     V_BSTR(&param1) = SysAllocString(bstr_name);
 
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_range, L"setName", 1, param1);
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"setName", 1, param1);
     
     if ( FAILED( hr ) )
     {
