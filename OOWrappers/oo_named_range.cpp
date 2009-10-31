@@ -41,7 +41,7 @@ BSTR OONamedRange::getName( )
 	{
 	    ERR( " m_pd_wrapper is NULL \n" );   
 		TRACE_OUT;
-		return ( E_FAIL );	 
+		return ( SysAllocString( L"" ) );	 
     }
     
     VariantInit( &res );

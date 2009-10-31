@@ -20,87 +20,14 @@
 
 #include "../OOWrappers/oo_named_ranges.h"
 
+using namespace com::sun::star::uno;
 
-OONamedRanges::OONamedRanges()
-{
-    TRACE_IN;
-                                    
-    m_pd_named_ranges = NULL;                                   
-    
-    TRACE_OUT;                   
-}
-
-OONamedRanges::OONamedRanges(const OONamedRanges &obj)
-{
-   TRACE_IN;    
-                               
-   m_pd_named_ranges = obj.m_pd_named_ranges;
-   if ( m_pd_named_ranges != NULL )
-       m_pd_named_ranges->AddRef();  
-       
-   TRACE_OUT;                        
+OONamedRanges::OONamedRanges():XBase()
+{                  
 }
                        
 OONamedRanges::~OONamedRanges()
 {
-   TRACE_IN;                    
-                     
-   if ( m_pd_named_ranges != NULL )
-   {
-       m_pd_named_ranges->Release();
-       m_pd_named_ranges = NULL;        
-   }
-   
-   TRACE_OUT;
-}
-   
-OONamedRanges& OONamedRanges::operator=( const OONamedRanges &obj)
-{
-   if ( this == &obj )
-   {
-       return ( *this );                 
-   }    
-   
-   if ( m_pd_named_ranges != NULL )
-   {
-       m_pd_named_ranges->Release();
-       m_pd_named_ranges = NULL;        
-   } 
-   
-   m_pd_named_ranges = obj.m_pd_named_ranges;
-   if ( m_pd_named_ranges != NULL )
-       m_pd_named_ranges->AddRef();
-   
-   return ( *this );         
-}
-  
-void OONamedRanges::Init( IDispatch* p_oo_named_ranges)
-{
-   TRACE_IN; 
-     
-   if ( m_pd_named_ranges != NULL )
-   {
-       m_pd_named_ranges->Release();
-       m_pd_named_ranges = NULL;        
-   } 
-   
-   if ( p_oo_named_ranges == NULL )
-   {
-       ERR( " p_oo_named_ranges == NULL \n" );
-       return;     
-   }
-   
-   m_pd_named_ranges = p_oo_named_ranges;
-   m_pd_named_ranges->AddRef();
-   
-   TRACE_OUT;
-   
-   return;          
-}
-  
-bool OONamedRanges::IsNull()
-{
-    return ( (m_pd_named_ranges == NULL) ? true : false );     
 }
 
 long OONamedRanges::getCount( )
@@ -112,7 +39,7 @@ long OONamedRanges::getCount( )
     
     if ( IsNull() )
     {
-	    ERR(" m_pd_named_ranges is null \n");   	 
+	    ERR(" m_pd_wrapper is null \n");   	 
 	    
 	    TRACE_OUT;
 	   	return ( -1 );
@@ -120,7 +47,7 @@ long OONamedRanges::getCount( )
     
     VariantInit( &res );
     
-	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_ranges, L"getCount", 0);
+	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getCount", 0);
 	if ( FAILED( hr ) )
 	{
         ERR( " getCount \n" );
@@ -160,13 +87,13 @@ HRESULT OONamedRanges::getNameByName( VARIANT index, OONamedRange& oo_name )
 	    
     if ( IsNull() )
     {
-	    ERR(" m_pd_named_ranges is null \n");   	 
+	    ERR(" m_pd_wrapper is null \n");   	 
 	    
 	    TRACE_OUT;
 	   	return ( E_FAIL );
     }    
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_ranges, L"getByName", 1, index );
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getByName", 1, index );
     
     if (FAILED(hr)) {
         TRACE(" when getByIndex \n");
@@ -203,13 +130,13 @@ HRESULT OONamedRanges::getNameByIndex( VARIANT index, OONamedRange& oo_name)
 	    
     if ( IsNull() )
     {
-	    ERR(" m_pd_named_ranges is null \n");   	 
+	    ERR(" m_pd_wrapper is null \n");   	 
 	    
 	    TRACE_OUT;
 	   	return ( E_FAIL );
     }    
     
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_named_ranges, L"getByIndex", 1, index );
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getByIndex", 1, index );
     
     if (FAILED(hr)) {
         TRACE(" when getByIndex \n");

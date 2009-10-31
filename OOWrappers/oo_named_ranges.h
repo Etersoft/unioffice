@@ -25,21 +25,18 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "../OOWrappers/oo_named_range.h"
+#include "./oo_named_range.h"
 
-class OONamedRanges
+#include "./com/sun/star/uno/x_base.h"
+
+using namespace com::sun::star::uno;
+
+class OONamedRanges: public XBase
 {
 public:
 
   OONamedRanges();
-  OONamedRanges(const OONamedRanges &);
   virtual ~OONamedRanges();     
-   
-  OONamedRanges& operator=( const OONamedRanges &); 
-  
-  void Init( IDispatch* );
-  
-  bool IsNull();
 
   long getCount( );
   
@@ -47,9 +44,7 @@ public:
   HRESULT getNameByIndex( VARIANT, OONamedRange& );
   
 private:
-  
-   IDispatch*   m_pd_named_ranges;
-           
+		          
 };  
 
 
