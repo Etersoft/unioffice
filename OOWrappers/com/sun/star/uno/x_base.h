@@ -23,6 +23,8 @@
 
 #include <ole2.h>
 #include <oaidl.h>
+#include "../../../../../Common/tools.h"
+#include "../../../../../Common/debug.h"
 
 namespace com
 {

@@ -37,7 +37,10 @@ namespace com
 			public:
        
 			  XIndexAccess( );
-			  virtual ~XIndexAccess( );     
+			  virtual ~XIndexAccess( );    
+			  
+			  long getCount();
+			  com::sun::star::uno::XBase getByIndex( long index ); 
          
 			protected:            
 								  
