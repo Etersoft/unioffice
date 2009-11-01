@@ -27,11 +27,11 @@
 #include "../Common/tools.h"
 #include "./oo_sheet.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OOSheets: public XBase
+class OOSheets: public XInterface
 {
 public:
        

@@ -27,11 +27,11 @@
 #include "../Common/tools.h"
 #include "./oo_dispatch_provider.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OOFrame: public XBase
+class OOFrame: public XInterface
 {
 public:
        

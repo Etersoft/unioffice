@@ -27,11 +27,11 @@
 #include "../Common/tools.h"
 #include "./oo_frame.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OOController: public XBase
+class OOController: public XInterface
 {
 public:
        

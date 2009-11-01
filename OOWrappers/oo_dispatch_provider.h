@@ -26,11 +26,11 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OODispatchProvider: public XBase
+class OODispatchProvider: public XInterface
 {
 public:
        

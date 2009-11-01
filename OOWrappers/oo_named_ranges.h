@@ -27,11 +27,11 @@
 #include "../Common/tools.h"
 #include "./oo_named_range.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OONamedRanges: public XBase
+class OONamedRanges: public XInterface
 {
 public:
 

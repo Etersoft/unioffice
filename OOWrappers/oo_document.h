@@ -31,11 +31,11 @@
 #include "./oo_style_families.h"
 #include "./oo_named_ranges.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OODocument: public XBase
+class OODocument: public XInterface
 {
 public:
        

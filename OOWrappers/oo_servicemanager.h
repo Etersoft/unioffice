@@ -30,11 +30,11 @@
 #include "./oo_dispatch_helper.h"
 #include "./wrap_property_array.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OOServiceManager: public XBase
+class OOServiceManager: public XInterface
 {
 public:
        

@@ -27,11 +27,11 @@
 #include "../Common/tools.h"
 #include "./oo_page_styles.h"
 
-#include "./com/sun/star/uno/x_base.h"
+#include "./com/sun/star/uno/x_interface.h"
 
 using namespace com::sun::star::uno;
 
-class OOStyleFamilies: public XBase
+class OOStyleFamilies: public XInterface
 {
 public:
 
