@@ -1,5 +1,5 @@
 /*
- * header file - XInterface
+ * header file - XElementAccess
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,10 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_X_INTERFACE_H__
-#define __UNIOFFICE_X_INTERFACE_H__
+#ifndef __UNIOFFICE_X_ELEMENT_ACCESS_H__
+#define __UNIOFFICE_X_ELEMENT_ACCESS_H__
 
-#include "x_base.h"
+#include "../uno/x_base.h"
 
 namespace com
 {
@@ -29,23 +29,23 @@ namespace com
     {
         namespace star
         {
-		    namespace uno  
+		    namespace container 
 			{ 
  		  
-			class XInterface: public virtual XBase
+			class XElementAccess: public virtual com::sun::star::uno::XBase 
 			{
 			public:
        
-			  XInterface( );
-			  virtual ~XInterface( );     
+			  XElementAccess( );
+			  virtual ~XElementAccess( );     
          
 			protected:            
-      
+								  
 			};
 
-            } // namespace uno
+            } // namespace container
         } // namespace star
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_X_INTERFACE_H__
+#endif // __UNIOFFICE_X_ELEMENT_ACCESS_H__
