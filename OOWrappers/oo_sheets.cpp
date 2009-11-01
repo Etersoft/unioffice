@@ -30,41 +30,6 @@ OOSheets::~OOSheets()
 {                       
 }    
 
-HRESULT OOSheets::getByName( BSTR _sheet_name, OOSheet &oo_sheet )
-{
-    TRACE_IN; 
-    HRESULT hr;
-    VARIANT res, var_index;
-    
-    VariantInit( &res );
-    VariantInit( &var_index );
-    
-    if ( IsNull() )
-    {
-        ERR( " IsNull() == true \n" );
-        return ( E_FAIL );     
-    }
-    
-    V_VT( &res ) = VT_BSTR;
-    V_BSTR( &var_index ) = SysAllocString( _sheet_name );
-    
-    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"getByName", 1, var_index);
-    if ( FAILED( hr ) )
-    {
-        ERR( " getByIndex \n" );
-    } else
-    {
-        oo_sheet.Init( V_DISPATCH( &res ) );      
-    }
-    
- 
-    VariantClear( &res );
-    VariantClear( &var_index );
- 
-    TRACE_OUT;
-    return ( hr );           
-}
-
 HRESULT OOSheets::insertNewByName( BSTR _name, long _index )
 {
     TRACE_IN;

@@ -656,17 +656,19 @@ HRESULT STDMETHODCALLTYPE CSheets::get__Default(
              
              OOSheet oo_sheet;
              
-             hr = m_oo_sheets.getByName( V_BSTR( &Index ), oo_sheet );
+             hr = S_OK;
              
-             if ( FAILED( hr ) )
+             oo_sheet = m_oo_sheets.getByName( V_BSTR( &Index ) ); 
+             
+             if ( oo_sheet.IsNull() )
              {
                 ERR( " m_oo_sheets.getByName \n" );
                 if ( p_worksheet != NULL )
                     p_worksheet->Release();
                     
                 TRACE_OUT;    
-                return ( hr );    
-             }
+                return ( E_FAIL ); 	  
+		     }
 
              p_worksheet->InitWrapper( oo_sheet );
              

@@ -29,21 +29,21 @@
 
 #include "./com/sun/star/uno/x_interface.h"
 #include "./com/sun/star/container/x_index_access.h"
+#include "./com/sun/star/container/x_name_access.h"
 
 using namespace com::sun::star::uno;
 using namespace com::sun::star::container;
 
 class OOSheets: 
 	  public XInterface, 
-	  public XIndexAccess
+	  public XIndexAccess,
+	  public XNameAccess
 {
 public:
        
   OOSheets();
   virtual ~OOSheets();     
-  
-  HRESULT getByName( BSTR, OOSheet& );  
-  
+    
   HRESULT insertNewByName( BSTR, long );
   HRESULT removeByName( BSTR );
          
