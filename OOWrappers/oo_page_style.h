@@ -35,7 +35,9 @@ class OOPageStyle: public XInterface
 public:
 
   OOPageStyle();
-  virtual ~OOPageStyle();     
+  virtual ~OOPageStyle(); 
+  
+  OOPageStyle& operator=( const XBase &obj);    
   
   double  LeftMargin( );
   HRESULT LeftMargin( double );
