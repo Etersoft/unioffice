@@ -35,7 +35,9 @@ class OONamedRange: public XInterface
 public:
 
   OONamedRange();
-  virtual ~OONamedRange();     
+  virtual ~OONamedRange();  
+  
+  OONamedRange& operator=( const XBase &obj);   
   
   BSTR    getName( );
   HRESULT setName( BSTR );
