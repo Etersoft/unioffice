@@ -34,43 +34,17 @@ HRESULT OOStyleFamilies::getPageStyles( OOPageStyles& oo_page_styles )
 {
     TRACE_IN;
     HRESULT hr;
-    IDispatch* p_disp;
-    VARIANT res, param1;
-     
-    VariantInit(&res);
-    VariantInit(&param1);
     
-    if ( IsNull() )
-    {
-        ERR( " IsNull() == true \n" );
-        TRACE_OUT;
-        return ( E_FAIL );      
-    } 
+	hr = S_OK;
 	
-	V_VT( &param1 ) = VT_BSTR;
-	V_BSTR( &param1 ) = SysAllocString( L"PageStyles");
-	
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getByName", 1, param1);
-    
-    p_disp = V_DISPATCH( &res );
+    oo_page_styles = getByName( L"PageStyles" );
     	
-    if ( FAILED( hr ) ) {
+    if ( oo_page_styles.IsNull() ) {
+	   	hr = E_FAIL; 
         ERR(" getByName \n ");
         TRACE_OUT;
         return ( hr );
     }
-    
-    if ( p_disp == NULL )
-    {
-	    ERR( " p_disp == NULL \n" );
-		TRACE_OUT;   	 
-	    return ( E_FAIL );
-    }
-    
-    oo_page_styles.Init( p_disp );
-    
-    VariantClear( &res ); 
-    VariantClear( &param1 );
     
     TRACE_OUT;
     return ( hr ); 		

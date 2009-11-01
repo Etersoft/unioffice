@@ -28,10 +28,14 @@
 #include "./oo_page_styles.h"
 
 #include "./com/sun/star/uno/x_interface.h"
+#include "./com/sun/star/container/x_name_access.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::container;
 
-class OOStyleFamilies: public XInterface
+class OOStyleFamilies: 
+	  public XInterface,
+	  public XNameAccess
 {
 public:
 
