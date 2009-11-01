@@ -44,7 +44,7 @@ com::sun::star::uno::XBase com::sun::star::container::XNameAccess::getByName( BS
         return ( ret_val );     
     }
     
-    V_VT( &res ) = VT_BSTR;
+    V_VT( &var_name ) = VT_BSTR;
     V_BSTR( &var_name ) = SysAllocString( name );
     
     hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"getByName", 1, var_name);

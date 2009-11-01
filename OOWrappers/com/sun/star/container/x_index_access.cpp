@@ -77,7 +77,7 @@ com::sun::star::uno::XBase com::sun::star::container::XIndexAccess::getByIndex( 
         return ( ret_val );     
     }
     
-    V_VT( &res ) = VT_I4;
+    V_VT( &var_index ) = VT_I4;
     V_I4( &var_index ) = index;
     
     hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"getByIndex", 1, var_index);
