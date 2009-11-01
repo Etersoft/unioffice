@@ -30,48 +30,22 @@ OOPageStyles::~OOPageStyles()
 {
 }
 
-HRESULT OOPageStyles::getByName( BSTR _name_of_style, OOPageStyle& oo_page_style )
+OOPageStyles& OOPageStyles::operator=( const XBase &obj)
 {
-    TRACE_IN;
-    HRESULT hr;
-    IDispatch* p_disp;
-    VARIANT res, param1;
-     
-    VariantInit(&res);
-    VariantInit(&param1);
-    
-    if ( IsNull() )
-    {
-        ERR( " IsNull() == true \n" );
-        TRACE_OUT;
-        return ( E_FAIL );      
-    } 
-	
-	V_VT( &param1 ) = VT_BSTR;
-	V_BSTR( &param1 ) = SysAllocString( _name_of_style );
-	
-    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getByName", 1, param1);
-    
-    p_disp = V_DISPATCH( &res );
-    	
-    if ( FAILED( hr ) ) {
-        ERR(" getByName \n ");
-        TRACE_OUT;
-        return ( hr );
-    }
-    
-    if ( p_disp == NULL )
-    {
-	    ERR( " p_disp == NULL \n" );
-		TRACE_OUT;   	 
-	    return ( E_FAIL );
-    }
-    
-    oo_page_style.Init( p_disp );
-    
-    VariantClear( &res ); 
-    VariantClear( &param1 );
-    
-    TRACE_OUT;
-    return ( hr ); 	 		
+   if ( this == &obj )
+   {
+       return ( *this );                 
+   }    
+   
+   if ( m_pd_wrapper != NULL )
+   {
+       m_pd_wrapper->Release();
+       m_pd_wrapper = NULL;        
+   } 
+
+   m_pd_wrapper = obj.m_pd_wrapper;
+   if ( m_pd_wrapper != NULL )
+       m_pd_wrapper->AddRef();
+   
+   return ( *this );  		 
 }

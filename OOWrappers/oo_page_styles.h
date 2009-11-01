@@ -28,17 +28,21 @@
 #include "./oo_page_style.h"
 
 #include "./com/sun/star/uno/x_interface.h"
+#include "./com/sun/star/container/x_name_access.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::container;
 
-class OOPageStyles: public XInterface
+class OOPageStyles: 
+	  public XInterface,
+	  public XNameAccess
 {
 public:
 
   OOPageStyles();
-  virtual ~OOPageStyles();     
+  virtual ~OOPageStyles(); 
   
-  HRESULT getByName( BSTR, OOPageStyle& );
+  OOPageStyles& operator=( const XBase &obj);     
   
 private:
            
