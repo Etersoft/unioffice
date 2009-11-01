@@ -53,7 +53,7 @@ com::sun::star::uno::XBase& com::sun::star::uno::XBase::operator=( const XBase &
        m_pd_wrapper->Release();
        m_pd_wrapper = NULL;        
    } 
-   
+
    m_pd_wrapper = obj.m_pd_wrapper;
    if ( m_pd_wrapper != NULL )
        m_pd_wrapper->AddRef();

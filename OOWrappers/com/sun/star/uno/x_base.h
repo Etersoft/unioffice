@@ -47,11 +47,9 @@ namespace com
   
 			  void Init( IDispatch* );
   
-			  bool IsNull();
-         
-			protected:            
+			  bool IsNull();           
 
-			   IDispatch*   m_pd_wrapper;  
+			  IDispatch*   m_pd_wrapper;  
       
 			};
 
