@@ -28,20 +28,21 @@
 #include "./oo_named_range.h"
 
 #include "./com/sun/star/uno/x_interface.h"
+#include "./com/sun/star/container/x_index_access.h"
+#include "./com/sun/star/container/x_name_access.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::container;
 
-class OONamedRanges: public XInterface
+class OONamedRanges: 
+	  public XInterface,
+	  public XIndexAccess,
+	  public XNameAccess
 {
 public:
 
   OONamedRanges();
   virtual ~OONamedRanges();     
-
-  long getCount( );
-  
-  HRESULT getNameByName( VARIANT, OONamedRange& );
-  HRESULT getNameByIndex( VARIANT, OONamedRange& );
   
 private:
 		          

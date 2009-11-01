@@ -278,11 +278,14 @@ HRESULT STDMETHODCALLTYPE CNames::_Default(
    
    if ( V_VT( &Index ) == VT_BSTR ) 
    {
-  	   hr = m_oo_named_ranges.getNameByName( Index , oo_name );
+   	   hr = S_OK;
+   	   
+  	   oo_name = m_oo_named_ranges.getByName( V_BSTR( &Index ) );
   	   
-       if ( FAILED( hr ) ) 
+  	   if ( oo_name.IsNull() )
 	   {
-          ERR( " m_oo_named_ranges.getNameByName \n" );
+	  	  hr = E_FAIL;
+          ERR( " m_oo_named_ranges.getByName \n" );
           
           if ( p_name != NULL )
               p_name->Release();
@@ -303,11 +306,14 @@ HRESULT STDMETHODCALLTYPE CNames::_Default(
           return E_FAIL;
        } else 
 	   {
-           hr = m_oo_named_ranges.getNameByIndex( Index , oo_name );
+	   	   hr = S_OK;
+			  	  
+           oo_name = m_oo_named_ranges.getByIndex( V_I4( &Index ) );
   	   
-           if ( FAILED( hr ) ) 
+           if ( oo_name.IsNull() )
 	       {
-              ERR( " m_oo_named_ranges.getNameByIndex \n" );
+		   	  hr = E_FAIL; 	
+              ERR( " m_oo_named_ranges.getByIndex \n" );
           
               if ( p_name != NULL )
                   p_name->Release();
