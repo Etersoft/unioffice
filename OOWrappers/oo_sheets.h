@@ -28,19 +28,20 @@
 #include "./oo_sheet.h"
 
 #include "./com/sun/star/uno/x_interface.h"
+#include "./com/sun/star/container/x_index_access.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::container;
 
-class OOSheets: public XInterface
+class OOSheets: 
+	  public XInterface, 
+	  public XIndexAccess
 {
 public:
        
   OOSheets();
   virtual ~OOSheets();     
   
-  long getCount( );
-  
-  HRESULT getByIndex( long, OOSheet& );
   HRESULT getByName( BSTR, OOSheet& );  
   
   HRESULT insertNewByName( BSTR, long );

@@ -618,16 +618,19 @@ HRESULT STDMETHODCALLTYPE CSheets::get__Default(
              
              OOSheet oo_sheet;
              
-             hr = m_oo_sheets.getByIndex( index, oo_sheet );
-             if ( FAILED( hr ) )
+             hr = S_OK;
+             
+             oo_sheet = m_oo_sheets.getByIndex( index ); 
+             
+             if ( oo_sheet.IsNull() )
              {
                 ERR( " m_oo_sheets.getByIndex \n" );
                 if ( p_worksheet != NULL )
                     p_worksheet->Release();
                     
                 TRACE_OUT;    
-                return ( hr );    
-             }
+                return ( E_FAIL ); 	  
+		     }
              
              p_worksheet->InitWrapper( oo_sheet );
              
