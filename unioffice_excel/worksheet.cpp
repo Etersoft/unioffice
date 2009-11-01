@@ -30,6 +30,7 @@
 #include "../OOWrappers/oo_page_styles.h"
 #include "../OOWrappers/oo_style_families.h"
 #include "../OOWrappers/oo_named_ranges.h"
+#include "../OOWrappers/oo_controller.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE Worksheet::QueryInterface(const IID& iid, void** ppv)
@@ -441,7 +442,7 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_PageSetup(
    hr = oo_document.StyleFamilies( oo_style_families );  
    if ( FAILED( hr ) )
    {
-       ERR( " oo_style_families.getPageStyles \n" );
+       ERR( " oo_document.StyleFamilies \n" );
        if ( p_page_setup != NULL )
            p_page_setup->Release();
            
@@ -464,9 +465,14 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_PageSetup(
    }
 
    OOPageStyle oo_page_style;
-   hr = oo_page_styles.getByName( style_name , oo_page_style );
-   if ( FAILED( hr ) )
+   
+   hr = S_OK;
+   
+   oo_page_style = oo_page_styles.getByName( style_name );
+  
+   if ( oo_page_style.IsNull() )
    {
+   	   hr = E_FAIL;	
        ERR( " oo_page_styles.getByName \n" );
        if ( p_page_setup != NULL )
            p_page_setup->Release();
@@ -583,12 +589,61 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_PageSetup(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Select( 
+HRESULT STDMETHODCALLTYPE Worksheet::Select( 
             /* [optional][in] */ VARIANT Replace,
             /* [lcid][in] */ long lcid)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr = S_OK;
+   
+   CorrectArg(Replace, &Replace);
+   
+   hr = VariantChangeTypeEx(&Replace, &Replace, 0, 0, VT_BOOL);
+   if ( FAILED( hr ) ) {
+       ERR(" VariantChangeTypeEx   %08x\n", hr);
+       TRACE_OUT;
+       return ( hr );
+   }
+
+   if (V_BOOL(&Replace)==VARIANT_TRUE) 
+   {  
+       Workbook* workbook = NULL;
+   
+       hr = (static_cast<CSheets*>( m_p_parent ))->get_Parent( (IDispatch**)&workbook );   
+       if ( FAILED ( hr ) )
+       {
+	       ERR( " get_Parent \n" );	  	
+       }
+	            
+       OODocument oo_document = workbook->GetOODocument( ); 
+              
+       if ( workbook != NULL )
+       {
+           workbook->Release( );
+	       workbook = NULL;   	  	
+       }
+       
+       OOController  oo_controller;
+       
+       hr = oo_document.getCurrentController( oo_controller );
+       if ( FAILED ( hr ) )
+       {
+	       ERR( " getCurrentController \n" );	  	
+       }
+       
+       
+       
+   	  								   
+   } else
+   {
+      ERR( " Get VARIANT_FALSE as parameter \n" );   	 	 
+      // TODO:  
+      // now set S_OK 
+      hr = S_OK;
+   }
+   
+   TRACE_OUT;
+   return ( hr );                           
 }
         
 HRESULT STDMETHODCALLTYPE Worksheet::Unprotect( 
