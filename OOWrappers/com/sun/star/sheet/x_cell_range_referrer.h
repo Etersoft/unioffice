@@ -22,6 +22,7 @@
 #define __UNIOFFICE_X_CELL_RANGE_REFERRER_H__
 
 #include "../uno/x_base.h"
+#include "../table/x_cell_range.h"
 
 namespace com
 {
@@ -38,6 +39,8 @@ namespace com
        
 			  XCellRangeReferrer( );
 			  virtual ~XCellRangeReferrer( );   
+         
+		      com::sun::star::table::XCellRange getReferredCells();
          
 			protected:            
 								  

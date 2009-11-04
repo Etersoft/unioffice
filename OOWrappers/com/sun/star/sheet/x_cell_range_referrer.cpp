@@ -27,3 +27,8 @@ com::sun::star::sheet::XCellRangeReferrer::XCellRangeReferrer( ):com::sun::star:
 com::sun::star::sheet::XCellRangeReferrer::~XCellRangeReferrer( )
 {              							
 }
+
+com::sun::star::table::XCellRange com::sun::star::sheet::XCellRangeReferrer::getReferredCells()
+{
+    TRACE_NOTIMPL; 								  
+}
