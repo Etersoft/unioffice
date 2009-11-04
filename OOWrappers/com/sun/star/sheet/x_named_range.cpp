@@ -102,10 +102,61 @@ HRESULT com::sun::star::sheet::XNamedRange::setReferencePosition( com::sun::star
 			  
 long com::sun::star::sheet::XNamedRange::getType()
 {
- 	 TRACE_NOTIMPL;	 	 
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res; 
+	long ret_val = -1;  
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        return ( ret_val );     
+    }
+    
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"getType",0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call getContent \n" );
+    } else
+    {
+	  	ret_val = V_I4( &res );
+    }
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( ret_val );		 	 
 }
 
 HRESULT com::sun::star::sheet::XNamedRange::setType( long _type )
 {
- 	 TRACE_NOTIMPL;	 		
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = _type;
+    
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"setType", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call setType \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );	 		
 }
