@@ -27,3 +27,33 @@ com::sun::star::sheet::XNamedRange::XNamedRange( ):com::sun::star::container::XN
 com::sun::star::sheet::XNamedRange::~XNamedRange( )
 {              							
 }
+
+BSTR com::sun::star::sheet::XNamedRange::getContent()
+{
+ 	 TRACE_NOTIMPL;	 
+}
+
+HRESULT com::sun::star::sheet::XNamedRange::setContent( BSTR _content)
+{
+ 	 TRACE_NOTIMPL;	 		
+}
+			  
+com::sun::star::table::SCellAddress com::sun::star::sheet::XNamedRange::getReferencePosition()
+{
+ 	 TRACE_NOTIMPL;	 									
+}
+
+HRESULT com::sun::star::sheet::XNamedRange::setReferencePosition( com::sun::star::table::SCellAddress _cell_address)
+{
+ 	 TRACE_NOTIMPL;	 		
+}
+			  
+long com::sun::star::sheet::XNamedRange::getType()
+{
+ 	 TRACE_NOTIMPL;	 	 
+}
+
+HRESULT com::sun::star::sheet::XNamedRange::setType( long _type )
+{
+ 	 TRACE_NOTIMPL;	 		
+}

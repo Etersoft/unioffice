@@ -22,6 +22,7 @@
 #define __UNIOFFICE_X_NAMED_RANGE_H__
 
 #include "../container/x_named.h"
+#include "../table/s_cell_address.h"
 
 namespace com
 {
@@ -37,7 +38,16 @@ namespace com
 			public:
        
 			  XNamedRange( );
-			  virtual ~XNamedRange( );     
+			  virtual ~XNamedRange( );   
+			  
+			  BSTR getContent();
+			  HRESULT setContent( BSTR );
+			  
+			  com::sun::star::table::SCellAddress getReferencePosition();
+			  HRESULT setReferencePosition( com::sun::star::table::SCellAddress );
+			  
+			  long getType();  
+			  HRESULT setType( long );
          
 			protected:            
 								  
