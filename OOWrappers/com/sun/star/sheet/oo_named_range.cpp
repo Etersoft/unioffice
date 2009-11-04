@@ -20,17 +20,15 @@
 
 #include "oo_named_range.h"
 
-using namespace com::sun::star::uno;
-
-OONamedRange::OONamedRange():XBase()
+com::sun::star::sheet::OONamedRange::OONamedRange():com::sun::star::uno::XBase()
 {                 
 }
                        
-OONamedRange::~OONamedRange()
+com::sun::star::sheet::OONamedRange::~OONamedRange()
 {
 }
 
-OONamedRange& OONamedRange::operator=( const XBase &obj)
+com::sun::star::sheet::OONamedRange& com::sun::star::sheet::OONamedRange::operator=( const com::sun::star::uno::XBase &obj)
 {
    if ( this == &obj )
    {
@@ -48,4 +46,14 @@ OONamedRange& OONamedRange::operator=( const XBase &obj)
        m_pd_wrapper->AddRef();
    
    return ( *this );  		 
+}
+
+long com::sun::star::sheet::OONamedRange::TokenIndex( )
+{
+    TRACE_NOTIMPL; 	 
+}
+				   
+bool com::sun::star::sheet::OONamedRange::IsSharedFormula( )
+{
+    TRACE_NOTIMPL;
 }

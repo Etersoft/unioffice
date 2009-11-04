@@ -25,34 +25,39 @@
 #include "x_named_range.h"
 #include "x_cell_range_referrer.h"
 
-using namespace com::sun::star::uno;
-using namespace com::sun::star::sheet;
-
-class OONamedRange: 
-	  public XInterface,
-	  public XNamedRange,
-	  public XCellRangeReferrer
+namespace com
 {
-public:
+    namespace sun
+    {
+        namespace star
+        {
+		    namespace sheet 
+			{ 
 
-  OONamedRange();
-  virtual ~OONamedRange();  
+			class OONamedRange: 
+	  			  public com::sun::star::uno::XInterface,
+			  	  public XNamedRange,
+	  			  public XCellRangeReferrer
+		    {
+		    public:
+
+  		   		  OONamedRange();
+				  virtual ~OONamedRange();  
   
-  OONamedRange& operator=( const XBase &obj);  
+  				  OONamedRange& operator=( const com::sun::star::uno::XBase &obj);  
 
-/* 
-Properties' Summary
-[ readonly ] long TokenIndex [ OPTIONAL ]
-returns the index used to refer to this name in token arrays.  
-boolean IsSharedFormula	[ OPTIONAL ]
-Determines if this defined name represents a shared formula.  
-*/ 
+				  long TokenIndex( );
+				   
+	    		  bool IsSharedFormula( );
 
-private:
+   		    private:
 		         
-};  
+            };  
 
-
+            } // namespace sheet
+        } // namespace star
+    } // namespace sun
+} // namespace com
 
 
 

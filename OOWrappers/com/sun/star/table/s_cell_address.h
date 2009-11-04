@@ -38,7 +38,12 @@ namespace com
        
 			  SCellAddress( );
 			  virtual ~SCellAddress( );     
-         
+/*         
+Elements' Summary
+Sheet	is the index of the sheet that contains the cell.  
+Column	is the index of the column where the cell is located.  
+Row	is the index of the row where the cell is located.           
+*/        
 			protected:            
 								  
 			};

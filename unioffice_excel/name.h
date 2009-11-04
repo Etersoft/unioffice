@@ -24,6 +24,8 @@
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/com/sun/star/sheet/oo_named_range.h"
 
+using namespace com::sun::star::sheet;
+
 class CName : public IName, public Name
 {
 public:
