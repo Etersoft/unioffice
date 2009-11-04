@@ -23,7 +23,7 @@
 #include "application.h"
 #include "worksheet.h"
 #include "name.h"
-#include "../OOWrappers/oo_named_range.h"
+#include "../OOWrappers/com/sun/star/sheet/oo_named_range.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE CNames::QueryInterface(const IID& iid, void** ppv)

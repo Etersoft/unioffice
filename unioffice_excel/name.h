@@ -22,7 +22,7 @@
 #define __UNIOFFICE_EXCEL_NAME_H__
 
 #include "unioffice_excel_private.h"
-#include "../OOWrappers/oo_named_range.h"
+#include "../OOWrappers/com/sun/star/sheet/oo_named_range.h"
 
 class CName : public IName, public Name
 {

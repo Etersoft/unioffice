@@ -21,27 +21,33 @@
 #ifndef __UNIOFFICE_OO_WRAP_NAMED_RANGE_H__
 #define __UNIOFFICE_OO_WRAP_NAMED_RANGE_H__
 
-#include <ole2.h>
-#include <oaidl.h>
-#include "../Common/debug.h"
-#include "../Common/tools.h"
-
-#include "./com/sun/star/uno/x_interface.h"
+#include "../uno/x_interface.h"
+#include "x_named_range.h"
+#include "x_cell_range_referrer.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::sheet;
 
-class OONamedRange: public XInterface
+class OONamedRange: 
+	  public XInterface,
+	  public XNamedRange,
+	  public XCellRangeReferrer
 {
 public:
 
   OONamedRange();
   virtual ~OONamedRange();  
   
-  OONamedRange& operator=( const XBase &obj);   
-  
-  BSTR    getName( );
-  HRESULT setName( BSTR );
-  
+  OONamedRange& operator=( const XBase &obj);  
+
+/* 
+Properties' Summary
+[ readonly ] long TokenIndex [ OPTIONAL ]
+returns the index used to refer to this name in token arrays.  
+boolean IsSharedFormula	[ OPTIONAL ]
+Determines if this defined name represents a shared formula.  
+*/ 
+
 private:
 		         
 };  

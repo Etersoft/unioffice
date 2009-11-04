@@ -25,7 +25,6 @@
 #include <oaidl.h>
 #include "../Common/debug.h"
 #include "../Common/tools.h"
-#include "./oo_named_range.h"
 
 #include "./com/sun/star/uno/x_interface.h"
 #include "./com/sun/star/container/x_index_access.h"
