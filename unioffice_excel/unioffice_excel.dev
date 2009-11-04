@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=75
+UnitCount=77
 Type=3
 Ver=1
 ObjFiles=
@@ -789,6 +789,26 @@ BuildCmd=
 
 [Unit75]
 FileName=..\OOWrappers\com\sun\star\container\x_name_access.h
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/container
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit76]
+FileName=..\OOWrappers\com\sun\star\container\x_named.cpp
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/container
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit77]
+FileName=..\OOWrappers\com\sun\star\container\x_named.h
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/container
 Compile=1
