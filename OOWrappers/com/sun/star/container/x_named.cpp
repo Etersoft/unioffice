@@ -33,7 +33,7 @@ BSTR com::sun::star::container::XNamed::getName( )
     TRACE_IN; 
     HRESULT hr;
     VARIANT res; 
-	BSTR ret_val;  
+	BSTR ret_val = SysAllocString( L"" );  
     
     VariantInit( &res );
     
@@ -47,9 +47,9 @@ BSTR com::sun::star::container::XNamed::getName( )
     if ( FAILED( hr ) )
     {
         ERR( " Call getName \n" );
-        ret_val = SysAllocString( L"" );
     } else
     {
+	  	SysFreeString( ret_val );  
 	  	ret_val = SysAllocString( V_BSTR( &res ) );
     }
  
@@ -80,7 +80,7 @@ HRESULT com::sun::star::container::XNamed::setName( BSTR _name )
     hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"setName", 1, var_name);
     if ( FAILED( hr ) )
     {
-        ERR( " Call getByName \n" );
+        ERR( " Call setName \n" );
     }
  
     VariantClear( &res );
