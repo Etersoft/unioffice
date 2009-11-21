@@ -22,6 +22,7 @@
 #define __UNIOFFICE_X_CELL_RANGE_H__
 
 #include "../uno/x_base.h"
+#include "x_cell.h"
 
 namespace com
 {
@@ -38,6 +39,10 @@ namespace com
        
 			  XCellRange( );
 			  virtual ~XCellRange( );     
+      		  
+      		  XCell getCellByPosition( long, long );
+      		  XCellRange getCellRangeByPosition( long, long, long, long);
+      		  XCellRange getCellRangeByName( BSTR );
       
 			protected:            
 								  
