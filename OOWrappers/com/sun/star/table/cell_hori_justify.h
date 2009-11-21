@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_CELL_CONTENT_TYPE_H__
-#define __UNIOFFICE_CELL_CONTENT_TYPE_H__
+#ifndef __UNIOFFICE_CELL_HORI_JUSTIFY_H__
+#define __UNIOFFICE_CELL_HORI_JUSTIFY_H__
 
 namespace com
 {
@@ -30,12 +30,14 @@ namespace com
 		    namespace table 
 			{ 
  		  
-			enum CellContentType
-			{
-			 	 EMPTY,
-				 VALUE,
-				 TEXT,
-				 FORMULA	  
+			enum CellHoriJustify
+			{				 
+				 STANDARD,
+				 LEFT,
+				 CENTER,
+				 RIGHT,
+				 BLOCK,
+				 REPEAT
 			};
 
             } // namespace table
@@ -43,4 +45,4 @@ namespace com
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_CELL_CONTENT_TYPE_H__
+#endif // __UNIOFFICE_CELL_HORI_JUSTIFY_H__
