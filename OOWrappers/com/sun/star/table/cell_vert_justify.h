@@ -1,5 +1,5 @@
 /*
- * header file - CellHoriJustify
+ * header file - CellVertJustify
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_CELL_HORI_JUSTIFY_H__
-#define __UNIOFFICE_CELL_HORI_JUSTIFY_H__
+#ifndef __UNIOFFICE_CELL_VERT_JUSTIFY_H__
+#define __UNIOFFICE_CELL_VERT_JUSTIFY_H__
 
 namespace com
 {
@@ -30,14 +30,12 @@ namespace com
 		    namespace table 
 			{ 
  		  
-			enum CellHoriJustify
+			enum CellVertJustify
 			{				 
 				 STANDARD,
-				 LEFT,
+				 TOP,
 				 CENTER,
-				 RIGHT,
-				 BLOCK,
-				 REPEAT
+				 BOTTOM
 			};
 
             } // namespace table
@@ -45,4 +43,4 @@ namespace com
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_CELL_HORI_JUSTIFY_H__
+#endif // __UNIOFFICE_CELL_VERT_JUSTIFY_H__

@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=89
+UnitCount=90
 Type=3
 Ver=1
 ObjFiles=
@@ -929,6 +929,16 @@ BuildCmd=
 
 [Unit88]
 FileName=..\OOWrappers\com\sun\star\table\cell_content_type.h
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/table
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit90]
+FileName=..\OOWrappers\com\sun\star\table\cell_vert_justify.h
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/table
 Compile=1
