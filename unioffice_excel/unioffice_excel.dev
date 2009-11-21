@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=93
+UnitCount=94
 Type=3
 Ver=1
 ObjFiles=
@@ -969,6 +969,16 @@ BuildCmd=
 
 [Unit93]
 FileName=..\OOWrappers\com\sun\star\table\table_orientation.h
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/table
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit94]
+FileName=..\OOWrappers\com\sun\star\table\shadow_location.h
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/table
 Compile=1
