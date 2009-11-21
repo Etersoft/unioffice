@@ -44,8 +44,9 @@ HRESULT com::sun::star::table::XCell::setValue( double value)
 {              							
 } 
 		  
-			  
-			  
+com::sun::star::table::CellContentType com::sun::star::table::XCell::getType()
+{
+}			  
 			  
 long com::sun::star::table::XCell::getError()
 {              							

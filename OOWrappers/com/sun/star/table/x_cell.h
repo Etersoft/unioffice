@@ -22,6 +22,7 @@
 #define __UNIOFFICE_X_CELL_H__
 
 #include "../uno/x_base.h"
+#include "cell_content_type.h"
 
 namespace com
 {
@@ -45,7 +46,7 @@ namespace com
 			  double  getValue();
 			  HRESULT setValue( double );			  
 			  
-			  
+			  CellContentType getType();
 			  
 			  long getError();   
 
