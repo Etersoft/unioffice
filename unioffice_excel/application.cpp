@@ -19,7 +19,7 @@
  */
 
 #include "application.h"
-
+#include "worksheet.h"
 
 
        // IUnknown
@@ -298,7 +298,41 @@ HRESULT STDMETHODCALLTYPE Application::Calculate(
 }
         
 HRESULT STDMETHODCALLTYPE Application::get_Cells( 
-            /* [retval][out] */ Range **RHS){}
+            /* [retval][out] */ Range **RHS)
+{
+   TRACE_IN;
+   HRESULT hr;
+   
+   Worksheet* p_worksheet = NULL;
+   
+   hr = get_ActiveSheet( reinterpret_cast<IDispatch**>(&p_worksheet) );
+   if ( FAILED( hr ) || ( p_worksheet == NULL))
+   {
+       ERR( " get_ActiveSheet \n" );     
+       p_worksheet = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+   
+   hr = p_worksheet->get_Cells( RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_worksheet->get_Cells \n" );     
+       p_worksheet->Release();
+       p_worksheet = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+
+   p_worksheet->Release();
+   p_worksheet = NULL;
+   
+   TRACE_OUT;
+   return ( hr );     			
+}
         
 HRESULT STDMETHODCALLTYPE Application::get_Charts( 
             /* [retval][out] */ Sheets **RHS)
