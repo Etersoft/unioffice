@@ -42,6 +42,10 @@ public:
 
   OORange();
   virtual ~OORange();     
+   
+  OORange& operator=( const OORange &obj); 
+ 
+ 
  
 private:
            
