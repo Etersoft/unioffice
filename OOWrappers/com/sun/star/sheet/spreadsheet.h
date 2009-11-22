@@ -43,6 +43,13 @@ namespace com
 			  Spreadsheet( );
 			  virtual ~Spreadsheet( );     
 
+			  // Properties
+
+              HRESULT isVisible( bool );
+              bool isVisible();
+
+			  BSTR    PageStyle();
+
 			protected:            
 								  
 			};

@@ -47,11 +47,6 @@ public:
   HRESULT unprotect( BSTR );
   HRESULT protect( BSTR );
   
-  HRESULT isVisible( VARIANT_BOOL );
-  VARIANT_BOOL isVisible();
-  
-  BSTR    PageStyle();
-  
   HRESULT showLevel( long, long );
   
 private:
