@@ -22,7 +22,7 @@
 #define __UNIOFFICE_EXCEL_RANGE_H__
 
 #include "unioffice_excel_private.h"
-
+#include "../OOWrappers/oo_range.h"
 
 class CRange : public IRange, public Range
 {
@@ -1000,7 +1000,9 @@ public:
        HRESULT Init( ); 
        
        HRESULT Put_Application( void* );
-       HRESULT Put_Parent( void* ); 	   
+       HRESULT Put_Parent( void* ); 
+	   
+	   HRESULT InitWrapper( OORange );	   
 	   	   
 private:
 		
@@ -1010,6 +1012,8 @@ private:
        
        void*        m_p_application;
        void*        m_p_parent;	
+       
+       OORange      m_oo_range;
 	   
 };
 

@@ -2220,5 +2220,8 @@ HRESULT CRange::Put_Parent( void* p_parent)
    return S_OK; 		
 }
         
-
+HRESULT CRange::InitWrapper( OORange _oo_range)
+{
+    m_oo_range = _oo_range;      
+}
 
