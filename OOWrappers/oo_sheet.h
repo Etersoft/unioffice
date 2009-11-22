@@ -27,10 +27,14 @@
 #include "../Common/tools.h"
 
 #include "./com/sun/star/uno/x_interface.h"
+#include "./com/sun/star/sheet/spreadsheet.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::sheet;
 
-class OOSheet: public XInterface
+class OOSheet: 
+	  public XInterface,
+	  public Spreadsheet
 {
 public:
 
@@ -39,9 +43,6 @@ public:
   
   OOSheet& operator=( const XBase &obj);
   OOSheet& operator=( const OOSheet &obj);
-  
-  BSTR    getName( );
-  HRESULT setName( BSTR );
   
   HRESULT unprotect( BSTR );
   HRESULT protect( BSTR );
