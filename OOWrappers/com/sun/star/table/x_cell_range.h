@@ -40,7 +40,7 @@ namespace com
 			  XCellRange( );
 			  virtual ~XCellRange( );     
       		  
-      		  XCell getCellByPosition( long, long );
+      		  XCell      getCellByPosition( long, long );
       		  XCellRange getCellRangeByPosition( long, long, long, long);
       		  XCellRange getCellRangeByName( BSTR );
       

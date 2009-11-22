@@ -22,6 +22,7 @@
 
 using namespace com::sun::star::uno;
 using namespace com::sun::star::sheet;
+using namespace com::sun::star::table;
 
 OORange::OORange():XBase()
 {                 
@@ -32,6 +33,26 @@ OORange::~OORange()
 }
 
 OORange& OORange::operator=( const OORange &obj)
+{
+   if ( this == &obj )
+   {
+       return ( *this );                 
+   }    
+   
+   if ( m_pd_wrapper != NULL )
+   {
+       m_pd_wrapper->Release();
+       m_pd_wrapper = NULL;        
+   } 
+
+   m_pd_wrapper = obj.m_pd_wrapper;
+   if ( m_pd_wrapper != NULL )
+       m_pd_wrapper->AddRef();
+   
+   return ( *this );  		 
+}
+
+OORange& OORange::operator=( const XCellRange &obj)
 {
    if ( this == &obj )
    {

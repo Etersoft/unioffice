@@ -25,12 +25,14 @@
 #include "workbook.h"
 #include "outline.h"
 #include "names.h"
+#include "range.h"
 #include "../OOWrappers/oo_document.h"
 #include "../OOWrappers/oo_page_style.h"
 #include "../OOWrappers/oo_page_styles.h"
 #include "../OOWrappers/oo_style_families.h"
 #include "../OOWrappers/oo_named_ranges.h"
 #include "../OOWrappers/oo_controller.h"
+#include "../OOWrappers/oo_range.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE Worksheet::QueryInterface(const IID& iid, void** ppv)
@@ -816,11 +818,52 @@ HRESULT STDMETHODCALLTYPE Worksheet::put_Visible(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Cells( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Cells( 
             /* [retval][out] */ Range	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   
+   CRange* p_range = new CRange;
+   
+   p_range->Put_Application( m_p_application );
+   p_range->Put_Parent( this );
+     
+   OORange    oo_range;
+   
+   if ( OOVersion == VER_3 )
+   {
+   	  	oo_range = m_oo_sheet.getCellRangeByPosition( 0, 0, 1023, 65535 );
+   } else 
+   {
+   	    oo_range = m_oo_sheet.getCellRangeByPosition( 0, 0, 255, 65535 ); 	  
+   }
+      
+   if ( oo_range.IsNull() )
+   {
+       ERR( " m_oo_sheet.getCellRangeByPosition \n" );	  
+	   
+       if ( p_range != NULL )
+           p_range->Release();	 
+		     
+	   TRACE_OUT;
+	   return ( hr );	
+   }
+   
+   p_range->InitWrapper( oo_range );
+             
+   hr = p_range->QueryInterface( DIID_Range, (void**)RHS );
+             
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_range.QueryInterface \n" );     
+   }
+             
+   if ( p_range != NULL )
+       p_range->Release();
+   
+   TRACE_OUT;
+   return ( hr );                          
 }
         
         /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::ChartObjects( 

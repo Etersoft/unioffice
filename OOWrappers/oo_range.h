@@ -29,9 +29,11 @@
 #include "./com/sun/star/uno/x_interface.h"
 #include "./com/sun/star/sheet/sheet_cell.h"
 #include "./com/sun/star/sheet/sheet_cell_range.h"
+#include "./com/sun/star/table/x_cell_range.h"
 
 using namespace com::sun::star::uno;
 using namespace com::sun::star::sheet;
+using namespace com::sun::star::table;
 
 class OORange: 
 	  public XInterface,
@@ -44,8 +46,7 @@ public:
   virtual ~OORange();     
    
   OORange& operator=( const OORange &obj); 
- 
- 
+  OORange& operator=( const XCellRange &obj);
  
 private:
            
