@@ -38,6 +38,7 @@ public:
   virtual ~OOSheet();     
   
   OOSheet& operator=( const XBase &obj);
+  OOSheet& operator=( const OOSheet &obj);
   
   BSTR    getName( );
   HRESULT setName( BSTR );
