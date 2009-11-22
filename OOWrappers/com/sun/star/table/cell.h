@@ -1,5 +1,5 @@
 /*
- * source file - SCellAddress
+ * header file - Cell
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,12 +18,35 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "s_cell_address.h"
-   
-com::sun::star::table::SCellAddress::SCellAddress( ):com::sun::star::uno::XBase()
-{                                                                       
-}
+#ifndef __UNIOFFICE_CELL_H__
+#define __UNIOFFICE_CELL_H__
 
-com::sun::star::table::SCellAddress::~SCellAddress( )
-{              							
-} 
+#include "x_cell.h"
+
+namespace com
+{
+    namespace sun
+    {
+        namespace star
+        {
+		    namespace table 
+			{ 
+ 		  
+			class Cell: 
+				  public virtual XCell 
+			{
+			public:
+       
+			  Cell( );
+			  virtual ~Cell( );     
+
+			protected:            
+								  
+			};
+
+            } // namespace table
+        } // namespace star
+    } // namespace sun
+} // namespace com
+
+#endif // __UNIOFFICE_CELL_H__

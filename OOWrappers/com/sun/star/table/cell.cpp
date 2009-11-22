@@ -1,5 +1,5 @@
 /*
- * source file - SCellAddress
+ * source file - Cell
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,12 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "s_cell_address.h"
+#include "cell.h"
    
-com::sun::star::table::SCellAddress::SCellAddress( ):com::sun::star::uno::XBase()
+com::sun::star::table::Cell::Cell( ):com::sun::star::table::XCell()
 {                                                                       
 }
 
-com::sun::star::table::SCellAddress::~SCellAddress( )
+com::sun::star::table::Cell::~Cell( )
 {              							
 } 
