@@ -70,3 +70,33 @@ HRESULT OOController::getFrame( OOFrame& oo_frame)
     TRACE_OUT;
     return ( hr ); 		
 }
+
+com::sun::star::uno::XBase OOController::getActiveSheet()
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;
+	com::sun::star::uno::XBase ret_val;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        return ( ret_val );     
+    }
+    
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"getActiveSheet", 0);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call getActiveSheet \n" );
+    } else
+    {
+        ret_val.Init( V_DISPATCH( &res ) );      
+    }
+    
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( ret_val ); 		
+}

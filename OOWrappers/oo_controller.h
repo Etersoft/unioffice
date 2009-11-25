@@ -39,6 +39,8 @@ public:
   virtual ~OOController();     
 
   HRESULT getFrame( OOFrame& );
+  
+  XBase   getActiveSheet();
          
 private:            
 					     
