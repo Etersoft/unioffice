@@ -22,8 +22,11 @@
 
 #include "application.h"
 #include "workbooks.h"
+#include "worksheet.h"
 #include "../OOWrappers/wrap_property_array.h"
 #include "../OOWrappers/oo_sheets.h"
+#include "../OOWrappers/oo_sheet.h"
+#include "../OOWrappers/oo_controller.h"
 
        // IUnknown
 HRESULT STDMETHODCALLTYPE Workbook::QueryInterface(const IID& iid, void** ppv)
@@ -245,11 +248,59 @@ HRESULT STDMETHODCALLTYPE Workbook::get_Parent(
    return E_NOTIMPL;        
 }
         
-  /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Workbook::get_ActiveSheet( 
+HRESULT STDMETHODCALLTYPE Workbook::get_ActiveSheet( 
             /* [retval][out] */ IDispatch **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;        
+   TRACE_IN;
+   HRESULT hr = S_OK;
+   
+   Worksheet* p_worksheet = new Worksheet;
+             
+   p_worksheet->Put_Application( m_p_application );
+   p_worksheet->Put_Parent( (void*)(&m_sheets) );
+             
+   OOController oo_controller;          
+             
+   hr = m_oo_document.getCurrentController( oo_controller );          
+   
+   if ( FAILED(hr) )
+   {
+   	  ERR( " m_oo_document.getCurrentController \n" );
+      if ( p_worksheet != NULL )
+       	 p_worksheet->Release();
+                    
+      TRACE_OUT;    
+      return ( E_FAIL );        	  	
+   }
+                
+   OOSheet oo_sheet;
+             
+   oo_sheet = oo_controller.getActiveSheet( ); 
+             
+   if ( oo_sheet.IsNull() )
+   {
+   	  ERR( " oo_controller.getActiveSheet \n" );
+      if ( p_worksheet != NULL )
+       	 p_worksheet->Release();
+                    
+      TRACE_OUT;    
+      return ( E_FAIL ); 	  
+   }
+             
+   p_worksheet->InitWrapper( oo_sheet );
+             
+   hr = p_worksheet->QueryInterface( IID_IDispatch, (void**)RHS );
+             
+   if ( FAILED( hr ) )
+   {
+   	  ERR( " worksheet.QueryInterface \n" );     
+   }
+             
+   if ( p_worksheet != NULL )
+       p_worksheet->Release();  
+   
+   TRACE_OUT;
+   return ( hr );        
 }
         
   /* [helpcontext][hidden][propget][id] */ HRESULT STDMETHODCALLTYPE Workbook::get_Author( 
