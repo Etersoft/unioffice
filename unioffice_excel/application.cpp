@@ -249,8 +249,38 @@ HRESULT STDMETHODCALLTYPE Application::put_ActivePrinter(
 HRESULT STDMETHODCALLTYPE Application::get_ActiveSheet( 
             /* [retval][out] */ IDispatch **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;           
+   TRACE_IN;
+   HRESULT hr;
+   
+   Workbook* p_workbook = NULL;
+   
+   hr = get_ActiveWorkbook( &p_workbook );
+   if ( FAILED( hr ) || ( p_workbook == NULL))
+   {
+       ERR( " get_ActiveWorkbook \n" );     
+       p_workbook = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+   
+   hr = p_workbook->get_ActiveSheet( RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_workbook->get_ActiveSheet \n" );     
+       p_workbook->Release();
+       p_workbook = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+
+   p_workbook->Release();
+   p_workbook = NULL;
+   
+   TRACE_OUT;
+   return ( hr );           
 }
         
 HRESULT STDMETHODCALLTYPE Application::get_ActiveWindow( 
