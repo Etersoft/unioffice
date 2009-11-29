@@ -155,13 +155,13 @@ HRESULT STDMETHODCALLTYPE CRange::Invoke(
                  pDispParams, 
                  pVarResult, 
                  pExcepInfo, 
-                 puArgErr);
-      
+                 puArgErr);       
+            
     if ( FAILED(hr) )
-    {
-     ERR( " dispIdMember = %i   hr = %08x \n", dispIdMember, hr ); 
-	 ERR( " wFlags = %i  \n", wFlags );   
-	 ERR( " pDispParams->cArgs = %i \n", pDispParams->cArgs );
+    { 
+        ERR( " dispIdMember = %i   hr = %08x \n", dispIdMember, hr ); 
+	    ERR( " wFlags = %i  \n", wFlags );   
+	    ERR( " pDispParams->cArgs = %i \n", pDispParams->cArgs );
     }  
 	             
     return ( hr );  		
@@ -642,7 +642,90 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 {
     TRACE_IN;
     HRESULT hr = E_NOTIMPL;
+    int parameters_amount = 0;
     
+    CorrectArg(RowIndex, &RowIndex);
+    CorrectArg(ColumnIndex, &ColumnIndex);
+    
+    if ( !Is_Variant_Null( RowIndex ) )
+        parameters_amount++;
+        
+    if ( !Is_Variant_Null( ColumnIndex ) )
+        parameters_amount++;        
+        
+    switch ( parameters_amount )
+    {
+	    case 0:
+			 {
+			     ERR( " parameters_amount == 0 \n" );
+				 hr = E_FAIL;  				   
+	         }   
+	         break;
+	         
+	    case 1:
+			 {
+			     if ( V_VT(&RowIndex) == VT_BSTR ) 
+		 	     {
+				  	  				 
+                 }  
+				 
+				 ERR( " now not realized \n" );
+				 hr = E_FAIL; 
+				  	   
+             }     
+             break;
+             
+        case 2:
+		     {
+			   	 hr = VariantChangeTypeEx(&RowIndex, &RowIndex, 0, 0, VT_I4);  
+			 	 hr = VariantChangeTypeEx(&ColumnIndex, &ColumnIndex, 0, 0, VT_I4);
+			 	 
+			 	 if ( ( V_VT( &RowIndex ) == VT_I4 ) && ( V_VT( &ColumnIndex ) == VT_I4 ) )
+			 	 {
+				  	 // we need to sub 1? because
+				  	 // OpenOffice start numeration from 0, but MSOffice from 1
+                     long row = V_I4( &RowIndex ) - 1;
+					 long column = V_I4( &ColumnIndex ) - 1;
+					 
+					 CRange* p_range = new CRange;
+   
+		 			 p_range->Put_Application( m_p_application );
+   					 p_range->Put_Parent( this );
+     
+   	 				 OORange    oo_range;
+   	 				 
+					 oo_range = m_oo_range.getCellRangeByPosition( column, row, column, row );
+					 
+					 hr = S_OK;
+					 
+					 if ( m_oo_range.IsNull() )
+					 {
+					  	  ERR( " failed m_oo_range.getCellByPosition \n" );
+						  hr = E_FAIL;	  
+				     } 
+				     
+				     p_range->InitWrapper( oo_range );
+             
+                     V_VT( RHS ) = VT_DISPATCH;
+   			 		 hr = p_range->QueryInterface( DIID_Range, (void**)(&(V_DISPATCH( RHS ))) );
+             
+   			 		 if ( FAILED( hr ) )
+				 	 {
+       				  	 ERR( " p_range.QueryInterface \n" );     
+	                 }
+             
+   			 		 if ( p_range != NULL )
+      		  		     p_range->Release();
+
+			     } else
+				 {
+				     ERR( " not supported type of parameter V_VT(RowIndex) == %i \n ", V_VT(&RowIndex) );
+				     ERR( " not supported type of parameter V_VT(ColumnIndex) == %i \n ", V_VT(&ColumnIndex) );
+				     hr = E_FAIL;   	   
+		         }			   			   
+		     }
+		     break;
+    } // switch ( parameters_amount ) 
     
     TRACE_OUT;
     return ( hr ); 		
