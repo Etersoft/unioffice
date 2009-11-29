@@ -43,9 +43,11 @@ namespace com
 			  BSTR    getFormula();
 			  HRESULT setFormula( BSTR );
 			  
-			  double  getValue();
-			  HRESULT setValue( double );			  
+			  VARIANT getValue();
+			  HRESULT setValue( VARIANT );			  
 			  
+			   HRESULT setString( BSTR );
+			  			  
 			  CellContentType getType();
 			  
 			  long getError();   

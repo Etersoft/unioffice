@@ -36,11 +36,19 @@ HRESULT com::sun::star::table::XCell::setFormula( BSTR _value)
 {              							
 } 
 			  
-double com::sun::star::table::XCell::getValue()
-{              							
+VARIANT com::sun::star::table::XCell::getValue()
+{       
+		
+		       							
 } 
 
-HRESULT com::sun::star::table::XCell::setValue( double value)
+HRESULT com::sun::star::table::XCell::setValue( VARIANT value)
+{ 
+  		
+		               							
+} 
+
+HRESULT com::sun::star::table::XCell::setString( BSTR _value)
 {              							
 } 
 		  
