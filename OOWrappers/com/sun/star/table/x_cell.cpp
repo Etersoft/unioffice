@@ -42,10 +42,30 @@ VARIANT com::sun::star::table::XCell::getValue()
 		       							
 } 
 
-HRESULT com::sun::star::table::XCell::setValue( VARIANT value)
-{ 
-  		
-		               							
+HRESULT com::sun::star::table::XCell::setValue( VARIANT value )
+{
+ 	TRACE_IN;	 
+    HRESULT hr;
+    VARIANT res;
+
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( E_FAIL );   	 
+    }
+
+	VariantInit( &res );
+
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"setValue", 1, value);
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed setValue \n" );   	 
+    }
+
+	VariantClear( &res );
+
+    TRACE_OUT;
+	return ( hr );  				               							
 } 
 
 HRESULT com::sun::star::table::XCell::setString( BSTR _value)
