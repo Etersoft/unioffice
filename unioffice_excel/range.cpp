@@ -1920,13 +1920,95 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put_Value( 
+HRESULT STDMETHODCALLTYPE CRange::put_Value( 
             /* [optional][in] */ VARIANT RangeValueDataType,
             /* [lcid][in] */ long lcid,
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    CorrectArg(RangeValueDataType, &RangeValueDataType);
+    CorrectArg(RHS, &RHS);
+    
+    if ( V_VT( &RHS ) & VT_ARRAY )
+    {
+	   					
+	   					
+    } //  if ( V_VT( &RHS ) & VT_ARRAY )
+    else
+    {
+	    OORange  oo_range;
+		
+		// get first cell in range
+		oo_range = m_oo_range.getCellByPosition( 0, 0 ); 	
+	 	
+	 	if ( oo_range.IsNull() )
+	 	{
+		    hr = E_FAIL;
+			
+			TRACE_OUT;
+			return ( hr );   	 
+	    }
+	 	
+	 	switch V_VT( &RHS ) 
+		{
+            case VT_I8:/*hack to convert VT_I8 to VT_I4*/
+                {
+				    long tmp = (long) V_I8(&RHS);
+                    VariantClear(&RHS);
+                    V_VT(&RHS) = VT_I4;
+                    V_I4(&RHS) = tmp;
+				}
+				break;
+        } // switch V_VT( &RHS ) 
+	 	
+	 	switch V_VT( &RHS ) 
+		{
+	 	    case VT_BSTR:
+	            {
+				    if ( lstrlenW( V_BSTR( &RHS ) ) != 0 ) 
+					{
+					    if ( V_BSTR( &RHS )[0] == L'=' ) 
+						{
+						    hr = oo_range.setFormula( V_BSTR( &RHS ) );
+							
+							if ( FAILED( hr ) )
+				            {
+					             ERR( " oo_range.setFormula \n" );   	 
+				            }
+							   								
+						} // if ( V_BSTR( &RHS )[0] == L'=' )   									
+					} // if ( lstrlenW( V_BSTR( &RHS ) ) != 0 ) 
+					else
+					{
+					    hr = oo_range.setString( V_BSTR( &RHS ) );
+							
+						if ( FAILED( hr ) )
+				        {
+					        ERR( " oo_range.setString \n" );   	 
+				        } 	
+					} 	 
+				}
+				break;
+				
+	 	    default:
+	            {
+				    hr = oo_range.setValue( RHS );
+					
+					if ( FAILED( hr ) )
+					{
+					    ERR( " oo_range.setValue \n" );   	 
+				    }  	 
+				}
+				break;				
+	 	
+		} // switch V_VT( &RHS ) 
+	
+    } //  if ( V_VT( &RHS ) & VT_ARRAY )
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
