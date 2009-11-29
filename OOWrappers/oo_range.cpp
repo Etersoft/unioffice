@@ -71,3 +71,23 @@ OORange& OORange::operator=( const XCellRange &obj)
    
    return ( *this );  		 
 }
+
+OORange& OORange::operator=( const XCell &obj)
+{
+   if ( this == &obj )
+   {
+       return ( *this );                 
+   }    
+   
+   if ( m_pd_wrapper != NULL )
+   {
+       m_pd_wrapper->Release();
+       m_pd_wrapper = NULL;        
+   } 
+
+   m_pd_wrapper = obj.m_pd_wrapper;
+   if ( m_pd_wrapper != NULL )
+       m_pd_wrapper->AddRef();
+   
+   return ( *this );  		 
+}

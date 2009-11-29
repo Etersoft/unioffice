@@ -47,7 +47,8 @@ public:
    
   OORange& operator=( const OORange &obj); 
   OORange& operator=( const XCellRange &obj);
- 
+  OORange& operator=( const XCell &obj);
+   
 private:
            
 };          
