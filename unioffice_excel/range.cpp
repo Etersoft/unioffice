@@ -130,7 +130,7 @@ HRESULT STDMETHODCALLTYPE CRange::GetIDsOfNames(
      ERR( " name = %s \n", *rgszNames );     
     }
     
-    return hr;  		
+    return ( hr );  		
 }
         
 HRESULT STDMETHODCALLTYPE CRange::Invoke(
@@ -159,10 +159,12 @@ HRESULT STDMETHODCALLTYPE CRange::Invoke(
       
     if ( FAILED(hr) )
     {
-     ERR( " dispIdMember = %i \n", dispIdMember );     
+     ERR( " dispIdMember = %i   hr = %08x \n", dispIdMember, hr ); 
+	 ERR( " wFlags = %i  \n", wFlags );   
+	 ERR( " pDispParams->cArgs = %i \n", pDispParams->cArgs );
     }  
-                 
-    return hr;  		
+	             
+    return ( hr );  		
 }
          
                
@@ -632,14 +634,18 @@ HRESULT STDMETHODCALLTYPE CRange::get_Parent(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get__Default( 
+HRESULT STDMETHODCALLTYPE CRange::get__Default( 
             /* [optional][in] */ VARIANT RowIndex,
             /* [optional][in] */ VARIANT ColumnIndex,
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = E_NOTIMPL;
+    
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
