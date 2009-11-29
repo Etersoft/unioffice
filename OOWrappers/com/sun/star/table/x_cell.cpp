@@ -33,7 +33,34 @@ BSTR com::sun::star::table::XCell::getFormula()
 } 
 
 HRESULT com::sun::star::table::XCell::setFormula( BSTR _value)
-{              							
+{
+ 	TRACE_IN;	 
+    HRESULT hr;
+    VARIANT res, param1;
+
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( E_FAIL );   	 
+    }
+
+	VariantInit( &res );
+	VariantInit( &param1 );
+
+	V_VT( &param1 ) = VT_BSTR;
+	V_BSTR( &param1 ) = SysAllocString( _value );
+
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"setFormula", 1, param1);
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed setFormula \n" );   	 
+    }
+
+	VariantClear( &res );
+	VariantClear( &param1 );
+
+    TRACE_OUT;
+	return ( hr );  		              							
 } 
 			  
 VARIANT com::sun::star::table::XCell::getValue()
