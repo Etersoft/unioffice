@@ -768,7 +768,7 @@ HRESULT CWorkbooks::Put_Visible( VARIANT_BOOL RHS)
    while ( it_begin != m_lst_of_workbook.end() )
    {
        if ( FAILED( (*it_begin)->Put_Visible( RHS ) ) )
-           hr = S_FALSE;      
+           hr = E_FAIL;      
        
        it_begin++;
    }     

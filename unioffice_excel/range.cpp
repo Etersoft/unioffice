@@ -23,7 +23,6 @@
 #include "application.h"
 #include "worksheet.h"
 
-
        // IUnknown
 HRESULT STDMETHODCALLTYPE CRange::CRange::QueryInterface(const IID& iid, void** ppv)
 {
@@ -1910,13 +1909,56 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Value( 
+HRESULT STDMETHODCALLTYPE CRange::get_Value( 
             /* [optional][in] */ VARIANT RangeValueDataType,
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    CorrectArg(RangeValueDataType, &RangeValueDataType);
+        
+    OORange  oo_range;
+		
+    // get first cell in range
+    oo_range = m_oo_range.getCellByPosition( 0, 0 );
+    
+    switch ( oo_range.getType( ) )
+    {
+	    case com::sun::star::table::FORMULA:	   
+	    case com::sun::star::table::VALUE:
+			 {
+			     hr = oo_range.getValue( RHS );
+				 if ( FAILED ( hr ) )
+				 {
+				     ERR( " failed oo_range.getValue \n" ); 	  
+				 } 											   
+	         }
+			 break;
+			 
+	    case com::sun::star::table::EMPTY:	   
+			 {
+			     V_VT( RHS ) = VT_EMPTY;
+                 hr = S_OK; 												   
+	         }
+			 break;			 
+			 
+	    case com::sun::star::table::TEXT:	   
+	    default:
+			 {		  								   
+			     hr = oo_range.getFormula( RHS );
+				 if ( FAILED ( hr ) )
+				 {
+				     ERR( " failed oo_range.getFormula \n" ); 	  
+				 }			  												   
+	         }
+			 break;				 
+			  	   
+    } // switch ( oo_range.getType( ) )
+    
+    TRACE_OUT;
+    return ( hr );	
 }
         
         
@@ -1938,7 +1980,7 @@ HRESULT STDMETHODCALLTYPE CRange::put_Value(
     } //  if ( V_VT( &RHS ) & VT_ARRAY )
     else
     {
-	    OORange  oo_range;
+    	OORange  oo_range;
 		
 		// get first cell in range
 		oo_range = m_oo_range.getCellByPosition( 0, 0 ); 	
@@ -1977,18 +2019,20 @@ HRESULT STDMETHODCALLTYPE CRange::put_Value(
 				            {
 					             ERR( " oo_range.setFormula \n" );   	 
 				            }
+							
+							TRACE_OUT;
+							return ( hr );
 							   								
 						} // if ( V_BSTR( &RHS )[0] == L'=' )   									
 					} // if ( lstrlenW( V_BSTR( &RHS ) ) != 0 ) 
-					else
-					{
-					    hr = oo_range.setString( V_BSTR( &RHS ) );
+					
+                    hr = oo_range.setString( V_BSTR( &RHS ) );
 							
-						if ( FAILED( hr ) )
-				        {
-					        ERR( " oo_range.setString \n" );   	 
-				        } 	
-					} 	 
+					if ( FAILED( hr ) )
+                    {
+					    ERR( " oo_range.setString \n" );	 
+                    } 	
+					 	 
 				}
 				break;
 				
