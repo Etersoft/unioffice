@@ -898,21 +898,49 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Formula( 
+HRESULT STDMETHODCALLTYPE CRange::get_Formula( 
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+        
+    OORange  oo_range;
+		
+    // get first cell in range
+    oo_range = m_oo_range.getCellByPosition( 0, 0 );
+     								   
+	hr = oo_range.getFormula( RHS );
+	
+	if ( FAILED ( hr ) )
+	{
+		ERR( " failed oo_range.getFormula \n" ); 	  
+	}			  												   
+    
+    TRACE_OUT;
+    return ( hr );	
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put_Formula( 
+HRESULT STDMETHODCALLTYPE CRange::put_Formula( 
             /* [lcid][in] */ long lcid,
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    VARIANT vNull;
+    HRESULT hr;
+    
+    VariantInit( &vNull );
+    V_VT( &vNull ) = VT_NULL;
+    
+    hr = put_Value( vNull, 0, RHS );
+    if ( FAILED( hr ) )
+    {
+	   ERR( " put_Value \n" );	 
+	}
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
