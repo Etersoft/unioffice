@@ -30,12 +30,12 @@ namespace com
 		    namespace table 
 			{ 
  		  
-			enum CellContentType
+			typedef enum CellContentType 
 			{
-			 	 EMPTY,
-				 VALUE,
-				 TEXT,
-				 FORMULA	  
+			 	 EMPTY   = 0,
+				 VALUE   = 1,
+				 TEXT    = 2,
+				 FORMULA = 3	  
 			};
 
             } // namespace table
