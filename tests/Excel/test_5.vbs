@@ -154,10 +154,10 @@ End If
 
 'Запись в ячейку значений через свойство Formula 
 
-Excel.Cells(2,1).Value = "Formula"
-Excel.Cells(2,2).Value = 10
-Excel.Cells(2,3).Value = 20
-Excel.Cells(2,4).Value = "=B2+C2"
+Excel.Cells(2,1).Formula = "Formula"
+Excel.Cells(2,2).Formula = 10
+Excel.Cells(2,3).Formula = 20
+Excel.Cells(2,4).Formula = "=B2+C2"
 If Err.Number <> 0 Then
     ERROR_MES ("PUT IRange.Formula")  
     Err.Clear
