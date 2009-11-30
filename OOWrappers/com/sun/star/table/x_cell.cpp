@@ -25,11 +25,32 @@ com::sun::star::table::XCell::XCell( ):com::sun::star::uno::XBase()
 }
 
 com::sun::star::table::XCell::~XCell( )
-{              							
+{
+ 									  
+									                 							
 } 
 
-BSTR com::sun::star::table::XCell::getFormula()
-{              							
+HRESULT com::sun::star::table::XCell::getFormula( VARIANT *result )
+{ 
+    TRACE_IN;	 
+	HRESULT hr;
+		
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( E_FAIL );   	 
+    }	
+	
+	hr = AutoWrap(DISPATCH_METHOD, result, m_pd_wrapper, L"getFormula", 0);
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed setFormula \n" );   	 
+	    TRACE_OUT;
+	    return ( E_FAIL );
+    } 
+	 
+    TRACE_OUT;
+	return ( hr );	 	                							
 } 
 
 HRESULT com::sun::star::table::XCell::setFormula( BSTR _value)
@@ -63,10 +84,27 @@ HRESULT com::sun::star::table::XCell::setFormula( BSTR _value)
 	return ( hr );  		              							
 } 
 			  
-VARIANT com::sun::star::table::XCell::getValue()
+HRESULT com::sun::star::table::XCell::getValue( VARIANT *result )
 {       
+    TRACE_IN;	 
+	HRESULT hr;
 		
-		       							
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( E_FAIL );   	 
+    }	
+	
+	hr = AutoWrap(DISPATCH_METHOD, result, m_pd_wrapper, L"getValue", 0);
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed setFormula \n" );   	 
+	    TRACE_OUT;
+	    return ( E_FAIL );
+    } 
+	 
+    TRACE_OUT;
+	return ( hr );		       							
 } 
 
 HRESULT com::sun::star::table::XCell::setValue( VARIANT value )
@@ -128,9 +166,37 @@ HRESULT com::sun::star::table::XCell::setString( BSTR _value)
 		  
 com::sun::star::table::CellContentType com::sun::star::table::XCell::getType()
 {
+    TRACE_IN;
+	VARIANT res;	 
+	HRESULT hr;
+	com::sun::star::table::CellContentType    ret_val = com::sun::star::table::EMPTY;
+		
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( ret_val );   	 
+    }	
+	
+	VariantInit( &res );
+	
+	hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getType", 0);
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed setFormula \n" );   	 
+	    TRACE_OUT;
+	    return ( ret_val );
+    } 
+	
+	ret_val = static_cast<com::sun::star::table::CellContentType>(V_I4( &res ));
+	
+	VariantClear( &res );
+	 
+    TRACE_OUT;
+	return ( ret_val ); 									   
 }			  
 			  
 long com::sun::star::table::XCell::getError()
-{              							
+{ 
+  	              							
 } 
  

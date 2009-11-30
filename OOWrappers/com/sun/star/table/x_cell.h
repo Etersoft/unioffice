@@ -40,13 +40,13 @@ namespace com
 			  XCell( );
 			  virtual ~XCell( );     
 			  
-			  BSTR    getFormula();
+			  HRESULT getFormula( VARIANT* );
 			  HRESULT setFormula( BSTR );
 			  
-			  VARIANT getValue();
+			  HRESULT getValue( VARIANT*);
 			  HRESULT setValue( VARIANT );			  
 			  
-			   HRESULT setString( BSTR );
+			  HRESULT setString( BSTR );
 			  			  
 			  CellContentType getType();
 			  
