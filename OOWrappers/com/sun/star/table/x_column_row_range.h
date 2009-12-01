@@ -22,6 +22,8 @@
 #define __UNIOFFICE_X_COLUMN_ROW_RANGE_H__
 
 #include "../uno/x_base.h"
+#include "../table/x_table_columns.h"
+#include "../table/x_table_rows.h"
 
 namespace com
 {
@@ -38,7 +40,11 @@ namespace com
 			public:
        
 			  XColumnRowRange( );
-			  virtual ~XColumnRowRange( );     
+			  virtual ~XColumnRowRange( );   
+			  
+			  XTableColumns getColumns();
+			  
+			  XTableRows    getRows();  
 
 			protected:            
 								  

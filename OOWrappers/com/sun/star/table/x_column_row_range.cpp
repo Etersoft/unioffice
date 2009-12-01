@@ -30,3 +30,12 @@ com::sun::star::table::XColumnRowRange::~XColumnRowRange( )
  									  									                 							
 } 
 
+com::sun::star::table::XTableColumns com::sun::star::table::XColumnRowRange::getColumns()
+{
+ 									 
+}
+			  
+com::sun::star::table::XTableRows    com::sun::star::table::XColumnRowRange::getRows()
+{
+ 									 
+}
