@@ -681,7 +681,7 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 			 	 
 			 	 if ( ( V_VT( &RowIndex ) == VT_I4 ) && ( V_VT( &ColumnIndex ) == VT_I4 ) )
 			 	 {
-				  	 // we need to sub 1? because
+				  	 // we need to sub 1, because
 				  	 // OpenOffice start numeration from 0, but MSOffice from 1
                      long row = V_I4( &RowIndex ) - 1;
 					 long column = V_I4( &ColumnIndex ) - 1;
@@ -731,14 +731,66 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put__Default( 
+HRESULT STDMETHODCALLTYPE CRange::put__Default( 
             /* [optional][in] */ VARIANT RowIndex,
             /* [optional][in] */ VARIANT ColumnIndex,
             /* [lcid][in] */ long lcid,
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    VARIANT vNull;
+    HRESULT hr;
+    
+    CorrectArg(RowIndex, &RowIndex);
+    CorrectArg(ColumnIndex, &ColumnIndex);
+    
+    IRange   *p_range = NULL;
+ 	VARIANT  var_range;
+    
+    VariantClear( &var_range );
+    
+    hr = get__Default( RowIndex, ColumnIndex, lcid, &var_range );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get__Default \n" );
+	    VariantClear( &var_range );
+		TRACE_OUT;
+		return ( hr );   	 
+	}
+    
+    hr = (V_DISPATCH( &var_range ))->QueryInterface( IID_IRange, (void**)(&p_range));
+    if ( FAILED( hr ) )
+    {
+	    ERR( " QueryInterface \n ");
+	    VariantClear( &var_range );
+	    if ( p_range != NULL )
+ 	    {
+ 	        p_range->Release();
+ 	        p_range = NULL;
+		}
+		TRACE_OUT;
+		return ( hr );   	 
+    }
+    
+    VariantClear( &var_range );
+    
+    VariantInit( &vNull );
+    V_VT( &vNull ) = VT_NULL;
+    
+    hr = p_range->put_Value( vNull, 0, RHS );
+    if ( FAILED( hr ) )
+    {
+	   ERR( " put_Value \n" );	 
+	}
+    
+    if ( p_range != NULL )
+    {
+ 	    p_range->Release();
+ 	    p_range = NULL;
+	}
+	    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
