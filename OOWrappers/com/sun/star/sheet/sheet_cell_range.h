@@ -23,6 +23,7 @@
 
 #include "../uno/x_base.h"
 #include "../table/cell_range.h"
+#include "../table/x_column_row_range.h"
 
 namespace com
 {
@@ -34,7 +35,8 @@ namespace com
 			{ 
  		  
 			class SheetCellRange: 
-				  public virtual com::sun::star::table::CellRange 
+				  public virtual com::sun::star::table::CellRange,
+				  public virtual com::sun::star::table::XColumnRowRange 
 			{
 			public:
        
