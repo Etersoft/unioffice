@@ -28,42 +28,71 @@ com::sun::star::table::TableColumn::~TableColumn( )
 {              							
 } 
 
-HRESULT getWidth( long& value)
+HRESULT com::sun::star::table::TableColumn::getWidth( long& value)
 {
  		
 }
 
-HRESULT setWidth( long value )
+HRESULT com::sun::star::table::TableColumn::setWidth( long value )
+{
+    TRACE_IN;
+	VARIANT res, param1;	 
+	HRESULT hr;
+		
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( E_FAIL );   	 
+    }	
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+	V_VT( &param1 ) = VT_I4;
+	V_I4( &param1 ) = value;
+	
+	hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"Width", 1, param1 );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed Width \n" );   	 
+	    TRACE_OUT;
+	    return ( E_FAIL );
+    } 
+	
+	
+	VariantClear( &res );
+	VariantClear( &param1 ); 
+	 
+    TRACE_OUT;
+	return ( hr ); 		
+}
+
+HRESULT com::sun::star::table::TableColumn::getOptimalWidth( bool& value)
 {
  		
 }
 
-HRESULT getOptimalWidth( bool& value)
+HRESULT com::sun::star::table::TableColumn::setOptimalWidth( bool value)
 {
  		
 }
 
-HRESULT setOptimalWidth( bool value)
+HRESULT com::sun::star::table::TableColumn::getIsVisible( bool& value)
 {
  		
 }
 
-HRESULT getIsVisible( bool& value)
+HRESULT com::sun::star::table::TableColumn::setIsVisible( bool value)
 {
  		
 }
 
-HRESULT setIsVisible( bool value)
+HRESULT com::sun::star::table::TableColumn::getIsStartOfNewPage( bool& value)
 {
  		
 }
 
-HRESULT getIsStartOfNewPage( bool& value)
-{
- 		
-}
-
-HRESULT setIsStartOfNewPage( bool value)
+HRESULT com::sun::star::table::TableColumn::setIsStartOfNewPage( bool value)
 {
  		
 }
