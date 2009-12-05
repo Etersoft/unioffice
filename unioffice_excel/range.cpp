@@ -501,11 +501,36 @@ HRESULT STDMETHODCALLTYPE CRange::get_Parent(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_ColumnWidth( 
+HRESULT STDMETHODCALLTYPE CRange::get_ColumnWidth( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT  hr;
+    long width = 0;
+    OORange oo_columns;
+    
+    oo_columns = m_oo_range.getColumns();
+    if ( oo_columns.IsNull( ) )
+    {
+	    ERR( " getColumns \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
+    }
+    
+    hr = oo_columns.getWidth( width );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " oo_columns.getWidth \n" );
+		TRACE_OUT;
+		return ( hr );   	 
+	}
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+    V_I4( RHS ) = width / 200;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
