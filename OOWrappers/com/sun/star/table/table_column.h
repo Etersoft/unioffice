@@ -40,6 +40,15 @@ namespace com
 			  TableColumn( );
 			  virtual ~TableColumn( );     
 
+			  HRESULT getWidth( long& );
+			  HRESULT setWidth( long );	
+			  HRESULT getOptimalWidth( bool& );
+			  HRESULT setOptimalWidth( bool ); 	
+			  HRESULT getIsVisible( bool& );
+			  HRESULT setIsVisible( bool ); 	
+			  HRESULT getIsStartOfNewPage( bool&);
+ 	   		  HRESULT setIsStartOfNewPage( bool );
+ 	   		  
 			protected:            
 								  
 			};

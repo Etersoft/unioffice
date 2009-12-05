@@ -27,3 +27,44 @@ com::sun::star::table::TableColumn::TableColumn( ):com::sun::star::uno::XBase()
 com::sun::star::table::TableColumn::~TableColumn( )
 {              							
 } 
+
+HRESULT getWidth( long& value)
+{
+ 		
+}
+
+HRESULT setWidth( long value )
+{
+ 		
+}
+
+HRESULT getOptimalWidth( bool& value)
+{
+ 		
+}
+
+HRESULT setOptimalWidth( bool value)
+{
+ 		
+}
+
+HRESULT getIsVisible( bool& value)
+{
+ 		
+}
+
+HRESULT setIsVisible( bool value)
+{
+ 		
+}
+
+HRESULT getIsStartOfNewPage( bool& value)
+{
+ 		
+}
+
+HRESULT setIsStartOfNewPage( bool value)
+{
+ 		
+}
+
