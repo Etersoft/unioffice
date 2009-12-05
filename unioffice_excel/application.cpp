@@ -533,13 +533,46 @@ HRESULT STDMETHODCALLTYPE Application::Evaluate(
    return E_NOTIMPL;             
 }
         
-         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_Range( 
+HRESULT STDMETHODCALLTYPE Application::get_Range( 
             /* [in] */ VARIANT Cell1,
             /* [optional][in] */ VARIANT Cell2,
             /* [retval][out] */ Range **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_IN;
+   HRESULT hr;
+   
+   CorrectArg(Cell1, &Cell1);
+   CorrectArg(Cell2, &Cell2);
+   
+   Worksheet* p_worksheet = NULL;
+   
+   hr = get_ActiveSheet( reinterpret_cast<IDispatch**>(&p_worksheet) );
+   if ( FAILED( hr ) || ( p_worksheet == NULL))
+   {
+       ERR( " get_ActiveSheet \n" );     
+       p_worksheet = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+   
+   hr = p_worksheet->get_Range( Cell1, Cell2, RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_worksheet->get_Range \n" );     
+       p_worksheet->Release();
+       p_worksheet = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+
+   p_worksheet->Release();
+   p_worksheet = NULL;
+   
+   TRACE_OUT;
+   return ( hr );             
 }
         
          /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_Rows( 
