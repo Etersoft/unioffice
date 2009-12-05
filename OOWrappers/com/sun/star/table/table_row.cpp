@@ -50,6 +50,8 @@ HRESULT com::sun::star::table::TableRow::getHeight( long& value)
 	    return ( E_FAIL );
     } 
 	
+	VariantChangeTypeEx(&res, &res, 0, 0, VT_I4);
+	
 	value = V_I4( &res );
 	
 	VariantClear( &res ); 
