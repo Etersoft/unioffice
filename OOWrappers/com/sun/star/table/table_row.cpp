@@ -30,7 +30,32 @@ com::sun::star::table::TableRow::~TableRow( )
 
 HRESULT com::sun::star::table::TableRow::getHeight( long& value)
 {
- 		
+    TRACE_IN;
+	VARIANT res;	 
+	HRESULT hr;
+		
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( E_FAIL );   	 
+    }	
+	
+	VariantInit( &res );
+		
+	hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"Height",0 );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed Height \n" );   	 
+	    TRACE_OUT;
+	    return ( E_FAIL );
+    } 
+	
+	value = V_I4( &res );
+	
+	VariantClear( &res ); 
+	 
+    TRACE_OUT;
+	return ( hr ); 		
 }
 
 HRESULT com::sun::star::table::TableRow::setHeight( long value)
