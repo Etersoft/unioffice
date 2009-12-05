@@ -24,6 +24,7 @@
 #include "../uno/x_base.h"
 #include "sheet_cell_range.h"
 #include "../container/x_named.h"
+#include "../sheet/x_cell_range_addressable.h"
 
 namespace com
 {
@@ -36,7 +37,8 @@ namespace com
  		  
 			class Spreadsheet: 
 				  public virtual com::sun::star::sheet::SheetCellRange,
-				  public virtual com::sun::star::container::XNamed 
+				  public virtual com::sun::star::container::XNamed,
+				  public virtual com::sun::star::sheet::XCellRangeAddressable 
 			{
 			public:
        
