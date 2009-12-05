@@ -60,7 +60,36 @@ HRESULT com::sun::star::table::TableRow::getHeight( long& value)
 
 HRESULT com::sun::star::table::TableRow::setHeight( long value)
 {
- 		
+    TRACE_IN;
+	VARIANT res, param1;	 
+	HRESULT hr;
+		
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( E_FAIL );   	 
+    }	
+	
+	VariantInit( &res );
+	VariantInit( &param1 );
+	
+	V_VT( &param1 ) = VT_I4;
+	V_I4( &param1 ) = value;
+	
+	hr = AutoWrap(DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"Height", 1, param1 );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed Height \n" );   	 
+	    TRACE_OUT;
+	    return ( E_FAIL );
+    } 
+	
+	
+	VariantClear( &res );
+	VariantClear( &param1 ); 
+	 
+    TRACE_OUT;
+	return ( hr ); 		
 }
 	
 HRESULT com::sun::star::table::TableRow::getOptimalHeight( bool& value)
