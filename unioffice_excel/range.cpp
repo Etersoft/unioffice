@@ -1730,11 +1730,36 @@ HRESULT STDMETHODCALLTYPE CRange::get_RowHeight(
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put_RowHeight( 
+HRESULT STDMETHODCALLTYPE CRange::put_RowHeight( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT  hr;
+    long height = 0;
+    OORange oo_rows;
+    
+    oo_rows = m_oo_range.getRows();
+    if ( oo_rows.IsNull( ) )
+    {
+	    ERR( " getRows \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
+    }
+    
+    VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
+    
+	height = V_I4( &RHS ) / 28 * 1000;
+    
+    hr = oo_rows.setHeight( height );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " oo_rows.setHeight \n" );
+		TRACE_OUT;
+		return ( hr );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
