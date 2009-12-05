@@ -1,5 +1,5 @@
 /*
- * source file - TableColumn
+ * header file - TableRow
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,12 +18,35 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "table_column.h"
-   
-com::sun::star::table::TableColumn::TableColumn( ):com::sun::star::uno::XBase()
-{                                                                       
-}
+#ifndef __UNIOFFICE_TABLE_ROW_H__
+#define __UNIOFFICE_TABLE_ROW_H__
 
-com::sun::star::table::TableColumn::~TableColumn( )
-{              							
-} 
+#include "../uno/x_base.h"
+
+namespace com
+{
+    namespace sun
+    {
+        namespace star
+        {
+		    namespace table 
+			{ 
+ 		  
+			class TableRow: 
+				  public virtual com::sun::star::uno::XBase 
+			{
+			public:
+       
+			  TableRow( );
+			  virtual ~TableRow( );     
+
+			protected:            
+								  
+			};
+
+            } // namespace table
+        } // namespace star
+    } // namespace sun
+} // namespace com
+
+#endif // __UNIOFFICE_TABLE_ROW_H__

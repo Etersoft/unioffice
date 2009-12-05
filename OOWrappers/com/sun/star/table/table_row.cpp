@@ -1,5 +1,5 @@
 /*
- * source file - TableColumn
+ * source file - TableRow
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,12 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "table_column.h"
+#include "table_row.h"
    
-com::sun::star::table::TableColumn::TableColumn( ):com::sun::star::uno::XBase()
+com::sun::star::table::TableRow::TableRow( ):com::sun::star::uno::XBase()
 {                                                                       
 }
 
-com::sun::star::table::TableColumn::~TableColumn( )
+com::sun::star::table::TableRow::~TableRow( )
 {              							
 } 

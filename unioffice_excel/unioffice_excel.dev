@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=114
+UnitCount=116
 Type=3
 Ver=1
 ObjFiles=
@@ -1179,6 +1179,26 @@ BuildCmd=
 
 [Unit114]
 FileName=..\OOWrappers\com\sun\star\table\table_column.h
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/table
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit115]
+FileName=..\OOWrappers\com\sun\star\table\table_row.cpp
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/table
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit116]
+FileName=..\OOWrappers\com\sun\star\table\table_row.h
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/table
 Compile=1
