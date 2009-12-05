@@ -129,7 +129,35 @@ long com::sun::star::table::CellRangeAddress::StartRow()
 
 long com::sun::star::table::CellRangeAddress::EndColumn()
 {
- 	 
+    TRACE_IN;
+	VARIANT res;	 
+	HRESULT hr;
+	long ret_val = 0;
+		
+	if ( IsNull() )
+	{
+	   	ERR( " m_pd_wrapper is NULL \n" ); 
+	    return ( 0 );   	 
+    }	
+	
+	VariantInit( &res );
+		
+	hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"EndColumn",0 );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed EndColumn \n" );   	 
+	    TRACE_OUT;
+	    return ( 0 );
+    } 
+	
+	VariantChangeTypeEx(&res, &res, 0, 0, VT_I4);
+	
+	ret_val = V_I4( &res );
+	
+	VariantClear( &res ); 
+	 
+    TRACE_OUT;
+	return ( ret_val );  	 
 }
 
 long com::sun::star::table::CellRangeAddress::EndRow()
