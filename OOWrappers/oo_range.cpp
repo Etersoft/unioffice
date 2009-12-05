@@ -91,3 +91,43 @@ OORange& OORange::operator=( const XCell &obj)
    
    return ( *this );  		 
 }
+
+OORange& OORange::operator=( const XTableColumns &obj)
+{
+   if ( this == &obj )
+   {
+       return ( *this );                 
+   }    
+   
+   if ( m_pd_wrapper != NULL )
+   {
+       m_pd_wrapper->Release();
+       m_pd_wrapper = NULL;        
+   } 
+
+   m_pd_wrapper = obj.m_pd_wrapper;
+   if ( m_pd_wrapper != NULL )
+       m_pd_wrapper->AddRef();
+   
+   return ( *this );  		 
+}
+
+OORange& OORange::operator=( const XTableRows &obj)
+{
+   if ( this == &obj )
+   {
+       return ( *this );                 
+   }    
+   
+   if ( m_pd_wrapper != NULL )
+   {
+       m_pd_wrapper->Release();
+       m_pd_wrapper = NULL;        
+   } 
+
+   m_pd_wrapper = obj.m_pd_wrapper;
+   if ( m_pd_wrapper != NULL )
+       m_pd_wrapper->AddRef();
+   
+   return ( *this );  		 
+}

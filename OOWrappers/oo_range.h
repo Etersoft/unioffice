@@ -30,6 +30,10 @@
 #include "./com/sun/star/sheet/sheet_cell.h"
 #include "./com/sun/star/sheet/sheet_cell_range.h"
 #include "./com/sun/star/table/x_cell_range.h"
+#include "./com/sun/star/table/table_column.h"
+#include "./com/sun/star/table/table_row.h"
+#include "./com/sun/star/table/x_table_columns.h"
+#include "./com/sun/star/table/x_table_rows.h"
 
 using namespace com::sun::star::uno;
 using namespace com::sun::star::sheet;
@@ -38,7 +42,13 @@ using namespace com::sun::star::table;
 class OORange: 
 	  public XInterface,
 	  public SheetCell,
-	  public SheetCellRange
+	  public SheetCellRange, 
+	  
+	  // special services - to do actions with columns and rows
+	  public XTableColumns,
+	  public XTableRows,
+	  public TableColumn,
+	  public TableRow
 {
 public:
 
@@ -48,6 +58,8 @@ public:
   OORange& operator=( const OORange &obj); 
   OORange& operator=( const XCellRange &obj);
   OORange& operator=( const XCell &obj);
+  OORange& operator=( const XTableColumns &obj);
+  OORange& operator=( const XTableRows &obj);
    
 private:
            
