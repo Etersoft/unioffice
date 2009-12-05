@@ -1342,13 +1342,119 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Outline(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Range( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Range( 
             /* [in] */ VARIANT Cell1,
             /* [optional][in] */ VARIANT Cell2,
             /* [retval][out] */ Range	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   TRACE_IN;
+   HRESULT hr;
+   VARIANT vNull;   
+   
+   VariantInit(&vNull);
+    
+   CorrectArg(Cell1, &Cell1);
+   CorrectArg(Cell2, &Cell2);
+    
+   if ( Is_Variant_Null( Cell2 ) ) 
+   {
+   	   VARIANT     var_range;	
+   	   Range*      p_range = NULL;
+	   IRange*     p_irange = NULL;	  	
+   	  	
+   	   VariantClear( &var_range );	
+   	  	
+       hr = get_Cells( &p_range );
+       if ( FAILED( hr ) ) {
+           ERR( " get_Cells \n" );
+           TRACE_OUT;
+           return ( hr );
+       }
+       
+       hr = p_range->QueryInterface( IID_IRange, (void**)(&p_irange));
+       if ( FAILED( hr ) ) {
+           ERR( " p_range->QueryInterface \n" );
+           
+           if ( p_range != NULL )
+           {
+               p_range->Release();
+               p_range = NULL;
+		   }
+		              
+           TRACE_OUT;
+           return ( hr );
+       }
+       
+       hr = p_irange->get__Default( Cell1, vNull, 0, &var_range );
+       if ( FAILED( hr ) ) {
+           ERR(" get__Default \n" );
+           
+           if ( p_range != NULL )
+           {
+               p_range->Release();
+               p_range = NULL;
+		   }
+
+           if ( p_irange != NULL )
+           {
+               p_irange->Release();
+               p_irange = NULL;
+		   }
+		   
+           TRACE_OUT;
+           return ( hr );
+       }
+       
+       hr = (V_DISPATCH( &var_range ))->QueryInterface( DIID_Range, (void**)RHS);
+       if ( FAILED( hr ) )
+       {
+	       ERR( " QueryInterface \n ");
+	       VariantClear( &var_range );
+	       
+	       if ( p_range != NULL )
+ 	       {
+ 	           p_range->Release();
+ 	           p_range = NULL;
+		   }
+		   
+		   if ( p_irange != NULL )
+ 	       {
+ 	           p_irange->Release();
+ 	           p_irange = NULL;
+		   }
+		   
+		   TRACE_OUT;
+		   return ( hr );   	 
+       }
+       
+       VariantClear( &var_range );
+       
+       if ( p_range != NULL )
+ 	   {
+ 	       p_range->Release();
+ 	       p_range = NULL;
+	   }
+      
+	   if ( p_irange != NULL )
+ 	   {
+ 	       p_irange->Release();
+ 	       p_irange = NULL;
+	   }
+	   
+       TRACE_OUT;
+       return ( hr );
+   } // if ( Is_Variant_Null( Cell2 ) )      
+    
+    
+    
+    
+    
+    
+    
+    
+   
+   TRACE_OUT;
+   return ( hr );                           
 }
         
         /* [helpcontext][hidden][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Rectangles( 
