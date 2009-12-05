@@ -23,6 +23,10 @@
 #include "application.h"
 #include "worksheet.h"
 
+#include "../OOWrappers/com/sun/star/table/cell_range_address.h"
+
+using namespace com::sun::star::table;
+
        // IUnknown
 HRESULT STDMETHODCALLTYPE CRange::CRange::QueryInterface(const IID& iid, void** ppv)
 {
@@ -717,12 +721,44 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 			 {
 			     if ( V_VT(&RowIndex) == VT_BSTR ) 
 		 	     {
-				  	  				 
-                 }  
-				 
-				 ERR( " now not realized \n" );
-				 hr = E_FAIL; 
-				  	   
+				     CRange* p_range = new CRange;
+   
+		 			 p_range->Put_Application( m_p_application );
+   					 p_range->Put_Parent( this );
+     
+   	 				 OORange    oo_range;
+   	 				 
+					 oo_range = m_oo_range.getCellRangeByName( V_BSTR( &RowIndex ) );
+					 
+					 hr = S_OK;
+					 
+					 if ( m_oo_range.IsNull() )
+					 {
+					  	  ERR( " failed m_oo_range.getCellRangeByName \n" );
+						  hr = E_FAIL;	  
+				     } 
+				     
+				     p_range->InitWrapper( oo_range );
+             
+                     V_VT( RHS ) = VT_DISPATCH;
+   			 		 hr = p_range->QueryInterface( DIID_Range, (void**)(&(V_DISPATCH( RHS ))) );
+             
+   			 		 if ( FAILED( hr ) )
+				 	 {
+       				  	 ERR( " p_range.QueryInterface \n" );     
+	                 }
+             
+   			 		 if ( p_range != NULL )
+   			 		 {
+      		  		     p_range->Release();
+      		  		     p_range = NULL;
+					 } 				 
+                 } else
+                 {
+			         ERR( " now not realized VT(RowIndex) = %i \n", V_VT( &RowIndex ) );
+				     hr = E_FAIL; 	   
+				 }
+				 				  	   
              }     
              break;
              
@@ -766,7 +802,10 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 	                 }
              
    			 		 if ( p_range != NULL )
+      		  		 {
       		  		     p_range->Release();
+      		  		     p_range = NULL;
+					 }
 
 			     } else
 				 {
@@ -2157,7 +2196,87 @@ HRESULT STDMETHODCALLTYPE CRange::put_Value(
     
     if ( V_VT( &RHS ) & VT_ARRAY )
     {
-	   					
+	    int arr_dim;
+        VARIANT *pvar;
+		
+		arr_dim = SafeArrayGetDim( V_ARRAY( &RHS ) );
+		
+		if (arr_dim == 1) 
+		{
+	        /*TODO*/
+            ERR( " 1 Demension array NOT REALIZE NOW \n" );
+        } // if (arr_dim == 1) 
+		
+		if (arr_dim == 2) 
+		{
+  		    long startrow, endrow, startcolumn, endcolumn;
+            VARIANT row,col;
+            VARIANT vNull;
+            VariantInit(&vNull);
+
+            hr = SafeArrayAccessData( V_ARRAY( &RHS ), (void **)&pvar);
+            if ( FAILED( hr )) 
+            {
+			   	ERR( " failed SafeArrayAccessData \n" ); 
+			   	TRACE_OUT;
+			    return ( hr );
+			}
+
+			CellRangeAddress   cell_range_address;
+
+			cell_range_address = m_oo_range.getRangeAddress();
+			if ( cell_range_address.IsNull() )
+			{
+			    ERR( " failed getRangeAddress \n" );  
+				TRACE_OUT;
+				return ( E_FAIL ); 	 
+		    }
+			
+			startcolumn = cell_range_address.StartColumn( );
+			startrow = cell_range_address.StartRow( );
+			endcolumn = cell_range_address.EndColumn( );
+			endrow = cell_range_address.EndRow( );
+			
+            int maxj = ( V_ARRAY( &RHS ))->rgsabound[0].cElements;
+            int maxi = ( V_ARRAY( &RHS ))->rgsabound[1].cElements;
+
+            for ( int i = 0; i < maxi; i++) 
+			{
+                for ( int j = 0; j < maxj; j++) 
+				{
+                    V_VT( &row ) = VT_I4;
+                    V_I4( &row ) = i + 1;
+                    V_VT( &col ) = VT_I4;
+                    V_I4( &col ) = j + 1;
+
+                    if (
+					    ( i <= ( endrow - startrow ) ) &&
+						( j <= ( endcolumn - startcolumn ) )
+						) 
+					{
+                    
+                        hr = put__Default( row, col, 0, pvar[ j * maxi + i ]  );
+                        if ( FAILED( hr ) )
+						{
+						    ERR( " put__Default \n" ); 
+							TRACE_OUT;
+							return ( hr );  	 
+					    }               
+                    
+                    } // if (( i <= ( endrow - startrow ) ) && ( j <= ( endcolumn - startcolumn ) )) 
+                    
+                } // for (j=0; j<maxj; j++) 
+            } // for (i=0; i<maxi; i++) 
+        
+            hr = SafeArrayUnaccessData( V_ARRAY( &RHS ) );
+        
+            if ( FAILED( hr ) ) {
+                ERR("Error when SafeArrayUnaccessData \n");
+            }
+            
+            TRACE_OUT;
+            return ( hr );
+        } // if (arr_dim == 2) 				
 	   					
     } //  if ( V_VT( &RHS ) & VT_ARRAY )
     else
