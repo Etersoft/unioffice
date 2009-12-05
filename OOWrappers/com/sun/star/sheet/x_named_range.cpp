@@ -90,12 +90,12 @@ HRESULT com::sun::star::sheet::XNamedRange::setContent( BSTR _content)
     return ( hr );	 		
 }
 			  
-com::sun::star::table::SCellAddress com::sun::star::sheet::XNamedRange::getReferencePosition()
+com::sun::star::table::CellAddress com::sun::star::sheet::XNamedRange::getReferencePosition()
 {
     TRACE_IN; 
     HRESULT hr;
     VARIANT res;
-	com::sun::star::table::SCellAddress ret_val;    
+	com::sun::star::table::CellAddress ret_val;    
     
     VariantInit( &res );
     
@@ -120,7 +120,7 @@ com::sun::star::table::SCellAddress com::sun::star::sheet::XNamedRange::getRefer
     return ( ret_val ); 									
 }
 
-HRESULT com::sun::star::sheet::XNamedRange::setReferencePosition( com::sun::star::table::SCellAddress _cell_address)
+HRESULT com::sun::star::sheet::XNamedRange::setReferencePosition( com::sun::star::table::CellAddress _cell_address)
 {
  	 TRACE_NOTIMPL;	 		
 }

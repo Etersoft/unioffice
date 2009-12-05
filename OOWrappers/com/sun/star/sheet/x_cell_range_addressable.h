@@ -1,5 +1,5 @@
 /*
- * header file - SCellAddress
+ * header file - XCellRangeAddressable
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,10 +18,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_S_CELL_ADDRESS_H__
-#define __UNIOFFICE_S_CELL_ADDRESS_H__
+#ifndef __UNIOFFICE_X_CELL_RANGE_ADDRESSABLE_H__
+#define __UNIOFFICE_X_CELL_RANGE_ADDRESSABLE_H__
 
 #include "../uno/x_base.h"
+#include "../table/cell_range_address.h"
 
 namespace com
 {
@@ -29,28 +30,26 @@ namespace com
     {
         namespace star
         {
-		    namespace table 
+		    namespace sheet 
 			{ 
  		  
-			class SCellAddress: public virtual com::sun::star::uno::XBase 
+			class XCellRangeAddressable: 
+				  public virtual com::sun::star::uno::XBase 
 			{
 			public:
        
-			  SCellAddress( );
-			  virtual ~SCellAddress( );     
-/*         
-Elements' Summary
-Sheet	is the index of the sheet that contains the cell.  
-Column	is the index of the column where the cell is located.  
-Row	is the index of the row where the cell is located.           
-*/        
+			  XCellRangeAddressable( );
+			  virtual ~XCellRangeAddressable( );   
+			  
+			  com::sun::star::table::CellRangeAddress  getRangeAddress();
+			           
 			protected:            
 								  
 			};
 
-            } // namespace table
+            } // namespace sheet
         } // namespace star
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_S_CELL_ADDRESS_H__
+#endif // __UNIOFFICE_X_CELL_RANGE_ADDRESSABLE_H__

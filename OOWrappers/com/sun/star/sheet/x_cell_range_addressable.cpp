@@ -1,5 +1,5 @@
 /*
- * source file - SCellAddress
+ * header file - XCellRangeAddressable
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -17,13 +17,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
+ 
+#include "x_cell_range_addressable.h"
 
-#include "s_cell_address.h"
-   
-com::sun::star::table::SCellAddress::SCellAddress( ):com::sun::star::uno::XBase()
-{                                                                       
+com::sun::star::sheet::XCellRangeAddressable::XCellRangeAddressable( ):com::sun::star::uno::XBase()
+{
+ 																	 
 }
 
-com::sun::star::table::SCellAddress::~SCellAddress( )
-{              							
+com::sun::star::sheet::XCellRangeAddressable::~XCellRangeAddressable( )
+{
+ 																	  
+}															 
+			  
+com::sun::star::table::CellRangeAddress  com::sun::star::sheet::XCellRangeAddressable::getRangeAddress()
+{
+ 										 
 } 

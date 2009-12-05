@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=118
+UnitCount=120
 Type=3
 Ver=1
 ObjFiles=
@@ -798,7 +798,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit78]
-FileName=..\OOWrappers\com\sun\star\table\s_cell_address.cpp
+FileName=..\OOWrappers\com\sun\star\table\cell_address.cpp
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/table
 Compile=1
@@ -808,7 +808,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit79]
-FileName=..\OOWrappers\com\sun\star\table\s_cell_address.h
+FileName=..\OOWrappers\com\sun\star\table\cell_address.h
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/table
 Compile=1
@@ -1221,6 +1221,26 @@ BuildCmd=
 FileName=..\OOWrappers\com\sun\star\table\cell_range_address.h
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/table
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit119]
+FileName=..\OOWrappers\com\sun\star\sheet\x_cell_range_addressable.cpp
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/sheet
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit120]
+FileName=..\OOWrappers\com\sun\star\sheet\x_cell_range_addressable.h
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/sheet
 Compile=1
 Link=1
 Priority=1000

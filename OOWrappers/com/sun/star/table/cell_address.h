@@ -1,5 +1,5 @@
 /*
- * header file - XNamedRange
+ * header file - CellAddress
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,11 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_X_NAMED_RANGE_H__
-#define __UNIOFFICE_X_NAMED_RANGE_H__
+#ifndef __UNIOFFICE_CELL_ADDRESS_H__
+#define __UNIOFFICE_CELL_ADDRESS_H__
 
-#include "../container/x_named.h"
-#include "../table/cell_address.h"
+#include "../uno/x_base.h"
 
 namespace com
 {
@@ -30,32 +29,28 @@ namespace com
     {
         namespace star
         {
-		    namespace sheet 
+		    namespace table 
 			{ 
  		  
-			class XNamedRange: public virtual com::sun::star::container::XNamed 
+			class CellAddress: public virtual com::sun::star::uno::XBase 
 			{
 			public:
        
-			  XNamedRange( );
-			  virtual ~XNamedRange( );   
-			  
-			  BSTR getContent();
-			  HRESULT setContent( BSTR );
-			  
-			  com::sun::star::table::CellAddress getReferencePosition();
-			  HRESULT setReferencePosition( com::sun::star::table::CellAddress );
-			  
-			  long getType();  
-			  HRESULT setType( long );
-         
+			  CellAddress( );
+			  virtual ~CellAddress( );     
+/*         
+Elements' Summary
+Sheet	is the index of the sheet that contains the cell.  
+Column	is the index of the column where the cell is located.  
+Row	is the index of the row where the cell is located.           
+*/        
 			protected:            
 								  
 			};
 
-            } // namespace sheet
+            } // namespace table
         } // namespace star
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_X_NAMED_RANGE_H__
+#endif // __UNIOFFICE_CELL_ADDRESS_H__
