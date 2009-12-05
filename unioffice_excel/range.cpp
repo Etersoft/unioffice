@@ -534,11 +534,38 @@ HRESULT STDMETHODCALLTYPE CRange::get_ColumnWidth(
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put_ColumnWidth( 
+HRESULT STDMETHODCALLTYPE CRange::put_ColumnWidth( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT  hr;
+    long width = 0;
+    OORange oo_columns;
+        
+    CorrectArg(RHS, &RHS);    
+        
+    oo_columns = m_oo_range.getColumns();
+    if ( oo_columns.IsNull( ) )
+    {
+	    ERR( " getColumns \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
+    }
+    
+    VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
+    
+    width = V_I4( &RHS ) * 210;
+    
+    hr = oo_columns.setWidth( width );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " oo_columns.setWidth \n" );
+		TRACE_OUT;
+		return ( hr );   	 
+	}
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
