@@ -1697,11 +1697,36 @@ HRESULT STDMETHODCALLTYPE CRange::put_Formula(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_RowHeight( 
+HRESULT STDMETHODCALLTYPE CRange::get_RowHeight( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT  hr;
+    long height = 0;
+    OORange oo_rows;
+    
+    oo_rows = m_oo_range.getRows();
+    if ( oo_rows.IsNull( ) )
+    {
+	    ERR( " getRows \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
+    }
+    
+    hr = oo_rows.getHeight( height );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " oo_rows.getHeight \n" );
+		TRACE_OUT;
+		return ( hr );   	 
+	}
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+    V_I4( RHS ) = height / 1000 * 28;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
