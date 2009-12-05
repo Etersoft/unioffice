@@ -22,6 +22,7 @@
 #define __UNIOFFICE_TABLE_COLUMN_H__
 
 #include "../uno/x_base.h"
+#include "../container/x_named.h"
 
 namespace com
 {
@@ -33,7 +34,8 @@ namespace com
 			{ 
  		  
 			class TableColumn: 
-				  public virtual com::sun::star::uno::XBase 
+				  public virtual com::sun::star::uno::XBase,
+				  public virtual com::sun::star::container::XNamed  
 			{
 			public:
        
