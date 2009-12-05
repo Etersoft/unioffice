@@ -27,3 +27,43 @@ com::sun::star::table::TableRow::TableRow( ):com::sun::star::uno::XBase()
 com::sun::star::table::TableRow::~TableRow( )
 {              							
 } 
+
+HRESULT com::sun::star::table::TableRow::getHeight( long& value)
+{
+ 		
+}
+
+HRESULT com::sun::star::table::TableRow::setHeight( long value)
+{
+ 		
+}
+	
+HRESULT com::sun::star::table::TableRow::getOptimalHeight( bool& value)
+{
+ 		
+}
+
+HRESULT com::sun::star::table::TableRow::setOptimalHeight( bool value)
+{
+ 		
+}
+
+HRESULT com::sun::star::table::TableRow::getIsVisible( bool& value)
+{
+ 		
+}
+
+HRESULT com::sun::star::table::TableRow::setIsVisible( bool value)
+{
+ 		
+}
+
+HRESULT com::sun::star::table::TableRow::getIsStartOfNewPage( bool& value)
+{
+ 		
+}
+
+HRESULT com::sun::star::table::TableRow::setIsStartOfNewPage( bool value)
+{
+ 		
+}

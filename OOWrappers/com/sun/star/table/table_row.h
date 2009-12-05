@@ -40,6 +40,15 @@ namespace com
 			  TableRow( );
 			  virtual ~TableRow( );     
 
+			  HRESULT getHeight( long& );
+			  HRESULT setHeight( long );	
+			  HRESULT getOptimalHeight( bool& );
+			  HRESULT setOptimalHeight( bool ); 	
+			  HRESULT getIsVisible( bool& );
+			  HRESULT setIsVisible( bool ); 	
+			  HRESULT getIsStartOfNewPage( bool&);
+ 	   		  HRESULT setIsStartOfNewPage( bool );
+
 			protected:            
 								  
 			};
