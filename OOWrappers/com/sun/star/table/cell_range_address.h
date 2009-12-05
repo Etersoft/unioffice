@@ -40,6 +40,12 @@ namespace com
 			  CellRangeAddress( );
 			  virtual ~CellRangeAddress( );     
 
+			  long Sheet(); 
+			  long StartColumn(); 
+			  long StartRow();
+			  long EndColumn();
+			  long EndRow();
+
 			protected:            
 								  
 			};

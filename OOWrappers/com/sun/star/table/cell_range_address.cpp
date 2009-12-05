@@ -27,3 +27,28 @@ com::sun::star::table::CellRangeAddress::CellRangeAddress( ):com::sun::star::uno
 com::sun::star::table::CellRangeAddress::~CellRangeAddress( )
 {              							
 } 
+
+long com::sun::star::table::CellRangeAddress::Sheet()
+{
+ 	 
+}
+
+long com::sun::star::table::CellRangeAddress::StartColumn()
+{
+ 	 
+}
+
+long com::sun::star::table::CellRangeAddress::StartRow()
+{
+ 	 
+}
+
+long com::sun::star::table::CellRangeAddress::EndColumn()
+{
+ 	 
+}
+
+long com::sun::star::table::CellRangeAddress::EndRow()
+{
+ 	 
+}
