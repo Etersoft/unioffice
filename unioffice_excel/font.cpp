@@ -351,19 +351,26 @@ HRESULT CFont::Init( )
          
 HRESULT CFont::Put_Application( void* p_application)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    
+    m_p_application = p_application;
+    
+    TRACE_OUT;    
+    return S_OK;  		
 }
         
 HRESULT CFont::Put_Parent( void* p_parent)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;		
+   TRACE_IN;  
+      
+   m_p_parent = p_parent;       
+      
+   TRACE_OUT;
+   return S_OK; 		
 }
         
 HRESULT CFont::InitWrapper( OOFont _oo_font )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;      
+    m_oo_font = _oo_font;     
 }            
             
