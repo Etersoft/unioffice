@@ -831,13 +831,27 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Cells(
      
    OORange    oo_range;
    
-   if ( OOVersion == VER_3 )
+   switch ( OOVersion )
    {
-   	  	oo_range = m_oo_sheet.getCellRangeByPosition( 0, 0, 1023, 65535 );
-   } else 
-   {
-   	    oo_range = m_oo_sheet.getCellRangeByPosition( 0, 0, 255, 65535 ); 	  
-   }
+       case VER_3:
+	   		{
+			    oo_range = m_oo_sheet.getCellRangeByPosition( 0, 0, 1023, 65535 ); 	  
+		 	}
+		 	break;
+		 	
+       case VER_2:
+	   		{
+			    oo_range = m_oo_sheet.getCellRangeByPosition( 0, 0, 255, 65535 );			 	  
+		 	}
+		 	break;		 	
+		 	
+	   default:
+	   		{
+			    oo_range = m_oo_sheet.getCellRangeByPosition( 0, 0, 255, 65535 );			   				
+			}	 	
+   		    break;
+   		    
+   } // switch ( OOVersion )
       
    if ( oo_range.IsNull() )
    {

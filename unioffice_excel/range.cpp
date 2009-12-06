@@ -523,23 +523,8 @@ HRESULT STDMETHODCALLTYPE CRange::get_Columns(
    
    	p_range->Put_Application( m_p_application );
 	p_range->Put_Parent( this );
-     
-	OORange    oo_range;
-   	 				 
-	oo_range = m_oo_range.getColumns( );				 
-	if ( m_oo_range.IsNull() )
-	{
-        ERR( " failed m_oo_range.getColumns \n" );
-		if ( p_range != NULL )
-		{
-  		    p_range->Release();
-	        p_range = NULL;
-		}        
-        TRACE_OUT;
-	    return ( E_FAIL );	  
-	} 
-				     
-	p_range->InitWrapper( oo_range );
+   	 								     
+	p_range->InitWrapper( m_oo_range );
              
    	hr = p_range->QueryInterface( DIID_Range, (void**)(RHS) );
              
@@ -1928,23 +1913,8 @@ HRESULT STDMETHODCALLTYPE CRange::get_Rows(
    
    	p_range->Put_Application( m_p_application );
 	p_range->Put_Parent( this );
-     
-	OORange    oo_range;
-   	 				 
-	oo_range = m_oo_range.getRows( );				 
-	if ( m_oo_range.IsNull() )
-	{
-        ERR( " failed m_oo_range.getRows \n" );
-		if ( p_range != NULL )
-		{
-  		    p_range->Release();
-	        p_range = NULL;
-		}        
-        TRACE_OUT;
-	    return ( E_FAIL );	  
-	} 
 				     
-	p_range->InitWrapper( oo_range );
+	p_range->InitWrapper( m_oo_range );
              
    	hr = p_range->QueryInterface( DIID_Range, (void**)(RHS) );
              
