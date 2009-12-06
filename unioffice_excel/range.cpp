@@ -22,6 +22,7 @@
 
 #include "application.h"
 #include "worksheet.h"
+#include "font.h"
 
 #include "../OOWrappers/com/sun/star/table/cell_range_address.h"
 
@@ -1118,11 +1119,38 @@ HRESULT STDMETHODCALLTYPE CRange::get_EntireRow(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Font( 
+HRESULT STDMETHODCALLTYPE CRange::get_Font( 
             /* [retval][out] */ /* external definition not present */ Font **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+	CFont* p_font = new CFont;
+   
+   	p_font->Put_Application( m_p_application );
+	p_font->Put_Parent( this );
+   
+    OOFont    oo_font;
+   	 					
+	oo_font = m_oo_range;						
+										     
+	p_font->InitWrapper( oo_font );
+             
+   	hr = p_font->QueryInterface( DIID_Font, (void**)(RHS) );
+             
+    if ( FAILED( hr ) )
+	{
+	    ERR( " p_font.QueryInterface \n" );     
+	}
+             
+	if ( p_font != NULL )
+	{
+	    p_font->Release();
+	    p_font = NULL;
+	}
+	 
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
