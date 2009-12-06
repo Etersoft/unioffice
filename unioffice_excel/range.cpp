@@ -517,11 +517,43 @@ HRESULT STDMETHODCALLTYPE CRange::get_Columns(
             /* [retval][out] */ Range	**RHS)
 {
     TRACE_IN;
-    HRESULT hr = get_EntireColumn( RHS );    
+    HRESULT hr;
+    
+	CRange* p_range = new CRange;
+   
+   	p_range->Put_Application( m_p_application );
+	p_range->Put_Parent( this );
+     
+	OORange    oo_range;
+   	 				 
+	oo_range = m_oo_range.getColumns( );				 
+	if ( m_oo_range.IsNull() )
+	{
+        ERR( " failed m_oo_range.getColumns \n" );
+		if ( p_range != NULL )
+		{
+  		    p_range->Release();
+	        p_range = NULL;
+		}        
+        TRACE_OUT;
+	    return ( E_FAIL );	  
+	} 
+				     
+	p_range->InitWrapper( oo_range );
+             
+   	hr = p_range->QueryInterface( DIID_Range, (void**)(RHS) );
+             
     if ( FAILED( hr ) )
-    {
-	    ERR( " get_EntireColumn \n" );   	 
-    }
+	{
+	    ERR( " p_range.QueryInterface \n" );     
+	}
+             
+	if ( p_range != NULL )
+	{
+	    p_range->Release();
+	    p_range = NULL;
+	}
+	 
     TRACE_OUT;
     return ( hr ); 		
 }
@@ -1000,11 +1032,37 @@ HRESULT STDMETHODCALLTYPE CRange::put__Default(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_EntireRow( 
+HRESULT STDMETHODCALLTYPE CRange::get_EntireRow( 
             /* [retval][out] */ Range	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    OORange oo_rows;
+    
+    oo_rows = m_oo_range.getRows();
+    if ( oo_rows.IsNull() )
+    {
+ 	    ERR(" m_oo_range.getRows \n");
+		TRACE_OUT;
+		return ( E_FAIL );  
+	}
+    
+    CellRangeAddress   cell_range_address;
+    
+    cell_range_address = m_oo_range.getRangeAddress();
+    if ( cell_range_address.IsNull() )
+    {
+	    ERR( " getRangeAddress \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+
+
+
+
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
@@ -1864,11 +1922,43 @@ HRESULT STDMETHODCALLTYPE CRange::get_Rows(
             /* [retval][out] */ Range	**RHS)
 {
     TRACE_IN;
-    HRESULT hr = get_EntireRow( RHS );    
+    HRESULT hr;
+    
+	CRange* p_range = new CRange;
+   
+   	p_range->Put_Application( m_p_application );
+	p_range->Put_Parent( this );
+     
+	OORange    oo_range;
+   	 				 
+	oo_range = m_oo_range.getRows( );				 
+	if ( m_oo_range.IsNull() )
+	{
+        ERR( " failed m_oo_range.getRows \n" );
+		if ( p_range != NULL )
+		{
+  		    p_range->Release();
+	        p_range = NULL;
+		}        
+        TRACE_OUT;
+	    return ( E_FAIL );	  
+	} 
+				     
+	p_range->InitWrapper( oo_range );
+             
+   	hr = p_range->QueryInterface( DIID_Range, (void**)(RHS) );
+             
     if ( FAILED( hr ) )
-    {
-	    ERR( " get_EntireRow \n" );   	 
-    }
+	{
+	    ERR( " p_range.QueryInterface \n" );     
+	}
+             
+	if ( p_range != NULL )
+	{
+	    p_range->Release();
+	    p_range = NULL;
+	}
+	 
     TRACE_OUT;
     return ( hr ); 			
 }

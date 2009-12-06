@@ -1470,7 +1470,7 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Range(
             /* [retval][out] */ Range	**RHS)
 {
    TRACE_NOTIMPL;
-   return E_NOTIMPL;                           
+   return E_NOTIMPL;                             
 }
         
         /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Scenarios( 
