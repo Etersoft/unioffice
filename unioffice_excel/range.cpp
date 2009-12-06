@@ -480,11 +480,28 @@ HRESULT STDMETHODCALLTYPE CRange::get_Parent(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Column( 
+HRESULT STDMETHODCALLTYPE CRange::get_Column( 
             /* [retval][out] */ long *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    long column = 0;
+    
+    CellRangeAddress  cell_range_address;
+    
+    cell_range_address = m_oo_range.getRangeAddress();
+    if ( cell_range_address.IsNull() )
+    {
+	    ERR( " getRangeAddress \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+    
+    hr = S_OK;
+    *RHS = cell_range_address.StartColumn() + 1;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
