@@ -1860,11 +1860,17 @@ HRESULT STDMETHODCALLTYPE CRange::put_RowHeight(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Rows( 
+HRESULT STDMETHODCALLTYPE CRange::get_Rows( 
             /* [retval][out] */ Range	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = get_EntireRow( RHS );    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get_EntireRow \n" );   	 
+    }
+    TRACE_OUT;
+    return ( hr ); 			
 }
         
         
