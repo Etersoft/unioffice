@@ -25,6 +25,7 @@
 #include "../table/cell_range.h"
 #include "../table/x_column_row_range.h"
 #include "../sheet/x_cell_range_addressable.h"
+#include "../style/character_properties.h"
 
 namespace com
 {
@@ -38,7 +39,8 @@ namespace com
 			class SheetCellRange: 
 				  public virtual com::sun::star::table::CellRange,
 				  public virtual com::sun::star::table::XColumnRowRange,
-				  public virtual com::sun::star::sheet::XCellRangeAddressable
+				  public virtual com::sun::star::sheet::XCellRangeAddressable,
+				  public virtual com::sun::star::style::CharacterProperties
 			{
 			public:
        
