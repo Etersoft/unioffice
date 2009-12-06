@@ -28,7 +28,7 @@
 using namespace com::sun::star::table;
 
        // IUnknown
-HRESULT STDMETHODCALLTYPE CRange::CRange::QueryInterface(const IID& iid, void** ppv)
+HRESULT STDMETHODCALLTYPE CRange::QueryInterface(const IID& iid, void** ppv)
 {
     *ppv = NULL;    
         
