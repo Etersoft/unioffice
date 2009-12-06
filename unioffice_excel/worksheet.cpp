@@ -1466,11 +1466,71 @@ HRESULT STDMETHODCALLTYPE Worksheet::get_Range(
    return E_NOTIMPL;                           
 }
         
-        /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Worksheet::get_Rows( 
+HRESULT STDMETHODCALLTYPE Worksheet::get_Rows( 
             /* [retval][out] */ Range	**RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;                             
+    TRACE_IN;
+    HRESULT hr;
+	Range*      p_range = NULL;
+	IRange*     p_irange = NULL;	  	
+   	  	
+    hr = get_Cells( &p_range );
+    if ( FAILED( hr ) ) 
+	{
+        ERR( " get_Cells \n" );
+        TRACE_OUT;
+        return ( hr );
+    }
+       
+    hr = p_range->QueryInterface( IID_IRange, (void**)(&p_irange));
+    if ( FAILED( hr ) ) 
+	{
+        ERR( " p_range->QueryInterface \n" );
+        
+        if ( p_range != NULL )
+        {
+            p_range->Release();
+            p_range = NULL;
+	    }
+		              
+        TRACE_OUT;
+        return ( hr );
+    }
+	 
+	hr = p_irange->get_Rows( RHS );
+    if ( FAILED( hr ) ) {
+        ERR(" get_Rows \n" );
+          
+        if ( p_range != NULL )
+        {
+            p_range->Release();
+            p_range = NULL;
+	    }
+
+        if ( p_irange != NULL )
+        {
+            p_irange->Release();
+            p_irange = NULL;
+	    }
+		   
+        TRACE_OUT;
+        return ( hr );
+    }
+
+    if ( p_range != NULL )
+ 	{
+ 	    p_range->Release();
+ 	    p_range = NULL;
+	}
+      
+	if ( p_irange != NULL )
+ 	{
+ 	    p_irange->Release();
+ 	    p_irange = NULL;
+    }	 
+	 
+    TRACE_OUT;
+    return ( hr );                            
 }
         
         /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Worksheet::Scenarios( 
