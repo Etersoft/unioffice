@@ -605,11 +605,41 @@ HRESULT STDMETHODCALLTYPE Application::get_Range(
    return ( hr );             
 }
         
-         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_Rows( 
+HRESULT STDMETHODCALLTYPE Application::get_Rows( 
             /* [retval][out] */ Range **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_IN;
+   HRESULT hr;
+   
+   Worksheet* p_worksheet = NULL;
+   
+   hr = get_ActiveSheet( reinterpret_cast<IDispatch**>(&p_worksheet) );
+   if ( FAILED( hr ) || ( p_worksheet == NULL))
+   {
+       ERR( " get_ActiveSheet \n" );     
+       p_worksheet = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+   
+   hr = p_worksheet->get_Rows( RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_worksheet->get_Rows \n" );     
+       p_worksheet->Release();
+       p_worksheet = NULL;
+       
+       TRACE_OUT;
+       return ( hr ); 
+   }
+
+   p_worksheet->Release();
+   p_worksheet = NULL;
+   
+   TRACE_OUT;
+   return ( hr );           
 }
         
          /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Application::Run( 
