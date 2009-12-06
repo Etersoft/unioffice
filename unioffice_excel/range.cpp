@@ -513,11 +513,17 @@ HRESULT STDMETHODCALLTYPE CRange::get_Column(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Columns( 
+HRESULT STDMETHODCALLTYPE CRange::get_Columns( 
             /* [retval][out] */ Range	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr = get_EntireColumn( RHS );    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get_EntireColumn \n" );   	 
+    }
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
