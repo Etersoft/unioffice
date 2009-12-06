@@ -24,20 +24,62 @@
        // IUnknown
 HRESULT STDMETHODCALLTYPE CFont::QueryInterface(const IID& iid, void** ppv)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    *ppv = NULL;    
+        
+    if ( iid == IID_IUnknown ) {
+        TRACE("IUnknown \n");
+        *ppv = static_cast<IUnknown*>(static_cast<_IFont*>(this));
+    }
+        
+    if ( iid == IID_IDispatch ) {
+        TRACE("IDispatch \n");
+        *ppv = static_cast<IDispatch*>(static_cast<_IFont*>(this));
+    }     
+    
+    if ( iid == IID__IFont) {
+        TRACE("IRange\n");
+        *ppv = static_cast<_IFont*>(this);
+    } 
+    
+    if ( iid == DIID_Font) {
+        TRACE("Range \n");
+        *ppv = static_cast<Font*>(this);
+    }   
+      
+    if ( *ppv != NULL ) 
+    {
+        reinterpret_cast<IUnknown*>(*ppv)->AddRef();
+         
+        return S_OK;
+    } else
+    {    
+        WCHAR str_clsid[39];
+         
+        StringFromGUID2( iid, str_clsid, 39);
+        WTRACE(L"(%s) not supported \n", str_clsid);
+        
+        return E_NOINTERFACE;                          
+    }   		
 }
         
 ULONG STDMETHODCALLTYPE CFont::AddRef( )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      return InterlockedIncrement(&m_cRef);   		
 }
         
 ULONG STDMETHODCALLTYPE CFont::Release( )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      if (InterlockedDecrement(&m_cRef) == 0)
+      {
+              delete this;
+              return 0;
+      }
+      
+      return m_cRef;  		
 }
         
        

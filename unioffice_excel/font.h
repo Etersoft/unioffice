@@ -24,7 +24,7 @@
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/oo_font.h"
 
-class CFont : public IFont, public Font
+class CFont : public _IFont, public Font
 {
 public:
 	   
