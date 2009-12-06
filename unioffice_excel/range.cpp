@@ -485,7 +485,6 @@ HRESULT STDMETHODCALLTYPE CRange::get_Column(
 {
     TRACE_IN;
     HRESULT hr;
-    long column = 0;
     
     CellRangeAddress  cell_range_address;
     
@@ -1736,11 +1735,27 @@ HRESULT STDMETHODCALLTYPE CRange::put_Formula(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Row( 
+HRESULT STDMETHODCALLTYPE CRange::get_Row( 
             /* [retval][out] */ long *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    CellRangeAddress  cell_range_address;
+    
+    cell_range_address = m_oo_range.getRangeAddress();
+    if ( cell_range_address.IsNull() )
+    {
+	    ERR( " getRangeAddress \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+    
+    hr = S_OK;
+    *RHS = cell_range_address.StartRow() + 1;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
