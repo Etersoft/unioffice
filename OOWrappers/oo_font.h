@@ -26,6 +26,8 @@
 #include "../Common/debug.h"
 #include "../Common/tools.h"
 
+#include "./oo_range.h"
+
 #include "./com/sun/star/uno/x_interface.h"
 #include "./com/sun/star/style/character_properties.h"
 
@@ -42,6 +44,7 @@ public:
   virtual ~OOFont();     
   
   OOFont& operator=( const OOFont &obj); 
+  OOFont& operator=( const OORange &obj); 
      
 private:              
       
