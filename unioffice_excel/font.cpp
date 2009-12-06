@@ -86,8 +86,8 @@ ULONG STDMETHODCALLTYPE CFont::Release( )
        // IDispatch    
 HRESULT STDMETHODCALLTYPE CFont::GetTypeInfoCount( UINT * pctinfo )
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    *pctinfo = 1;
+    return S_OK;  		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::GetTypeInfo(
@@ -95,8 +95,17 @@ HRESULT STDMETHODCALLTYPE CFont::GetTypeInfo(
                LCID lcid,
                ITypeInfo ** ppTInfo)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;    		
+    *ppTInfo = NULL;
+    
+    if(iTInfo != 0)
+    {
+        return DISP_E_BADINDEX;
+    }
+    
+    m_pITypeInfo->AddRef();
+    *ppTInfo = m_pITypeInfo;
+    
+    return S_OK;    		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::GetIDsOfNames(
@@ -106,8 +115,19 @@ HRESULT STDMETHODCALLTYPE CFont::GetIDsOfNames(
                LCID lcid,
                DISPID * rgDispId)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;   		
+    if (riid != IID_NULL )
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->GetIDsOfNames(rgszNames, cNames, rgDispId);
+    
+    if ( FAILED(hr) )
+    {
+     ERR( " name = %s \n", *rgszNames );     
+    }
+    
+    return ( hr ); 		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::Invoke(
@@ -120,8 +140,28 @@ HRESULT STDMETHODCALLTYPE CFont::Invoke(
                EXCEPINFO * pExcepInfo,
                UINT * puArgErr)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    if ( riid != IID_NULL)
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->Invoke(
+                 static_cast<IDispatch*>(static_cast<_IFont*>(this)), 
+                 dispIdMember, 
+                 wFlags, 
+                 pDispParams, 
+                 pVarResult, 
+                 pExcepInfo, 
+                 puArgErr);       
+            
+    if ( FAILED(hr) )
+    { 
+        ERR( " dispIdMember = %i   hr = %08x \n", dispIdMember, hr ); 
+	    ERR( " wFlags = %i  \n", wFlags );   
+	    ERR( " pDispParams->cArgs = %i \n", pDispParams->cArgs );
+    }  
+	             
+    return ( hr ); 		
 }
          
                
