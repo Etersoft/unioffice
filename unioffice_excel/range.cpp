@@ -632,11 +632,31 @@ HRESULT STDMETHODCALLTYPE CRange::put_ColumnWidth(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Count( 
+HRESULT STDMETHODCALLTYPE CRange::get_Count( 
             /* [retval][out] */ long *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    CellRangeAddress  cell_range_address;
+    
+    cell_range_address = m_oo_range.getRangeAddress();
+    if ( cell_range_address.IsNull() )
+    {
+	    ERR( " getRangeAddress \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+    
+    hr = S_OK;
+    
+    long width = cell_range_address.EndColumn() - cell_range_address.StartColumn() + 1;
+    long height = cell_range_address.EndRow() - cell_range_address.StartRow() + 1;
+    
+    *RHS = width * height;
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
         
