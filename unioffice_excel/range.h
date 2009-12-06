@@ -23,6 +23,7 @@
 
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/oo_range.h"
+#include "worksheet.h"
 
 class CRange : public IRange, public Range
 {
@@ -992,6 +993,13 @@ public:
             InterlockedDecrement(&g_cComponents);    
               
             m_p_application = NULL;
+            
+            if ( m_p_parent != NULL )
+   			{
+   	  		    (static_cast<Worksheet*>( m_p_parent ))->Release( );	
+	       	    m_p_parent = NULL;	  	
+   		   	}
+            
             m_p_parent = NULL;  
                             
             DELETE_OBJECT;             

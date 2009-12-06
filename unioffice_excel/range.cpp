@@ -2793,9 +2793,20 @@ HRESULT CRange::Put_Application( void* p_application)
 HRESULT CRange::Put_Parent( void* p_parent)
 {
    TRACE_IN;  
+   
+   if ( m_p_parent != NULL )
+   {
+   	  (static_cast<Worksheet*>( m_p_parent ))->Release( );	
+       m_p_parent = NULL;	  	
+   }
       
    m_p_parent = p_parent;
    
+   if ( m_p_parent != NULL )
+   {
+   	  (static_cast<Worksheet*>( m_p_parent ))->AddRef( );		
+   }        
+      
    TRACE_OUT;
    return S_OK; 		
 }
