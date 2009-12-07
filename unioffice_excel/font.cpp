@@ -293,7 +293,7 @@ HRESULT STDMETHODCALLTYPE CFont::get_Name(
 {
     TRACE_IN;
     HRESULT hr;
-    BSTR font_name;
+    BSTR font_name = SysAllocString( L"" );
     
     hr = m_oo_font.getCharFontName( font_name );
     if ( FAILED( hr ) )

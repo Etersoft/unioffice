@@ -52,7 +52,7 @@ HRESULT com::sun::star::style::CharacterProperties::setCharFontName( BSTR value)
     hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CharFontName", 1, param1);
     if ( FAILED( hr ) )
     {
-        ERR( " Call setName \n" );
+        ERR( " Call CharFontName \n" );
     }
  
     VariantClear( &res );
@@ -62,7 +62,7 @@ HRESULT com::sun::star::style::CharacterProperties::setCharFontName( BSTR value)
     return ( hr ); 		
 }
 
-HRESULT com::sun::star::style::CharacterProperties::getCharFontName( BSTR& value)
+HRESULT com::sun::star::style::CharacterProperties::getCharFontName( BSTR& value )
 {
     TRACE_IN; 
     HRESULT hr;
@@ -80,7 +80,7 @@ HRESULT com::sun::star::style::CharacterProperties::getCharFontName( BSTR& value
     hr = AutoWrap (DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CharFontName", 0 );
     if ( FAILED( hr ) )
     {
-        ERR( " Call setName \n" );
+        ERR( " Call CharFontName \n" );
         TRACE_OUT;
         return ( E_FAIL );
     }
