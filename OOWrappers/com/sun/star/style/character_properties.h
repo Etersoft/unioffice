@@ -40,6 +40,9 @@ namespace com
 			  CharacterProperties( );
 			  virtual ~CharacterProperties( );     
          
+         	  HRESULT setCharFontName( BSTR );
+         	  HRESULT getCharFontName( BSTR& );
+         
 			protected:            
 								  
 			};

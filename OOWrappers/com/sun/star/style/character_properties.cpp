@@ -29,3 +29,67 @@ com::sun::star::style::CharacterProperties::~CharacterProperties( )
 {   
 	           							
 } 
+
+HRESULT com::sun::star::style::CharacterProperties::setCharFontName( BSTR value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_BSTR;
+    V_BSTR( &param1 ) = SysAllocString( value );
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CharFontName", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call setName \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr ); 		
+}
+
+HRESULT com::sun::star::style::CharacterProperties::getCharFontName( BSTR& value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap (DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CharFontName", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call setName \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	SysFreeString( value );
+ 	value = SysAllocString( V_BSTR( &res ) );
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr ); 	 		
+}

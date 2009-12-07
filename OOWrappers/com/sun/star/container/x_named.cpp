@@ -71,6 +71,7 @@ HRESULT com::sun::star::container::XNamed::setName( BSTR _name )
     if ( IsNull() )
     {
         ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
         return ( E_FAIL );     
     }
     
