@@ -347,11 +347,30 @@ HRESULT STDMETHODCALLTYPE CFont::put_Name(
     return E_NOTIMPL;  		
 }
         
-        /* [helpcontext][hidden][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Shadow( 
+HRESULT STDMETHODCALLTYPE CFont::get_Shadow( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    bool value = false;
+    		
+	hr = m_oo_font.getCharShadowed( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.getCharShadowed \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_BOOL;
+    if ( value )
+	    V_BOOL( RHS ) = VARIANT_TRUE;
+	else
+	    V_BOOL( RHS ) = VARIANT_FALSE;
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::put_Shadow( 
