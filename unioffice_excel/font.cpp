@@ -319,6 +319,8 @@ HRESULT STDMETHODCALLTYPE CFont::put_Name(
     TRACE_IN;
     HRESULT hr;
     
+    CorrectArg(RHS, &RHS);
+    
     hr = m_oo_font.setCharFontName( V_BSTR( &RHS ) );
     if ( FAILED( hr ) )
     {
@@ -352,11 +354,32 @@ HRESULT STDMETHODCALLTYPE CFont::put_Name(
     return E_NOTIMPL;  		
 }
         
-        /* [helpcontext][hidden][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_Shadow( 
+HRESULT STDMETHODCALLTYPE CFont::put_Shadow( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    bool value = false;
+    
+    CorrectArg(RHS, &RHS);
+    
+    VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    
+    if ( V_BOOL(&RHS) == VARIANT_TRUE )
+	    value = true;
+	else
+	    value = false;
+		
+	hr = m_oo_font.setCharShadowed( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.setCharShadowed \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Size( 
