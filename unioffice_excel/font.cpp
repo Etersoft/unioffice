@@ -288,11 +288,29 @@ HRESULT STDMETHODCALLTYPE CFont::get_Creator(
     return E_NOTIMPL;  		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Name( 
+HRESULT STDMETHODCALLTYPE CFont::get_Name( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    BSTR font_name;
+    
+    hr = m_oo_font.getCharFontName( font_name );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_font.getCharFontName \n" );
+		TRACE_OUT;
+		return ( hr );   	 
+  	}
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_BSTR;
+    V_BSTR( RHS ) = SysAllocString( font_name );
+    
+    SysFreeString( font_name );
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
         /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_Name( 
