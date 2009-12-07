@@ -313,11 +313,22 @@ HRESULT STDMETHODCALLTYPE CFont::get_Name(
     return ( hr );  		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_Name( 
+HRESULT STDMETHODCALLTYPE CFont::put_Name( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    
+    hr = m_oo_font.setCharFontName( V_BSTR( &RHS ) );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_font.setCharFontName \n" );
+		TRACE_OUT;
+		return ( hr );   	 
+  	}
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
         /* [helpcontext][hidden][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_OutlineFont( 
