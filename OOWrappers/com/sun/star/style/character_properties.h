@@ -43,7 +43,12 @@ namespace com
          	  HRESULT setCharFontName( BSTR );
          	  HRESULT getCharFontName( BSTR& );
          
-			protected:            
+         	  HRESULT setCharShadowed( bool );
+         	  HRESULT getCharShadowed( bool& );
+         	  
+         	  
+         	  
+			protected:             
 								  
 			};
 

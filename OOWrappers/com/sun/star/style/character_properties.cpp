@@ -93,3 +93,73 @@ HRESULT com::sun::star::style::CharacterProperties::getCharFontName( BSTR& value
     TRACE_OUT;
     return ( hr ); 	 		
 }
+
+HRESULT com::sun::star::style::CharacterProperties::setCharShadowed( bool value )
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_BOOL;
+    if ( value )
+        V_BOOL( &param1 ) = VARIANT_TRUE;
+    else
+	    V_BOOL( &param1 ) = VARIANT_FALSE;    
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CharShadowed", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharShadowed \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );  		
+}
+
+HRESULT com::sun::star::style::CharacterProperties::getCharShadowed( bool& value )
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap (DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CharShadowed", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharShadowed \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	if ( V_BOOL( &res ) == VARIANT_TRUE )
+ 	    value = true;
+    else
+ 	    value = false;
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr ); 		
+}
+
