@@ -227,3 +227,69 @@ HRESULT com::sun::star::style::CharacterProperties::getCharWeight( float& value)
     TRACE_OUT;
     return ( hr );  		
 }
+
+HRESULT com::sun::star::style::CharacterProperties::setCharPosture( com::sun::star::awt::FontSlant value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_I2;
+    V_I2( &param1 ) = value;    
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CharPosture", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharPosture \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );  		
+}
+
+HRESULT com::sun::star::style::CharacterProperties::getCharPosture( com::sun::star::awt::FontSlant& value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap (DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CharPosture", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharPosture \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	VariantChangeTypeEx(&res, &res, 0, 0, VT_I2);
+ 	
+ 	value = static_cast<com::sun::star::awt::FontSlant>( V_I2( &res ) );
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr ); 		
+}
+

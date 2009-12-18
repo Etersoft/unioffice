@@ -22,6 +22,7 @@
 #define __UNIOFFICE_CHARACTER_PROPERTIES_H__
 
 #include "../uno/x_base.h"
+#include "../awt/font_slant.h"
 
 namespace com
 {
@@ -48,6 +49,9 @@ namespace com
          	  
          	  HRESULT setCharWeight( float );
          	  HRESULT getCharWeight( float& );         	  
+         	  
+         	  HRESULT setCharPosture( com::sun::star::awt::FontSlant );
+         	  HRESULT getCharPosture( com::sun::star::awt::FontSlant& );           	  
          	  
 			protected:             
 								  
