@@ -244,11 +244,32 @@ HRESULT STDMETHODCALLTYPE CFont::get_Bold(
     return ( hr ); 		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_Bold( 
+HRESULT STDMETHODCALLTYPE CFont::put_Bold( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    float value = 0.0f;
+    
+    CorrectArg(RHS, &RHS);
+    
+    VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    
+    if ( V_BOOL(&RHS) == VARIANT_TRUE )
+	    value = 150;
+	else
+	    value = 100;
+		
+	hr = m_oo_font.CharWeight( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.CharWeight \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Color( 
