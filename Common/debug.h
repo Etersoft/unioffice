@@ -86,7 +86,7 @@ if (trace_file) fclose(trace_file);\
 #define CREATE_OBJECT TRACE("Create object \n")
 #define DELETE_OBJECT TRACE("Delete object \n")
 
-#define TRACE_STUB TRACE("ERROR method not implement, but return OK\n")
+#define TRACE_STUB TRACE("STUB. Method not implement, but return OK\n")
 
 
 #ifdef DEBUG

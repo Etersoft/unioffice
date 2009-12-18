@@ -333,18 +333,20 @@ HRESULT STDMETHODCALLTYPE CFont::put_Name(
     return ( hr );  		
 }
         
-        /* [helpcontext][hidden][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_OutlineFont( 
+HRESULT STDMETHODCALLTYPE CFont::get_OutlineFont( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_STUB;
+    V_VT(RHS) = VT_BOOL;
+    V_BOOL(RHS) = VARIANT_FALSE;
+    return ( S_OK );  		
 }
         
-        /* [helpcontext][hidden][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_OutlineFont( 
+HRESULT STDMETHODCALLTYPE CFont::put_OutlineFont( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_STUB;
+    return ( S_OK );  		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::get_Shadow( 
