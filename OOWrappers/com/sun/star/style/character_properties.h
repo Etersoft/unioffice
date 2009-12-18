@@ -46,7 +46,8 @@ namespace com
          	  HRESULT setCharShadowed( bool );
          	  HRESULT getCharShadowed( bool& );
          	  
-         	  
+         	  HRESULT setCharWeight( float );
+         	  HRESULT getCharWeight( float& );         	  
          	  
 			protected:             
 								  

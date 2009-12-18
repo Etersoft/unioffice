@@ -225,10 +225,10 @@ HRESULT STDMETHODCALLTYPE CFont::get_Bold(
     HRESULT hr;
     float value = 0.0f;
     		
-	hr = m_oo_font.CharWeight( value );
+	hr = m_oo_font.getCharWeight( value );
 	if ( FAILED( hr ) )
 	{
-	    ERR( " m_oo_font.CharWeight \n" );  
+	    ERR( " m_oo_font.getCharWeight \n" );  
 		TRACE_OUT;
 		return ( hr ); 	 
     }			    
@@ -260,10 +260,10 @@ HRESULT STDMETHODCALLTYPE CFont::put_Bold(
 	else
 	    value = 100;
 		
-	hr = m_oo_font.CharWeight( value );
+	hr = m_oo_font.setCharWeight( value );
 	if ( FAILED( hr ) )
 	{
-	    ERR( " m_oo_font.CharWeight \n" );  
+	    ERR( " m_oo_font.setCharWeight \n" );  
 		TRACE_OUT;
 		return ( hr ); 	 
     }			    

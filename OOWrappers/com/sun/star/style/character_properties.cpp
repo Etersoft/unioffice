@@ -163,3 +163,67 @@ HRESULT com::sun::star::style::CharacterProperties::getCharShadowed( bool& value
     return ( hr ); 		
 }
 
+HRESULT com::sun::star::style::CharacterProperties::setCharWeight( float value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_R4;
+    V_R4( &param1 ) = value;    
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CharWeight", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharWeight \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr ); 		
+}
+
+HRESULT com::sun::star::style::CharacterProperties::getCharWeight( float& value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap (DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CharWeight", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharWeight \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	VariantChangeTypeEx(&res, &res, 0, 0, VT_R4);
+ 	
+ 	value = V_R4( &res );
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );  		
+}
