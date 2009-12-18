@@ -340,11 +340,32 @@ HRESULT STDMETHODCALLTYPE CFont::get_Italic(
     return ( hr ); 		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_Italic( 
+HRESULT STDMETHODCALLTYPE CFont::put_Italic( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    com::sun::star::awt::FontSlant value = com::sun::star::awt::NONE;
+    
+    CorrectArg(RHS, &RHS);
+    
+    VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    
+    if ( V_BOOL(&RHS) == VARIANT_TRUE )
+	    value = com::sun::star::awt::ITALIC;
+	else
+	    value = com::sun::star::awt::NONE;
+		
+	hr = m_oo_font.setCharPosture( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.setCharPosture \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::get_Name( 
