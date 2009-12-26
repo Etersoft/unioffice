@@ -356,11 +356,72 @@ HRESULT STDMETHODCALLTYPE CFont::get_FontStyle(
     return ( hr ); 		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_FontStyle( 
+HRESULT STDMETHODCALLTYPE CFont::put_FontStyle( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+ 	TRACE_IN;
+ 	HRESULT hr;
+ 	
+    static WCHAR str_bold_en[] = {
+        'b','o','l','d',0};
+    static WCHAR str_italic_en[] = {
+        'i','t','a','l','i','c',0};
+    static WCHAR str_bold_ru[] = {
+        0x0436,0x0438,0x0440,0x043d,0x044b, 0x0439,0};
+    static WCHAR str_italic_ru[] = {
+        0x043a,0x0443,0x0440,0x0441,0x0438, 0x0432,0};
+    static WCHAR str_bold2_ru[] = {
+        0x043f, 0x043e, 0x043b, 0x0443,0x0436,0x0438,0x0440,0x043d,0x044b, 0x0439,0};
+
+    VARIANT tmp;
+    int i = 0;
+    WCHAR str[100];
+
+    CorrectArg(RHS, &RHS);		
+ 			
+ 	if ( V_VT( &RHS ) != VT_BSTR) 
+	{
+        ERR(" parameter not BSTR ");
+        TRACE_OUT;
+        return ( E_FAIL) ;
+    }
+	
+	VariantInit( &tmp );
+	
+	V_VT( &tmp ) = VT_BOOL;
+	V_BOOL( &tmp ) = VARIANT_TRUE;
+	
+    str[0] = 0;
+    while (*(V_BSTR(&RHS)+i)) {
+        if (*(V_BSTR(&RHS)+i)==L' ') {
+            if ((!lstrcmpiW(str, str_bold_en)) ||
+                (!lstrcmpiW(str, str_bold_ru)) ||
+                (!lstrcmpiW(str, str_bold2_ru))) {
+                 put_Bold(tmp);
+            }
+            if ((!lstrcmpiW(str, str_italic_en)) ||
+                (!lstrcmpiW(str, str_italic_ru))) {
+                 put_Italic(tmp);
+            }
+            str[0] = 0;
+        } else {
+            swprintf(str, L"%s%c",str, *(V_BSTR(&RHS)+i));
+        }
+        i++;
+    }
+    
+    if ((!lstrcmpiW(str, str_bold_en)) ||
+        (!lstrcmpiW(str, str_bold_ru)) ||
+        (!lstrcmpiW(str, str_bold2_ru)))  {
+         put_Bold(tmp);
+    }
+    if ((!lstrcmpiW(str, str_italic_en)) ||
+        (!lstrcmpiW(str, str_italic_ru))) {
+         put_Italic(tmp);
+    }	 	 	
+ 			
+    TRACE_OUT;
+    return ( hr );  		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::get_Italic( 
