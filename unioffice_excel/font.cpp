@@ -300,11 +300,60 @@ HRESULT STDMETHODCALLTYPE CFont::put_Bold(
     return E_NOTIMPL;  		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_FontStyle( 
+HRESULT STDMETHODCALLTYPE CFont::get_FontStyle( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    VARIANT tmp;
+    WCHAR str[200];
+    bool pusto = true;
+    
+	VariantInit( &tmp );
+
+	V_VT( &tmp ) = VT_BOOL;
+	V_BOOL( &tmp ) = VARIANT_FALSE;
+    
+    hr = get_Bold( &tmp );
+    if ( FAILED( hr ) ) {
+        ERR(" when get_Bold ");
+    }
+    
+    if ( V_BOOL( &tmp ) == VARIANT_TRUE ) 
+	{
+        if ( pusto ) 
+		    swprintf(str, L"%s", L"bold");
+        else 
+		    swprintf(str, L"%s %s", str, L"bold");
+		    
+        pusto = false;
+    }
+
+	V_BOOL( &tmp ) = VARIANT_FALSE;
+    
+    hr = get_Italic( &tmp );
+    if ( FAILED( hr ) ) {
+        ERR(" when get_Italic ");
+    }
+ 
+    if ( V_BOOL( &tmp ) == VARIANT_TRUE ) 
+	{
+        if ( pusto ) 
+		    swprintf(str, L"%s", L"italic");
+        else 
+			swprintf(str, L"%s %s", str, L"italic");
+			
+        pusto = false;
+    }
+
+    if ( pusto ) 
+	    swprintf( str, L"%s", L"normal");
+
+    V_VT( RHS ) = VT_BSTR;
+    V_BSTR( RHS ) = SysAllocString(str);
+
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_FontStyle( 
