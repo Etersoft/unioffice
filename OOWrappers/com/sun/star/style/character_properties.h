@@ -53,6 +53,9 @@ namespace com
          	  HRESULT setCharPosture( com::sun::star::awt::FontSlant );
          	  HRESULT getCharPosture( com::sun::star::awt::FontSlant& );           	  
          	  
+         	  HRESULT setCharColor( long );
+         	  HRESULT getCharColor( long& );
+         	  
 			protected:             
 								  
 			};
