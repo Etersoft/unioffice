@@ -22,7 +22,7 @@
 #define __UNIOFFICE_EXCEL_INTERIOR_H__
 
 #include "unioffice_excel_private.h"
-
+#include "../OOWrappers/oo_interior.h"
 
 class CInterior : public IInterior, public Interior
 {
@@ -161,7 +161,9 @@ public:
        
        HRESULT Put_Application( void* );
        HRESULT Put_Parent( void* ); 
-	   	   
+	   
+	   HRESULT InitWrapper( OOInterior );	  
+			  
 private:
 		
        long         m_cRef; 
@@ -170,6 +172,8 @@ private:
        
        void*        m_p_application;
        void*        m_p_parent;	
+       
+       OOInterior   m_oo_interior;
 };
 
 #endif // __UNIOFFICE_EXCEL_INTERIOR_H__

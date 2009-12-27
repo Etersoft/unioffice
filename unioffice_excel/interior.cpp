@@ -414,3 +414,8 @@ HRESULT CInterior::Put_Parent( void* p_parent)
    TRACE_OUT;
    return S_OK; 		
 } 
+
+HRESULT CInterior::InitWrapper( OOInterior _oo_interior )
+{
+    m_oo_interior = _oo_interior;     
+} 
