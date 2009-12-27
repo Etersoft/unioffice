@@ -824,11 +824,43 @@ HRESULT STDMETHODCALLTYPE CFont::put_Size(
     return E_NOTIMPL;  		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Underline( 
+HRESULT STDMETHODCALLTYPE CFont::get_Underline( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    long value = 0;
+    		
+	hr = m_oo_font.getCharUnderline( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.getCharUnderline \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+    
+    switch( value ) 
+	{
+        case underline_style_SINGLE:
+            V_I4(RHS) = xlUnderlineStyleSingle;
+            break;
+        case underline_style_DOUBLE:
+            V_I4(RHS) = xlUnderlineStyleDouble;
+            break;
+        case underline_style_NONE:
+            V_I4(RHS) = xlUnderlineStyleNone;
+            break;
+        default:
+            ERR(" CharUnderline \n");
+            TRACE_OUT;
+            return (E_FAIL);
+    }
+    
+    TRACE_OUT;
+    return ( hr );  		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::put_Underline( 
