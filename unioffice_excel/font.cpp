@@ -197,11 +197,24 @@ HRESULT STDMETHODCALLTYPE CFont::get_Creator(
    return S_OK;  		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Parent( 
+HRESULT STDMETHODCALLTYPE CFont::get_Parent( 
             /* [retval][out] */ IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+   TRACE_IN;             
+    
+   if ( m_p_parent == NULL )
+   {
+       ERR( " m_p_parent == NULL \n " ); 
+       TRACE_OUT;
+       return ( E_FAIL );    
+   }    
+            
+   HRESULT hr = S_OK;
+   
+   hr = (static_cast<IDispatch*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
+             
+   TRACE_OUT;
+   return hr;   		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Background( 
