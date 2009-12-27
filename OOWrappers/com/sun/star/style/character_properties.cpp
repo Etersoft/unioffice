@@ -487,3 +487,68 @@ HRESULT com::sun::star::style::CharacterProperties::getCharUnderline( long& valu
     TRACE_OUT;
     return ( hr );  		
 }
+
+HRESULT com::sun::star::style::CharacterProperties::setCharStrikeout( long value )
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = value;    
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CharStrikeout", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharStrikeout \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );   		
+}
+
+HRESULT com::sun::star::style::CharacterProperties::getCharStrikeout( long& value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CharStrikeout", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CharStrikeout \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	VariantChangeTypeEx(&res, &res, 0, 0, VT_I4);
+ 	
+ 	value = V_I4( &res );
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );  		
+}

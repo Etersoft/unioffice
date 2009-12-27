@@ -61,7 +61,9 @@ namespace com
          	  
          	  HRESULT setCharUnderline( long );
          	  HRESULT getCharUnderline( long& );         	  
-         	  
+
+         	  HRESULT setCharStrikeout( long );
+         	  HRESULT getCharStrikeout( long& );   
          	  
 			protected:             
 								  
