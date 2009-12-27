@@ -782,18 +782,83 @@ HRESULT STDMETHODCALLTYPE CFont::put_Size(
     return ( hr ); 		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Strikethrough( 
+HRESULT STDMETHODCALLTYPE CFont::get_Strikethrough( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    long value = 0;
+    		
+	hr = m_oo_font.getCharStrikeout( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.getCharStrikeout \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_BOOL;
+    
+    switch( value ) 
+	{
+        case underline_style_SINGLE:
+            V_BOOL( RHS ) = VARIANT_TRUE;
+            break;
+        case underline_style_NONE:
+            V_BOOL( RHS ) = VARIANT_FALSE;
+            break;
+        default:
+            ERR(" CharStrikeout\n");
+            TRACE_OUT;
+            return (E_FAIL);
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_Strikethrough( 
+HRESULT STDMETHODCALLTYPE CFont::put_Strikethrough( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    long value = 0;
+    
+    CorrectArg(RHS, &RHS);
+    
+    hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    if ( FAILED( hr ) )
+    {
+	    ERR( " VariantChangeTypeEx \n" );   
+		TRACE_OUT;
+		return ( E_FAIL );	 
+    }
+    
+    switch ( V_BOOL( &RHS ) ) 
+	{
+        case VARIANT_TRUE:
+        	 value = underline_style_SINGLE;
+        	 break;
+        case VARIANT_FALSE:
+        	 value = strikeout_style_NONE;
+        	 break;
+    default :
+        ERR(" parameters \n");
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+    
+	hr = m_oo_font.setCharStrikeout( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.setCharStrikeout \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    TRACE_OUT;
+    return ( hr ); 	   		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Subscript( 
