@@ -100,7 +100,13 @@ const int underline_style_BOLDDASHDOT    = 16;
 const int underline_style_BOLDDASHDOTDOT = 17;
 const int underline_style_BOLDWAVE       = 18;
 
-
+const int strikeout_style_NONE           = 0;
+const int strikeout_style_SINGLE         = 1;
+const int strikeout_style_DOUBLE         = 2;
+const int strikeout_style_DONTKNOW       = 3;
+const int strikeout_style_BOLD           = 4;
+const int strikeout_style_SLASH          = 5;
+const int strikeout_style_X              = 6;
 
 
 
