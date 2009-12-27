@@ -33,7 +33,8 @@
 
 using namespace com::sun::star::uno;
 
-class OODesktop: public XInterface
+class OODesktop: 
+	  public virtual XInterface
 {
 public:
        

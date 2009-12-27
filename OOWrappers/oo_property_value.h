@@ -30,7 +30,8 @@
 
 using namespace com::sun::star::uno;
 
-class OOPropertyValue: public XInterface
+class OOPropertyValue: 
+	  public virtual XInterface
 {
 public:
        

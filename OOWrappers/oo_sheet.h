@@ -33,8 +33,8 @@ using namespace com::sun::star::uno;
 using namespace com::sun::star::sheet;
 
 class OOSheet: 
-	  public XInterface,
-	  public Spreadsheet
+	  public virtual XInterface,
+	  public virtual Spreadsheet
 {
 public:
 

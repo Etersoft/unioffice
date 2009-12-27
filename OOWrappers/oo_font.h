@@ -35,8 +35,8 @@ using namespace com::sun::star::uno;
 using namespace com::sun::star::style;
 
 class OOFont: 
-	  public XInterface,
-	  public CharacterProperties
+	  public virtual XInterface,
+	  public virtual CharacterProperties
 {
 public:
        

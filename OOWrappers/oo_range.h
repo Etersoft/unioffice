@@ -40,15 +40,15 @@ using namespace com::sun::star::sheet;
 using namespace com::sun::star::table;
 
 class OORange: 
-	  public XInterface,
-	  public SheetCell,
-	  public SheetCellRange, 
+	  public virtual XInterface,
+	  public virtual SheetCell,
+	  public virtual SheetCellRange, 
 	  
 	  // special services - to do actions with columns and rows
-	  public XTableColumns,
-	  public XTableRows,
-	  public TableColumn,
-	  public TableRow
+	  public virtual XTableColumns,
+	  public virtual XTableRows,
+	  public virtual TableColumn,
+	  public virtual TableRow
 {
 public:
 

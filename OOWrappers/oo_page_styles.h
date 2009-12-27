@@ -34,8 +34,8 @@ using namespace com::sun::star::uno;
 using namespace com::sun::star::container;
 
 class OOPageStyles: 
-	  public XInterface,
-	  public XNameAccess
+	  public virtual XInterface,
+	  public virtual XNameAccess
 {
 public:
 

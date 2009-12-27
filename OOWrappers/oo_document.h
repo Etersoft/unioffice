@@ -35,7 +35,8 @@
 
 using namespace com::sun::star::uno;
 
-class OODocument: public XInterface
+class OODocument: 
+	  public virtual XInterface
 {
 public:
        

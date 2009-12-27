@@ -31,7 +31,8 @@
 
 using namespace com::sun::star::uno;
 
-class OOFrame: public XInterface
+class OOFrame: 
+	  public virtual XInterface
 {
 public:
        

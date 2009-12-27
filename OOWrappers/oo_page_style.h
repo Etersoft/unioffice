@@ -30,7 +30,8 @@
 
 using namespace com::sun::star::uno;
 
-class OOPageStyle: public XInterface
+class OOPageStyle: 
+	  public virtual XInterface
 {
 public:
 

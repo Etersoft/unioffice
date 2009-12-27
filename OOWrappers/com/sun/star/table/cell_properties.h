@@ -40,6 +40,10 @@ namespace com
 			  CellProperties( );
 			  virtual ~CellProperties( );     
 
+
+
+
+
 			protected:            
 								  
 			};

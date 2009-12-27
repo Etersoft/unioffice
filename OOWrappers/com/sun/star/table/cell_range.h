@@ -22,6 +22,7 @@
 #define __UNIOFFICE_CELL_RANGE_H__
 
 #include "x_cell_range.h"
+#include "cell_properties.h"
 
 namespace com
 {
@@ -33,7 +34,8 @@ namespace com
 			{ 
  		  
 			class CellRange: 
-				  public virtual XCellRange 
+				  public virtual XCellRange,
+				  public virtual CellProperties 
 			{
 			public:
        

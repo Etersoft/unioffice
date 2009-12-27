@@ -35,9 +35,9 @@ using namespace com::sun::star::uno;
 using namespace com::sun::star::container;
 
 class OOSheets: 
-	  public XInterface, 
-	  public XIndexAccess,
-	  public XNameAccess
+	  public virtual XInterface, 
+	  public virtual XIndexAccess,
+	  public virtual XNameAccess
 {
 public:
        

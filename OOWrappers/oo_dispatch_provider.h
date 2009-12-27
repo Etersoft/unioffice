@@ -30,7 +30,8 @@
 
 using namespace com::sun::star::uno;
 
-class OODispatchProvider: public XInterface
+class OODispatchProvider: 
+	  public virtual XInterface
 {
 public:
        

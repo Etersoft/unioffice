@@ -34,7 +34,8 @@
 
 using namespace com::sun::star::uno;
 
-class OOServiceManager: public XInterface
+class OOServiceManager: 
+	  public virtual XInterface
 {
 public:
        

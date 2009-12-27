@@ -29,11 +29,14 @@
 #include "./oo_range.h"
 
 #include "./com/sun/star/uno/x_interface.h"
+#include "./com/sun/star/table/cell_properties.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::table;
 
 class OOInterior: 
-	  public XInterface
+	  public virtual XInterface,
+	  public virtual CellProperties
 {
 public:
        

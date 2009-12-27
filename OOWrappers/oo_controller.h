@@ -31,7 +31,8 @@
 
 using namespace com::sun::star::uno;
 
-class OOController: public XInterface
+class OOController: 
+	  public virtual XInterface
 {
 public:
        

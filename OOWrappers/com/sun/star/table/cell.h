@@ -22,6 +22,7 @@
 #define __UNIOFFICE_CELL_H__
 
 #include "x_cell.h"
+#include "cell_properties.h"
 
 namespace com
 {
@@ -33,7 +34,8 @@ namespace com
 			{ 
  		  
 			class Cell: 
-				  public virtual XCell 
+				  public virtual XCell,
+				  public virtual CellProperties 
 			{
 			public:
        
