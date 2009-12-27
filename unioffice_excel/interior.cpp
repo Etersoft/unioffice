@@ -62,16 +62,24 @@ HRESULT STDMETHODCALLTYPE CInterior::QueryInterface(const IID& iid, void** ppv)
     }		
 } 
 
-       ULONG STDMETHODCALLTYPE CInterior::AddRef()
+ULONG STDMETHODCALLTYPE CInterior::AddRef()
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      return InterlockedIncrement(&m_cRef); 	
 } 
 
-       ULONG STDMETHODCALLTYPE CInterior::Release()
+ULONG STDMETHODCALLTYPE CInterior::Release()
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      if (InterlockedDecrement(&m_cRef) == 0)
+      {
+              delete this;
+              return 0;
+      }
+      
+      return m_cRef;  		
 } 
 
        
