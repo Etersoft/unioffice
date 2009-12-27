@@ -728,11 +728,27 @@ HRESULT STDMETHODCALLTYPE CFont::put_Shadow(
     return ( hr );  		
 }
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_Size( 
+HRESULT STDMETHODCALLTYPE CFont::get_Size( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    long value = 0;
+    		
+	hr = m_oo_font.getCharHeight( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.getCharHeight \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+    V_I4( RHS ) = value;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
 HRESULT STDMETHODCALLTYPE CFont::put_Size( 
