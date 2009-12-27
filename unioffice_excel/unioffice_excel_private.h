@@ -80,7 +80,25 @@ static long color[56] = {
 	0x333399, 0x333333
 	};
 
-
+const int underline_style_NONE           = 0;
+const int underline_style_SINGLE         = 1;
+const int underline_style_DOUBLE         = 2;
+const int underline_style_DOTTED         = 3;
+const int underline_style_DONTKNOW       = 4;
+const int underline_style_DASH           = 5;
+const int underline_style_LONGDASH       = 6;
+const int underline_style_DASHDOT        = 7;
+const int underline_style_DASHDOTDOT     = 8;
+const int underline_style_SMALLWAVE      = 9;
+const int underline_style_WAVE           = 10;
+const int underline_style_DOUBLEWAVE     = 11;
+const int underline_style_BOLD           = 12;
+const int underline_style_BOLDDOTTED     = 13;
+const int underline_style_BOLDDASH       = 14;
+const int underline_style_BOLDLONGDASH   = 15;
+const int underline_style_BOLDDASHDOT    = 16;
+const int underline_style_BOLDDASHDOTDOT = 17;
+const int underline_style_BOLDWAVE       = 18;
 
 
 
