@@ -23,6 +23,7 @@
 #include "application.h"
 #include "worksheet.h"
 #include "font.h"
+#include "interior.h"
 
 #include "../OOWrappers/com/sun/star/table/cell_range_address.h"
 
@@ -1417,11 +1418,38 @@ HRESULT STDMETHODCALLTYPE CRange::put_Formula(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Interior( 
+HRESULT STDMETHODCALLTYPE CRange::get_Interior( 
             /* [retval][out] */ Interior	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+	CInterior* p_interior = new CInterior;
+   
+   	p_interior->Put_Application( m_p_application );
+	p_interior->Put_Parent( this );
+   
+    OOInterior    oo_interior;
+   	 					
+	oo_interior = m_oo_range;						
+										     
+	p_interior->InitWrapper( oo_interior );
+             
+   	hr = p_interior->QueryInterface( DIID_Interior, (void**)(RHS) );
+             
+    if ( FAILED( hr ) )
+	{
+	    ERR( " p_interior.QueryInterface \n" );     
+	}
+             
+	if ( p_interior != NULL )
+	{
+	    p_interior->Release();
+	    p_interior = NULL;
+	}
+	 
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
