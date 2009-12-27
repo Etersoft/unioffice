@@ -831,11 +831,52 @@ HRESULT STDMETHODCALLTYPE CFont::put_Size(
     return E_NOTIMPL;  		
 }
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CFont::put_Underline( 
+HRESULT STDMETHODCALLTYPE CFont::put_Underline( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;  		
+    TRACE_IN;
+    HRESULT hr;
+    long value = 0;
+    
+    CorrectArg(RHS, &RHS);
+    
+    hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
+    if ( FAILED( hr ) )
+    {
+	    ERR( " VariantChangeTypeEx \n" );   
+		TRACE_OUT;
+		return ( E_FAIL );	 
+    }
+    
+    switch ( V_I4( &RHS ) ) 
+	{
+        case xlUnderlineStyleDouble:
+        case xlUnderlineStyleDoubleAccounting:
+        value = underline_style_DOUBLE;
+        break;
+        case xlUnderlineStyleNone:
+        value = underline_style_NONE;
+        break;
+        case xlUnderlineStyleSingle:
+        case xlUnderlineStyleSingleAccounting:
+        value = underline_style_SINGLE;
+        break;
+    default :
+        ERR(" parameters \n");
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+    
+	hr = m_oo_font.setCharUnderline( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_font.setCharUnderline \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CFont::get_ThemeColor( 
