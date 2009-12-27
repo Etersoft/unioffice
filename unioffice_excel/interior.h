@@ -1,5 +1,5 @@
 /*
- * header file - Font
+ * header file - Interior
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,13 +18,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_EXCEL_FONT_H__
-#define __UNIOFFICE_EXCEL_FONT_H__
+#ifndef __UNIOFFICE_EXCEL_INTERIOR_H__
+#define __UNIOFFICE_EXCEL_INTERIOR_H__
 
 #include "unioffice_excel_private.h"
-#include "../OOWrappers/oo_font.h"
 
-class CFont : public _IFont, public Font
+
+class CInterior : public IInterior, public Interior
 {
 public:
 	   
@@ -55,7 +55,7 @@ public:
                EXCEPINFO * pExcepInfo,
                UINT * puArgErr); 
 
-			   // _IFont               
+			   // IInterior               
         virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Application( 
             /* [retval][out] */ Application	**RHS);
         
@@ -64,18 +64,6 @@ public:
         
         virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Parent( 
             /* [retval][out] */ IDispatch **RHS);
-        
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Background( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Background( 
-            /* [in] */ VARIANT RHS);
-        
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Bold( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Bold( 
-            /* [in] */ VARIANT RHS);
         
         virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Color( 
             /* [retval][out] */ VARIANT *RHS);
@@ -89,64 +77,28 @@ public:
         virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_ColorIndex( 
             /* [in] */ VARIANT RHS);
         
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_FontStyle( 
+        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_InvertIfNegative( 
             /* [retval][out] */ VARIANT *RHS);
         
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_FontStyle( 
+        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_InvertIfNegative( 
             /* [in] */ VARIANT RHS);
         
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Italic( 
+        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Pattern( 
             /* [retval][out] */ VARIANT *RHS);
         
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Italic( 
+        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Pattern( 
             /* [in] */ VARIANT RHS);
         
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Name( 
+        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_PatternColor( 
             /* [retval][out] */ VARIANT *RHS);
         
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Name( 
+        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_PatternColor( 
             /* [in] */ VARIANT RHS);
         
-        virtual /* [helpcontext][hidden][propget] */ HRESULT STDMETHODCALLTYPE get_OutlineFont( 
+        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_PatternColorIndex( 
             /* [retval][out] */ VARIANT *RHS);
         
-        virtual /* [helpcontext][hidden][propput] */ HRESULT STDMETHODCALLTYPE put_OutlineFont( 
-            /* [in] */ VARIANT RHS);
-        
-        virtual /* [helpcontext][hidden][propget] */ HRESULT STDMETHODCALLTYPE get_Shadow( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][hidden][propput] */ HRESULT STDMETHODCALLTYPE put_Shadow( 
-            /* [in] */ VARIANT RHS);
-        
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Size( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Size( 
-            /* [in] */ VARIANT RHS);
-        
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Strikethrough( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Strikethrough( 
-            /* [in] */ VARIANT RHS);
-        
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Subscript( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Subscript( 
-            /* [in] */ VARIANT RHS);
-        
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Superscript( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Superscript( 
-            /* [in] */ VARIANT RHS);
-        
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Underline( 
-            /* [retval][out] */ VARIANT *RHS);
-        
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_Underline( 
+        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_PatternColorIndex( 
             /* [in] */ VARIANT RHS);
         
         virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_ThemeColor( 
@@ -161,13 +113,22 @@ public:
         virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_TintAndShade( 
             /* [in] */ VARIANT RHS);
         
-        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_ThemeFont( 
-            /* [retval][out] */ XlThemeFont *RHS);
+        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_PatternThemeColor( 
+            /* [retval][out] */ VARIANT *RHS);
         
-        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_ThemeFont( 
-            /* [in] */ XlThemeFont RHS);
+        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_PatternThemeColor( 
+            /* [in] */ VARIANT RHS);
+        
+        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_PatternTintAndShade( 
+            /* [retval][out] */ VARIANT *RHS);
+        
+        virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_PatternTintAndShade( 
+            /* [in] */ VARIANT RHS);
+        
+        virtual /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE get_Gradient( 
+            /* [retval][out] */ IDispatch **RHS);
        
-       CFont()
+       CInterior()
        {
             CREATE_OBJECT; 
             m_cRef = 1;
@@ -186,7 +147,7 @@ public:
             InterlockedIncrement(&g_cComponents);         
        } 
 
-       virtual ~CFont()
+       virtual ~CInterior()
        {
             InterlockedDecrement(&g_cComponents);    
               
@@ -200,8 +161,6 @@ public:
        
        HRESULT Put_Application( void* );
        HRESULT Put_Parent( void* ); 
-	   
-	   HRESULT InitWrapper( OOFont );	   
 	   	   
 private:
 		
@@ -211,9 +170,7 @@ private:
        
        void*        m_p_application;
        void*        m_p_parent;	
-       
-       OOFont      m_oo_font;
 };
 
-#endif // __UNIOFFICE_EXCEL_FONT_H__
+#endif // __UNIOFFICE_EXCEL_INTERIOR_H__
 	   			 
