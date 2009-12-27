@@ -6,7 +6,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0500 */
-/* at Sat Sep 12 01:39:21 2009
+/* at Sun Dec 27 11:41:33 2009
  */
 /* Compiler settings for unioffice_excel.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
@@ -25,10 +25,11 @@
 extern "C"{
 #endif 
 
-#define _MIDL_USE_GUIDDEF_
 
 #include <rpc.h>
 #include <rpcndr.h>
+
+#define _MIDL_USE_GUIDDEF_
 
 #ifdef _MIDL_USE_GUIDDEF_
 
@@ -37,7 +38,7 @@ extern "C"{
 #include <initguid.h>
 #undef INITGUID
 #else
-#include <initguid.h>
+#include <guiddef.h>
 #endif
 
 #define MIDL_DEFINE_GUID(type,name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) \
@@ -66,7 +67,7 @@ typedef IID CLSID;
 #define MIDL_DEFINE_GUID(type,name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) \
         const type name = {l,w1,w2,{b1,b2,b3,b4,b5,b6,b7,b8}}
 
-#endif // !_MIDL_USE_GUIDDEF_
+#endif //!_MIDL_USE_GUIDDEF_
 
 MIDL_DEFINE_GUID(IID, LIBID_Office,0x2DF8D04C,0x5BFA,0x101B,0xBD,0xE5,0x00,0xAA,0x00,0x44,0xDE,0x52);
 

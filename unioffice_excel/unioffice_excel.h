@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0500 */
-/* at Sat Sep 12 01:39:21 2009
+/* at Sun Dec 27 11:41:33 2009
  */
 /* Compiler settings for unioffice_excel.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
@@ -24,6 +24,8 @@
 #define __REQUIRED_RPCNDR_H_VERSION__ 475
 #endif
 
+#undef DialogBox
+
 #include "rpc.h"
 #include "rpcndr.h"
 
@@ -31,7 +33,6 @@
 #error this stub requires an updated version of <rpcndr.h>
 #endif // __RPCNDR_H_VERSION__
 
-#undef DialogBox
 
 #ifndef __unioffice_excel_h__
 #define __unioffice_excel_h__
@@ -1192,26 +1193,35 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0054
 	xlThin	= 2
     } 	XlBorderWeight;
 
-typedef /* [public][public][public][uuid] */  DECLSPEC_UUID("F6BA0ED9-B530-466E-83D5-325653CC1068") 
+typedef /* [public][uuid] */  DECLSPEC_UUID("9B1665EA-5EA9-4D9B-9B61-D6D1E7C087E2") 
 enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0055
+    {	xlUnderlineStyleDouble	= 0xffffefe9,
+	xlUnderlineStyleDoubleAccounting	= 5,
+	xlUnderlineStyleNone	= 0xffffefd2,
+	xlUnderlineStyleSingle	= 2,
+	xlUnderlineStyleSingleAccounting	= 4
+    } 	XlUnderlineStyle;
+
+typedef /* [public][public][public][uuid] */  DECLSPEC_UUID("F6BA0ED9-B530-466E-83D5-325653CC1068") 
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0056
     {	xlColorIndexAutomatic	= 0xffffeff7,
 	xlColorIndexNone	= 0xffffefd2
     } 	XlColorIndex;
 
 typedef /* [public][public][public][public][public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0056
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0057
     {	xlPrinter	= 2,
 	xlScreen	= 1
     } 	XlPictureAppearance;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0057
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0058
     {	xlBitmap	= 2,
 	xlPicture	= 0xffffefcd
     } 	XlCopyPictureFormat;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0058
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0059
     {	xlAutoFill	= 4,
 	xlChronological	= 3,
 	xlGrowth	= 2,
@@ -1219,7 +1229,7 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0058
     } 	XlDataSeriesType;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0059
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0060
     {	xlDay	= 1,
 	xlMonth	= 3,
 	xlWeekday	= 2,
@@ -1227,13 +1237,13 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0059
     } 	XlDataSeriesDate;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0060
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0061
     {	xlPublisher	= 1,
 	xlSubscriber	= 2
     } 	XlEditionType;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0061
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0062
     {	xlAutomaticUpdate	= 4,
 	xlCancel	= 1,
 	xlChangeAttributes	= 6,
@@ -1245,13 +1255,13 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0061
     } 	XlEditionOptionsOption;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0062
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0063
     {	xlNext	= 1,
 	xlPrevious	= 2
     } 	XlSearchDirection;
 
 typedef /* [public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0063
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0064
     {	xlNoLabels	= 0xffffefd2,
 	xlRowLabels	= 1,
 	xlColumnLabels	= 2,
@@ -1259,7 +1269,7 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0063
     } 	XlFormulaLabel;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0064
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0065
     {	xlColumnHeader	= 0xffffeff2,
 	xlColumnItem	= 5,
 	xlDataHeader	= 3,
@@ -1272,7 +1282,7 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0064
     } 	XlLocationInTable;
 
 typedef /* [public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0065
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0066
     {	xlPasteAll	= 0xffffeff8,
 	xlPasteAllUsingSourceTheme	= 13,
 	xlPasteAllExceptBorders	= 7,
@@ -1287,7 +1297,7 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0065
     } 	XlPasteType;
 
 typedef /* [public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0066
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0067
     {	xlPasteSpecialOperationAdd	= 2,
 	xlPasteSpecialOperationDivide	= 5,
 	xlPasteSpecialOperationMultiply	= 4,
@@ -1296,38 +1306,38 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0066
     } 	XlPasteSpecialOperation;
 
 typedef /* [public][public][public][public][public][public][public][public][public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0067
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0068
     {	xlAscending	= 1,
 	xlDescending	= 2
     } 	XlSortOrder;
 
 typedef /* [public][public][public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0068
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0069
     {	xlGuess	= 0,
 	xlNo	= 2,
 	xlYes	= 1
     } 	XlYesNoGuess;
 
 typedef /* [public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0069
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0070
     {	xlSortRows	= 2,
 	xlSortColumns	= 1
     } 	XlSortOrientation;
 
 typedef /* [public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0070
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0071
     {	xlPinYin	= 1,
 	xlStroke	= 2
     } 	XlSortMethod;
 
 typedef /* [public][public][public][public][public][public][public][public][public][public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0071
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0072
     {	xlSortNormal	= 0,
 	xlSortTextAsNumbers	= 1
     } 	XlSortDataOption;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0072
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0073
     {	xlCellTypeBlanks	= 4,
 	xlCellTypeConstants	= 2,
 	xlCellTypeFormulas	= 0xffffefe5,
@@ -1341,13 +1351,13 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0072
     } 	XlCellType;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0073
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0074
     {	xlSubscribeToPicture	= 0xffffefcd,
 	xlSubscribeToText	= 0xffffefc2
     } 	XlSubscribeToFormat;
 
 typedef /* [public][public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0074
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0075
     {	xlAverage	= 0xffffeff6,
 	xlCount	= 0xffffeff0,
 	xlCountNums	= 0xffffefef,
@@ -1363,27 +1373,27 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0074
     } 	XlConsolidationFunction;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0075
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0076
     {	xlDelimited	= 1,
 	xlFixedWidth	= 2
     } 	XlTextParsingType;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0076
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0077
     {	xlSheetVisible	= 0xffffffff,
 	xlSheetHidden	= 0,
 	xlSheetVeryHidden	= 2
     } 	XlSheetVisibility;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0077
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0078
     {	xlNoRestrictions	= 0,
 	xlUnlockedCells	= 1,
 	xlNoSelection	= 0xffffefd2
     } 	XlEnableSelection;
 
 typedef /* [public][public] */ 
-enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0078
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0079
     {	xlChart	= 0xffffeff3,
 	xlDialogSheet	= 0xffffefec,
 	xlExcel4IntlMacroSheet	= 4,
@@ -19702,13 +19712,13 @@ EXTERN_C const IID IID_IRange;
             /* [optional][in] */ VARIANT Trend,
             /* [retval][out] */ VARIANT *RHS) = 0;
         
-        virtual /* [helpcontext][propget] */ HRESULT __stdcall get__Default( 
+        virtual /* [helpcontext][propget][id] */ HRESULT __stdcall get__Default( 
             /* [optional][in] */ VARIANT RowIndex,
             /* [optional][in] */ VARIANT ColumnIndex,
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ VARIANT *RHS) = 0;
         
-        virtual /* [helpcontext][propput] */ HRESULT __stdcall put__Default( 
+        virtual /* [helpcontext][propput][id] */ HRESULT __stdcall put__Default( 
             /* [optional][in] */ VARIANT RowIndex,
             /* [optional][in] */ VARIANT ColumnIndex,
             /* [lcid][in] */ long lcid,
@@ -20708,14 +20718,14 @@ EXTERN_C const IID IID_IRange;
             /* [optional][in] */ VARIANT Trend,
             /* [retval][out] */ VARIANT *RHS);
         
-        /* [helpcontext][propget] */ HRESULT ( __stdcall *get__Default )( 
+        /* [helpcontext][propget][id] */ HRESULT ( __stdcall *get__Default )( 
             IRange * This,
             /* [optional][in] */ VARIANT RowIndex,
             /* [optional][in] */ VARIANT ColumnIndex,
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ VARIANT *RHS);
         
-        /* [helpcontext][propput] */ HRESULT ( __stdcall *put__Default )( 
+        /* [helpcontext][propput][id] */ HRESULT ( __stdcall *put__Default )( 
             IRange * This,
             /* [optional][in] */ VARIANT RowIndex,
             /* [optional][in] */ VARIANT ColumnIndex,
