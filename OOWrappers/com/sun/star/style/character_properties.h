@@ -56,6 +56,9 @@ namespace com
          	  HRESULT setCharColor( long );
          	  HRESULT getCharColor( long& );
          	  
+         	  HRESULT setCharHeight( long );
+         	  HRESULT getCharHeight( long& );
+         	  
 			protected:             
 								  
 			};
