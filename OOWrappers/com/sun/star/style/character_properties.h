@@ -59,6 +59,10 @@ namespace com
          	  HRESULT setCharHeight( long );
          	  HRESULT getCharHeight( long& );
          	  
+         	  HRESULT setCharUnderline( long );
+         	  HRESULT getCharUnderline( long& );         	  
+         	  
+         	  
 			protected:             
 								  
 			};
