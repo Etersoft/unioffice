@@ -22,10 +22,44 @@
 #include "application.h"
 
        // IUnknown
-       HRESULT STDMETHODCALLTYPE CInterior::QueryInterface(const IID& iid, void** ppv)
+HRESULT STDMETHODCALLTYPE CInterior::QueryInterface(const IID& iid, void** ppv)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    *ppv = NULL;    
+        
+    if ( iid == IID_IUnknown ) {
+        TRACE("IUnknown \n");
+        *ppv = static_cast<IUnknown*>(static_cast<IInterior*>(this));
+    }
+        
+    if ( iid == IID_IDispatch ) {
+        TRACE("IDispatch \n");
+        *ppv = static_cast<IDispatch*>(static_cast<IInterior*>(this));
+    }     
+    
+    if ( iid == IID_IInterior) {
+        TRACE("IRange\n");
+        *ppv = static_cast<IInterior*>(this);
+    } 
+    
+    if ( iid == DIID_Interior) {
+        TRACE("Range \n");
+        *ppv = static_cast<Interior*>(this);
+    }   
+      
+    if ( *ppv != NULL ) 
+    {
+        reinterpret_cast<IUnknown*>(*ppv)->AddRef();
+         
+        return S_OK;
+    } else
+    {    
+        WCHAR str_clsid[39];
+         
+        StringFromGUID2( iid, str_clsid, 39);
+        WTRACE(L"(%s) not supported \n", str_clsid);
+        
+        return E_NOINTERFACE;                          
+    }		
 } 
 
        ULONG STDMETHODCALLTYPE CInterior::AddRef()
