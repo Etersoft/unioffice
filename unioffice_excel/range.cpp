@@ -29,6 +29,18 @@
 
 using namespace com::sun::star::table;
 
+
+const long CC_VALUE 	    = 1;
+const long CC_DATETIME 		= 2;
+const long CC_STRING 	    = 4;
+const long CC_ANNOTATION 	= 8;
+const long CC_FORMULA 	    = 16;
+const long CC_HARDATTR 		= 32;
+const long CC_STYLES 	    = 64;
+const long CC_OBJECTS 	    = 128;
+const long CC_EDITATTR 		= 256;
+const long CC_FORMATTED 	= 512;
+
        // IUnknown
 HRESULT STDMETHODCALLTYPE CRange::QueryInterface(const IID& iid, void** ppv)
 {
@@ -450,11 +462,28 @@ HRESULT STDMETHODCALLTYPE CRange::get_Parent(
     return E_NOTIMPL; 		
 }
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::ClearContents( 
+HRESULT STDMETHODCALLTYPE CRange::ClearContents( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    VariantInit( RHS );
+    
+    hr = m_oo_range.clearContents( 
+	   CC_VALUE + 
+	   CC_DATETIME + 
+	   CC_STRING + 
+	   CC_FORMULA + 
+	   CC_OBJECTS );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.clearContents \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
