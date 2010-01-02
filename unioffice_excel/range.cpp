@@ -509,11 +509,27 @@ HRESULT STDMETHODCALLTYPE CRange::ClearContents(
 }
         
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::ClearFormats( 
+HRESULT STDMETHODCALLTYPE CRange::ClearFormats( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    VariantInit( RHS );
+    
+    hr = m_oo_range.clearContents( 
+	   CC_HARDATTR + 
+	   CC_STYLES + 
+	   CC_EDITATTR + 
+	   CC_FORMATTED );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.clearContents \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
