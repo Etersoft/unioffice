@@ -40,9 +40,8 @@ namespace com
 			  CellProperties( );
 			  virtual ~CellProperties( );     
 
-
-
-
+			  HRESULT setCellBackColor( long );
+         	  HRESULT getCellBackColor( long& );
 
 			protected:            
 								  

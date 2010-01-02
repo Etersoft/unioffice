@@ -27,3 +27,68 @@ com::sun::star::table::CellProperties::CellProperties( ):com::sun::star::uno::XB
 com::sun::star::table::CellProperties::~CellProperties( )
 {              							
 } 
+
+HRESULT com::sun::star::table::CellProperties::setCellBackColor( long value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = value;    
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"CellBackColor", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CellBackColor \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );   		
+}
+
+HRESULT com::sun::star::table::CellProperties::getCellBackColor( long& value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"CellBackColor", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call CellBackColor \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	VariantChangeTypeEx(&res, &res, 0, 0, VT_I4);
+ 	
+ 	value = V_I4( &res );
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );  		
+}
