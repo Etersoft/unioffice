@@ -257,6 +257,14 @@ HRESULT STDMETHODCALLTYPE CInterior::put_Color(
     }
     
 	value = V_I4( &RHS );
+	
+	hr = m_oo_interior.setIsCellBackgroundTransparent( true );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_interior.setIsCellBackgroundTransparent \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }
 		
 	hr = m_oo_interior.getCellBackColor( value );
 	if ( FAILED( hr ) )
