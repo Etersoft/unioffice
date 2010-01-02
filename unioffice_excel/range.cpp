@@ -553,11 +553,23 @@ HRESULT STDMETHODCALLTYPE CRange::ClearNotes(
 }
         
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::ClearOutline( 
+HRESULT STDMETHODCALLTYPE CRange::ClearOutline( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    VariantInit( RHS );
+    
+    hr = m_oo_range.clearContents( CC_STYLES  );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.clearContents \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
