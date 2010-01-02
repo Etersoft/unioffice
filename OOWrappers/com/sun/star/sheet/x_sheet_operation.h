@@ -39,6 +39,9 @@ namespace com
        
 			  XSheetOperation( );
 			  virtual ~XSheetOperation( );     
+			  
+			  HRESULT clearContents( long );
+
 
 			protected:            
 								  

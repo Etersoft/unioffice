@@ -27,3 +27,35 @@ com::sun::star::sheet::XSheetOperation::XSheetOperation( ):com::sun::star::uno::
 com::sun::star::sheet::XSheetOperation::~XSheetOperation( )
 {              							
 } 
+
+HRESULT com::sun::star::sheet::XSheetOperation::clearContents( long value )
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = value;    
+    
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"clearContents", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call clearContents \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );  		
+}
