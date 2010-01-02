@@ -2711,10 +2711,20 @@ HRESULT STDMETHODCALLTYPE CRange::put_Value(
 }
         
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::ClearComments( void)
+HRESULT STDMETHODCALLTYPE CRange::ClearComments( void)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    hr = m_oo_range.clearContents( CC_ANNOTATION  );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.clearContents \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
