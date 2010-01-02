@@ -318,11 +318,52 @@ HRESULT STDMETHODCALLTYPE CInterior::get_ColorIndex(
     return ( S_OK );		
 } 
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CInterior::put_ColorIndex( 
+HRESULT STDMETHODCALLTYPE CInterior::put_ColorIndex( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+ 	TRACE_IN;
+	HRESULT hr;		
+    long tmpcolor;
+    VARIANT var_color;
+    
+    hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
+    if ( FAILED( hr ) )
+    {
+	    ERR( " VariantChangeTypeEx \n" );   
+		TRACE_OUT;
+		return ( E_FAIL );	 
+    }
+    
+	tmpcolor = V_I4( &RHS );
+    
+    if ( tmpcolor == xlColorIndexNone ) 
+	    tmpcolor = 2;
+    if ( tmpcolor == xlColorIndexAutomatic ) 
+	    tmpcolor = 1;
+
+    if ( 
+	    ( tmpcolor < 1 ) ||
+		( tmpcolor > 56 ) 
+		) 
+	{
+        ERR(" Incorrect colorindex \n ");
+        TRACE_OUT;
+        return ( S_OK );
+    } 	
+	
+	VariantInit( &var_color );
+	V_VT( &var_color ) = VT_I4;
+	V_I4( &var_color ) = color[ tmpcolor - 1 ];
+	
+	hr = put_Color( var_color );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " failed put_Color " );   	  
+    }   
+ 
+    VariantClear( &var_color );
+    TRACE_OUT;
+	return ( hr );   		
 } 
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CInterior::get_InvertIfNegative( 
