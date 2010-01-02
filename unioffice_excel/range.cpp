@@ -455,11 +455,33 @@ HRESULT STDMETHODCALLTYPE CRange::get_Parent(
 }
         
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::Clear( 
+HRESULT STDMETHODCALLTYPE CRange::Clear( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    VariantInit( RHS );
+    
+    hr = m_oo_range.clearContents( 
+	   CC_VALUE + 
+	   CC_DATETIME + 
+	   CC_STRING + 
+	   CC_ANNOTATION + 
+	   CC_FORMULA + 
+	   CC_HARDATTR + 
+	   CC_STYLES + 
+	   CC_OBJECTS + 
+	   CC_EDITATTR + 
+	   CC_FORMATTED );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.clearContents \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 			
 }
         
 HRESULT STDMETHODCALLTYPE CRange::ClearContents( 
