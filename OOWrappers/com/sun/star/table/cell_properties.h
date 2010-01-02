@@ -43,6 +43,11 @@ namespace com
 			  HRESULT setCellBackColor( long );
          	  HRESULT getCellBackColor( long& );
 
+			  HRESULT setIsCellBackgroundTransparent( bool );
+         	  HRESULT getIsCellBackgroundTransparent( bool& );
+
+
+
 			protected:            
 								  
 			};
