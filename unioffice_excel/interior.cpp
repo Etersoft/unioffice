@@ -239,11 +239,35 @@ HRESULT STDMETHODCALLTYPE CInterior::get_Color(
     return ( hr ); 			
 } 
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CInterior::put_Color( 
+HRESULT STDMETHODCALLTYPE CInterior::put_Color( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    long value = 0;
+    
+    CorrectArg(RHS, &RHS);
+    
+    hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
+    if ( FAILED( hr ) )
+    {
+	    ERR( " VariantChangeTypeEx \n" );   
+		TRACE_OUT;
+		return ( E_FAIL );	 
+    }
+    
+	value = V_I4( &RHS );
+		
+	hr = m_oo_interior.getCellBackColor( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_interior.getCellBackColor \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    TRACE_OUT;
+    return ( hr ); 		
 } 
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CInterior::get_ColorIndex( 
