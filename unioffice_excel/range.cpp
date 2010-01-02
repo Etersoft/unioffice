@@ -533,11 +533,23 @@ HRESULT STDMETHODCALLTYPE CRange::ClearFormats(
 }
         
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::ClearNotes( 
+HRESULT STDMETHODCALLTYPE CRange::ClearNotes( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    VariantInit( RHS );
+    
+    hr = m_oo_range.clearContents( CC_ANNOTATION  );
+    
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.clearContents \n" );   	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
