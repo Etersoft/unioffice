@@ -62,16 +62,24 @@ HRESULT STDMETHODCALLTYPE CBorders::QueryInterface(const IID& iid, void** ppv)
     }			
 } 
 
-       ULONG STDMETHODCALLTYPE CBorders::AddRef()       
+ULONG STDMETHODCALLTYPE CBorders::AddRef()       
 {
-    TRACE_NOTIMPL;
-	return 0; 		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      return InterlockedIncrement(&m_cRef); 		
 } 
 
-       ULONG STDMETHODCALLTYPE CBorders::Release()
+ULONG STDMETHODCALLTYPE CBorders::Release()
 {
-    TRACE_NOTIMPL;
-	return 0; 		
+      TRACE( " ref = %i \n", m_cRef );
+      
+      if (InterlockedDecrement(&m_cRef) == 0)
+      {
+              delete this;
+              return 0;
+      }
+      
+      return m_cRef;  		
 } 
        
        // IDispatch    
