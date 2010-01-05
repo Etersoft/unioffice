@@ -2736,11 +2736,48 @@ HRESULT STDMETHODCALLTYPE CRange::put_Value(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_VerticalAlignment( 
+HRESULT STDMETHODCALLTYPE CRange::get_VerticalAlignment( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    com::sun::star::table::CellVertJustify value = com::sun::star::table::VERT_STANDARD;
+    		
+	hr = m_oo_range.getVertJustify( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_range.getVertJustify \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+        
+    switch ( value ) {
+    case com::sun::star::table::VERT_STANDARD: 
+		 V_I4( RHS ) = xlVAlignJustify;
+		 break;
+		 
+    case com::sun::star::table::VERT_TOP:
+		 V_I4( RHS ) = xlVAlignTop;
+		 break;
+		 
+    case com::sun::star::table::VERT_CENTER:
+		 V_I4( RHS ) = xlVAlignCenter;
+		 break;
+		 
+    case com::sun::star::table::VERT_BOTTOM:
+		 V_I4( RHS ) = xlVAlignBottom;
+		 break;
+	 		 
+    default:
+			V_I4( RHS ) = xlVAlignDistributed;
+			break;
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
