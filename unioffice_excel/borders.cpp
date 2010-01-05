@@ -398,10 +398,29 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Value(
 	return E_NOTIMPL; 		
 }
 
-	    HRESULT CBorders::Skip ( ULONG celt)
+HRESULT CBorders::Skip ( ULONG celt)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    long count = 0;
+    HRESULT hr;
+    TRACE_IN;
+
+    hr = get_Count( &count );
+    if ( FAILED( hr ) )
+    {
+        ERR( " get_count \n" );     
+    }   
+    
+    enum_position += celt;
+
+    if ( enum_position >= count) 
+    {
+        enum_position = count - 1;
+        TRACE_OUT;
+        return S_FALSE;
+    }
+    
+    TRACE_OUT;
+    return S_OK;		
 }
 
 HRESULT CBorders::Reset( )
