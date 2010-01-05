@@ -392,10 +392,79 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Value(
 	return E_NOTIMPL; 		
 } 
   
- 	    HRESULT CBorders::Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched)
+HRESULT CBorders::Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    TRACE_IN;    
+        
+    HRESULT hr;
+    ULONG l;
+    long l1;
+    long count = 0;
+    ULONG l2;
+    Border *dret;    
+
+    if ( enum_position < 0 )
+    {
+        ERR( " enum_position < 0 \n" );
+        return ( S_FALSE );
+    }
+    
+    if ( pCeltFetched != NULL )
+    {
+       *pCeltFetched = 0;
+    }
+    
+    if ( rgVar == NULL )
+    {
+        ERR( " rgVar == NULL \n" );
+        return E_INVALIDARG;
+    }
+    
+    /*Init Array*/
+    for ( l = 0; l < celt; l++)
+       VariantInit( &rgVar[l] );
+
+    hr = get_Count( &count );
+    if ( FAILED( hr ) )
+    {
+        ERR( " get_Count \n" ); 
+        return (E_FAIL);
+    }
+
+    for ( l1 = enum_position, l2 = 0; l1 < count && l2 < celt; l1++, l2++) {
+            
+      hr = get_Item( static_cast<XlBordersIndex>( l1 ), &dret);
+            
+      V_VT( &rgVar[l2] )       = VT_DISPATCH;
+      V_DISPATCH( &rgVar[l2] ) = static_cast<IDispatch*>( dret );
+      
+      if ( FAILED( hr ) )
+      {
+          ERR( " get_Item \n" );
+          goto error;
+      }
+      
+    }
+
+    if (pCeltFetched != NULL)
+    {
+       *pCeltFetched = l2;
+    }
+    
+    enum_position = l1;
+    
+    TRACE_OUT;     
+    return  ((l2 < celt) ? S_FALSE : S_OK);
+
+error:
+      
+    for ( l = 0; l < celt; l++)
+    {
+        VariantClear(&rgVar[l]);
+    }
+   
+    TRACE_OUT;
+    return ( hr ); 		
 }
 
 HRESULT CBorders::Skip ( ULONG celt)
