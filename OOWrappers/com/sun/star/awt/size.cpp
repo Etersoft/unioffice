@@ -84,8 +84,35 @@ HRESULT com::sun::star::awt::Size::setWidth( long value )
 
 HRESULT com::sun::star::awt::Size::getWidth( long& value )
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL;  		
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"Width", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call Width \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	VariantChangeTypeEx(&res, &res, 0, 0, VT_I4);
+ 	
+ 	value = V_I4( &res );
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );  		
 }
 				
 HRESULT com::sun::star::awt::Size::setHeight( long value )
