@@ -22,6 +22,7 @@
 #define __UNIOFFICE_EXCEL_BORDERS_H__
 
 #include "unioffice_excel_private.h"
+#include "../OOWrappers/oo_borders.h"
 
 class CBorders : public IBorders, public Borders
 {
@@ -154,7 +155,9 @@ public:
        
        HRESULT Put_Application( void* );
        HRESULT Put_Parent( void* ); 
-			  
+	   
+	   HRESULT InitWrapper( OOBorders );
+	   	  
 private:
 		
        long         m_cRef; 
@@ -163,6 +166,8 @@ private:
        
        void*        m_p_application;
        void*        m_p_parent;	
+       
+       OOBorders    m_oo_borders;
 };
 
 #endif // __UNIOFFICE_EXCEL_BORDERS_H__

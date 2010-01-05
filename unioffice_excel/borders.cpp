@@ -395,4 +395,9 @@ HRESULT CBorders::Put_Parent( void* p_parent)
    return S_OK;  		
 }            
      
+HRESULT CBorders::InitWrapper( OOBorders _oo_borders )
+{
+    m_oo_borders = _oo_borders;     
+}
+
 	        
