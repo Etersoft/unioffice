@@ -83,19 +83,28 @@ ULONG STDMETHODCALLTYPE CBorders::Release()
 } 
        
        // IDispatch    
-       HRESULT STDMETHODCALLTYPE CBorders::GetTypeInfoCount( UINT * pctinfo )
+HRESULT STDMETHODCALLTYPE CBorders::GetTypeInfoCount( UINT * pctinfo )
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    *pctinfo = 1;
+    return S_OK;		
 } 
 
-       HRESULT STDMETHODCALLTYPE CBorders::GetTypeInfo(
+HRESULT STDMETHODCALLTYPE CBorders::GetTypeInfo(
                UINT iTInfo,
                LCID lcid,
                ITypeInfo ** ppTInfo)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    *ppTInfo = NULL;
+    
+    if(iTInfo != 0)
+    {
+        return DISP_E_BADINDEX;
+    }
+    
+    m_pITypeInfo->AddRef();
+    *ppTInfo = m_pITypeInfo;
+    
+    return S_OK; 		
 } 
 
        HRESULT STDMETHODCALLTYPE CBorders::GetIDsOfNames(
