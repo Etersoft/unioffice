@@ -29,7 +29,7 @@
 #include "../sheet/x_sheet_operation.h"
 #include "../util/x_mergeable.h"
 #include "../awt/size.h"
-
+#include "../awt/point.h"
 
 namespace com
 {
@@ -54,6 +54,7 @@ namespace com
 			  virtual ~SheetCellRange( );     
 
               com::sun::star::awt::Size getSize();
+              com::sun::star::awt::Point getPosition();
               
 
 			protected:            

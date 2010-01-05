@@ -57,3 +57,33 @@ com::sun::star::awt::Size com::sun::star::sheet::SheetCellRange::getSize()
     TRACE_OUT;
     return ( ret_val );							    						  
 }
+
+com::sun::star::awt::Point com::sun::star::sheet::SheetCellRange::getPosition()
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;
+	com::sun::star::awt::Point ret_val;  						  
+						   
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        return ( ret_val );     
+    }
+        
+    hr = AutoWrap (DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"Position", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call Position \n" );
+    } else
+    {
+        ret_val.Init( V_DISPATCH( &res ) );      
+    }						   
+						   
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( ret_val );							    						  
+}
