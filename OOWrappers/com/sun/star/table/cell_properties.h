@@ -46,7 +46,8 @@ namespace com
 			  HRESULT setIsCellBackgroundTransparent( bool );
          	  HRESULT getIsCellBackgroundTransparent( bool& );
 
-
+			  HRESULT setisTextWrapped( bool );
+         	  HRESULT getisTextWrapped( bool& );
 
 			protected:            
 								  
