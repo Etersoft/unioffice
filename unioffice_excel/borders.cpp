@@ -243,11 +243,15 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Parent(
 	return E_NOTIMPL; 		
 } 
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get_Count( 
+HRESULT STDMETHODCALLTYPE CBorders::get_Count( 
             /* [retval][out] */ long *RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    TRACE_IN;
+    
+    *RHS = 12;
+    
+    TRACE_OUT;
+    return ( S_OK );		
 } 
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get_Item( 
