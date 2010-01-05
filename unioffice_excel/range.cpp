@@ -1920,11 +1920,31 @@ HRESULT STDMETHODCALLTYPE CRange::UnMerge( void)
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_MergeCells( 
+HRESULT STDMETHODCALLTYPE CRange::get_MergeCells( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    bool value = false;
+    
+    hr = m_oo_range.getIsMerged( value );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.getIsMerged \n " ); 
+		TRACE_OUT;
+		return ( hr );  	 
+    }
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_BOOL;
+    
+    if ( value )
+        V_BOOL( RHS ) = VARIANT_TRUE;
+    else
+        V_BOOL( RHS ) = VARIANT_FALSE;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
