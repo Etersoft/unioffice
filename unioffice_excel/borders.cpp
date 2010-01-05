@@ -269,7 +269,7 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Count(
     hr = get__Default( Index, RHS );
     if ( FAILED( hr ) )
     {
-	    ERR( " get_Items -> get__Default " );   	 
+	    ERR( " get_Items -> get__Default \n" );   	 
     }
     
     TRACE_OUT;
