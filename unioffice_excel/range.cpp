@@ -1732,11 +1732,49 @@ HRESULT STDMETHODCALLTYPE CRange::get_Interior(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Left( 
+HRESULT STDMETHODCALLTYPE CRange::get_Left( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    com::sun::star::awt::Point  oo_point;
+    long count = 0;
+    long value = 0;
+    
+    hr = get_Count( &count );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get_Count \n" );
+		TRACE_OUT;
+		return ( E_FAIL );   	 
+    }    
+    
+    if ( count == 1 )
+        oo_point = (static_cast<SheetCell>(m_oo_range)).getPosition();
+    else
+	    oo_point = (static_cast<SheetCellRange>(m_oo_range)).getPosition();
+     
+    if ( oo_point.IsNull() )
+    {
+	    ERR( " oo_point.IsNull \n" );
+		TRACE_OUT;
+		return ( E_FAIL );   	 
+    }
+    
+    hr = oo_point.getX( value );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " oo_point.getX \n" );
+		TRACE_OUT;
+		return ( E_FAIL ); 	     	 
+	}
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+    V_I4( RHS ) = value;
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
