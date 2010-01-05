@@ -46,6 +46,11 @@ HRESULT STDMETHODCALLTYPE CBorders::QueryInterface(const IID& iid, void** ppv)
         *ppv = static_cast<Borders*>(this);
     }   
       
+    if ( iid == IID_IEnumVARIANT ) {
+        TRACE("IEnumVARIANT \n");
+        *ppv = static_cast<IEnumVARIANT*>(this);
+    }       
+      
     if ( *ppv != NULL ) 
     {
         reinterpret_cast<IUnknown*>(*ppv)->AddRef();
@@ -285,11 +290,22 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Count(
 	return E_NOTIMPL; 		
 } 
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get__NewEnum( 
+HRESULT STDMETHODCALLTYPE CBorders::get__NewEnum( 
             /* [retval][out] */ IUnknown **RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+   TRACE_IN;
+   
+   HRESULT hr = S_OK;
+   
+   hr = QueryInterface( IID_IEnumVARIANT, (void**)RHS );
+   
+   if ( FAILED( hr ) )
+   {
+        ERR( " FAILED get IID_IEnumVARIANT \n" );    
+   }
+   
+   TRACE_OUT;
+   return hr; 		
 } 
         
 HRESULT STDMETHODCALLTYPE CBorders::get_Value( 
