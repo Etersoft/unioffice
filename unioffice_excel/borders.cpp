@@ -107,18 +107,29 @@ HRESULT STDMETHODCALLTYPE CBorders::GetTypeInfo(
     return S_OK; 		
 } 
 
-       HRESULT STDMETHODCALLTYPE CBorders::GetIDsOfNames(
+HRESULT STDMETHODCALLTYPE CBorders::GetIDsOfNames(
                REFIID riid,
                LPOLESTR * rgszNames,
                UINT cNames,
                LCID lcid,
                DISPID * rgDispId)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    if (riid != IID_NULL )
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->GetIDsOfNames(rgszNames, cNames, rgDispId);
+    
+    if ( FAILED(hr) )
+    {
+     ERR( " name = %s \n", *rgszNames );     
+    }
+    
+    return ( hr );		
 } 
 
-       HRESULT STDMETHODCALLTYPE CBorders::Invoke(
+HRESULT STDMETHODCALLTYPE CBorders::Invoke(
                DISPID dispIdMember,
                REFIID riid,
                LCID lcid,
@@ -128,8 +139,28 @@ HRESULT STDMETHODCALLTYPE CBorders::GetTypeInfo(
                EXCEPINFO * pExcepInfo,
                UINT * puArgErr)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    if ( riid != IID_NULL)
+    {
+        return DISP_E_UNKNOWNINTERFACE;
+    }
+    
+    HRESULT hr = m_pITypeInfo->Invoke(
+                 static_cast<IDispatch*>(static_cast<IBorders*>(this)), 
+                 dispIdMember, 
+                 wFlags, 
+                 pDispParams, 
+                 pVarResult, 
+                 pExcepInfo, 
+                 puArgErr);       
+            
+    if ( FAILED(hr) )
+    { 
+        ERR( " dispIdMember = %i   hr = %08x \n", dispIdMember, hr ); 
+	    ERR( " wFlags = %i  \n", wFlags );   
+	    ERR( " pDispParams->cArgs = %i \n", pDispParams->cArgs );
+    }  
+	             
+    return ( hr ); 		
 } 
 
 			   // IBorders              
