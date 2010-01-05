@@ -24,6 +24,7 @@
 #include "worksheet.h"
 #include "font.h"
 #include "interior.h"
+#include "borders.h"
 
 #include "../OOWrappers/com/sun/star/table/cell_range_address.h"
 
@@ -409,11 +410,38 @@ HRESULT STDMETHODCALLTYPE CRange::get_Parent(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Borders( 
+HRESULT STDMETHODCALLTYPE CRange::get_Borders( 
             /* [retval][out] */ Borders	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+	CBorders* p_borders = new CBorders;
+   
+   	p_borders->Put_Application( m_p_application );
+	p_borders->Put_Parent( this );
+   
+    OOBorders    oo_borders;
+   	 					
+	oo_borders = m_oo_range;						
+										     
+	p_borders->InitWrapper( oo_borders );
+             
+   	hr = p_borders->QueryInterface( DIID_Borders, (void**)(RHS) );
+             
+    if ( FAILED( hr ) )
+	{
+	    ERR( " p_borders.QueryInterface \n" );     
+	}
+             
+	if ( p_borders != NULL )
+	{
+	    p_borders->Release();
+	    p_borders = NULL;
+	}
+	 
+    TRACE_OUT;
+    return ( hr );				
 }
         
         
@@ -1519,6 +1547,8 @@ HRESULT STDMETHODCALLTYPE CRange::put_HorizontalAlignment(
     HRESULT hr;
     com::sun::star::table::CellHoriJustify value = com::sun::star::table::HORI_STANDARD;
     
+    CorrectArg(RHS, &RHS);
+    
     VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
     
     switch ( V_I4( &RHS ) ) {
@@ -2114,6 +2144,8 @@ HRESULT STDMETHODCALLTYPE CRange::put_RowHeight(
     HRESULT  hr;
     long height = 0;
     OORange oo_rows;
+    
+    CorrectArg(RHS, &RHS);
     
     oo_rows = m_oo_range.getRows();
     if ( oo_rows.IsNull( ) )
@@ -2787,6 +2819,8 @@ HRESULT STDMETHODCALLTYPE CRange::put_VerticalAlignment(
     TRACE_IN;
     HRESULT hr;
     com::sun::star::table::CellVertJustify value = com::sun::star::table::VERT_STANDARD;
+    
+    CorrectArg(RHS, &RHS);
     
     VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
         
