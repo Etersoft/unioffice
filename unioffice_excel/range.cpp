@@ -1750,10 +1750,19 @@ HRESULT STDMETHODCALLTYPE CRange::get_Interior(
 }
         
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::UnMerge( void)
+HRESULT STDMETHODCALLTYPE CRange::UnMerge( void)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    hr = m_oo_range.merge( false );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " m_oo_range.merge \n" );      	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
