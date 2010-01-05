@@ -404,10 +404,14 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Value(
 	return E_NOTIMPL; 		
 }
 
-	    HRESULT CBorders::Reset( )
+HRESULT CBorders::Reset( )
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+   TRACE_IN;
+   
+   enum_position = 0;
+   
+   TRACE_OUT;
+   return S_OK; 		
 }
 
 HRESULT CBorders::Clone(IEnumVARIANT** ppEnum)	    
