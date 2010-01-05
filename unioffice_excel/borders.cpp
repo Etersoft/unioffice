@@ -184,11 +184,15 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Application(
    return hr; 		
 } 
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get_Creator( 
+HRESULT STDMETHODCALLTYPE CBorders::get_Creator( 
             /* [retval][out] */ XlCreator *RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+   TRACE_IN;
+   
+   *RHS = xlCreatorCode;
+   
+   TRACE_OUT;
+   return S_OK; 		
 } 
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get_Parent( 
