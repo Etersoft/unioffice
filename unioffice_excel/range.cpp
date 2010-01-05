@@ -1459,11 +1459,56 @@ HRESULT STDMETHODCALLTYPE CRange::put_Formula(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_HorizontalAlignment( 
+HRESULT STDMETHODCALLTYPE CRange::get_HorizontalAlignment( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    com::sun::star::table::CellHoriJustify value = com::sun::star::table::HORI_STANDARD;
+    		
+	hr = m_oo_range.getHoriJustify( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_range.getHoriJustify \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+        
+    switch ( value ) {
+    case com::sun::star::table::HORI_STANDARD: 
+		 V_I4( RHS ) = xlHAlignGeneral;
+		 break;
+		 
+    case com::sun::star::table::HORI_LEFT:
+		 V_I4( RHS ) = xlHAlignLeft;
+		 break;
+		 
+    case com::sun::star::table::HORI_CENTER:
+		 V_I4( RHS ) = xlHAlignCenter;
+		 break;
+		 
+    case com::sun::star::table::HORI_RIGHT:
+		 V_I4( RHS ) = xlHAlignRight;
+		 break;
+		 
+    case com::sun::star::table::HORI_BLOCK:
+		 V_I4( RHS ) = xlHAlignJustify;
+		 break;
+		 
+    case com::sun::star::table::HORI_REPEAT:
+		 V_I4( RHS ) =xlHAlignFill;
+		 break;
+		 
+    default:
+			V_I4( RHS ) = xlHAlignGeneral;
+			break;
+    }
+    
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
