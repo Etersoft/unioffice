@@ -50,25 +50,51 @@ com::sun::star::awt::Size& com::sun::star::awt::Size::operator=( const com::sun:
    return ( *this );  		 
 }
 
-HRESULT com::sun::star::awt::Size::setWidth( long value)
+HRESULT com::sun::star::awt::Size::setWidth( long value )
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL;  		
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = value;    
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"Width", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call Width \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );	
 }
 
-HRESULT com::sun::star::awt::Size::getWidth( long& value)
+HRESULT com::sun::star::awt::Size::getWidth( long& value )
 {
     TRACE_NOTIMPL;
 	return E_NOTIMPL;  		
 }
 				
-HRESULT com::sun::star::awt::Size::setHeight( long value)
+HRESULT com::sun::star::awt::Size::setHeight( long value )
 {
     TRACE_NOTIMPL;
 	return E_NOTIMPL;  		
 }
 
-HRESULT com::sun::star::awt::Size::getHeight( long& value)
+HRESULT com::sun::star::awt::Size::getHeight( long& value )
 {
     TRACE_NOTIMPL;
 	return E_NOTIMPL;  		
