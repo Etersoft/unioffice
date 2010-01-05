@@ -55,7 +55,7 @@ HRESULT com::sun::star::util::XMergeable::merge( bool value )
     hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"merge", 1, param1);
     if ( FAILED( hr ) )
     {
-        ERR( " Call Width \n" );
+        ERR( " Call merge \n" );
     }
  
     VariantClear( &res );
@@ -67,7 +67,37 @@ HRESULT com::sun::star::util::XMergeable::merge( bool value )
 
 HRESULT com::sun::star::util::XMergeable::getIsMerged( bool& value)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL;  		
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap(DISPATCH_METHOD, &res, m_pd_wrapper, L"getIsMerged", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call getIsMerged \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	VariantChangeTypeEx(&res, &res, 0, 0, VT_BOOL);
+ 	
+ 	if ( V_BOOL( &res ) == VARIANT_TRUE )	
+ 	    value = true;
+ 	else
+ 	    value = false;
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );		
 }
 
