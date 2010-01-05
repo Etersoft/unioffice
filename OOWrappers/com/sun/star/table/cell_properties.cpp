@@ -234,3 +234,68 @@ HRESULT com::sun::star::table::CellProperties::getisTextWrapped( bool& value)
     TRACE_OUT;
     return ( hr );  		
 }
+
+HRESULT com::sun::star::table::CellProperties::setHoriJustify( com::sun::star::table::CellHoriJustify value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res, param1;    
+    
+    VariantInit( &res );
+    VariantInit( &param1 );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    V_VT( &param1 ) = VT_I4;
+    V_I4( &param1 ) = static_cast<long>( value );
+    
+    hr = AutoWrap (DISPATCH_PROPERTYPUT, &res, m_pd_wrapper, L"HoriJustify", 1, param1);
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call HoriJustify \n" );
+    }
+ 
+    VariantClear( &res );
+    VariantClear( &param1 );
+ 
+    TRACE_OUT;
+    return ( hr );   		
+}
+
+HRESULT com::sun::star::table::CellProperties::getHoriJustify( com::sun::star::table::CellHoriJustify& value)
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+    
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &res, m_pd_wrapper, L"HoriJustify", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call HoriJustify \n" );
+        TRACE_OUT;
+        return ( E_FAIL );
+    }
+ 	
+ 	VariantChangeTypeEx(&res, &res, 0, 0, VT_I4);
+ 	
+ 	value = static_cast<com::sun::star::table::CellHoriJustify>( V_I4(&res) );
+ 	 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );  		
+}

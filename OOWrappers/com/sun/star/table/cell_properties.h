@@ -22,6 +22,7 @@
 #define __UNIOFFICE_CELL_PROPERTIES_H__
 
 #include "../uno/x_interface.h"
+#include "../table/cell_hori_justify.h"
 
 namespace com
 {
@@ -48,6 +49,10 @@ namespace com
 
 			  HRESULT setisTextWrapped( bool );
          	  HRESULT getisTextWrapped( bool& );
+
+			  HRESULT setHoriJustify( com::sun::star::table::CellHoriJustify );
+         	  HRESULT getHoriJustify( com::sun::star::table::CellHoriJustify& );
+
 
 			protected:            
 								  
