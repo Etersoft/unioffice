@@ -25,6 +25,8 @@
 #include "../table/cell.h"
 #include "../table/x_column_row_range.h"
 #include "../style/character_properties.h"
+#include "../awt/size.h"
+
 
 namespace com
 {
@@ -44,6 +46,8 @@ namespace com
        
 			  SheetCell( );
 			  virtual ~SheetCell( );     
+
+			  com::sun::star::awt::Size getSize();
 
 			protected:            
 								  
