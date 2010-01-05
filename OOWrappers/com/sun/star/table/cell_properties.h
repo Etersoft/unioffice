@@ -23,6 +23,7 @@
 
 #include "../uno/x_interface.h"
 #include "../table/cell_hori_justify.h"
+#include "../table/cell_vert_justify.h"
 
 namespace com
 {
@@ -53,7 +54,9 @@ namespace com
 			  HRESULT setHoriJustify( com::sun::star::table::CellHoriJustify );
          	  HRESULT getHoriJustify( com::sun::star::table::CellHoriJustify& );
 
-
+			  HRESULT setVertJustify( com::sun::star::table::CellVertJustify );
+         	  HRESULT getVertJustify( com::sun::star::table::CellVertJustify& );
+         	  
 			protected:            
 								  
 			};

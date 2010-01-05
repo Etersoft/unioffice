@@ -32,12 +32,12 @@ namespace com
  		  
 			enum CellHoriJustify
 			{				 
-				 STANDARD,
-				 LEFT,
-				 CENTER,
-				 RIGHT,
-				 BLOCK,
-				 REPEAT
+				 HORI_STANDARD,
+				 HORI_LEFT,
+				 HORI_CENTER,
+				 HORI_RIGHT,
+				 HORI_BLOCK,
+				 HORI_REPEAT
 			};
 
             } // namespace table

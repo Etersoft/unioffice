@@ -32,10 +32,10 @@ namespace com
  		  
 			enum CellVertJustify
 			{				 
-				 STANDARD,
-				 TOP,
-				 CENTER,
-				 BOTTOM
+				 VERT_STANDARD,
+				 VERT_TOP,
+				 VERT_CENTER,
+				 VERT_BOTTOM
 			};
 
             } // namespace table
