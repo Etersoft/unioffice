@@ -254,8 +254,17 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Parent(
             /* [in] */ XlBordersIndex Index,
             /* [retval][out] */ Border	**RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    hr = get__Default( Index, RHS );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get_Items -> get__Default " );   	 
+    }
+    
+    TRACE_OUT;
+	return ( hr ); 		
 } 
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get_LineStyle( 
