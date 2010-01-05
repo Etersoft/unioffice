@@ -28,6 +28,8 @@
 #include "../style/character_properties.h"
 #include "../sheet/x_sheet_operation.h"
 #include "../util/x_mergeable.h"
+#include "../awt/size.h"
+
 
 namespace com
 {
@@ -50,6 +52,9 @@ namespace com
        
 			  SheetCellRange( );
 			  virtual ~SheetCellRange( );     
+
+              com::sun::star::awt::Size getSize();
+              
 
 			protected:            
 								  
