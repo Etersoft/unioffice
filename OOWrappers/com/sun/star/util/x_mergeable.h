@@ -1,5 +1,5 @@
 /*
- * header file - Spreadsheet
+ * header file - XMergeable
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,14 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_SPREADSHEET_H__
-#define __UNIOFFICE_SPREADSHEET_H__
+#ifndef __UNIOFFICE_X_MERGEABLE_H__
+#define __UNIOFFICE_X_MERGEABLE_H__
 
 #include "../uno/x_base.h"
-#include "sheet_cell_range.h"
-#include "../container/x_named.h"
-#include "../sheet/x_cell_range_addressable.h"
-#include "../util/x_mergeable.h"
 
 namespace com
 {
@@ -33,34 +29,24 @@ namespace com
     {
         namespace star
         {
-		    namespace sheet 
+		    namespace util 
 			{ 
  		  
-			class Spreadsheet: 
-				  public virtual com::sun::star::sheet::SheetCellRange,
-				  public virtual com::sun::star::container::XNamed,
-				  public virtual com::sun::star::sheet::XCellRangeAddressable,
-				  public virtual com::sun::star::util::XMergeable 
+			class XMergeable:
+   				  public virtual com::sun::star::uno::XBase 
 			{
 			public:
-       
-			  Spreadsheet( );
-			  virtual ~Spreadsheet( );     
-
-			  // Properties
-
-              HRESULT isVisible( bool );
-              bool isVisible();
-
-			  BSTR    PageStyle();
-
-			protected:            
-								  
+				   				 
+		        XMergeable( );
+			    virtual ~XMergeable( ); 
+				
+         	  	HRESULT merge( bool );
+         	  	HRESULT getIsMerged( bool& );			  					
 			};
 
-            } // namespace sheet
+            } // namespace util
         } // namespace star
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_SPREADSHEET_H__
+#endif // __UNIOFFICE_X_MERGEABLE_H__

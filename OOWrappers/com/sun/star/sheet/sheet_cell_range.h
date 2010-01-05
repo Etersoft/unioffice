@@ -27,6 +27,7 @@
 #include "../sheet/x_cell_range_addressable.h"
 #include "../style/character_properties.h"
 #include "../sheet/x_sheet_operation.h"
+#include "../util/x_mergeable.h"
 
 namespace com
 {
@@ -42,7 +43,8 @@ namespace com
 				  public virtual com::sun::star::table::XColumnRowRange,
 				  public virtual com::sun::star::sheet::XCellRangeAddressable,
 				  public virtual com::sun::star::style::CharacterProperties,
-				  public virtual com::sun::star::sheet::XSheetOperation
+				  public virtual com::sun::star::sheet::XSheetOperation,
+				  public virtual com::sun::star::util::XMergeable
 			{
 			public:
        
