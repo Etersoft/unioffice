@@ -1512,11 +1512,56 @@ HRESULT STDMETHODCALLTYPE CRange::get_HorizontalAlignment(
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put_HorizontalAlignment( 
+HRESULT STDMETHODCALLTYPE CRange::put_HorizontalAlignment( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    com::sun::star::table::CellHoriJustify value = com::sun::star::table::HORI_STANDARD;
+    
+    VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
+    
+    switch ( V_I4( &RHS ) ) {
+	case xlHAlignGeneral: 
+		 value = com::sun::star::table::HORI_STANDARD;
+		 break;
+		 
+    case xlHAlignLeft:
+		 value = com::sun::star::table::HORI_LEFT;
+		 break;
+		 
+    case xlHAlignCenter:
+		 value = com::sun::star::table::HORI_CENTER;
+		 break;
+		 
+    case xlHAlignRight:
+		 value = com::sun::star::table::HORI_RIGHT;
+		 break;
+		 
+    case xlHAlignJustify:
+		 value = com::sun::star::table::HORI_BLOCK;
+		 break;
+		 
+    case xlHAlignFill:
+		 value = com::sun::star::table::HORI_REPEAT;
+		 break;
+		 
+    default:
+ 			value = com::sun::star::table::HORI_STANDARD;	
+			break; 		
+    } // switch
+    
+    
+    hr = m_oo_range.setHoriJustify( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_range.setHoriJustify \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
