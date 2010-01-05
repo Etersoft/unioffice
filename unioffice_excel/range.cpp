@@ -1948,11 +1948,44 @@ HRESULT STDMETHODCALLTYPE CRange::get_MergeCells(
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put_MergeCells( 
+HRESULT STDMETHODCALLTYPE CRange::put_MergeCells( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    CorrectArg(RHS, &RHS);
+    
+    hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    
+    if ( V_BOOL( &RHS ) == VARIANT_FALSE) 
+	{
+        hr = UnMerge();
+        
+        if ( FAILED( hr ) )
+    	{
+	       ERR( " UnMerge \n " );   	 
+		}
+	
+    } else 
+	{
+	    VARIANT param1;
+		
+		VariantInit( &param1 );
+		
+		V_VT( &param1 ) = VT_BOOL;
+		V_BOOL( &param1 ) = VARIANT_TRUE; 	   
+		
+        hr = Merge( param1 );
+        
+        if ( FAILED( hr ) )
+    	{
+	       ERR( " Merge \n " );   	 
+		}       
+    }
+        
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
