@@ -292,18 +292,38 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Count(
 	return E_NOTIMPL; 		
 } 
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get_Value( 
+HRESULT STDMETHODCALLTYPE CBorders::get_Value( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    hr = get_LineStyle( RHS );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get_value -> get_LineStyle \n" );   	 
+    }
+    
+    TRACE_OUT;
+	return ( hr ); 		
 } 
         
         /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CBorders::put_Value( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-	return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    CorrectArg( RHS, &RHS );
+    
+    hr = put_LineStyle( RHS );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " put_value -> put_LineStyle \n" );   	 
+    }
+    
+    TRACE_OUT;
+	return ( hr );		
 } 
         
         /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CBorders::get_Weight( 
