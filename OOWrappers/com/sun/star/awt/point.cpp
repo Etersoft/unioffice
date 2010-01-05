@@ -1,5 +1,5 @@
 /*
- * source file - Size
+ * source file - Point
  *
  * Copyright (C) 2009 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,19 +18,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "size.h"
+#include "point.h"
    
-com::sun::star::awt::Size::Size( ):com::sun::star::uno::XBase()
+com::sun::star::awt::Point::Point( ):com::sun::star::uno::XBase()
 {
  																                                                                        
 }
 
-com::sun::star::awt::Size::~Size( )
+com::sun::star::awt::Point::~Point( )
 {   
 	           							
 } 
 
-com::sun::star::awt::Size& com::sun::star::awt::Size::operator=( const com::sun::star::awt::Size &obj)
+com::sun::star::awt::Point& com::sun::star::awt::Point::operator=( const com::sun::star::awt::Point &obj)
 {
    if ( this == &obj )
    {
@@ -50,25 +50,25 @@ com::sun::star::awt::Size& com::sun::star::awt::Size::operator=( const com::sun:
    return ( *this );  		 
 }
 
-HRESULT com::sun::star::awt::Size::setWidth( long value)
+HRESULT com::sun::star::awt::Point::setX( long value)
 {
     TRACE_NOTIMPL;
 	return E_NOTIMPL;  		
 }
 
-HRESULT com::sun::star::awt::Size::getWidth( long& value)
+HRESULT com::sun::star::awt::Point::getX( long& value)
 {
     TRACE_NOTIMPL;
 	return E_NOTIMPL;  		
 }
 				
-HRESULT com::sun::star::awt::Size::setHeight( long value)
+HRESULT com::sun::star::awt::Point::setY( long value)
 {
     TRACE_NOTIMPL;
 	return E_NOTIMPL;  		
 }
 
-HRESULT com::sun::star::awt::Size::getHeight( long& value)
+HRESULT com::sun::star::awt::Point::getY( long& value)
 {
     TRACE_NOTIMPL;
 	return E_NOTIMPL;  		

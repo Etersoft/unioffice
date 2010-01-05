@@ -1,7 +1,7 @@
 [Project]
 FileName=unioffice_excel.dev
 Name=unioffice_excel
-UnitCount=141
+UnitCount=143
 Type=3
 Ver=1
 ObjFiles=
@@ -1449,6 +1449,26 @@ BuildCmd=
 
 [Unit141]
 FileName=..\OOWrappers\com\sun\star\awt\size.h
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/awt
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit143]
+FileName=..\OOWrappers\com\sun\star\awt\point.cpp
+CompileCpp=1
+Folder=OOWrapper/com/sun/star/awt
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit142]
+FileName=..\OOWrappers\com\sun\star\awt\point.h
 CompileCpp=1
 Folder=OOWrapper/com/sun/star/awt
 Compile=1
