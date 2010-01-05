@@ -26,7 +26,7 @@
 #include "../table/x_column_row_range.h"
 #include "../style/character_properties.h"
 #include "../awt/size.h"
-
+#include "../awt/point.h"
 
 namespace com
 {
@@ -48,7 +48,8 @@ namespace com
 			  virtual ~SheetCell( );     
 
 			  com::sun::star::awt::Size getSize();
-
+			  com::sun::star::awt::Point getPosition();
+			  
 			protected:            
 								  
 			};
