@@ -24,7 +24,7 @@
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/oo_borders.h"
 
-class CBorders : public IBorders, public Borders
+class CBorders : public IBorders, public Borders, public IEnumVARIANT
 {
 public:
 	   
@@ -121,6 +121,10 @@ public:
         virtual /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE put_TintAndShade( 
             /* [in] */ VARIANT RHS);
 
+ 	    virtual HRESULT Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched);
+	    virtual HRESULT Skip ( ULONG celt);
+	    virtual HRESULT Reset( );
+	    virtual HRESULT Clone(IEnumVARIANT** ppEnum);
 
        CBorders()
        {
@@ -128,6 +132,7 @@ public:
             m_cRef = 1;
             m_pITypeInfo = NULL;
             
+            enum_position = 0;
             m_p_application = NULL;
             m_p_parent = NULL;
                         
@@ -166,6 +171,8 @@ private:
        
        void*        m_p_application;
        void*        m_p_parent;	
+       
+       int          enum_position;
        
        OOBorders    m_oo_borders;
 };

@@ -375,6 +375,30 @@ HRESULT STDMETHODCALLTYPE CBorders::get_Value(
     TRACE_NOTIMPL;
 	return E_NOTIMPL; 		
 } 
+  
+ 	    HRESULT CBorders::Next ( ULONG celt, VARIANT* rgVar, ULONG* pCeltFetched)
+{
+    TRACE_NOTIMPL;
+	return E_NOTIMPL; 		
+}
+
+	    HRESULT CBorders::Skip ( ULONG celt)
+{
+    TRACE_NOTIMPL;
+	return E_NOTIMPL; 		
+}
+
+	    HRESULT CBorders::Reset( )
+{
+    TRACE_NOTIMPL;
+	return E_NOTIMPL; 		
+}
+
+	    HRESULT CBorders::Clone(IEnumVARIANT** ppEnum)	    
+{
+    TRACE_NOTIMPL;
+	return E_NOTIMPL; 		
+}
             
 HRESULT CBorders::Init( )
 {

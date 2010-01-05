@@ -111,6 +111,7 @@ public:
             m_cRef = 1;
             m_pITypeInfo = NULL;
             
+            enum_position = 0;
             m_p_application = NULL;
             m_p_parent = NULL;
                         
