@@ -395,6 +395,8 @@ HRESULT STDMETHODCALLTYPE CFont::put_ColorIndex(
     long tmpcolor;
     VARIANT var_color;
     
+    CorrectArg(RHS, &RHS);
+    
     hr = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_I4);
     if ( FAILED( hr ) )
     {
