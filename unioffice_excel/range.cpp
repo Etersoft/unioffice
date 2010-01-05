@@ -2705,11 +2705,32 @@ HRESULT STDMETHODCALLTYPE CRange::get_WrapText(
 }
         
         
-        /* [helpcontext][propput] */ HRESULT STDMETHODCALLTYPE CRange::put_WrapText( 
+HRESULT STDMETHODCALLTYPE CRange::put_WrapText( 
             /* [in] */ VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    bool value = false;
+    
+    CorrectArg(RHS, &RHS);
+    
+    VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
+    
+    if ( V_BOOL(&RHS) == VARIANT_TRUE )
+	    value = true;
+	else
+	    value = false;
+		
+	hr = m_oo_range.setisTextWrapped( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_range.setisTextWrapped \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
