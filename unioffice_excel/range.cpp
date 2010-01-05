@@ -1463,11 +1463,49 @@ HRESULT STDMETHODCALLTYPE CRange::put_Formula(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Height( 
+HRESULT STDMETHODCALLTYPE CRange::get_Height( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    com::sun::star::awt::Size  oo_size;
+    long count = 0;
+    long value = 0;
+    
+    hr = get_Count( &count );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get_Count \n" );
+		TRACE_OUT;
+		return ( E_FAIL );   	 
+    }    
+    
+    if ( count == 1 )
+        oo_size = (static_cast<SheetCell>(m_oo_range)).getSize();
+    else
+	    oo_size = (static_cast<SheetCellRange>(m_oo_range)).getSize();
+     
+    if ( oo_size.IsNull() )
+    {
+	    ERR( " oo_size.IsNull \n" );
+		TRACE_OUT;
+		return ( E_FAIL );   	 
+    }
+    
+    hr = oo_size.getHeight( value );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " oo_size.getHeight \n" );
+		TRACE_OUT;
+		return ( E_FAIL ); 	     	 
+	}
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_I4;
+    V_I4( RHS ) = value;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
