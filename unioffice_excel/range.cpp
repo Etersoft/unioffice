@@ -1742,11 +1742,81 @@ HRESULT STDMETHODCALLTYPE CRange::get_Interior(
 }
         
         
-        /* [helpcontext] */ HRESULT STDMETHODCALLTYPE CRange::Merge( 
+HRESULT STDMETHODCALLTYPE CRange::Merge( 
             /* [optional][in] */ VARIANT Across)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    CorrectArg( Across, &Across );
+    
+    VariantChangeTypeEx(&Across, &Across, 0, 0, VT_BOOL);
+    
+    if ( V_BOOL( &Across ) == VARIANT_FALSE )
+	{
+	    hr = m_oo_range.merge( true ); 
+		if ( FAILED( hr ) )
+		{
+		    ERR( " m_oo_range.merge \n" );   	 
+		    TRACE_OUT;
+		    return ( hr );
+	    }  	 
+    } else
+	{
+	    CellRangeAddress  cell_range_address;
+    
+        cell_range_address = m_oo_range.getRangeAddress();
+    	if ( cell_range_address.IsNull() )
+    	{
+	       ERR( " getRangeAddress \n" );  
+		   TRACE_OUT;
+		   return ( E_FAIL ); 	 
+	    }
+    
+    	long startrow    = cell_range_address.StartRow();
+		long endrow      = cell_range_address.EndRow();
+		long startcolumn = cell_range_address.StartColumn();
+		long endcolumn   = cell_range_address.EndColumn();  
+		
+		if (   
+		   ( startrow < 0 ) ||
+		   ( endrow < 0 ) ||
+		   ( startcolumn < 0 ) ||
+		   ( endcolumn < 0 )
+		) 
+		{
+		    ERR( " failed when get start and end parameters \n " );
+			TRACE_OUT;
+			return ( E_FAIL );   	 
+	    }
+		
+		for ( int i = 0; i <= endrow-startrow; i++ )
+		{
+		 	OORange oo_range;
+		 	
+		 	oo_range = m_oo_range.getCellRangeByPosition( 0, i, endcolumn - startcolumn, i );	
+		 	
+		 	if ( oo_range.IsNull() )
+		 	{
+			    ERR( " oo_range.IsNull() i = %i \n", i );
+				TRACE_OUT;
+				return ( E_FAIL );   	 
+			}
+		 	
+		 	hr = oo_range.merge( true );
+		 	
+		 	if ( FAILED( hr ) )
+			{
+		       ERR( " m_oo_range.merge i = %i \n", i );   	 
+		       TRACE_OUT;
+		       return ( hr );
+	    	} 
+	 	
+		} // for ( int i = 0; i <= endrow-startrow; i++ )	  
+    }       
+    
+    TRACE_OUT;
+    return ( S_OK ); 		
 }
         
         
