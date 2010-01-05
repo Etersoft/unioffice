@@ -987,7 +987,24 @@ typedef IDispatch Sort;
         xlWorksheet = 0xffffefb9
     } XlSheetType;
 
+    typedef enum {
+        xlHAlignCenter = 0xffffeff4,
+        xlHAlignCenterAcrossSelection = 7,
+        xlHAlignDistributed = 0xffffefeb,
+        xlHAlignFill = 5,
+        xlHAlignGeneral = 1,
+        xlHAlignJustify = 0xffffefde,
+        xlHAlignLeft = 0xffffefdd,
+        xlHAlignRight = 0xffffefc8
+    } XlHAlign;
 
+    typedef enum {
+        xlVAlignBottom = 0xffffeff5,
+        xlVAlignCenter = 0xffffeff4,
+        xlVAlignDistributed = 0xffffefeb,
+        xlVAlignJustify = 0xffffefde,
+        xlVAlignTop = 0xffffefc0
+    } XlVAlign;
 
 
 

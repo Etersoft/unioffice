@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0500 */
-/* at Sun Dec 27 11:41:33 2009
+/* at Tue Jan 05 16:26:45 2010
  */
 /* Compiler settings for unioffice_excel.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
@@ -1400,6 +1400,27 @@ enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0079
 	xlExcel4MacroSheet	= 3,
 	xlWorksheet	= 0xffffefb9
     } 	XlSheetType;
+
+typedef /* [public] */ 
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0080
+    {	xlHAlignCenter	= 0xffffeff4,
+	xlHAlignCenterAcrossSelection	= 7,
+	xlHAlignDistributed	= 0xffffefeb,
+	xlHAlignFill	= 5,
+	xlHAlignGeneral	= 1,
+	xlHAlignJustify	= 0xffffefde,
+	xlHAlignLeft	= 0xffffefdd,
+	xlHAlignRight	= 0xffffefc8
+    } 	XlHAlign;
+
+typedef /* [public] */ 
+enum __MIDL___MIDL_itf_unioffice_excel_0000_0000_0081
+    {	xlVAlignBottom	= 0xffffeff5,
+	xlVAlignCenter	= 0xffffeff4,
+	xlVAlignDistributed	= 0xffffefeb,
+	xlVAlignJustify	= 0xffffefde,
+	xlVAlignTop	= 0xffffefc0
+    } 	XlVAlign;
 
 
 EXTERN_C const IID LIBID_Office;

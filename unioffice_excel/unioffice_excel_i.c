@@ -6,7 +6,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0500 */
-/* at Sun Dec 27 11:41:33 2009
+/* at Tue Jan 05 16:26:45 2010
  */
 /* Compiler settings for unioffice_excel.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
