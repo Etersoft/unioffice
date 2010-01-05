@@ -2678,11 +2678,30 @@ HRESULT STDMETHODCALLTYPE CRange::put_Value(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_WrapText( 
+HRESULT STDMETHODCALLTYPE CRange::get_WrapText( 
             /* [retval][out] */ VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    bool value = false;
+    		
+	hr = m_oo_range.getisTextWrapped( value );
+	if ( FAILED( hr ) )
+	{
+	    ERR( " m_oo_range.getisTextWrapped \n" );  
+		TRACE_OUT;
+		return ( hr ); 	 
+    }			    
+    
+    VariantClear( RHS );
+    V_VT( RHS ) = VT_BOOL;
+    if ( value )
+	    V_BOOL( RHS ) = VARIANT_TRUE;
+	else
+	    V_BOOL( RHS ) = VARIANT_FALSE;
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
