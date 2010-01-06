@@ -23,6 +23,7 @@
 
 #include "../uno/x_base.h"
 #include "../document/office_document.h"
+#include "../frame/x_model.h"
 
 namespace com
 {
@@ -35,7 +36,8 @@ namespace com
  		  
 			class SpreadsheetDocument: 
 				  public virtual com::sun::star::uno::XBase,
-				  public virtual com::sun::star::document::OfficeDocument
+				  public virtual com::sun::star::document::OfficeDocument,
+				  public virtual com::sun::star::frame::XModel
 			{
 			public:
        

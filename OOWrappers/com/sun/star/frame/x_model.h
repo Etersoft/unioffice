@@ -1,5 +1,5 @@
 /*
- * header file - OfficeDocument
+ * header file - XModel
  *
  * Copyright (C) 2010 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,11 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_OFFICE_DOCUMENT_H__
-#define __UNIOFFICE_OFFICE_DOCUMENT_H__
+#ifndef __UNIOFFICE_X_MODEL_H__
+#define __UNIOFFICE_X_MODEL_H__
 
-#include "../uno/x_base.h"
-#include "../frame/x_model.h"
+#include "../lang/x_component.h"
 
 namespace com
 {
@@ -30,25 +29,24 @@ namespace com
     {
         namespace star
         {
-		    namespace document 
+		    namespace frame 
 			{ 
  		  
-			class OfficeDocument: 
-				  public virtual com::sun::star::uno::XBase,
-				  public virtual com::sun::star::frame::XModel
+			class XModel: 
+				  public virtual com::sun::star::lang::XComponent	  
 			{
 			public:
        
-			  OfficeDocument( );
-			  virtual ~OfficeDocument( );     
+			  XModel( );
+			  virtual ~XModel( );     
 			  
 			protected:            
 								  
 			};
 
-            } // namespace document
+            } // namespace frame
         } // namespace star
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_OFFICE_DOCUMENT_H__
+#endif // __UNIOFFICE_X_MODEL_H__
