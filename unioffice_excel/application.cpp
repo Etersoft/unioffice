@@ -2601,12 +2601,12 @@ HRESULT STDMETHODCALLTYPE Application::get_ScreenUpdating(
    return ( S_OK );             
 }
         
-         /* [helpcontext][propput][id] */ HRESULT STDMETHODCALLTYPE Application::put_ScreenUpdating( 
+         /* [helpcontext][id] */ HRESULT STDMETHODCALLTYPE Application::put_ScreenUpdating( 
             /* [lcid][in] */ long lcid,
             /* [in] */ VARIANT_BOOL RHS)
 {
    TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   return E_NOTIMPL;                 
 }
         
          /* [helpcontext][hidden][id] */ HRESULT STDMETHODCALLTYPE Application::SetDefaultChart( 
@@ -2892,12 +2892,16 @@ HRESULT STDMETHODCALLTYPE Application::put_SheetsInNewWorkbook(
    return E_NOTIMPL;             
 }
         
-         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_Version( 
+HRESULT STDMETHODCALLTYPE Application::get_Version( 
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ BSTR *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+    TRACE_IN;
+
+    *RHS = SysAllocString( L"11.0" );
+
+    TRACE_OUT;
+    return S_OK;            
 }
         
 HRESULT STDMETHODCALLTYPE Application::get_Visible( 
