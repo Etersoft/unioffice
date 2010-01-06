@@ -2589,12 +2589,16 @@ HRESULT STDMETHODCALLTYPE Application::Quit( void)
    return E_NOTIMPL;             
 }
         
-         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_ScreenUpdating( 
+HRESULT STDMETHODCALLTYPE Application::get_ScreenUpdating( 
             /* [lcid][in] */ long lcid,
             /* [retval][out] */ VARIANT_BOOL *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_IN;
+   
+   *RHS = m_b_screenupdating;
+   
+   TRACE_OUT;
+   return ( S_OK );             
 }
         
          /* [helpcontext][propput][id] */ HRESULT STDMETHODCALLTYPE Application::put_ScreenUpdating( 
