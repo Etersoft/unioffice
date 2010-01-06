@@ -1,5 +1,5 @@
 /*
- * header file - SpreadsheetDocument
+ * source file - OfficeDocument
  *
  * Copyright (C) 2010 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,37 +18,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_SPREADSHEET_DOCUMENT_H__
-#define __UNIOFFICE_SPREADSHEET_DOCUMENT_H__
+#include "office_document.h"
+   
+com::sun::star::document::OfficeDocument::OfficeDocument( ):com::sun::star::uno::XBase()
+{                                                                       
+}
 
-#include "../uno/x_base.h"
-#include "../document/office_document.h"
+com::sun::star::document::OfficeDocument::~OfficeDocument( )
+{              							
+} 
 
-namespace com
-{
-    namespace sun
-    {
-        namespace star
-        {
-		    namespace sheet 
-			{ 
- 		  
-			class SpreadsheetDocument: 
-				  public virtual com::sun::star::uno::XBase,
-				  public virtual com::sun::star::document::OfficeDocument
-			{
-			public:
-       
-			  SpreadsheetDocument( );
-			  virtual ~SpreadsheetDocument( );     
-			  
-			protected:            
-								  
-			};
-
-            } // namespace sheet
-        } // namespace star
-    } // namespace sun
-} // namespace com
-
-#endif // __UNIOFFICE_SPREADSHEET_DOCUMENT_H__
