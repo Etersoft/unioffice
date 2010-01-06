@@ -23,6 +23,7 @@
 
 #include "unioffice_excel_private.h"
 #include "../OOWrappers/oo_range.h"
+#include "../OOWrappers/oo_sheet.h"
 #include "worksheet.h"
 
 class CRange : public IRange, public Range
@@ -1013,7 +1014,9 @@ public:
 	   HRESULT InitWrapper( OORange );	   
 	   	   
 private:
-		
+	
+	   OOSheet      getParentOOSheet();
+	    	
        long         m_cRef; 
        
        ITypeInfo*   m_pITypeInfo;               

@@ -3601,3 +3601,33 @@ HRESULT CRange::InitWrapper( OORange _oo_range)
     m_oo_range = _oo_range;      
 }
 
+OOSheet CRange::getParentOOSheet()
+{
+ 	TRACE_IN;
+	HRESULT hr;	
+ 	Worksheet* p_worksheet = NULL;
+ 	OOSheet oo_sheet;
+ 	
+ 	hr = get_Worksheet( &p_worksheet );
+ 	if ( FAILED( hr ) )
+ 	{
+	    ERR( " get_Worksheet \n" );
+	 	if ( p_worksheet != NULL )
+ 		{
+	   	   p_worksheet->Release();
+	   	   p_worksheet = NULL;   	 
+	   	}
+		TRACE_OUT;
+		return ( oo_sheet );  	   	 
+	}
+ 	
+ 	oo_sheet = p_worksheet->getWrapper();
+ 	
+ 	if ( p_worksheet != NULL )
+ 	{
+	   p_worksheet->Release();
+	   p_worksheet = NULL;   	 
+	}
+ 	
+	return ( oo_sheet ); 		 
+}
