@@ -1,5 +1,5 @@
 /*
- * header file - SpreadsheetDocument
+ * header file - XActionLockable
  *
  * Copyright (C) 2010 Sinitsin Ivan (Etersoft) <ivan@etersoft.ru>
  *
@@ -18,13 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef __UNIOFFICE_SPREADSHEET_DOCUMENT_H__
-#define __UNIOFFICE_SPREADSHEET_DOCUMENT_H__
+#ifndef __UNIOFFICE_X_ACTION_LOCKABLE_H__
+#define __UNIOFFICE_X_ACTION_LOCKABLE_H__
 
 #include "../uno/x_base.h"
-#include "../document/office_document.h"
-#include "../frame/x_model.h"
-#include "../document/x_action_lockable.h"
 
 namespace com
 {
@@ -32,27 +29,24 @@ namespace com
     {
         namespace star
         {
-		    namespace sheet 
+		    namespace document 
 			{ 
  		  
-			class SpreadsheetDocument: 
-				  public virtual com::sun::star::uno::XBase,
-				  public virtual com::sun::star::document::OfficeDocument,
-				  public virtual com::sun::star::frame::XModel,
-				  public virtual com::sun::star::document::XActionLockable
+			class XActionLockable: 
+				  public virtual com::sun::star::uno::XBase	  
 			{
 			public:
        
-			  SpreadsheetDocument( );
-			  virtual ~SpreadsheetDocument( );     
-			  
+			  XActionLockable( );
+			  virtual ~XActionLockable( );  
+
 			protected:            
 								  
 			};
 
-            } // namespace sheet
+            } // namespace document
         } // namespace star
     } // namespace sun
 } // namespace com
 
-#endif // __UNIOFFICE_SPREADSHEET_DOCUMENT_H__
+#endif // __UNIOFFICE_X_ACTION_LOCKABLE_H__
