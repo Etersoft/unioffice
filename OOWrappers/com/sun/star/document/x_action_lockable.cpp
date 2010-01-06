@@ -27,3 +27,58 @@ com::sun::star::document::XActionLockable::XActionLockable( ):com::sun::star::un
 com::sun::star::document::XActionLockable::~XActionLockable( )
 {              							
 } 
+
+HRESULT com::sun::star::document::XActionLockable::addActionLock()
+{ 
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+        
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"addActionLock", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call addActionLock \n" );
+    }
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );  		             							
+}
+
+HRESULT com::sun::star::document::XActionLockable::removeActionLock()
+{   
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+        
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"removeActionLock", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call removeActionLock \n" );
+    }
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );	          							
+}
+

@@ -39,6 +39,9 @@ namespace com
        
 			  XActionLockable( );
 			  virtual ~XActionLockable( );  
+			  		  
+			  HRESULT addActionLock();
+			  HRESULT removeActionLock();
 
 			protected:            
 								  
