@@ -227,7 +227,7 @@ HRESULT STDMETHODCALLTYPE CName::get_Parent(
             
    HRESULT hr = S_OK;
    
-   hr = (static_cast<CNames*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
+   hr = (static_cast<IUnknown*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
              
    TRACE_OUT;
    return hr; 		
