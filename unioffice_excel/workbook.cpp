@@ -2689,7 +2689,7 @@ HRESULT Workbook::NewDocumentAsTemplate( BSTR template_name )
     return ( hr );       
 } 
 
-OODocument& Workbook::GetOODocument( )
+OODocument Workbook::GetOODocument( )
 {
     return ( m_oo_document ); 				   
 }

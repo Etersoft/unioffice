@@ -1033,7 +1033,7 @@ public:
        HRESULT NewDocument( );
        HRESULT NewDocumentAsTemplate( BSTR );  
        
-       OODocument&        GetOODocument( );
+       OODocument GetOODocument( );
        
 private:               
  
