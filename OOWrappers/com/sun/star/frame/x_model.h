@@ -38,7 +38,11 @@ namespace com
 			public:
        
 			  XModel( );
-			  virtual ~XModel( );     
+			  virtual ~XModel( );  
+			  
+			  HRESULT lockControllers();
+			  HRESULT unlockControllers();
+			     
 			  
 			protected:            
 								  

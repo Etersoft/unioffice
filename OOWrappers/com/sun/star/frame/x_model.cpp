@@ -27,3 +27,57 @@ com::sun::star::frame::XModel::XModel( ):com::sun::star::uno::XBase()
 com::sun::star::frame::XModel::~XModel( )
 {              							
 } 
+
+HRESULT com::sun::star::frame::XModel::lockControllers()
+{
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+        
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"lockControllers", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call lockControllers \n" );
+    }
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );				               							
+} 
+
+HRESULT com::sun::star::frame::XModel::unlockControllers()
+{ 
+    TRACE_IN; 
+    HRESULT hr;
+    VARIANT res;    
+    
+    VariantInit( &res );
+    
+    if ( IsNull() )
+    {
+        ERR( " m_pd_wrapper is NULL \n" );
+        TRACE_OUT;
+        return ( E_FAIL );     
+    }
+        
+    hr = AutoWrap (DISPATCH_METHOD, &res, m_pd_wrapper, L"unlockControllers", 0 );
+    if ( FAILED( hr ) )
+    {
+        ERR( " Call unlockControllers \n" );
+    }
+ 
+    VariantClear( &res );
+ 
+    TRACE_OUT;
+    return ( hr );		               							
+}
