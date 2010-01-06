@@ -1181,18 +1181,22 @@ HRESULT STDMETHODCALLTYPE Application::get_Workbooks(
    return E_NOTIMPL;             
 }
         
-         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_Caption( 
+HRESULT STDMETHODCALLTYPE Application::get_Caption( 
             /* [retval][out] */ BSTR *RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_IN;
+   
+   *RHS = SysAllocString( L"UniOffice Excel" );
+   
+   TRACE_OUT;
+   return ( S_OK );             
 }
         
-         /* [helpcontext][propput][id] */ HRESULT STDMETHODCALLTYPE Application::put_Caption( 
+HRESULT STDMETHODCALLTYPE Application::put_Caption( 
             /* [in] */ BSTR RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_STUB;
+   return ( S_OK );             
 }
         
          /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_CellDragAndDrop( 
