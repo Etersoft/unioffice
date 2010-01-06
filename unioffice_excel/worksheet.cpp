@@ -2131,3 +2131,8 @@ HRESULT Worksheet::InitWrapper( OOSheet _oo_sheet)
 {
     m_oo_sheet = _oo_sheet;      
 }
+
+OOSheet Worksheet::getWrapper()
+{
+    return ( m_oo_sheet ); 		
+}

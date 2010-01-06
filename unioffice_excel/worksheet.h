@@ -744,6 +744,8 @@ public:
        
        HRESULT InitWrapper( OOSheet );
        
+       OOSheet getWrapper();
+       
 private:
         
        long m_cRef; 
