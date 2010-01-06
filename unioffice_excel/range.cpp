@@ -659,7 +659,7 @@ HRESULT STDMETHODCALLTYPE CRange::get_Columns(
 	CRange* p_range = new CRange;
    
    	p_range->Put_Application( m_p_application );
-	p_range->Put_Parent( this );
+	p_range->Put_Parent( m_p_parent );
    	 								     
 	p_range->InitWrapper( m_oo_range );
              
@@ -920,7 +920,7 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 				     CRange* p_range = new CRange;
    
 		 			 p_range->Put_Application( m_p_application );
-   					 p_range->Put_Parent( this );
+   					 p_range->Put_Parent( m_p_parent );
      
    	 				 OORange    oo_range;
    	 				 
@@ -973,7 +973,7 @@ HRESULT STDMETHODCALLTYPE CRange::get__Default(
 					 CRange* p_range = new CRange;
    
 		 			 p_range->Put_Application( m_p_application );
-   					 p_range->Put_Parent( this );
+   					 p_range->Put_Parent( m_p_parent );
      
    	 				 OORange    oo_range;
    	 				 
@@ -1180,8 +1180,67 @@ HRESULT STDMETHODCALLTYPE CRange::get_EntireRow(
 		return ( E_FAIL ); 	 
     }
 
+	long start_row = cell_range_address.StartRow();
+	long end_row = cell_range_address.EndRow();
 
+	if ( (start_row < 0) || (end_row < 0) )
+	{
+	    ERR( " (start_row < 0) || (end_row < 0) \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
+    }
 
+    OOSheet oo_sheet = getParentOOSheet();
+	if ( oo_sheet.IsNull() )
+	{
+	    ERR( " oo_sheet.IsNull() \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+
+	OORange oo_range;
+	
+	switch ( OOVersion )
+    {
+       case VER_3:
+	   		{
+			    oo_range = oo_sheet.getCellRangeByPosition( 0, start_row, 1023, end_row ); 	  
+		 	}
+		 	break;
+		 	
+       case VER_2:
+	   		{
+			    oo_range = oo_sheet.getCellRangeByPosition( 0, start_row, 255, end_row );			 	  
+		 	}
+		 	break;		 	
+		 	
+	   default:
+	   		{
+			    oo_range = oo_sheet.getCellRangeByPosition( 0, start_row, 255, end_row );			   				
+			}	 	
+   		    break;
+   		    
+    } // switch ( OOVersion )
+
+	CRange* p_range = new CRange;
+   
+   	p_range->Put_Application( m_p_application );
+	p_range->Put_Parent( m_p_parent );
+				     
+	p_range->InitWrapper( oo_range );
+             
+   	hr = p_range->QueryInterface( DIID_Range, (void**)(RHS) );
+             
+    if ( FAILED( hr ) )
+	{
+	    ERR( " p_range.QueryInterface \n" );     
+	}
+             
+	if ( p_range != NULL )
+	{
+	    p_range->Release();
+	    p_range = NULL;
+	}
 
     TRACE_OUT;
     return ( hr ); 		
@@ -2405,7 +2464,7 @@ HRESULT STDMETHODCALLTYPE CRange::get_Rows(
 	CRange* p_range = new CRange;
    
    	p_range->Put_Application( m_p_application );
-	p_range->Put_Parent( this );
+	p_range->Put_Parent( m_p_parent );
 				     
 	p_range->InitWrapper( m_oo_range );
              
