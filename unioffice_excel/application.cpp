@@ -670,11 +670,37 @@ HRESULT STDMETHODCALLTYPE Application::Evaluate(
    return E_NOTIMPL;             
 }
         
-         /* [helpcontext][propget][id] */ HRESULT STDMETHODCALLTYPE Application::get_Names( 
+HRESULT STDMETHODCALLTYPE Application::get_Names( 
             /* [retval][out] */ Names **RHS)
 {
-   TRACE_NOTIMPL;
-   return E_NOTIMPL;             
+   TRACE_IN;
+   HRESULT hr;
+   
+   Workbook* p_workbook = NULL;
+   
+   hr = get_ActiveWorkbook( &p_workbook );
+   if ( FAILED( hr ) || ( p_workbook == NULL))
+   {
+       ERR( " get_ActiveWorkbook \n" );     
+       p_workbook = NULL;
+       return ( hr ); 
+   }
+   
+   hr = p_workbook->get_Names( RHS );
+   
+   if ( FAILED( hr ) )
+   {
+       ERR( " p_workbook->get_Names \n" );     
+       p_workbook->Release();
+       p_workbook = NULL;
+       return ( hr ); 
+   }
+   
+   p_workbook->Release();
+   p_workbook = NULL;
+   
+   TRACE_OUT;
+   return ( hr );              
 }
         
 HRESULT STDMETHODCALLTYPE Application::get_Range( 
