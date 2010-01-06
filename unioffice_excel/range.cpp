@@ -2496,13 +2496,101 @@ HRESULT STDMETHODCALLTYPE CRange::get_Offset(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Resize( 
+HRESULT STDMETHODCALLTYPE CRange::get_Resize( 
             /* [optional][in] */ VARIANT RowSize,
             /* [optional][in] */ VARIANT ColumnSize,
             /* [retval][out] */ Range	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    long drow = 0;
+    long dcol = 0;
+    
+    CorrectArg(RowSize, &RowSize);
+    CorrectArg(ColumnSize, &ColumnSize);
+	  
+    if ( !Is_Variant_Null( RowSize ) ) 
+	{
+        hr = VariantChangeTypeEx(&RowSize, &RowSize, 0, 0, VT_I4);
+        if ( FAILED( hr ) ) {
+            TRACE("ERROR when VariantChangeTypeEx RowSize \n");
+        }
+        
+        drow = V_I4(&RowSize);
+    }  
+	  
+    if ( !Is_Variant_Null( ColumnSize ) ) 
+	{
+        hr = VariantChangeTypeEx(&ColumnSize, &ColumnSize, 0, 0, VT_I4);
+        if ( FAILED( hr ) ) {
+            TRACE("ERROR when VariantChangeTypeEx ColumnSize \n");
+        }
+        
+        dcol = V_I4(&ColumnSize);
+    }	  
+	  	    
+    CellRangeAddress   cell_range_address;
+    
+    cell_range_address = m_oo_range.getRangeAddress();
+    if ( cell_range_address.IsNull() )
+    {
+	    ERR( " getRangeAddress \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+
+	long start_row = cell_range_address.StartRow();
+	long end_row = cell_range_address.EndRow();
+	long start_column = cell_range_address.StartColumn();
+	long end_column = cell_range_address.EndColumn();
+
+	if ( (start_row < 0) || (end_row < 0) || (start_column < 0) || (end_column < 0) )
+	{
+	    ERR( " (start_row < 0) || (end_row < 0) || (start_column < 0) || (end_column < 0) \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
+    }
+
+	if ( dcol != 0) 
+	    end_column = start_column + dcol;
+	    
+    if ( drow != 0) 
+	    end_row = start_row + drow;
+
+    OOSheet oo_sheet = getParentOOSheet();
+	if ( oo_sheet.IsNull() )
+	{
+	    ERR( " oo_sheet.IsNull() \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+
+	OORange oo_range;
+	
+	oo_range = oo_sheet.getCellRangeByPosition( start_column, start_row, end_column, end_row ); 
+
+	CRange* p_range = new CRange;
+   
+   	p_range->Put_Application( m_p_application );
+	p_range->Put_Parent( m_p_parent );
+				     
+	p_range->InitWrapper( oo_range );
+             
+   	hr = p_range->QueryInterface( DIID_Range, (void**)(RHS) );
+             
+    if ( FAILED( hr ) )
+	{
+	    ERR( " p_range.QueryInterface \n" );     
+	}
+             
+	if ( p_range != NULL )
+	{
+	    p_range->Release();
+	    p_range = NULL;
+	}
+
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
