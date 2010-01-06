@@ -157,7 +157,121 @@ HRESULT STDMETHODCALLTYPE Application::Invoke(
       
     if ( FAILED(hr) )
     {
-     ERR( " dispIdMember = %i \n", dispIdMember );     
+	   	VARIANT vNull;
+		   
+	    VariantInit( &vNull ); 
+	    V_VT( &vNull ) = VT_NULL;
+
+	   	/*
+		Hacks for special functions   
+		*/    
+	   	switch ( dispIdMember ) 
+	   	{
+		 	// property    ---   range ( PUT )   
+		    case 0x000000c5:
+				{
+				    if ( 
+					    (wFlags == DISPATCH_PROPERTYPUT) ||
+					    (wFlags == DISPATCH_PROPERTYPUTREF)
+						) 
+					{
+					 	Range* p_range = NULL;
+					 	IRange* p_irange = NULL;
+					 	
+					    switch ( pDispParams->cArgs )
+					    {
+						 	case 2:
+								{ 				        				                    
+ 				   				    hr = get_Range( pDispParams->rgvarg[1], vNull, &p_range );
+ 				   				    if ( FAILED( hr ) )
+ 				   				    {
+									    ERR( " (case 0x000000c5) get_Range \n" );
+										TRACE_OUT;
+										return ( E_FAIL );   	 
+ 			 		 				}
+ 				   				    
+ 				   				    
+  				   				}
+								break;
+								
+					 	    case 3:
+								{
+ 				                    Range* p_range = NULL;
+ 				                    
+ 				   				    hr = get_Range( pDispParams->rgvarg[2], pDispParams->rgvarg[1], &p_range );
+ 				   				    if ( FAILED( hr ) )
+ 				   				    {
+									    ERR( " (case 0x000000c5) get_Range \n" );
+										TRACE_OUT;
+										return ( E_FAIL );   	 
+ 			 		 				} 				   				    	  
+ 				   				    
+  				   				}
+								break; 
+								
+							default:
+							    ERR( " parameters = %i \n ", pDispParams->cArgs );
+							    break; 
+		                } // switch      	
+		                
+		            if ( p_range == NULL )
+					{
+					    ERR( " (case 0x000000c5) p_range == NULL \n" );
+						TRACE_OUT;
+						return ( E_FAIL );   	 
+				    }    
+		            
+					hr = p_range->QueryInterface( IID_IRange, (void**)(&p_irange) );
+					if ( FAILED( hr ) )
+					{
+					    ERR( " (case 0x000000c5) p_range->QueryInterface \n" );
+					    
+    					if ( p_range != NULL )
+						{
+					       p_range->Release();
+						   p_range = NULL; 	 
+	    	            }  
+					
+						if ( p_irange != NULL )
+						{
+					       p_irange->Release();
+						   p_irange = NULL; 	 
+				    	} 
+					    
+						TRACE_OUT;
+						return ( E_FAIL ); 					   	 
+				    }
+					 
+					hr = p_irange->put_Value( vNull, 0, pDispParams->rgvarg[0] ); 
+					if ( FAILED( hr ) )
+					{
+					    ERR( " (case 0x000000c5) p_range->put_Value \n" );
+						TRACE_OUT;
+						return ( E_FAIL );   	 
+				    }   
+					
+					if ( p_range != NULL )
+					{
+					    p_range->Release();
+						p_range = NULL; 	 
+				    }  
+					
+					if ( p_irange != NULL )
+					{
+					    p_irange->Release();
+						p_irange = NULL; 	 
+				    } 
+					    
+		            return ( hr );    
+					} // if	      			  
+			    } 	   
+		 	    break;
+	   	 
+	   	default : 
+            ERR( " Not find dispIdMember = %i \n", dispIdMember ); 
+			ERR( " Not find wFlags = %i \n", wFlags );    
+            break;
+		}
     }  
                  
     return hr;                         
