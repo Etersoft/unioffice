@@ -201,7 +201,23 @@ HRESULT STDMETHODCALLTYPE CRange::get_Application(
             
    HRESULT hr = S_OK;
    
-   hr = (static_cast<Application*>( m_p_application ))->get_Application( RHS );          
+   _Application* p_application = NULL;
+   
+   hr = (static_cast<IUnknown*>( m_p_application ))->QueryInterface( IID__Application,(void**)(&p_application) ); 
+   if ( FAILED( hr ) )
+   {
+       ERR( " IUnknown->QueryInterface \n" );
+	   TRACE_OUT;
+	   return ( hr );	  	
+   }
+   
+   hr = p_application->get_Application( RHS );          
+   
+   if ( p_application != NULL )
+   {
+       p_application->Release();
+	   p_application = NULL;	  	
+   }
              
    TRACE_OUT;
    return hr;  		
@@ -234,7 +250,7 @@ HRESULT STDMETHODCALLTYPE CRange::get_Parent(
             
    HRESULT hr = S_OK;
    
-   hr = (static_cast<Worksheet*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
+   hr = (static_cast<IUnknown*>( m_p_parent ))->QueryInterface( IID_IDispatch,(void**)RHS );          
              
    TRACE_OUT;
    return hr;  		
