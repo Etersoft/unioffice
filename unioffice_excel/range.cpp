@@ -3167,11 +3167,42 @@ HRESULT STDMETHODCALLTYPE CRange::get_Width(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_Worksheet( 
+HRESULT STDMETHODCALLTYPE CRange::get_Worksheet( 
             /* [retval][out] */ Worksheet	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    IDispatch* p_dispatch = NULL;
+	 
+    hr = get_Parent( &p_dispatch );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " get_Parent \n " ); 
+		
+  		if ( p_dispatch != NULL )
+    	{
+	       p_dispatch->Release();
+		   p_dispatch = NULL;  
+    	}
+		 
+		TRACE_OUT;
+		return ( hr ); 	 
+	}
+    
+    hr = p_dispatch->QueryInterface( CLSID_Worksheet, (void**)(RHS) );
+    if ( FAILED( hr ) )
+    {
+	    ERR( " QueryInterface \n " );  
+	} 
+    
+    if ( p_dispatch != NULL )
+    {
+	    p_dispatch->Release();
+		p_dispatch = NULL;  
+    }
+    
+    TRACE_OUT;
+    return ( hr ); 		
 }
         
         
