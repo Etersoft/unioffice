@@ -46,6 +46,9 @@ public:
   OODocument();
   virtual ~OODocument();     
   
+  OODocument& operator=( const OODocument &obj);
+   
+  
   HRESULT StoreAsURL( BSTR ,WrapPropertyArray& );
   HRESULT Store( );
   

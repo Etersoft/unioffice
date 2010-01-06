@@ -30,6 +30,27 @@ OODocument::~OODocument()
 {                        
 }
 
+OODocument& OODocument::operator=( const OODocument &obj)
+{
+   if ( this == &obj )
+   {
+       return ( *this );                 
+   }    
+   
+   if ( m_pd_wrapper != NULL )
+   {
+       m_pd_wrapper->Release();
+       m_pd_wrapper = NULL;        
+   } 
+
+   m_pd_wrapper = obj.m_pd_wrapper;
+   if ( m_pd_wrapper != NULL )
+       m_pd_wrapper->AddRef();
+   
+   return ( *this );  		 
+}
+
+
 HRESULT OODocument::StoreAsURL( BSTR _filename, WrapPropertyArray& _property_array )
 {
     HRESULT hr;
