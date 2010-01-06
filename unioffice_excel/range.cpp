@@ -1146,11 +1146,96 @@ HRESULT STDMETHODCALLTYPE CRange::put__Default(
 }
         
         
-        /* [helpcontext][propget] */ HRESULT STDMETHODCALLTYPE CRange::get_EntireColumn( 
+HRESULT STDMETHODCALLTYPE CRange::get_EntireColumn( 
             /* [retval][out] */ Range	**RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL; 		
+    TRACE_IN;
+    HRESULT hr;
+    
+    OORange oo_rows;
+    
+    oo_rows = m_oo_range.getRows();
+    if ( oo_rows.IsNull() )
+    {
+ 	    ERR(" m_oo_range.getRows \n");
+		TRACE_OUT;
+		return ( E_FAIL );  
+	}
+    
+    CellRangeAddress   cell_range_address;
+    
+    cell_range_address = m_oo_range.getRangeAddress();
+    if ( cell_range_address.IsNull() )
+    {
+	    ERR( " getRangeAddress \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+
+	long start_column = cell_range_address.StartColumn();
+	long end_column = cell_range_address.EndColumn();
+
+	if ( (start_column < 0) || (end_column < 0) )
+	{
+	    ERR( " (start_column < 0) || (end_column < 0) \n" ); 
+		TRACE_OUT;
+		return ( E_FAIL );  	 
+    }
+
+    OOSheet oo_sheet = getParentOOSheet();
+	if ( oo_sheet.IsNull() )
+	{
+	    ERR( " oo_sheet.IsNull() \n" );  
+		TRACE_OUT;
+		return ( E_FAIL ); 	 
+    }
+
+	OORange oo_range;
+	
+	switch ( OOVersion )
+    {
+       case VER_3:
+	   		{
+			    oo_range = oo_sheet.getCellRangeByPosition( start_column, 0, end_column, 65535 ); 	  
+		 	}
+		 	break;
+		 	
+       case VER_2:
+	   		{
+			    oo_range = oo_sheet.getCellRangeByPosition( start_column, 0, end_column, 65535 );			 	  
+		 	}
+		 	break;		 	
+		 	
+	   default:
+	   		{
+			    oo_range = oo_sheet.getCellRangeByPosition( start_column, 0, end_column, 65535 );			   				
+			}	 	
+   		    break;
+   		    
+    } // switch ( OOVersion )
+
+	CRange* p_range = new CRange;
+   
+   	p_range->Put_Application( m_p_application );
+	p_range->Put_Parent( m_p_parent );
+				     
+	p_range->InitWrapper( oo_range );
+             
+   	hr = p_range->QueryInterface( DIID_Range, (void**)(RHS) );
+             
+    if ( FAILED( hr ) )
+	{
+	    ERR( " p_range.QueryInterface \n" );     
+	}
+             
+	if ( p_range != NULL )
+	{
+	    p_range->Release();
+	    p_range = NULL;
+	}
+
+    TRACE_OUT;
+    return ( hr );		
 }
         
         
