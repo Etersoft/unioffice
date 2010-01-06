@@ -32,11 +32,14 @@
 #include "./oo_named_ranges.h"
 
 #include "./com/sun/star/uno/x_interface.h"
+#include "./com/sun/star/sheet/spreadsheet_document.h"
 
 using namespace com::sun::star::uno;
+using namespace com::sun::star::sheet;
 
 class OODocument: 
-	  public virtual XInterface
+	  public virtual XInterface,
+	  public virtual SpreadsheetDocument
 {
 public:
        
