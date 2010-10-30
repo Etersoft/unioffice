@@ -1,4 +1,4 @@
-# переименовать ver и name.idt
+# п©п╣я─п╣п╦п╪п╣п╫п╬п╡п╟я┌я▄ ver п╦ name.idt
 
 MSIDB=wine bin/MsiDb.exe
 MAKECAB=wine bin/MAKECAB.EXE
@@ -11,24 +11,24 @@ VAR_name=`cat name.idt`
 all: unioffice.msi
 	$(MAKE) rmtmp
 
-# Заполняем CAB-файлы содержимым
+# п≈п╟п©п╬п╩п╫я▐п╣п╪ CAB-я└п╟п╧п╩я▀ я│п╬п╢п╣я─п╤п╦п╪я▀п╪
 ooffice.cab: ../unioffice_excel/unioffice_excel.dll ../unioffice_excel/unioffice_excel.tlb
 	$(CABARC) $@ ..\\unioffice_excel\\unioffice_excel.tlb ..\\unioffice_excel\\unioffice_excel.dll
 
-# Удаляем временные файлы
+# пёп╢п╟п╩я▐п╣п╪ п╡я─п╣п╪п╣п╫п╫я▀п╣ я└п╟п╧п╩я▀
 rmtmp:
 	rm -f *.cab
 
-# Удаляем все создаваемые файлы
+# пёп╢п╟п╩я▐п╣п╪ п╡я│п╣ я│п╬п╥п╢п╟п╡п╟п╣п╪я▀п╣ я└п╟п╧п╩я▀
 clean: rmtmp
 	rm -f unioffice.msi
 
-# Извлекаем .idt из msi (если правили его на стороне)
+# п≤п╥п╡п╩п╣п╨п╟п╣п╪ .idt п╦п╥ msi (п╣я│п╩п╦ п©я─п╟п╡п╦п╩п╦ п╣пЁп╬ п╫п╟ я│я┌п╬я─п╬п╫п╣)
 extridt:
 	$(MSIDB) -d $(PWD)\\Unioffice.msi -f $(PWD)\\idt -e "*"
 	rm -f idt/_Validation.idt idt/_SummaryInformation.idt
 
-# Формируем пакет MSI из шаблона, добавляем CAB'ы и .idt
+# п╓п╬я─п╪п╦я─я┐п╣п╪ п©п╟п╨п╣я┌ MSI п╦п╥ я┬п╟п╠п╩п╬п╫п╟, п╢п╬п╠п╟п╡п╩я▐п╣п╪ CAB'я▀ п╦ .idt
 unioffice.msi: bin/template.msi ooffice.cab
 	cp bin/template.msi $@
 	$(MSIDB) -d $@ -f $(PWD)\\idt -i "*"
