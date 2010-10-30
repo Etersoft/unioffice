@@ -1,11 +1,11 @@
+
+include ../Makefile.mingw
+
+IDL=widl
+
 # TODO: remove msvcrt using
-
-GCC=i386-mingw32msvc-g++
-LD=i386-mingw32msvc-ld
-STRIP=i386-mingw32msvc-strip
-
 LIBS=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
-CFLAGS=-O2 -D_FORTIFY_SOURCE=2
+
 OBJECTS = unioffice_word_i.o \
 	regsvr.o \
 	main.o
@@ -14,15 +14,10 @@ OBJECTS = unioffice_word_i.o \
 
 all: unioffice_word.dll
 
-.c.o:
-	$(GCC) $(CFLAGS) -c $^ -o $@
-
-.cpp.o:
-	$(GCC) $(CFLAGS) -c $^ -o $@
-
 unioffice_word_i.c:
-	widl -I /usr/include/wine/windows -u -h -t unioffice_word.idl
-unioffice_word.dll: $(OBJECTS)  
+	$(IDL) -I /usr/include/wine/windows -u -h -t unioffice_word.idl
+
+unioffice_word.dll: $(OBJECTS)
 	$(LD) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
 	$(STRIP) --strip-all $@
 

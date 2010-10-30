@@ -1,11 +1,12 @@
-# TODO: remove msvcrt using
 
-GCC=i386-mingw32msvc-gcc
-LD=i386-mingw32msvc-ld
-STRIP=i386-mingw32msvc-strip
+include ../Makefile.mingw
 
-LIBS=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
-CFLAGS=-O2 -D_FORTIFY_SOURCE=2
+#IDL=gdb --args /srv/wine/Projects/wine-origin/tools/widl/widl
+IDL=widl
+
+# TODO: remove msvcrt using (do not use functions from it)
+LDADD=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
+
 OBJECTS = unioffice_excel_i.o \
 	tools.o \
 	main.o \
@@ -33,14 +34,14 @@ OBJECTS = unioffice_excel_i.o \
 
 all: unioffice_excel.dll
 
-.c.o:
-	$(GCC) $(CFLAGS) -c $^ -o $@ 
-
-unioffice_excel_i.c:
-	widl -I /usr/include/wine/windows -u -h -t unioffice_excel.idl
-unioffice_excel.dll: $(OBJECTS)  
+unioffice_excel.dll: $(OBJECTS)
 	$(LD) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
 	$(STRIP) --strip-all $@
+#	$(CC) -shared -o $@ $^ $(LDADD)
+
+# needed wine-devel
+unioffice_excel_i.c:
+	$(IDL) -I /usr/include/wine/windows -u -h -t unioffice_excel.idl
 
 clean:
 	rm -f *.o *.dll *.h~ *.c~ *.idl~ unioffice_excel.h unioffice_excel_i.c *.tlb
