@@ -33,6 +33,3 @@
 #include <ocidl.h>
 #include <stddef.h>
 #include "unioffice_word.h"
-
-extern LONG dll_ref;
-

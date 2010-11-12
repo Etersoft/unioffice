@@ -5,7 +5,7 @@ include ../Makefile.mingw
 IDL=widl
 
 # TODO: remove msvcrt using (do not use functions from it)
-LDADD=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
+LIBS=-ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
 
 OBJECTS = unioffice_excel_i.o \
 	tools.o \
@@ -35,7 +35,7 @@ OBJECTS = unioffice_excel_i.o \
 all: unioffice_excel.dll
 
 unioffice_excel.dll: $(OBJECTS)
-	$(LD) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
+	$(CC) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
 	$(STRIP) --strip-all $@
 #	$(CC) -shared -o $@ $^ $(LDADD)
 

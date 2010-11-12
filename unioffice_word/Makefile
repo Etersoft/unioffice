@@ -18,7 +18,7 @@ unioffice_word_i.c:
 	$(IDL) -I /usr/include/wine/windows -u -h -t unioffice_word.idl
 
 unioffice_word.dll: $(OBJECTS)
-	$(LD) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
+	$(CXX) --add-stdcall-alias -shared -o $@ $^ $(LIBS)
 	$(STRIP) --strip-all $@
 
 clean:
