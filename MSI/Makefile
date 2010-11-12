@@ -1,8 +1,8 @@
 # переименовать ver и name.idt
 
-MSIDB=wine bin/MsiDb.exe
-MAKECAB=wine bin/MAKECAB.EXE
-CABARC=wine bin/CABARC.EXE n
+MSIDB=wine98 bin/MsiDb.exe
+MAKECAB=wine98 bin/MAKECAB.EXE
+CABARC=wine98 bin/CABARC.EXE n
 PWD=`winepath -w $$(pwd)`
 
 VAR_ver=`cat ver.idt`
