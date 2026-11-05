@@ -188,7 +188,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Parent(
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
         I_Border* iface,
-        long *plcolor)
+        LONG *plcolor)
 {
     BorderImpl *This = BORDER_THIS(iface);
     HRESULT hres;
@@ -320,7 +320,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
         I_Border* iface,
-        long lcolor)
+        LONG lcolor)
 {
     BorderImpl *This = BORDER_THIS(iface);
     HRESULT hres;
@@ -570,10 +570,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_get_ColorIndex(
         I_Border* iface,
-        long *plcolorindex)
+        LONG *plcolorindex)
 {
     BorderImpl *This = BORDER_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     int i;
     HRESULT hres;
     TRACE_IN;
@@ -599,10 +599,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_ColorIndex(
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_put_ColorIndex(
         I_Border* iface,
-        long lcolorindex)
+        LONG lcolorindex)
 {
     BorderImpl *This = BORDER_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     TRACE_IN;
 
     if (!This) return E_POINTER;
@@ -639,7 +639,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
     HRESULT hres;
     VARIANT vret;
     VARIANT X,Y;
-    long in,out,l;
+    LONG in,out,l;
     TRACE_IN;
 
     VariantInit(&vret);
@@ -800,7 +800,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     VariantInit(&X);
     VariantInit(&Y);
     VariantInit(&param1);
-    long in,out,l;
+    LONG in,out,l;
 
     if (!This) {
         ERR("Object is NULL \n");

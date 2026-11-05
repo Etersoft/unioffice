@@ -112,7 +112,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Windows_Arrange(
 
 static HRESULT WINAPI MSO_TO_OO_I_Windows_get_Count(
         I_Windows* iface,
-        long *retval)
+        LONG *retval)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -604,7 +604,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_FreezePanes(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_get_GridlineColor(
         I_Window* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -612,7 +612,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_GridlineColor(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_put_GridlineColor(
         I_Window* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -652,7 +652,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Height(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_get_Index(
         I_Window* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -753,7 +753,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_RangeSelection(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_get_ScrollColumn(
         I_Window* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -761,7 +761,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ScrollColumn(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_put_ScrollColumn(
         I_Window* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -769,7 +769,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_ScrollColumn(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_get_ScrollRow(
         I_Window* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -777,7 +777,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_ScrollRow(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_put_ScrollRow(
         I_Window* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -839,7 +839,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Split(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitColumn(
         I_Window* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -847,7 +847,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitColumn(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_put_SplitColumn(
         I_Window* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -871,7 +871,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_SplitHorizontal(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitRow(
         I_Window* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -879,7 +879,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_get_SplitRow(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_put_SplitRow(
         I_Window* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -999,7 +999,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_Width(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_get_WindowNumber(
         I_Window* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1071,8 +1071,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_put_DisplayRightToLeft(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_PointsToScreenPixelsX(
         I_Window* iface,
-        long Points,
-        long *RHS)
+        LONG Points,
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1080,8 +1080,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_PointsToScreenPixelsX(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_PointsToScreenPixelsY(
         I_Window* iface,
-        long Points,
-        long *RHS)
+        LONG Points,
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1089,8 +1089,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_PointsToScreenPixelsY(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_RangeFromPoint(
         I_Window* iface,
-        long x,
-        long y,
+        LONG x,
+        LONG y,
         IDispatch **RHS)
 {
     TRACE_NOTIMPL;
@@ -1099,10 +1099,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Window_RangeFromPoint(
 
 static HRESULT WINAPI MSO_TO_OO_I_Window_ScrollIntoView(
         I_Window* iface,
-        long left,
-        long top,
-        long width,
-        long height,
+        LONG left,
+        LONG top,
+        LONG width,
+        LONG height,
         VARIANT Start)
 {
     TRACE_NOTIMPL;

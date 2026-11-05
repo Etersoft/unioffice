@@ -1,26 +1,32 @@
-MINGW=i586-pc-mingw32
-MINGWLIB=/usr/$(MINGW)/sys-root/mingw/lib
-CC=$(MINGW)-gcc
-LD=$(MINGW)-ld
-CXX=$(MINGW)-g++
-STRIP=$(MINGW)-strip
-WINDRES=$(MINGW)-windres -v
-RANLIB=$(MINGW)-ranlib
-AR=$(MINGW)-ar
+# Shared compiler selection for both COM components.
+TOOLCHAIN ?= mingw
+MINGW ?= i586-pc-mingw32
+IDL ?= widl
+IDLFLAGS ?= -I /usr/include/wine/windows
+# Fedora installs MinGW type libraries alongside its headers.
+TYPELIB_DIR ?= $(firstword $(wildcard /usr/$(MINGW)/sys-root/mingw/include/stdole2.tlb))
+ifneq ($(TYPELIB_DIR),)
+IDLFLAGS += -L $(dir $(TYPELIB_DIR))
+endif
+CFLAGS ?= -O2 -Wall
+CXXFLAGS ?= -O2 -Wall
 
-CFLAGS=-Wall 
-ONLYCFLAGS=-Wno-pointer-sign
-# TODO: uncomment me for release
-CFLAGS+=-D_FORTIFY_SOURCE=2 -O2
+# Both drivers produce Windows PE DLLs. winegcc uses Clang and Wine import libraries.
+DLLSUFFIX = .dll
+ifeq ($(TOOLCHAIN),mingw)
+BITS ?= $(if $(findstring x86_64,$(MINGW)),64,32)
+DLLFLAGS = -Wl,--add-stdcall-alias
+CC = $(MINGW)-gcc
+CXX = $(MINGW)-g++
+else ifeq ($(TOOLCHAIN),winegcc)
+BITS ?= 64
+WINE_TARGET ?= $(if $(filter 64,$(BITS)),x86_64,i686)-windows
+CC = winegcc -b $(WINE_TARGET)
+CXX = wineg++ -b $(WINE_TARGET)
+else
+$(error Unknown TOOLCHAIN '$(TOOLCHAIN)'; use mingw or winegcc)
+endif
 
-LDADD=-static-libgcc
-.SUFFIXES: .rc .res .res.o
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(ONLYCFLAGS) -c $< -o $@
-
-%.o: %.cpp
-	$(CXX) $(CFLAGS) -c $< -o $@
-
-.rc.res.o:
-	$(WINDRES) $^ $@
+BUILD_DIR = build/$(TOOLCHAIN)-$(BITS)
+CPPFLAGS += -I$(BUILD_DIR) -I.
+ARCHFLAGS = -m$(BITS)

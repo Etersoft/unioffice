@@ -137,17 +137,17 @@ typedef struct Disp_ApplicationVtbl {
     IDispatch* (STDMETHODCALLTYPE *get_CommandBars)(
         Disp_Application* This);
 
-    long (STDMETHODCALLTYPE *get_DDEAppReturnCode)(
+    LONG (STDMETHODCALLTYPE *get_DDEAppReturnCode)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *DDEExecute)(
         Disp_Application* This,
-        long Channel,
+        LONG Channel,
         BSTR String,
         LCID lcid);
 
-    long (STDMETHODCALLTYPE *DDEInitiate)(
+    LONG (STDMETHODCALLTYPE *DDEInitiate)(
         Disp_Application* This,
         BSTR App,
         BSTR Topic,
@@ -155,20 +155,20 @@ typedef struct Disp_ApplicationVtbl {
 
     void (STDMETHODCALLTYPE *DDEPoke)(
         Disp_Application* This,
-        long Channel,
+        LONG Channel,
         VARIANT Item,
         VARIANT Data,
         LCID lcid);
 
     VARIANT (STDMETHODCALLTYPE *DDERequest)(
         Disp_Application* This,
-        long Channel,
+        LONG Channel,
         BSTR Item,
         LCID lcid);
 
     HRESULT (STDMETHODCALLTYPE *DDETerminate)(
         Disp_Application* This,
-        long Channel,
+        LONG Channel,
         LCID lcid);
 
     IDispatch * (STDMETHODCALLTYPE *get_DialogSheets)(
@@ -324,7 +324,7 @@ typedef struct Disp_ApplicationVtbl {
 
     IDispatch * (STDMETHODCALLTYPE *get_ShortcutMenus)(
         Disp_Application* This,
-        long Index);
+        LONG Index);
 
     IDispatch * (STDMETHODCALLTYPE *get_ThisWorkbook)(
         Disp_Application* This,
@@ -442,7 +442,7 @@ typedef struct Disp_ApplicationVtbl {
     IDispatch * (STDMETHODCALLTYPE *get_AutoCorrect)(
         Disp_Application* This);
 
-    long (STDMETHODCALLTYPE *get_Build)(
+    LONG (STDMETHODCALLTYPE *get_Build)(
         Disp_Application* This,
         LCID lcid);
 
@@ -551,7 +551,7 @@ typedef struct Disp_ApplicationVtbl {
         VARIANT ToReferenceStyle,
         VARIANT ToAbsolute,
         VARIANT RelativeTo,
-        long Lcid);
+        LONG Lcid);
 
     VARIANT_BOOL (STDMETHODCALLTYPE *get_CopyObjectsWithCells)(
         Disp_Application* This,
@@ -571,7 +571,7 @@ typedef struct Disp_ApplicationVtbl {
         LCID lcid,
         XlMousePointer RHS);
 
-    long (STDMETHODCALLTYPE *get_CustomListCount)(
+    LONG (STDMETHODCALLTYPE *get_CustomListCount)(
         Disp_Application* This,
         LCID lcid);
 
@@ -584,14 +584,14 @@ typedef struct Disp_ApplicationVtbl {
         LCID lcid,
         XlCutCopyMode RHS);
 
-    long (STDMETHODCALLTYPE *get_DataEntryMode)(
+    LONG (STDMETHODCALLTYPE *get_DataEntryMode)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_DataEntryMode)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
     VARIANT (STDMETHODCALLTYPE *Dummy1)(
         Disp_Application* This,
@@ -687,7 +687,7 @@ typedef struct Disp_ApplicationVtbl {
 
     void (STDMETHODCALLTYPE *DeleteCustomList)(
         Disp_Application* This,
-        long ListNum,
+        LONG ListNum,
         LCID lcid);
 
     IDispatch * (STDMETHODCALLTYPE *get_Dialogs)(
@@ -838,21 +838,21 @@ typedef struct Disp_ApplicationVtbl {
         LCID lcid,
         VARIANT_BOOL RHS);
 
-    long (STDMETHODCALLTYPE *get_FixedDecimalPlaces)(
+    LONG (STDMETHODCALLTYPE *get_FixedDecimalPlaces)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_FixedDecimalPlaces)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
     VARIANT (STDMETHODCALLTYPE *GetCustomListContents)(
         Disp_Application* This,
-        long ListNum,
+        LONG ListNum,
         LCID lcid);
 
-    long (STDMETHODCALLTYPE *GetCustomListNum)(
+    LONG (STDMETHODCALLTYPE *GetCustomListNum)(
         Disp_Application* This,
         VARIANT ListArray,
         LCID lcid);
@@ -1011,24 +1011,24 @@ typedef struct Disp_ApplicationVtbl {
         LCID lcid,
         double RHS);
 
-    long (STDMETHODCALLTYPE *get_MaxIterations)(
+    LONG (STDMETHODCALLTYPE *get_MaxIterations)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_MaxIterations)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
-    long (STDMETHODCALLTYPE *get_MemoryFree)(
+    LONG (STDMETHODCALLTYPE *get_MemoryFree)(
         Disp_Application* This,
         LCID lcid);
 
-    long (STDMETHODCALLTYPE *get_MemoryTotal)(
+    LONG (STDMETHODCALLTYPE *get_MemoryTotal)(
         Disp_Application* This,
         LCID lcid);
 
-    long (STDMETHODCALLTYPE *get_MemoryUsed)(
+    LONG (STDMETHODCALLTYPE *get_MemoryUsed)(
         Disp_Application* This,
         LCID lcid);
 
@@ -1071,12 +1071,12 @@ typedef struct Disp_ApplicationVtbl {
     IDispatch * (STDMETHODCALLTYPE *get_ODBCErrors)(
         Disp_Application* This);
 
-    long (STDMETHODCALLTYPE *get_ODBCTimeout)(
+    LONG (STDMETHODCALLTYPE *get_ODBCTimeout)(
         Disp_Application* This);
 
     void (STDMETHODCALLTYPE *put_ODBCTimeout)(
         Disp_Application* This,
-        long RHS);
+        LONG RHS);
 
     BSTR (STDMETHODCALLTYPE *get_OnCalculate)(
         Disp_Application* This,
@@ -1276,14 +1276,14 @@ typedef struct Disp_ApplicationVtbl {
         VARIANT FormatName,
         VARIANT Gallery);
 
-    long (STDMETHODCALLTYPE *get_SheetsInNewWorkbook)(
+    LONG (STDMETHODCALLTYPE *get_SheetsInNewWorkbook)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_SheetsInNewWorkbook)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
     VARIANT_BOOL (STDMETHODCALLTYPE *get_ShowChartTipNames)(
         Disp_Application* This);
@@ -1366,14 +1366,14 @@ typedef struct Disp_ApplicationVtbl {
         LCID lcid,
         BSTR RHS);
 
-    long (STDMETHODCALLTYPE *get_TransitionMenuKeyAction)(
+    LONG (STDMETHODCALLTYPE *get_TransitionMenuKeyAction)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_TransitionMenuKeyAction)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
     VARIANT_BOOL (STDMETHODCALLTYPE *get_TransitionNavigKeys)(
         Disp_Application* This,
@@ -1420,7 +1420,7 @@ typedef struct Disp_ApplicationVtbl {
 
     BSTR (STDMETHODCALLTYPE *get_Version)(
         Disp_Application* This,
-        long Lcid);
+        LONG Lcid);
 
     VARIANT_BOOL (STDMETHODCALLTYPE *get_Visible)(
         Disp_Application* This,
@@ -1463,32 +1463,32 @@ typedef struct Disp_ApplicationVtbl {
         Disp_Application* This,
         LCID lcid);
 
-    long (STDMETHODCALLTYPE *get_UILanguage)(
+    LONG (STDMETHODCALLTYPE *get_UILanguage)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_UILanguage)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
-    long (STDMETHODCALLTYPE *get_DefaultSheetDirection)(
+    LONG (STDMETHODCALLTYPE *get_DefaultSheetDirection)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_DefaultSheetDirection)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
-    long (STDMETHODCALLTYPE *get_CursorMovement)(
+    LONG (STDMETHODCALLTYPE *get_CursorMovement)(
         Disp_Application* This,
         LCID lcid);
 
     void (STDMETHODCALLTYPE *put_CursorMovement)(
         Disp_Application* This,
         LCID lcid,
-        long RHS);
+        LONG RHS);
 
     VARIANT_BOOL (STDMETHODCALLTYPE *get_ControlCharacters)(
         Disp_Application* This,
@@ -1606,7 +1606,7 @@ typedef struct Disp_ApplicationVtbl {
         Disp_Application* This,
         LCID lcid);
 
-    long (STDMETHODCALLTYPE *get_CalculationVersion)(
+    LONG (STDMETHODCALLTYPE *get_CalculationVersion)(
         Disp_Application* This);
 
     VARIANT_BOOL (STDMETHODCALLTYPE *get_ShowWindowsInTaskbar)(
@@ -1737,10 +1737,10 @@ typedef struct Disp_ApplicationVtbl {
     IDispatch * (STDMETHODCALLTYPE *get_AutoRecover)(
         Disp_Application* This);
 
-    long (STDMETHODCALLTYPE *get_Hwnd)(
+    LONG (STDMETHODCALLTYPE *get_Hwnd)(
         Disp_Application* This);
 
-    long (STDMETHODCALLTYPE *get_Hinstance)(
+    LONG (STDMETHODCALLTYPE *get_Hinstance)(
         Disp_Application* This);
 
     void (STDMETHODCALLTYPE *CheckAbort)(
@@ -1827,7 +1827,7 @@ typedef struct Disp_ApplicationVtbl {
     VARIANT (STDMETHODCALLTYPE *Support)(
         Disp_Application* This,
         IDispatch *Object,
-        long ID,
+        LONG ID,
         VARIANT arg);
 
 } Disp_ApplicationVtbl;

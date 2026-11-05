@@ -547,7 +547,7 @@ static HRESULT WINAPI IMP_Application_get_ActiveSheet(
 
 static HRESULT WINAPI IMP_Application_get_Version(
         _Application* iface,
-        long Lcid,
+        LONG Lcid,
         BSTR *pVersion)
 {
     _ApplicationImpl *This = APPEXCEL_THIS(iface);
@@ -571,7 +571,7 @@ static HRESULT WINAPI IMP_Application_ConvertFormula(
         VARIANT ToReferenceStyle,
         VARIANT ToAbsolute,
         VARIANT RelativeTo,
-        long Lcid,
+        LONG Lcid,
         VARIANT *pResult)
 {
     _ApplicationImpl *This = APPEXCEL_THIS(iface);
@@ -593,7 +593,7 @@ RelativeTo и ToAbsolute - пока игнорируются
 3. предусмотреть вариант для области ячеек.
 т.е. "=R1C1:R2C2" в "=$A$1:$B$2"
 */
-    long tmp;
+    LONG tmp;
     VARIANT vtmp;
     VariantInit(&vtmp);
     WCHAR *result;
@@ -636,11 +636,11 @@ RelativeTo и ToAbsolute - пока игнорируются
                 if (sformula[i]==L':') {
                     stmp[0]=L'R';
                     result=wcscat(result,stmp);
-                    swprintf(str,L"%i",row);
+                    _snwprintf(str, sizeof(str) / sizeof(str[0]),L"%i",row);
                     result=wcscat(result,str);
                     stmp[0]=L'C';
                     result=wcscat(result,stmp);
-                    swprintf(str,L"%i",col);
+                    _snwprintf(str, sizeof(str) / sizeof(str[0]),L"%i",col);
                     result=wcscat(result,str);
                     row = 0;
                     col = 0;
@@ -652,11 +652,11 @@ RelativeTo и ToAbsolute - пока игнорируются
             }
             stmp[0]=L'R';
             result=wcscat(result,stmp);
-            swprintf(str,L"%i",row);
+            _snwprintf(str, sizeof(str) / sizeof(str[0]),L"%i",row);
             result=wcscat(result,str);
             stmp[0]=L'C';
             result=wcscat(result,stmp);
-            swprintf(str,L"%i",col);
+            _snwprintf(str, sizeof(str) / sizeof(str[0]),L"%i",col);
             result=wcscat(result,str);
             V_VT(pResult) = VT_BSTR;
             V_BSTR(pResult) = SysAllocString(result);
@@ -697,7 +697,7 @@ RelativeTo и ToAbsolute - пока игнорируются
                        stmp[0]=(col % 26) + L'A' - 1;
                        result=wcscat(result,stmp);
                     }
-                    swprintf(str,L"%i",row);
+                    _snwprintf(str, sizeof(str) / sizeof(str[0]),L"%i",row);
                     result=wcscat(result,str);
                     row = 0;
                     col = 0;
@@ -715,7 +715,7 @@ RelativeTo и ToAbsolute - пока игнорируются
                stmp[0]=(col % 26) + L'A' - 1;
                result=wcscat(result,stmp);
                }
-            swprintf(str,L"%i",row);
+            _snwprintf(str, sizeof(str) / sizeof(str[0]),L"%i",row);
             result=wcscat(result,str);
             V_VT(pResult) = VT_BSTR;
             V_BSTR(pResult) = SysAllocString(result);
@@ -1223,7 +1223,7 @@ static HRESULT WINAPI IMP_Application_get_CommandBars(
 static HRESULT WINAPI IMP_Application_get_DDEAppReturnCode(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1231,7 +1231,7 @@ static HRESULT WINAPI IMP_Application_get_DDEAppReturnCode(
 
 static HRESULT WINAPI IMP_Application_DDEExecute(
         _Application* iface,
-        long Channel,
+        LONG Channel,
         BSTR String,
         LCID lcid)
 {
@@ -1244,7 +1244,7 @@ static HRESULT WINAPI IMP_Application_DDEInitiate(
         BSTR App,
         BSTR Topic,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1252,7 +1252,7 @@ static HRESULT WINAPI IMP_Application_DDEInitiate(
 
 static HRESULT WINAPI IMP_Application_DDEPoke(
         _Application* iface,
-        long Channel,
+        LONG Channel,
         VARIANT Item,
         VARIANT Data,
         LCID lcid)
@@ -1263,7 +1263,7 @@ static HRESULT WINAPI IMP_Application_DDEPoke(
 
 static HRESULT WINAPI IMP_Application_DDERequest(
         _Application* iface,
-        long Channel,
+        LONG Channel,
         BSTR Item,
         LCID lcid,
         VARIANT *RHS)
@@ -1274,7 +1274,7 @@ static HRESULT WINAPI IMP_Application_DDERequest(
 
 static HRESULT WINAPI IMP_Application_DDETerminate(
         _Application* iface,
-        long Channel,
+        LONG Channel,
         LCID lcid)
 {
     TRACE_NOTIMPL;
@@ -1487,7 +1487,7 @@ static HRESULT WINAPI IMP_Application_SendKeys(
 
 static HRESULT WINAPI IMP_Application_get_ShortcutMenus(
         _Application* iface,
-        long Index,
+        LONG Index,
         IDispatch **RHS)
 {
     TRACE_NOTIMPL;
@@ -1699,7 +1699,7 @@ static HRESULT WINAPI IMP_Application_get_AutoCorrect(
 static HRESULT WINAPI IMP_Application_get_Build(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1928,7 +1928,7 @@ static HRESULT WINAPI IMP_Application_put_Cursor(
 static HRESULT WINAPI IMP_Application_get_CustomListCount(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1954,7 +1954,7 @@ static HRESULT WINAPI IMP_Application_put_CutCopyMode(
 static HRESULT WINAPI IMP_Application_get_DataEntryMode(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1963,7 +1963,7 @@ static HRESULT WINAPI IMP_Application_get_DataEntryMode(
 static HRESULT WINAPI IMP_Application_put_DataEntryMode(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2135,7 +2135,7 @@ static HRESULT WINAPI IMP_Application_DeleteChartAutoFormat(
 
 static HRESULT WINAPI IMP_Application_DeleteCustomList(
         _Application* iface,
-        long ListNum,
+        LONG ListNum,
         LCID lcid)
 {
     TRACE_NOTIMPL;
@@ -2437,7 +2437,7 @@ static HRESULT WINAPI IMP_Application_put_FixedDecimal(
 static HRESULT WINAPI IMP_Application_get_FixedDecimalPlaces(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2446,7 +2446,7 @@ static HRESULT WINAPI IMP_Application_get_FixedDecimalPlaces(
 static HRESULT WINAPI IMP_Application_put_FixedDecimalPlaces(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2454,7 +2454,7 @@ static HRESULT WINAPI IMP_Application_put_FixedDecimalPlaces(
 
 static HRESULT WINAPI IMP_Application_GetCustomListContents(
         _Application* iface,
-        long ListNum,
+        LONG ListNum,
         LCID lcid,
         VARIANT *RHS)
 {
@@ -2466,7 +2466,7 @@ static HRESULT WINAPI IMP_Application_GetCustomListNum(
         _Application* iface,
         VARIANT ListArray,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2757,7 +2757,7 @@ static HRESULT WINAPI IMP_Application_put_MaxChange(
 static HRESULT WINAPI IMP_Application_get_MaxIterations(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2766,7 +2766,7 @@ static HRESULT WINAPI IMP_Application_get_MaxIterations(
 static HRESULT WINAPI IMP_Application_put_MaxIterations(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2775,7 +2775,7 @@ static HRESULT WINAPI IMP_Application_put_MaxIterations(
 static HRESULT WINAPI IMP_Application_get_MemoryFree(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2784,7 +2784,7 @@ static HRESULT WINAPI IMP_Application_get_MemoryFree(
 static HRESULT WINAPI IMP_Application_get_MemoryTotal(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2793,7 +2793,7 @@ static HRESULT WINAPI IMP_Application_get_MemoryTotal(
 static HRESULT WINAPI IMP_Application_get_MemoryUsed(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2888,7 +2888,7 @@ static HRESULT WINAPI IMP_Application_get_ODBCErrors(
 
 static HRESULT WINAPI IMP_Application_get_ODBCTimeout(
         _Application* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2896,7 +2896,7 @@ static HRESULT WINAPI IMP_Application_get_ODBCTimeout(
 
 static HRESULT WINAPI IMP_Application_put_ODBCTimeout(
         _Application* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3270,7 +3270,7 @@ static HRESULT WINAPI IMP_Application_SetDefaultChart(
 static HRESULT WINAPI IMP_Application_get_SheetsInNewWorkbook(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     _ApplicationImpl *This = APPEXCEL_THIS(iface);
     TRACE("\n");
@@ -3281,7 +3281,7 @@ static HRESULT WINAPI IMP_Application_get_SheetsInNewWorkbook(
 static HRESULT WINAPI IMP_Application_put_SheetsInNewWorkbook(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     _ApplicationImpl *This = APPEXCEL_THIS(iface);
     TRACE("\n");
@@ -3464,7 +3464,7 @@ static HRESULT WINAPI IMP_Application_put_TransitionMenuKey(
 static HRESULT WINAPI IMP_Application_get_TransitionMenuKeyAction(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3473,7 +3473,7 @@ static HRESULT WINAPI IMP_Application_get_TransitionMenuKeyAction(
 static HRESULT WINAPI IMP_Application_put_TransitionMenuKeyAction(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3605,7 +3605,7 @@ static HRESULT WINAPI IMP_Application_get_WindowsForPens(
 static HRESULT WINAPI IMP_Application_get_UILanguage(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3614,7 +3614,7 @@ static HRESULT WINAPI IMP_Application_get_UILanguage(
 static HRESULT WINAPI IMP_Application_put_UILanguage(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3623,7 +3623,7 @@ static HRESULT WINAPI IMP_Application_put_UILanguage(
 static HRESULT WINAPI IMP_Application_get_DefaultSheetDirection(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3632,7 +3632,7 @@ static HRESULT WINAPI IMP_Application_get_DefaultSheetDirection(
 static HRESULT WINAPI IMP_Application_put_DefaultSheetDirection(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3641,7 +3641,7 @@ static HRESULT WINAPI IMP_Application_put_DefaultSheetDirection(
 static HRESULT WINAPI IMP_Application_get_CursorMovement(
         _Application* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3650,7 +3650,7 @@ static HRESULT WINAPI IMP_Application_get_CursorMovement(
 static HRESULT WINAPI IMP_Application_put_CursorMovement(
         _Application* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3871,7 +3871,7 @@ static HRESULT WINAPI IMP_Application_FindFile(
 
 static HRESULT WINAPI IMP_Application_get_CalculationVersion(
         _Application* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -4140,7 +4140,7 @@ static HRESULT WINAPI IMP_Application_get_AutoRecover(
 
 static HRESULT WINAPI IMP_Application_get_Hwnd(
         _Application* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -4148,7 +4148,7 @@ static HRESULT WINAPI IMP_Application_get_Hwnd(
 
 static HRESULT WINAPI IMP_Application_get_Hinstance(
         _Application* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -4349,7 +4349,7 @@ static HRESULT WINAPI IMP_Application_get_ArbitraryXMLSupportAvailable(
 static HRESULT WINAPI IMP_Application_Support(
         _Application* iface,
         IDispatch *Object,
-        long ID,
+        LONG ID,
         VARIANT arg,
         VARIANT *RHS)
 {
@@ -4425,7 +4425,7 @@ static HRESULT WINAPI IMP_Application_Invoke(
     BSTR pVersion;
     IDispatch *pdisp;
     IDispatch *pretdisp;
-    long tmp;
+    LONG tmp;
     VARIANT vNull;
     VARIANT vRet,vtmp,cell1,cell2;
     VARIANT_BOOL vbin;
@@ -5269,17 +5269,17 @@ static IDispatch* WINAPI DISP_IMP_Application_get_Columns(
 static IDispatch* WINAPI DISP_IMP_Application_get_CommandBars(
         Disp_Application* iface) {         }
 
-static long WINAPI DISP_IMP_Application_get_DDEAppReturnCode(
+static LONG WINAPI DISP_IMP_Application_get_DDEAppReturnCode(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_DDEExecute(
         Disp_Application* iface,
-        long Channel,
+        LONG Channel,
         BSTR String,
         LCID lcid) {         }
 
-static long WINAPI DISP_IMP_Application_DDEInitiate(
+static LONG WINAPI DISP_IMP_Application_DDEInitiate(
         Disp_Application* iface,
         BSTR App,
         BSTR Topic,
@@ -5287,20 +5287,20 @@ static long WINAPI DISP_IMP_Application_DDEInitiate(
 
 static void WINAPI DISP_IMP_Application_DDEPoke(
         Disp_Application* iface,
-        long Channel,
+        LONG Channel,
         VARIANT Item,
         VARIANT Data,
         LCID lcid) {         }
 
 static VARIANT WINAPI DISP_IMP_Application_DDERequest(
         Disp_Application* iface,
-        long Channel,
+        LONG Channel,
         BSTR Item,
         LCID lcid) {         }
 
 static HRESULT WINAPI DISP_IMP_Application_DDETerminate(
         Disp_Application* iface,
-        long Channel,
+        LONG Channel,
         LCID lcid) {         }
 
 static IDispatch * WINAPI DISP_IMP_Application_get_DialogSheets(
@@ -5456,7 +5456,7 @@ static IDispatch * WINAPI DISP_IMP_Application_get_Sheets(
 
 static IDispatch * WINAPI DISP_IMP_Application_get_ShortcutMenus(
         Disp_Application* iface,
-        long Index) {         }
+        LONG Index) {         }
 
 static IDispatch * WINAPI DISP_IMP_Application_get_ThisWorkbook(
         Disp_Application* iface,
@@ -5574,7 +5574,7 @@ static void WINAPI DISP_IMP_Application_put_EnableAnimations(
 static IDispatch * WINAPI DISP_IMP_Application_get_AutoCorrect(
         Disp_Application* iface) {         }
 
-static long WINAPI DISP_IMP_Application_get_Build(
+static LONG WINAPI DISP_IMP_Application_get_Build(
         Disp_Application* iface,
         LCID lcid) {         }
 
@@ -5683,7 +5683,7 @@ static VARIANT WINAPI DISP_IMP_Application_ConvertFormula(
         VARIANT ToReferenceStyle,
         VARIANT ToAbsolute,
         VARIANT RelativeTo,
-        long Lcid) {         }
+        LONG Lcid) {         }
 
 static VARIANT_BOOL WINAPI DISP_IMP_Application_get_CopyObjectsWithCells(
         Disp_Application* iface,
@@ -5703,7 +5703,7 @@ static void WINAPI DISP_IMP_Application_put_Cursor(
         LCID lcid,
         XlMousePointer RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_CustomListCount(
+static LONG WINAPI DISP_IMP_Application_get_CustomListCount(
         Disp_Application* iface,
         LCID lcid) {         }
 
@@ -5716,14 +5716,14 @@ static void WINAPI DISP_IMP_Application_put_CutCopyMode(
         LCID lcid,
         XlCutCopyMode RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_DataEntryMode(
+static LONG WINAPI DISP_IMP_Application_get_DataEntryMode(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_DataEntryMode(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
 static VARIANT WINAPI DISP_IMP_Application_Dummy1(
         Disp_Application* iface,
@@ -5819,7 +5819,7 @@ static void WINAPI DISP_IMP_Application_DeleteChartAutoFormat(
 
 static void WINAPI DISP_IMP_Application_DeleteCustomList(
         Disp_Application* iface,
-        long ListNum,
+        LONG ListNum,
         LCID lcid) {         }
 
 static IDispatch * WINAPI DISP_IMP_Application_get_Dialogs(
@@ -5970,21 +5970,21 @@ static void WINAPI DISP_IMP_Application_put_FixedDecimal(
         LCID lcid,
         VARIANT_BOOL RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_FixedDecimalPlaces(
+static LONG WINAPI DISP_IMP_Application_get_FixedDecimalPlaces(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_FixedDecimalPlaces(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
 static VARIANT WINAPI DISP_IMP_Application_GetCustomListContents(
         Disp_Application* iface,
-        long ListNum,
+        LONG ListNum,
         LCID lcid) {         }
 
-static long WINAPI DISP_IMP_Application_GetCustomListNum(
+static LONG WINAPI DISP_IMP_Application_GetCustomListNum(
         Disp_Application* iface,
         VARIANT ListArray,
         LCID lcid) {         }
@@ -6143,24 +6143,24 @@ static void WINAPI DISP_IMP_Application_put_MaxChange(
         LCID lcid,
         double RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_MaxIterations(
+static LONG WINAPI DISP_IMP_Application_get_MaxIterations(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_MaxIterations(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_MemoryFree(
+static LONG WINAPI DISP_IMP_Application_get_MemoryFree(
         Disp_Application* iface,
         LCID lcid) {         }
 
-static long WINAPI DISP_IMP_Application_get_MemoryTotal(
+static LONG WINAPI DISP_IMP_Application_get_MemoryTotal(
         Disp_Application* iface,
         LCID lcid) {         }
 
-static long WINAPI DISP_IMP_Application_get_MemoryUsed(
+static LONG WINAPI DISP_IMP_Application_get_MemoryUsed(
         Disp_Application* iface,
         LCID lcid) {         }
 
@@ -6203,12 +6203,12 @@ static BSTR WINAPI DISP_IMP_Application_get_NetworkTemplatesPath(
 static IDispatch * WINAPI DISP_IMP_Application_get_ODBCErrors(
         Disp_Application* iface) {         }
 
-static long WINAPI DISP_IMP_Application_get_ODBCTimeout(
+static LONG WINAPI DISP_IMP_Application_get_ODBCTimeout(
         Disp_Application* iface) {         }
 
 static void WINAPI DISP_IMP_Application_put_ODBCTimeout(
         Disp_Application* iface,
-        long RHS) {         }
+        LONG RHS) {         }
 
 static BSTR WINAPI DISP_IMP_Application_get_OnCalculate(
         Disp_Application* iface,
@@ -6408,14 +6408,14 @@ static void WINAPI DISP_IMP_Application_SetDefaultChart(
         VARIANT FormatName,
         VARIANT Gallery) {         }
 
-static long WINAPI DISP_IMP_Application_get_SheetsInNewWorkbook(
+static LONG WINAPI DISP_IMP_Application_get_SheetsInNewWorkbook(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_SheetsInNewWorkbook(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
 static VARIANT_BOOL WINAPI DISP_IMP_Application_get_ShowChartTipNames(
         Disp_Application* iface) {         }
@@ -6498,14 +6498,14 @@ static void WINAPI DISP_IMP_Application_put_TransitionMenuKey(
         LCID lcid,
         BSTR RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_TransitionMenuKeyAction(
+static LONG WINAPI DISP_IMP_Application_get_TransitionMenuKeyAction(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_TransitionMenuKeyAction(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
 static VARIANT_BOOL WINAPI DISP_IMP_Application_get_TransitionNavigKeys(
         Disp_Application* iface,
@@ -6552,7 +6552,7 @@ static IDispatch * WINAPI DISP_IMP_Application_get_VBE(
 
 static BSTR WINAPI DISP_IMP_Application_get_Version(
         Disp_Application* iface,
-        long Lcid) {         }
+        LONG Lcid) {         }
 
 static VARIANT_BOOL WINAPI DISP_IMP_Application_get_Visible(
         Disp_Application* iface,
@@ -6595,32 +6595,32 @@ static XlWindowState WINAPI DISP_IMP_Application_get_WindowState(
         Disp_Application* iface,
         LCID lcid) {         }
 
-static long WINAPI DISP_IMP_Application_get_UILanguage(
+static LONG WINAPI DISP_IMP_Application_get_UILanguage(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_UILanguage(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_DefaultSheetDirection(
+static LONG WINAPI DISP_IMP_Application_get_DefaultSheetDirection(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_DefaultSheetDirection(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
-static long WINAPI DISP_IMP_Application_get_CursorMovement(
+static LONG WINAPI DISP_IMP_Application_get_CursorMovement(
         Disp_Application* iface,
         LCID lcid) {         }
 
 static void WINAPI DISP_IMP_Application_put_CursorMovement(
         Disp_Application* iface,
         LCID lcid,
-        long RHS) {         }
+        LONG RHS) {         }
 
 static VARIANT_BOOL WINAPI DISP_IMP_Application_get_ControlCharacters(
         Disp_Application* iface,
@@ -6738,7 +6738,7 @@ static VARIANT_BOOL WINAPI DISP_IMP_Application_FindFile(
         Disp_Application* iface,
         LCID lcid) {         }
 
-static long WINAPI DISP_IMP_Application_get_CalculationVersion(
+static LONG WINAPI DISP_IMP_Application_get_CalculationVersion(
         Disp_Application* iface) {         }
 
 static VARIANT_BOOL WINAPI DISP_IMP_Application_get_ShowWindowsInTaskbar(
@@ -6869,10 +6869,10 @@ static void WINAPI DISP_IMP_Application_put_GenerateGetPivotData(
 static IDispatch * WINAPI DISP_IMP_Application_get_AutoRecover(
         Disp_Application* iface) {         }
 
-static long WINAPI DISP_IMP_Application_get_Hwnd(
+static LONG WINAPI DISP_IMP_Application_get_Hwnd(
         Disp_Application* iface) {         }
 
-static long WINAPI DISP_IMP_Application_get_Hinstance(
+static LONG WINAPI DISP_IMP_Application_get_Hinstance(
         Disp_Application* iface) {         }
 
 static void WINAPI DISP_IMP_Application_CheckAbort(
@@ -6959,7 +6959,7 @@ static VARIANT_BOOL WINAPI DISP_IMP_Application_get_ArbitraryXMLSupportAvailable
 static VARIANT WINAPI DISP_IMP_Application_Support(
         Disp_Application* iface,
         IDispatch *Object,
-        long ID,
+        LONG ID,
         VARIANT arg) {         }
 
 
@@ -7407,7 +7407,7 @@ HRESULT _ApplicationConstructor(LPVOID *ppObj)
         return E_NOINTERFACE;
     }
 
-    _applicationexcell->pdOODesktop = result.pdispVal;
+    _applicationexcell->pdOODesktop = V_DISPATCH(&result);
     hres = IDispatch_AddRef(_applicationexcell->pdOODesktop);
 
     hres = _I_WorkbooksConstructor((LPVOID*) &punk);
@@ -7423,7 +7423,7 @@ HRESULT _ApplicationConstructor(LPVOID *ppObj)
 /*Пытаемся получить номер версии*/
     VARIANT p1,p2, param2, conf_prov, access_prov, version, res;
     IDispatch *dpv;
-    long index = 0;
+    LONG index = 0;
     SAFEARRAY FAR* pPropVals;
 
     VariantInit(&p1);

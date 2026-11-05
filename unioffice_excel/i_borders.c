@@ -191,7 +191,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Parent(
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Color(
         I_Borders* iface,
-        long *plcolor)
+        LONG *plcolor)
 {
     BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
@@ -208,7 +208,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
         I_Borders* iface,
-        long lcolor)
+        LONG lcolor)
 {
     BordersImpl *This = BORDERS_THIS(iface);
     HRESULT hres;
@@ -234,10 +234,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_get_ColorIndex(
         I_Borders* iface,
-        long *plcolorindex)
+        LONG *plcolorindex)
 {
     BordersImpl *This = BORDERS_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     int i;
     HRESULT hres;
     TRACE_IN;
@@ -267,10 +267,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_ColorIndex(
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_put_ColorIndex(
         I_Borders* iface,
-        long lcolorindex)
+        LONG lcolorindex)
 {
     BordersImpl *This = BORDERS_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     TRACE_IN;
 
     if (!This) {
@@ -465,7 +465,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Value(
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Count(
         I_Borders* iface,
-        long *pretval)
+        LONG *pretval)
 {
     TRACE_IN;
     *pretval = 12;
@@ -629,7 +629,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Next(
     BordersImpl *This = ENUMVAR_THIS(iface);
     HRESULT hres;
     ULONG l;
-    long l1;
+    LONG l1;
     int count;
     ULONG l2;
     IDispatch *dret;
@@ -647,7 +647,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Next(
     for (l=0; l<celt; l++)
        VariantInit(&rgVar[l]);
 
-    I_Borders_get_Count(BORDERS_BORDERS(This), (long*)&count);
+    I_Borders_get_Count(BORDERS_BORDERS(This), (LONG*)&count);
 
     for (l1=This->enum_position, l2=0; l1<count && l2<celt; l1++, l2++) {
       hres = I_Borders_get_Item(BORDERS_BORDERS(This), l1+1, &dret);
@@ -678,7 +678,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Skip(
     int count;
     TRACE_IN;
 
-    I_Borders_get_Count(BORDERS_BORDERS(This), (long*)&count);
+    I_Borders_get_Count(BORDERS_BORDERS(This), (LONG*)&count);
     This->enum_position += celt;
 
     if (This->enum_position>=(count)) {

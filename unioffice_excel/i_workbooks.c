@@ -242,7 +242,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__Open(
         VARIANT Notify,
         VARIANT Converter,
         VARIANT AddToMru,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkbook)
 {
     TRACE_NOTIMPL;
@@ -352,7 +352,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
         VARIANT AddToMru,
         VARIANT Local,
         VARIANT CorruptLoad,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkbook)
 {
 /*TODO : use other parameters*/
@@ -458,7 +458,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenText(
         VARIANT ThousandsSeparator,
         VARIANT TrailingMinusNumbers,
         VARIANT Local,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkbook)
 {
     TRACE_NOTIMPL;
@@ -483,7 +483,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__OpenText(
         VARIANT TextVisualLayout,
         VARIANT DecimalSeparator,
         VARIANT ThousandsSeparator,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkbook)
 {
     TRACE_NOTIMPL;
@@ -495,7 +495,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenXML(
         BSTR Filename,
         VARIANT Stylesheets,
         VARIANT LoadOption,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkbook)
 {
     TRACE_NOTIMPL;
@@ -506,7 +506,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks__OpenXML(
         I_Workbooks* iface,
         BSTR Filename,
         VARIANT Stylesheets,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkbook)
 {
     TRACE_NOTIMPL;
@@ -520,7 +520,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_OpenDatabase(
         VARIANT CommandType,
         VARIANT BackgroundQuery,
         VARIANT ImportDataAs,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkboo)
 {
     TRACE_NOTIMPL;
@@ -643,7 +643,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks___OpenText(
         VARIANT OtherChar,
         VARIANT FieldInfo,
         VARIANT TextVisualLayout,
-        long Lcid,
+        LONG Lcid,
         IDispatch **ppWorkbook)
 {
     TRACE_NOTIMPL;
@@ -731,7 +731,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Invoke(
     VARIANT vresult;
     VARIANT astemp;
     VARIANT vnull;
-    long l;
+    LONG l;
     ITypeInfo *typeinfo;
 
     TRACE("\n");
@@ -899,7 +899,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_EnumVAR_Next(
     WorkbooksImpl *This = ENUMVAR_THIS(iface);
     HRESULT hres;
     ULONG l;
-    long l1;
+    LONG l1;
     int count;
     ULONG l2;
     IDispatch *dret;

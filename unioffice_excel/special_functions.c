@@ -273,7 +273,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize(
     V_VT(&param2) = VT_I2;
     V_I2(&param2) = 0;  /* Another params count */
 
-    long ix=0;
+    LONG ix=0;
     MSO_TO_OO_GetDispatchPropertyValue(APPEXCEL(Thisapp), &dpv);
     if (dpv == NULL)
         return E_FAIL;
@@ -689,7 +689,7 @@ HRESULT MSO_TO_OO_CloseWorkbook(
     _ApplicationImpl *this_app = (_ApplicationImpl*)(This_wbks->pApplication);
     VARIANT res;
     SAFEARRAY FAR* pPropVals;
-    long ix = 0;
+    LONG ix = 0;
     VARIANT p3,p2;
     HRESULT hres;
     V_VT(&p2) = VT_BOOL;
@@ -768,7 +768,7 @@ HRESULT MSO_TO_OO_I_Workbook_Initialize2(
     HRESULT hres;
     IUnknown *punk = NULL;
     IDispatch *dpv = NULL,*dpv2 = NULL;
-    long ix=0;
+    LONG ix=0;
     VARIANT p1,p2;
     TRACE_IN;
 
@@ -998,10 +998,10 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
 
 HRESULT MSO_TO_OO_GetRangeAddress(
         I_Range* iface,
-        long *lLeft,
-        long *lTop,
-        long *lRight,
-        long *lBottom)
+        LONG *lLeft,
+        LONG *lTop,
+        LONG *lRight,
+        LONG *lBottom)
 {
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
@@ -1025,28 +1025,28 @@ HRESULT MSO_TO_OO_GetRangeAddress(
         IDispatch_Release(pdRangeAddress);
         return hres;
     }
-    *lLeft = vRes.intVal;
+    *lLeft = V_INT(&vRes);
     VariantClear(&vRes);
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, pdRangeAddress, L"StartColumn", 0);
     if (hres != S_OK) {
         IDispatch_Release(pdRangeAddress);
         return hres;
     }
-    *lTop = vRes.intVal;
+    *lTop = V_INT(&vRes);
     VariantClear(&vRes);
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, pdRangeAddress, L"EndRow", 0);
     if (hres != S_OK) {
         IDispatch_Release(pdRangeAddress);
         return hres;
     }
-    *lRight = vRes.intVal;
+    *lRight = V_INT(&vRes);
     VariantClear(&vRes);
     hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, pdRangeAddress, L"EndColumn", 0);
     if (hres != S_OK) {
         IDispatch_Release(pdRangeAddress);
         return hres;
     }
-    *lBottom = vRes.intVal;
+    *lBottom = V_INT(&vRes);
 
     IDispatch_Release(pdRangeAddress);
 
@@ -1387,7 +1387,7 @@ HRESULT MSO_TO_OO_MakeURLFromFilename(
 
 //возвращает индекс таблицы по ее имени.
 //Если не находит возвращает -1
-long MSO_TO_OO_FindIndexWorksheetByName(
+LONG MSO_TO_OO_FindIndexWorksheetByName(
         I_Sheets *iface,
         BSTR name)
 {
@@ -1435,7 +1435,7 @@ long MSO_TO_OO_FindIndexWorksheetByName(
 }
 
 /*возвращает Workbook и индекс*/
-long MSO_TO_OO_GlobalFindIndexWorksheetByName(
+LONG MSO_TO_OO_GlobalFindIndexWorksheetByName(
         _Application *app,
         BSTR name,
         IDispatch **retval)

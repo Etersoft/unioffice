@@ -49,16 +49,16 @@ HRESULT get_typeinfo_range(ITypeInfo **typeinfo)
 }
 
 /*флаги для работы с ячейками*/
-const long VALUE 	= 1;
-const long DATETIME 	= 2;
-const long STRING 	= 4;
-const long ANNOTATION 	= 8;
-const long FORMULA 	= 16;
-const long HARDATTR 	= 32;
-const long STYLES 	= 64;
-const long OBJECTS 	= 128;
-const long EDITATTR 	= 256;
-const long FORMATTED 	= 512;
+const LONG VALUE 	= 1;
+const LONG DATETIME 	= 2;
+const LONG STRING 	= 4;
+const LONG ANNOTATION 	= 8;
+const LONG FORMULA 	= 16;
+const LONG HARDATTR 	= 32;
+const LONG STYLES 	= 64;
+const LONG OBJECTS 	= 128;
+const LONG EDITATTR 	= 256;
+const LONG FORMATTED 	= 512;
 
 typedef enum {
     NONE,
@@ -219,7 +219,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_ColumnWidth(
         I_Range* iface,
-        long *pnColumnWidth)
+        LONG *pnColumnWidth)
 {
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
@@ -248,7 +248,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_ColumnWidth(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_ColumnWidth(
         I_Range* iface,
-        long nColumnWidth)
+        LONG nColumnWidth)
 {
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
@@ -410,7 +410,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
     }
     /*Если два измерения*/
     if (arr_dim == 2) {
-        long startrow,endrow,startcolumn,endcolumn;
+        LONG startrow,endrow,startcolumn,endcolumn;
         VARIANT row,col;
         VARIANT vNull;
         VariantInit(&vNull);
@@ -467,11 +467,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Value(
             TRACE("ERROR when getCellByPosition \n");
             return hres;
         }
-        long tmp;
+        LONG tmp;
         /*Необходимо преобразование типов OpenOffice понимает не все типы*/
         switch V_VT(&varValue) {
         case VT_I8:/*надо преобразовать к VT_I4*/
-            tmp = (long) V_I8(&varValue);
+            tmp = (LONG) V_I8(&varValue);
             VariantClear(&varValue);
             V_VT(&varValue) = VT_I4;
             V_I4(&varValue) = tmp;
@@ -712,7 +712,7 @@ static VARIANT WINAPI MSO_TO_OO_I_Range_ClearContents(
     return result;
 }
 
-static long WINAPI MSO_TO_OO_I_Range_get_Column(
+static LONG WINAPI MSO_TO_OO_I_Range_get_Column(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
@@ -723,7 +723,7 @@ static long WINAPI MSO_TO_OO_I_Range_get_Column(
     IDispatch *pdRangeAddress = NULL;
     VARIANT vRes,vtmp;
     HRESULT hres;
-    long lres;
+    LONG lres;
     VariantInit(&vtmp);
 
     hres = AutoWrap(DISPATCH_METHOD, &vRes, This->pOORange, L"getRangeAddress", 0);
@@ -752,7 +752,7 @@ static long WINAPI MSO_TO_OO_I_Range_get_Column(
     return lres + 1;
 }
 
-static long WINAPI MSO_TO_OO_I_Range_get_Row(
+static LONG WINAPI MSO_TO_OO_I_Range_get_Row(
         I_Range* iface)
 {
     RangeImpl *This = (RangeImpl*)iface;
@@ -763,7 +763,7 @@ static long WINAPI MSO_TO_OO_I_Range_get_Row(
     IDispatch *pdRangeAddress = NULL;
     VARIANT vRes,vtmp;
     HRESULT hres;
-    long lres;
+    LONG lres;
     VariantInit(&vtmp);
 
     hres = AutoWrap(DISPATCH_METHOD, &vRes, This->pOORange, L"getRangeAddress", 0);
@@ -804,7 +804,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_HorizontalAlignment(
 
     VARIANT vRes,vtmp;
     VariantInit(&vRes);
-    long lret;
+    LONG lret;
     VariantInit(&vtmp);
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, This->pOORange, L"HoriJustify", 0);
@@ -874,7 +874,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_VerticalAlignment(
 
     VARIANT vRes,vtmp;
     VariantInit(&vRes);
-    long lret;
+    LONG lret;
     VariantInit(&vtmp);
 
     HRESULT hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, This->pOORange, L"VertJustify", 0);
@@ -948,7 +948,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Merge(
         return hres;
     } else {
         /*надо пробежаться по всем рядам и объеденить их все отдельно*/
-        long startrow,endrow,startcolumn,endcolumn;
+        LONG startrow,endrow,startcolumn,endcolumn;
         int i;
 
         hres = MSO_TO_OO_GetRangeAddress(iface, &startrow, &startcolumn, &endrow, &endcolumn);
@@ -1336,10 +1336,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Borders(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Count(
         I_Range* iface,
-        long *lcount)
+        LONG *lcount)
 {
     HRESULT hres;
-    long startrow, startcolumn, endrow, endcolumn,w,h;
+    LONG startrow, startcolumn, endrow, endcolumn,w,h;
     TRACE_IN;
 
     hres = MSO_TO_OO_GetRangeAddress(iface, &startrow, &startcolumn, &endrow, &endcolumn);
@@ -1364,7 +1364,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Delete(
     RangeImpl *This = (RangeImpl*)iface;
     XlDeleteShiftDirection action;
     HRESULT hres;
-    long startrow, startcolumn, endrow, endcolumn;
+    LONG startrow, startcolumn, endrow, endcolumn;
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(param, &param);
@@ -1448,7 +1448,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Delete(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_RowHeight(
         I_Range* iface,
-        long *pnrowheight)
+        LONG *pnrowheight)
 {
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
@@ -1477,7 +1477,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_RowHeight(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_RowHeight(
         I_Range* iface,
-        long nrowheight)
+        LONG nrowheight)
 {
     RangeImpl *This = (RangeImpl*)iface;
     TRACE_IN;
@@ -2040,7 +2040,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeArea(
 {
     RangeImpl *This = (RangeImpl*)iface;
     HRESULT hres;
-    long left, right,top,bottom;
+    LONG left, right,top,bottom;
     TRACE_IN;
 
     hres = MSO_TO_OO_GetRangeAddress(iface, &left, &top, &right, &bottom);
@@ -2121,7 +2121,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Insert(
     HRESULT hres;
     CellInsertMode insert_mode;
     WorksheetImpl* wsh = (WorksheetImpl*)(This->pwsheet);
-    long startrow=0, startcolumn=0, endrow=0, endcolumn=0;
+    LONG startrow=0, startcolumn=0, endrow=0, endcolumn=0;
     TRACE_IN;
 
     MSO_TO_OO_CorrectArg(Shift, &Shift);
@@ -2197,7 +2197,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireColumn(
     VARIANT range, vcount, vstr, param1, vcolumn, vname1, vname2;
     HRESULT hres;
     WCHAR str[10];
-    long start,end;
+    LONG start,end;
     TRACE_IN;
 
     VariantInit(&range);
@@ -2290,8 +2290,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireRow(
     VARIANT range, vcount, vstr, param1, vrow, vname1, vname2;
     HRESULT hres;
     WCHAR str[10];
-    long start,end;
-    long startrow=0, startcolumn=0, endrow=0, endcolumn=0;
+    LONG start,end;
+    LONG startrow=0, startcolumn=0, endrow=0, endcolumn=0;
     TRACE_IN;
 
     VariantInit(&range);
@@ -2598,7 +2598,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_CopyFromRecordset(
         IUnknown *Data,
         VARIANT MaxRows,
         VARIANT MaxColumns,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3106,7 +3106,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Group(
     WorksheetImpl *wsh = (WorksheetImpl*)This->pwsheet;
     HRESULT hres;
     VARIANT param1, param2, vret;
-    long startrow, startcolumn, endrow, endcolumn;
+    LONG startrow, startcolumn, endrow, endcolumn;
 
     TRACE_IN;
 /*Now Ignore all parameters*/
@@ -3203,7 +3203,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_IndentLevel(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_InsertIndent(
         I_Range* iface,
-        long InsertAmount)
+        LONG InsertAmount)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3241,7 +3241,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Justify(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_ListHeaderRows(
         I_Range* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3315,8 +3315,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Offset(
     RangeImpl* This = (RangeImpl*)iface;
     WorksheetImpl* wsh = (WorksheetImpl*)This->pwsheet;
     HRESULT hres;
-    long left, top, right, bottom;
-    long drow = 0, dcol = 0;
+    LONG left, top, right, bottom;
+    LONG drow = 0, dcol = 0;
     struct CELL_COORD lefttop, rightbottom;
     IDispatch *pCell;
     IUnknown *punk;
@@ -3430,7 +3430,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_OutlineLevel(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_PageBreak(
         I_Range* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3438,7 +3438,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_PageBreak(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_PageBreak(
         I_Range* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -3589,8 +3589,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Resize(
     RangeImpl* This = (RangeImpl*)iface;
     WorksheetImpl* wsh = (WorksheetImpl*)This->pwsheet;
     HRESULT hres;
-    long left, top, right, bottom;
-    long drow = 0, dcol = 0;
+    LONG left, top, right, bottom;
+    LONG drow = 0, dcol = 0;
     struct CELL_COORD lefttop, rightbottom;
     IDispatch *pCell;
     IUnknown *punk;
@@ -3854,7 +3854,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_SubscribeTo(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Subtotal(
         I_Range* iface,
-        long GroupBy,
+        LONG GroupBy,
         XlConsolidationFunction Function,
         VARIANT TotalList,
         VARIANT Replace,
@@ -3922,7 +3922,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Ungroup(
     WorksheetImpl *wsh = (WorksheetImpl*)This->pwsheet;
     HRESULT hres;
     VARIANT param1, param2, vret;
-    long startrow, startcolumn, endrow, endcolumn;
+    LONG startrow, startcolumn, endrow, endcolumn;
 
     TRACE_IN;
 
@@ -4073,7 +4073,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormatConditions(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_ReadingOrder(
         I_Range* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -4081,7 +4081,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_ReadingOrder(
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_ReadingOrder(
         I_Range* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -4281,7 +4281,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
     RangeImpl *This = (RangeImpl*)iface;
     IDispatch *dret, *pretdisp;
     HRESULT hres;
-    long lret, lval;
+    LONG lret, lval;
     VARIANT vNull;
     XlHAlign halign;
     XlVAlign valign;
@@ -4428,6 +4428,43 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
     return E_NOTIMPL;
 }
 
+/* COM aggregate returns use an explicit result buffer after This in WIDL. */
+static VARIANT *WINAPI MSO_TO_OO_I_Range_AutoFit_COM(I_Range *iface, VARIANT *result)
+{
+    *result = MSO_TO_OO_I_Range_AutoFit(iface);
+    return result;
+}
+
+static VARIANT *WINAPI MSO_TO_OO_I_Range_Clear_COM(I_Range *iface, VARIANT *result)
+{
+    *result = MSO_TO_OO_I_Range_Clear(iface);
+    return result;
+}
+
+static VARIANT *WINAPI MSO_TO_OO_I_Range_ClearContents_COM(I_Range *iface, VARIANT *result)
+{
+    *result = MSO_TO_OO_I_Range_ClearContents(iface);
+    return result;
+}
+
+static VARIANT *WINAPI MSO_TO_OO_I_Range_ClearFormats_COM(I_Range *iface, VARIANT *result)
+{
+    *result = MSO_TO_OO_I_Range_ClearFormats(iface);
+    return result;
+}
+
+static VARIANT *WINAPI MSO_TO_OO_I_Range_ClearNotes_COM(I_Range *iface, VARIANT *result)
+{
+    *result = MSO_TO_OO_I_Range_ClearNotes(iface);
+    return result;
+}
+
+static VARIANT *WINAPI MSO_TO_OO_I_Range_ClearOutline_COM(I_Range *iface, VARIANT *result)
+{
+    *result = MSO_TO_OO_I_Range_ClearOutline(iface);
+    return result;
+}
+
 const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
 {
     MSO_TO_OO_I_Range_QueryInterface,
@@ -4452,7 +4489,7 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_AutoComplete,
     MSO_TO_OO_I_Range_AutoFill,
     MSO_TO_OO_I_Range_AutoFilter,
-    MSO_TO_OO_I_Range_AutoFit,
+    MSO_TO_OO_I_Range_AutoFit_COM,
     MSO_TO_OO_I_Range_AutoFormat,
     MSO_TO_OO_I_Range_AutoOutline,
     MSO_TO_OO_I_Range_BorderAround,
@@ -4461,11 +4498,11 @@ const I_RangeVtbl MSO_TO_OO_I_RangeVtbl =
     MSO_TO_OO_I_Range_get_Cells,
     MSO_TO_OO_I_Range_get_Characters,
     MSO_TO_OO_I_Range_CheckSpelling,
-    MSO_TO_OO_I_Range_Clear,
-    MSO_TO_OO_I_Range_ClearContents,
-    MSO_TO_OO_I_Range_ClearFormats,
-    MSO_TO_OO_I_Range_ClearNotes,
-    MSO_TO_OO_I_Range_ClearOutline,
+    MSO_TO_OO_I_Range_Clear_COM,
+    MSO_TO_OO_I_Range_ClearContents_COM,
+    MSO_TO_OO_I_Range_ClearFormats_COM,
+    MSO_TO_OO_I_Range_ClearNotes_COM,
+    MSO_TO_OO_I_Range_ClearOutline_COM,
     MSO_TO_OO_I_Range_get_Column,
     MSO_TO_OO_I_Range_ColumnDifferences,
     MSO_TO_OO_I_Range_get_Columns,

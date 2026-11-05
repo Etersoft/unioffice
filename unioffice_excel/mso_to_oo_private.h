@@ -36,7 +36,8 @@
 #include <ocidl.h>
 #include <oaidl.h>
 #include <stddef.h>
-#include "unioffice_excel.h"
+#include "tools.h"
+#include <unioffice_excel.h>
 #include "main_constants.h"
 #include "debug.h"
 #include "dispid_const.h"
@@ -53,8 +54,8 @@ extern LONG OOVersion;
 
 struct CELL_COORD
 {
-    long x;
-    long y;
+    LONG x;
+    LONG y;
 };
 
 typedef struct
@@ -268,7 +269,7 @@ typedef struct
     VARIANT_BOOL screenupdating;
     VARIANT_BOOL displayalerts;
     VARIANT_BOOL visible;
-    long sheetsinnewworkbook;
+    LONG sheetsinnewworkbook;
 
 } _ApplicationImpl;
 

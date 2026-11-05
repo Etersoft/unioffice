@@ -5188,7 +5188,7 @@ library MSO_TO_OOLib
     	]
     	coclass Application {
         	[default] interface _Application;
-        	[default, source] dispinterface AppEvents;
+		/* AppEvents is not implemented; do not advertise an undefined source interface. */
     	};
 
 

@@ -248,8 +248,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
         return E_INVALIDARG;
     }
 
-    long lCell1L, lCell1R, lCell1T, lCell1B;
-    long lCell2L, lCell2R, lCell2T, lCell2B;
+    LONG lCell1L, lCell1R, lCell1T, lCell1B;
+    LONG lCell2L, lCell2R, lCell2T, lCell2B;
     /*long lRangeL, lRangeR, lRangeT, lRangeB;*/
 
     hres = MSO_TO_OO_GetRangeAddress(pCell1, &lCell1L, &lCell1T, &lCell1R, &lCell1B);
@@ -352,9 +352,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Activate(
     WorksheetImpl *This = (WorksheetImpl*)iface;
     BSTR command;
     VARIANT param, res;
-    long index;
+    LONG index;
     SAFEARRAY FAR* pPropVals;
-    long ix = 0;
+    LONG ix = 0;
     WorkbookImpl *paren_wb = (WorkbookImpl*)(This->pwb);
     WorkbooksImpl *parent_wbs = (WorkbooksImpl*)(paren_wb->pworkbooks);
     HRESULT hres;
@@ -783,7 +783,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
     /*Необходимо еще скопировать PAGESETUP*/
     IDispatch *src,*trg;
     double dtmp;
-    long ltmp;
+    LONG ltmp;
     VARIANT vtmp;
     VariantInit(&vtmp);
     VARIANT_BOOL vbtmp;
@@ -1108,7 +1108,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put__CodeName(
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Index(
         I_Worksheet* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2179,7 +2179,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_CircleInvalid(
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get__DisplayRightToLeft(
         I_Worksheet* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2188,7 +2188,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get__DisplayRightToLeft(
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_put__DisplayRightToLeft(
         I_Worksheet* iface,
         LCID lcid,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2430,7 +2430,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     VARIANT cell1,cell2,tmpval;
     VARIANT vmas[16];
     int i;
-    long ltmp;
+    LONG ltmp;
     ITypeInfo *typeinfo;
 
     VariantInit(&vNull);

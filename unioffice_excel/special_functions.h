@@ -108,10 +108,10 @@ HRESULT MSO_TO_OO_I_Range_Initialize3(
 
 HRESULT MSO_TO_OO_GetRangeAddress(
         I_Range* iface,
-        long *lLeft,
-        long *lTop,
-        long *lRight,
-        long *lBottom);
+        LONG *lLeft,
+        LONG *lTop,
+        LONG *lRight,
+        LONG *lBottom);
 
 HRESULT MSO_TO_OO_GetActiveWorkbook(
         I_Workbooks* iface,
@@ -134,12 +134,12 @@ HRESULT MSO_TO_OO_MakeURLFromFilename(
         BSTR value,
         BSTR *retval);
 
-long MSO_TO_OO_FindIndexWorksheetByName(
+LONG MSO_TO_OO_FindIndexWorksheetByName(
         I_Sheets *iface,
         BSTR name);
 
 /*возвращает Workbook и индекс*/
-long MSO_TO_OO_GlobalFindIndexWorksheetByName(
+LONG MSO_TO_OO_GlobalFindIndexWorksheetByName(
         _Application *app,
         BSTR name,
         IDispatch **retval);

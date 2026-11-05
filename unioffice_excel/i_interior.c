@@ -127,7 +127,7 @@ static ULONG WINAPI MSO_TO_OO_I_Interior_Release(
 /*** I_Interior methods ***/
 static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Color(
         I_Interior* iface,
-        long *plcolor)
+        LONG *plcolor)
 {
     InteriorImpl *This = INTERIOR_THIS(iface);
     HRESULT hres;
@@ -161,7 +161,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Color(
         I_Interior* iface,
-        long lcolor)
+        LONG lcolor)
 {
     InteriorImpl *This = INTERIOR_THIS(iface);
     HRESULT hres;
@@ -196,10 +196,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_put_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Interior_get_ColorIndex(
         I_Interior* iface,
-        long *plcolorindex)
+        LONG *plcolorindex)
 {
     InteriorImpl *This = INTERIOR_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     int i;
     HRESULT hres;
     TRACE_IN;
@@ -230,10 +230,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Interior_get_ColorIndex(
 
 static HRESULT WINAPI MSO_TO_OO_I_Interior_put_ColorIndex(
         I_Interior* iface,
-        long lcolorindex)
+        LONG lcolorindex)
 {
     InteriorImpl *This = INTERIOR_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     TRACE_IN;
 
     if (!This) {

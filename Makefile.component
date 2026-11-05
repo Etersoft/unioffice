@@ -1,0 +1,40 @@
+.DEFAULT_GOAL := all
+OBJECTS = $(addprefix $(BUILD_DIR)/,$(OBJECT_NAMES))
+TARGET = $(BUILD_DIR)/$(MODULE)$(DLLSUFFIX)
+ifeq ($(TOOLCHAIN),winegcc)
+EXPORTS = $(MODULE).spec
+endif
+
+.PHONY: all clean
+all: $(TARGET) $(BUILD_DIR)/$(MODULE).tlb
+
+$(OBJECTS): Makefile ../Makefile.mingw ../Makefile.component
+
+$(BUILD_DIR):
+	mkdir -p $@
+
+$(BUILD_DIR)/$(MODULE).h: $(MODULE).idl $(wildcard *.h) | $(BUILD_DIR)
+	$(IDL) $(IDLFLAGS) -m$(BITS) -h -o $@ $<
+
+$(BUILD_DIR)/$(MODULE)_i.c: $(MODULE).idl | $(BUILD_DIR)
+	$(IDL) $(IDLFLAGS) -m$(BITS) -u -o $@ $<
+
+$(BUILD_DIR)/$(MODULE).tlb: $(MODULE).idl $(wildcard *.h) | $(BUILD_DIR)
+	$(IDL) $(IDLFLAGS) -m$(BITS) -t -o $@ $<
+
+$(BUILD_DIR)/%.o: %.c $(BUILD_DIR)/$(MODULE).h
+	$(CC) $(ARCHFLAGS) $(CPPFLAGS) $(CFLAGS) -std=gnu89 -Wno-pointer-sign -MMD -MP -c $< -o $@
+
+$(BUILD_DIR)/%.o: %.cpp $(BUILD_DIR)/$(MODULE).h
+	$(CXX) $(ARCHFLAGS) $(CPPFLAGS) $(CXXFLAGS) -MMD -MP -c $< -o $@
+
+$(BUILD_DIR)/$(MODULE)_i.o: $(BUILD_DIR)/$(MODULE)_i.c $(BUILD_DIR)/$(MODULE).h
+	$(CC) $(ARCHFLAGS) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJECTS) $(EXPORTS)
+	$(LINK) $(ARCHFLAGS) $(DLLFLAGS) $(LDFLAGS) -shared -o $@ $^ $(LIBS)
+
+clean:
+	rm -f $(BUILD_DIR)/*.o $(BUILD_DIR)/*.d $(BUILD_DIR)/*.dll $(BUILD_DIR)/*.so $(BUILD_DIR)/*.h $(BUILD_DIR)/*_i.c $(BUILD_DIR)/*.tlb
+
+-include $(OBJECTS:.o=.d)

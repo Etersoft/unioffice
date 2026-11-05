@@ -340,7 +340,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Underline(
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
         I_Font* iface,
-        long *plsize)
+        LONG *plsize)
 {
     FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
@@ -367,7 +367,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Size(
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_put_Size(
         I_Font* iface,
-        long lsize)
+        LONG lsize)
 {
     FontImpl *This = FONT_THIS(iface);
     TRACE_IN;
@@ -463,7 +463,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Name(
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_Color(
         I_Font* iface,
-        long *plcolor)
+        LONG *plcolor)
 {
     FontImpl *This = FONT_THIS(iface);
     HRESULT hres;
@@ -497,7 +497,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_put_Color(
         I_Font* iface,
-        long lcolor)
+        LONG lcolor)
 {
     FontImpl *This = FONT_THIS(iface);
     HRESULT hres;
@@ -526,10 +526,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_Color(
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_get_ColorIndex(
         I_Font* iface,
-        long *plcolorindex)
+        LONG *plcolorindex)
 {
     FontImpl *This = FONT_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     int i;
     HRESULT hres;
     TRACE_IN;
@@ -560,10 +560,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_ColorIndex(
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_put_ColorIndex(
         I_Font* iface,
-        long lcolorindex)
+        LONG lcolorindex)
 {
     FontImpl *This = FONT_THIS(iface);
-    long tmpcolor;
+    LONG tmpcolor;
     TRACE_IN;
 
     if (!This) {
@@ -708,8 +708,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_FontStyle(
         ERR("when get_Bold");
     }
     if (tmp==VARIANT_TRUE) {
-        if (pusto) swprintf(str, L"%s", L"bold");
-            else swprintf(str, L"%s %s", str, L"bold");
+        lstrcpyW(str, L"bold");
         pusto = 0;
     }
 
@@ -719,12 +718,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_FontStyle(
         ERR("when get_Italic");
     }
     if (tmp==VARIANT_TRUE) {
-        if (pusto) swprintf(str, L"%s", L"italic");
-            else swprintf(str, L"%s %s", str, L"italic");
+        if (pusto) lstrcpyW(str, L"italic");
+        else lstrcatW(str, L" italic");
         pusto = 0;
     }
 
-    if (pusto) swprintf(str, L"%s", L"normal");
+    if (pusto) lstrcpyW(str, L"normal");
 
     V_VT(RHS) = VT_BSTR;
     V_BSTR(RHS) = SysAllocString(str);
@@ -773,7 +772,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_FontStyle(
             }
             str[0] = 0;
         } else {
-            swprintf(str, L"%s%c",str, *(V_BSTR(&RHS)+i));
+            int len = lstrlenW(str);
+            if (len >= sizeof(str) / sizeof(str[0]) - 1) return E_INVALIDARG;
+            str[len] = *(V_BSTR(&RHS)+i);
+            str[len + 1] = 0;
         }
         i++;
     }

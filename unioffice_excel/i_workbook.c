@@ -213,7 +213,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_SaveAs(
     WorkbookImpl *This = (WorkbookImpl*)iface;
     VARIANT res, p3, p1;
     HRESULT hres;
-    long ix = 0;
+    LONG ix = 0;
     SAFEARRAY FAR* pPropVals;
     BSTR FilenameURL;
     WorkbooksImpl *wbks = (WorkbooksImpl*)(This->pworkbooks);
@@ -578,7 +578,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Author(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_AutoUpdateFrequency(
         I_Workbook* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -586,7 +586,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_AutoUpdateFrequency(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_AutoUpdateFrequency(
         I_Workbook* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -610,7 +610,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_AutoUpdateSaveChanges(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ChangeHistoryDuration(
         I_Workbook* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -618,7 +618,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ChangeHistoryDuration(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ChangeHistoryDuration(
         I_Workbook* iface,
-        long RHS)
+        LONG RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1252,7 +1252,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_ReplyAll(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_RemoveUser(
         I_Workbook* iface,
-        long Index)
+        LONG Index)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1261,7 +1261,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_RemoveUser(
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_RevisionNumber(
         I_Workbook* iface,
         LCID lcid,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1653,7 +1653,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_ListChangesOnNewSheet(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_PurgeChangeHistoryNow(
         I_Workbook* iface,
-        long Days,
+        LONG Days,
         VARIANT SharingPassword)
 {
     TRACE_NOTIMPL;
@@ -1821,7 +1821,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_EnvelopeVisible(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CalculationVersion(
         I_Workbook* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1829,7 +1829,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_CalculationVersion(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_Dummy17(
         I_Workbook* iface,
-        long calcid)
+        LONG calcid)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2034,7 +2034,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PasswordEncryptionAlgorithm(
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_PasswordEncryptionKeyLength(
         I_Workbook* iface,
-        long *RHS)
+        LONG *RHS)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;

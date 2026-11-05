@@ -18,9 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 #include <stdio.h>
+#include <wchar.h>
 
 extern char buf[MAX_PATH+50];
-extern write_log;
+extern BOOL write_log;
 extern FILE *trace_file;
 
 #define DEBUG

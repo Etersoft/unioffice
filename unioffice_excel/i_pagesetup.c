@@ -717,7 +717,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
         I_PageSetup* iface,
-        long *value)
+        LONG *value)
 {
     PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
@@ -789,7 +789,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
         I_PageSetup* iface,
-        long value)
+        LONG value)
 {
     PageSetupImpl *This = PAGESETUP_THIS(iface);
     HRESULT hres;
@@ -1968,7 +1968,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Draft(
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FirstPageNumber(
         I_PageSetup* iface,
-        long *value)
+        LONG *value)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -1976,7 +1976,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FirstPageNumber(
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FirstPageNumber(
         I_PageSetup* iface,
-        long value)
+        LONG value)
 {
     TRACE_NOTIMPL;
     return E_NOTIMPL;
@@ -2065,7 +2065,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintArea(
     int i, count;
     I_Worksheet* wrksh;    
     SAFEARRAY FAR* pPropVals;
-    long ix = 0;
+    LONG ix = 0;
     
     VariantInit(&celladdress);
     VariantInit(&vret);

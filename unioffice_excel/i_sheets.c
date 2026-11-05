@@ -722,7 +722,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_EnumVAR_Next(
     SheetsImpl *This = ENUMVAR_THIS(iface);
     HRESULT hres;
     ULONG l;
-    long l1;
+    LONG l1;
     int count;
     ULONG l2;
     IDispatch *dret;
