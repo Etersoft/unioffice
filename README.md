@@ -101,6 +101,13 @@ actual client architecture. Both MSI32 and MSI64 packaging are supported.
 `tests/com-smoke.c` checks only the factory and TLB, without an office backend.
 Other legacy warnings remain.
 
+`tests/borders-enumeration.vbs` checks nested and repeated Borders loops;
+`tests/borders-enumerator.c` checks the native IEnumVARIANT contract, including
+Skip and Clone. Both pass for PE32 and PE64; see
+[enumeration results and commands](docs/borders-enumerator-results.md).
+The backend runner also accepts repository-relative `.exe` paths with an
+explicit expected success marker.
+
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments
 are not the intended output format of this project.

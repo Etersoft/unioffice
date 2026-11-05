@@ -22,7 +22,11 @@ timeout -k 3 60 "$wine_loader" "$script_host" //nologo "Z:$test_root/tests/openo
 cat "$probe_log"
 [ "$probe_status" -eq 0 ] || exit "$probe_status"
 grep -Fq 'OpenOffice readiness: PASS' "$probe_log" || exit 1
-timeout -k 3 60 "$wine_loader" "$script_host" //nologo "Z:$test_root/tests/$probe_script" > "$probe_log" 2>&1 || probe_status=$?
+case "$probe_script" in
+    *.exe) set -- "$wine_loader" "Z:$test_root/$probe_script" ;;
+    *) set -- "$wine_loader" "$script_host" //nologo "Z:$test_root/tests/$probe_script" ;;
+esac
+timeout -k 3 60 "$@" > "$probe_log" 2>&1 || probe_status=$?
 cat "$probe_log"
 [ "$probe_status" -eq 0 ] || exit "$probe_status"
 # Wine cscript can return zero after a VBScript runtime error.

@@ -79,9 +79,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
     BordersImpl *This = BORDERS_THIS(iface);
     WCHAR str_clsid[39];
     
+    if (!ppvObject) return E_POINTER;
     *ppvObject = NULL;
 
-    if ((!This) || (!ppvObject)) {
+    if (!This) {
         ERR("object is NULL \n");
         return E_POINTER;
     }
@@ -473,16 +474,42 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Count(
     return S_OK;
 }
 
+/* Each enumeration owns its cursor and retains the same range/backend. */
+static HRESULT copy_borders_enumerator(BordersImpl *source, int position,
+        IEnumVARIANT **result)
+{
+    I_Borders *borders;
+    BordersImpl *copy;
+    HRESULT hres;
+
+    if (!result) return E_POINTER;
+    *result = NULL;
+    hres = _I_BordersConstructor((LPVOID*)&borders);
+    if (FAILED(hres)) return hres;
+    copy = (BordersImpl*)borders;
+    copy->pRange = source->pRange;
+    if (copy->pRange) I_Range_AddRef(copy->pRange);
+    copy->pOORange = source->pOORange;
+    if (copy->pOORange) IDispatch_AddRef(copy->pOORange);
+    copy->enum_position = position;
+    *result = BORDERS_ENUM(copy);
+    IEnumVARIANT_AddRef(*result);
+    return S_OK;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Borders_GetEnumerator(
         I_Borders* iface,
         IUnknown **pdretval)
 {
     BordersImpl *This = BORDERS_THIS(iface);
-    TRACE_IN;
-    *pdretval = (IUnknown*)BORDERS_ENUM(This);
-    IUnknown_AddRef(*pdretval);
-    TRACE_OUT;
-    return S_OK;
+    IEnumVARIANT *enumerator;
+    HRESULT hres;
+
+    if (!pdretval) return E_POINTER;
+    *pdretval = NULL;
+    hres = copy_borders_enumerator(This, 0, &enumerator);
+    if (SUCCEEDED(hres)) *pdretval = (IUnknown*)enumerator;
+    return hres;
 }
 
 /*** IDispatch methods ***/
@@ -630,12 +657,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Next(
     HRESULT hres;
     ULONG l;
     LONG l1;
-    int count;
+    LONG count;
     ULONG l2;
     IDispatch *dret;
-
-    if (This->enum_position<0)
-        return S_FALSE;
 
     if (pCeltFetched != NULL)
        *pCeltFetched = 0;
@@ -647,14 +671,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Next(
     for (l=0; l<celt; l++)
        VariantInit(&rgVar[l]);
 
-    I_Borders_get_Count(BORDERS_BORDERS(This), (LONG*)&count);
+    hres = I_Borders_get_Count(BORDERS_BORDERS(This), &count);
+    if (FAILED(hres)) goto error;
 
     for (l1=This->enum_position, l2=0; l1<count && l2<celt; l1++, l2++) {
       hres = I_Borders_get_Item(BORDERS_BORDERS(This), l1+1, &dret);
+      if (FAILED(hres)) goto error;
       V_VT(&rgVar[l2]) = VT_DISPATCH;
       V_DISPATCH(&rgVar[l2]) = dret;
-      if (FAILED(hres))
-         goto error;
     }
 
     if (pCeltFetched != NULL)
@@ -675,18 +699,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Skip(
         ULONG celt)
 {
     BordersImpl *This = ENUMVAR_THIS(iface);
-    int count;
-    TRACE_IN;
+    LONG count;
+    ULONG remaining;
+    HRESULT hres;
 
-    I_Borders_get_Count(BORDERS_BORDERS(This), (LONG*)&count);
-    This->enum_position += celt;
-
-    if (This->enum_position>=(count)) {
-        This->enum_position = count - 1;
-        TRACE_OUT;
+    hres = I_Borders_get_Count(BORDERS_BORDERS(This), &count);
+    if (FAILED(hres)) return hres;
+    remaining = count - This->enum_position;
+    if (celt > remaining) {
+        This->enum_position = count;
         return S_FALSE;
     }
-    TRACE_OUT;
+    This->enum_position += celt;
     return S_OK;
 }
 
@@ -702,8 +726,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Clone(
         IEnumVARIANT* iface,
         IEnumVARIANT **ppEnum)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    BordersImpl *This = ENUMVAR_THIS(iface);
+    return copy_borders_enumerator(This, This->enum_position, ppEnum);
 }
 
 #undef ENUMVAR_THIS

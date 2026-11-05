@@ -275,6 +275,20 @@ scripts/test-msi-coexistence.py подтвердил обе архитектур
 префиксы не затронуты. Подробности и GUID: [MSI64](msi64-results.md).
 Исторические записи о неподдерживаемом MSI64 ниже теперь относятся к прежним этапам.
 
+## Независимые Borders enumerators (2026-11-06)
+
+После MSI64 разобран узкий дефект коллекции Borders: общий cursor ломал
+вложенный For Each, Skip повторял последний элемент и переполнялся на ULONG_MAX,
+Clone возвращал E_NOTIMPL. Новый script воспроизвёл отказ первого внутреннего
+цикла; native probe подтвердил ошибки cursor/Skip/Clone на прежней DLL.
+
+GetEnumerator и Clone теперь создают независимые контексты с удержанием
+range/backend; Skip ограничивает позицию концом без сложения больших чисел.
+Native test и вложенный/повторный VBS обход прошли PE32 и PE64; diagonal probe
+PASS на обеих, legacy test3 — 30/0, markers30/0. Count12/aliases не менялись;
+Word по-прежнему заготовка. Остальные legacy tests в этом этапе не повторялись.
+Подробности: [Borders enumeration](borders-enumerator-results.md).
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
