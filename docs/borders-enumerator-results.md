@@ -24,8 +24,10 @@ This follows the COM contracts for
 [Skip](https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ienumvariant-skip),
 [Next](https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ienumvariant-next)
 and [Clone](https://learn.microsoft.com/en-us/windows/win32/api/oaidl/nf-oaidl-ienumvariant-clone).
-The legacy Count=12 and index aliases 1 through 4 remain; this change does not
-establish full Excel Borders collection semantics.
+At this stage Count=12 and index aliases 1 through 4 remained. The later
+[membership change](borders-membership-results.md) enumerates eight distinct
+keys while retaining alias lookup. Neither stage establishes full Excel
+Borders collection semantics or exact native Excel ordering.
 
 ## Tests
 

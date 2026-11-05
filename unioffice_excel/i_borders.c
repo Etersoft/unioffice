@@ -20,6 +20,13 @@
 
 #include "mso_to_oo_private.h"
 
+/* Enumeration membership excludes the four legacy aliases accepted by Item. */
+static const XlBordersIndex border_indices[] = {
+    xlDiagonalDown, xlDiagonalUp, xlEdgeLeft, xlEdgeTop,
+    xlEdgeBottom, xlEdgeRight, xlInsideVertical, xlInsideHorizontal
+};
+enum { BORDER_COUNT = sizeof(border_indices) / sizeof(border_indices[0]) };
+
 ITypeInfo *ti_borders = NULL;
 
 HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
@@ -223,8 +230,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Color(
         return E_POINTER;
     }
 
-    for ( i = 1; i <= 12; i++) {
-        if ((i==5) || (i==6)) continue;
+    for (i = xlEdgeLeft; i <= xlInsideHorizontal; i++) {
         I_Borders_get_Item(iface, i,(IDispatch**) &border_tmp);
         I_Border_put_Color(border_tmp, lcolor);
         I_Border_Release(border_tmp);
@@ -337,8 +343,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
        return E_POINTER;
     }
     
-    for (i=1;i<=12;i++) {
-        if ((i==5)||(i==6)) continue;
+    for (i = xlEdgeLeft; i <= xlInsideHorizontal; i++) {
         I_Borders_get_Item(iface, i,(IDispatch**) &border_tmp);
         I_Border_put_LineStyle(border_tmp, linestyle);
         I_Border_Release(border_tmp);
@@ -406,13 +411,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get__Default(
     TRACE_IN;
     TRACE("key=%08x\n",key);
 
-    if (!This) {
-        ERR("Object is NULL \n");
-        return E_FAIL;
-    }
-    /*Создаем объект Border*/
+    if (!ppObject) return E_POINTER;
     *ppObject = NULL;
-
+    if (!This) return E_POINTER;
+    if (key < xlLeft || key > xlInsideHorizontal) return DISP_E_BADINDEX;
+    /*Создаем объект Border*/
     hres = _I_BorderConstructor((LPVOID*) &punk);
 
     if (FAILED(hres)) {
@@ -468,9 +471,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Count(
         I_Borders* iface,
         LONG *pretval)
 {
-    TRACE_IN;
-    *pretval = 12;
-    TRACE_OUT;
+    if (!pretval) return E_POINTER;
+    *pretval = BORDER_COUNT;
     return S_OK;
 }
 
@@ -675,7 +677,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_EnumVAR_Next(
     if (FAILED(hres)) goto error;
 
     for (l1=This->enum_position, l2=0; l1<count && l2<celt; l1++, l2++) {
-      hres = I_Borders_get_Item(BORDERS_BORDERS(This), l1+1, &dret);
+      hres = I_Borders_get_Item(BORDERS_BORDERS(This), border_indices[l1], &dret);
       if (FAILED(hres)) goto error;
       V_VT(&rgVar[l2]) = VT_DISPATCH;
       V_DISPATCH(&rgVar[l2]) = dret;

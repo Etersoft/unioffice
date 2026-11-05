@@ -108,6 +108,11 @@ Skip and Clone. Both pass for PE32 and PE64; see
 The backend runner also accepts repository-relative `.exe` paths with an
 explicit expected success marker.
 
+Borders now enumerates eight distinct keys; legacy aliases 1–4 remain accepted
+by Item. Invalid indices fail before object creation. See
+[membership validation and compatibility limits](docs/borders-membership-results.md).
+`tests/border-weight.vbs` records a separate known failure: Weight is still a stub.
+
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments
 are not the intended output format of this project.

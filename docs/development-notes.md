@@ -289,6 +289,25 @@ PASS на обеих, legacy test3 — 30/0, markers30/0. Count12/aliases не �
 Word по-прежнему заготовка. Остальные legacy tests в этом этапе не повторялись.
 Подробности: [Borders enumeration](borders-enumerator-results.md).
 
+## Восемь разных Borders и проверка индексов (2026-11-06)
+
+Count/enumeration теперь основаны на восьми разных XlBordersIndex keys5..12,
+а не двенадцати ключах с четырьмя дублями. Aliases1..4 оставлены для lookup,
+не выдаются отдельно в обходе. Microsoft перечисляет восемь ключей, но общее
+описание говорит о четырёх границах; LibreOffice VBA реализует восемь. Exact
+Excel order и native runtime Count не сравнивались; выбран ascending5..12.
+
+Invalid Item/default keys0/-1/13/INT_MIN/INT_MAX теперь дают DISP_E_BADINDEX и
+NULL output. Native regression до исправления дал21 failures. Новый VBS
+проверяет уникальность через разные цвета, aliases, массовые Color/LineStyle,
+диагонали, вложенные/повторные обходы. Полные результаты и ограничения:
+[Borders membership](borders-membership-results.md).
+
+При расширении проверки найден отдельный старый stub Border.Weight:
+put возвращает S_OK без изменений, get — E_NOTIMPL. Отдельный известный failing
+probe tests/border-weight.vbs сохранён; поддержку Weight ещё предстоит реализовать
+и проверить через реальные UNO widths. Новых подтверждённых Wine defects нет.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -462,8 +481,9 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
 
 1. MSI32/MSI64 и covered Excel PE32/PE64 сценарии проверены. Нативная Windows
    и другие версии Windows Installer потребуют отдельного окружения.
-2. Семантика Borders.Count/enumeration legacy aliases и прочие неподдержанные
-   интерфейсы не покрываются этим прогоном; Word содержит заглушки.
+2. Borders.Weight — подтверждённая заглушка; отдельный failing probe сохранён.
+   Count/уникальные члены/aliases проверены отдельным набором. Точный порядок
+   Excel и прочие неподдержанные интерфейсы не покрыты; Word содержит заглушки.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
 

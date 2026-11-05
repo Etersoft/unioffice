@@ -51,6 +51,26 @@ static void next(IEnumVARIANT *enumerator, ULONG requested, ULONG expected, HRES
     for (i = 0; i < 65; ++i) VariantClear(&values[i]);
 }
 
+static void invalid_indices(I_Borders *borders)
+{
+    const LONG indices[] = {0, -1, 13, (-2147483647L - 1), 2147483647L};
+    IDispatch *item;
+    HRESULT hr;
+    unsigned int i;
+    for (i = 0; i < sizeof(indices) / sizeof(indices[0]); ++i) {
+        item = (IDispatch *)1;
+        hr = I_Borders_get_Item(borders, (XlBordersIndex)indices[i], &item);
+        CHECK(hr == DISP_E_BADINDEX);
+        CHECK(item == NULL);
+        if (SUCCEEDED(hr) && item) IDispatch_Release(item);
+        item = (IDispatch *)1;
+        hr = I_Borders_get__Default(borders, (XlBordersIndex)indices[i], &item);
+        CHECK(hr == DISP_E_BADINDEX);
+        CHECK(item == NULL);
+        if (SUCCEEDED(hr) && item) IDispatch_Release(item);
+    }
+}
+
 int __cdecl main(void)
 {
     CLSID clsid;
@@ -78,6 +98,11 @@ int __cdecl main(void)
     REQUIRE(invoke(V_DISPATCH(&range), L"Borders", DISPATCH_PROPERTYGET, NULL, 0, &collection) == S_OK);
     REQUIRE(IDispatch_QueryInterface(V_DISPATCH(&collection), &IID_I_Borders, (void **)&borders) == S_OK);
     REQUIRE(I_Borders_get_Count(borders, &count) == S_OK && count > 3 && count < 65);
+    CHECK(count == 8);
+    invalid_indices(borders);
+    CHECK(I_Borders_get_Count(borders, NULL) == E_POINTER);
+    CHECK(I_Borders_get_Item(borders, xlEdgeLeft, NULL) == E_POINTER);
+    CHECK(I_Borders_get__Default(borders, xlEdgeLeft, NULL) == E_POINTER);
     first = enumerator(borders);
     second = enumerator(borders);
     REQUIRE(first && second);
