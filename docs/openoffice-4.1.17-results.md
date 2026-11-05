@@ -96,3 +96,14 @@ Regression results (`~/tmp/claude/unioffice-excel-suite-_8c6q9m1`):
 Failed checks decreased from 31 to 7. Tests 4–7 pass; no new failures appeared.
 Test 4's success counter is 34 versus 33 markers; test 6 remains 12 versus 11.
 These legacy counter discrepancies do not affect the remaining failure list.
+
+## Follow-up: font scripts fixed
+
+Subscript/Superscript getters are implemented; setters now use VT_I2 on the
+cell text cursor because the range property set has no CharEscapement. The
+operation covers every cell, with Null returned for mixed range states.
+
+New tests/font-script.vbs passed enabling/disabling, by-reference and numeric
+inputs, mutual switching, a 2x2 range and mixed-state reads. The original font
+test passed 32/0 (`unioffice-excel-suite-wo8_d87e`). Both compiler builds pass.
+The remaining known failures are Outline.ShowLevels and two Border operations.

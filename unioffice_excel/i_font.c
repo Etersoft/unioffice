@@ -811,162 +811,143 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_put_OutlineFont(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_Font_get_Subscript(
-        I_Font* iface,
-        VARIANT *RHS)
+/* Escapement belongs to cell text, not the spreadsheet range property set. */
+static HRESULT font_text_cursor(FontImpl *font, LONG column, LONG row, VARIANT *cursor)
 {
-/*    _FontImpl *This = (_FontImpl*)iface;
-    HRESULT hres;
-    VARIANT res;
-    RangeImpl *range = (RangeImpl*)This->prange;
-    VARIANT vsubscript;
+    VARIANT x, y, cell, result, select;
+    HRESULT hr;
 
-    TRACE(" \n");
-
-    VariantInit (&vsubscript);
-    VariantInit (&res);
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &res, range->pOORange, L"CharEscapement", 0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when put CharEscapement\n");
-        return E_FAIL;
-    }
-
-    hres = VariantChangeTypeEx(&res, &res, 0, 0, VT_I2);
-    if (FAILED(hres)) {
-        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
-        return E_FAIL;
-    }
-    if (V_I2(&res)<0) {
-        V_VT(RHS) = VT_BOOL;
-        V_BOOL(RHS) = VARIANT_TRUE;
-    } else {
-        V_VT(RHS) = VT_BOOL;
-        V_BOOL(RHS) = VARIANT_FALSE;
-    }
-
-    return S_OK;*/
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    VariantInit(&x);
+    VariantInit(&y);
+    VariantInit(&cell);
+    VariantInit(&result);
+    VariantInit(&select);
+    VariantInit(cursor);
+    V_VT(&x) = VT_I4;
+    V_I4(&x) = column;
+    V_VT(&y) = VT_I4;
+    V_I4(&y) = row;
+    hr = AutoWrap(DISPATCH_METHOD, &cell, font->pOORange, L"getCellByPosition", 2, y, x);
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_METHOD, cursor, V_DISPATCH(&cell), L"createTextCursor", 0);
+    V_VT(&select) = VT_BOOL;
+    V_BOOL(&select) = VARIANT_FALSE;
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(cursor), L"gotoStart", 1, select);
+    V_BOOL(&select) = VARIANT_TRUE;
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(cursor), L"gotoEnd", 1, select);
+    VariantClear(&cell);
+    VariantClear(&result);
+    if (FAILED(hr)) VariantClear(cursor);
+    return hr;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(
-        I_Font* iface,
-        VARIANT RHS)
+static HRESULT font_get_cell_script(I_Font *iface, LONG column, LONG row, VARIANT *value, BOOL superscript)
 {
     FontImpl *This = FONT_THIS(iface);
-    HRESULT hres;
-    VARIANT res;
-    VARIANT vsubscript;
+    VARIANT escapement, cursor;
+    HRESULT hr;
 
-    TRACE(" \n");
-
-    MSO_TO_OO_CorrectArg(RHS, &RHS);
-
-    VariantInit (&vsubscript);
-    VariantInit (&res);
-
-    hres = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
-    if (FAILED(hres)) {
-        ERR("VariantChangeTypeEx   %08x\n",hres);
-        return E_FAIL;
+    if (!value) return E_POINTER;
+    VariantInit(value);
+    VariantInit(&escapement);
+    hr = font_text_cursor(This, column, row, &cursor);
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_PROPERTYGET, &escapement, V_DISPATCH(&cursor), L"CharEscapement", 0);
+    if (SUCCEEDED(hr) && V_VT(&escapement) == VT_NULL) {
+        V_VT(value) = VT_NULL;
+    } else if (SUCCEEDED(hr)) {
+        hr = VariantChangeTypeEx(&escapement, &escapement, 0, 0, VT_I2);
+        if (SUCCEEDED(hr)) {
+            V_VT(value) = VT_BOOL;
+            V_BOOL(value) = (superscript ? V_I2(&escapement) > 0 : V_I2(&escapement) < 0)
+                ? VARIANT_TRUE : VARIANT_FALSE;
+        }
     }
-    if (V_BOOL(&RHS)==VARIANT_TRUE) {
-        V_VT(&vsubscript) = VT_I4;
-        V_BOOL(&vsubscript) = -50;
-    } else {
-        V_VT(&vsubscript) = VT_I4;
-        V_BOOL(&vsubscript) = 0;
-    }
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharEscapement", 1, vsubscript);
-    if (FAILED(hres)) {
-        ERR("when put CharEscapement\n");
-        return E_FAIL;
-    }
-
-    return S_OK;
-/*    TRACE_NOTIMPL;
-    return E_NOTIMPL;*/
+    VariantClear(&escapement);
+    VariantClear(&cursor);
+    return hr;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_Font_get_Superscript(
-        I_Font* iface,
-        VARIANT *RHS)
-{
-/*    _FontImpl *This = (_FontImpl*)iface;
-    HRESULT hres;
-    VARIANT res;
-    RangeImpl *range = (RangeImpl*)This->prange;
-    VARIANT vsubscript;
-
-    TRACE(" \n");
-
-    VariantInit (&vsubscript);
-    VariantInit (&res);
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &res, range->pOORange, L"CharEscapement", 0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when put CharEscapement\n");
-        return E_FAIL;
-    }
-
-    hres = VariantChangeTypeEx(&res, &res, 0, 0, VT_I2);
-    if (FAILED(hres)) {
-        TRACE("ERROR VariantChangeTypeEx   %08x\n",hres);
-        return E_FAIL;
-    }
-    if (V_I2(&res)>0) {
-        V_VT(RHS) = VT_BOOL;
-        V_BOOL(RHS) = VARIANT_TRUE;
-    } else {
-        V_VT(RHS) = VT_BOOL;
-        V_BOOL(RHS) = VARIANT_FALSE;
-    }
-
-    return S_OK;*/
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
-}
-
-static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(
-        I_Font* iface,
-        VARIANT RHS)
+static HRESULT font_get_script(I_Font *iface, VARIANT *value, BOOL superscript)
 {
     FontImpl *This = FONT_THIS(iface);
-    HRESULT hres;
-    VARIANT res;
-    VARIANT vsubscript;
+    LONG first_row, first_column, last_row, last_column, row, column;
+    VARIANT current;
+    HRESULT hr;
 
-    TRACE(" \n");
-
-    MSO_TO_OO_CorrectArg(RHS, &RHS);
-
-    VariantInit (&vsubscript);
-    VariantInit (&res);
-
-    hres = VariantChangeTypeEx(&RHS, &RHS, 0, 0, VT_BOOL);
-    if (FAILED(hres)) {
-        ERR("VariantChangeTypeEx   %08x\n",hres);
-        return E_FAIL;
+    if (!value) return E_POINTER;
+    VariantInit(value);
+    hr = MSO_TO_OO_GetRangeAddress(This->pRange, &first_row, &first_column, &last_row, &last_column);
+    if (FAILED(hr)) return hr;
+    for (row = 0; row <= last_row - first_row; ++row) {
+        for (column = 0; column <= last_column - first_column; ++column) {
+            hr = font_get_cell_script(iface, column, row, &current, superscript);
+            if (FAILED(hr)) return hr;
+            if (V_VT(&current) == VT_NULL || (V_VT(value) != VT_EMPTY && V_BOOL(value) != V_BOOL(&current))) {
+                V_VT(value) = VT_NULL;
+                return S_OK;
+            }
+            *value = current;
+        }
     }
-    if (V_BOOL(&RHS)==VARIANT_TRUE) {
-        V_VT(&vsubscript) = VT_I4;
-        V_BOOL(&vsubscript) = 50;
-    } else {
-        V_VT(&vsubscript) = VT_I4;
-        V_BOOL(&vsubscript) = 0;
-    }
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &res, This->pOORange, L"CharEscapement", 1, vsubscript);
-    if (FAILED(hres)) {
-        ERR("when put CharEscapement\n");
-        return E_FAIL;
-    }
-
     return S_OK;
-/*    TRACE_NOTIMPL;
-    return E_NOTIMPL;*/
+}
+
+static HRESULT font_put_script(I_Font *iface, VARIANT value, SHORT offset)
+{
+    FontImpl *This = FONT_THIS(iface);
+    VARIANT enabled, escapement, result, cursor;
+    LONG first_row, first_column, last_row, last_column, row, column;
+    HRESULT hr;
+
+    VariantInit(&enabled);
+    VariantInit(&escapement);
+    VariantInit(&result);
+    VariantInit(&cursor);
+    hr = VariantCopyInd(&enabled, &value);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&enabled, &enabled, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr)) {
+        /* UNO CharEscapement is a signed short, not a BOOL or a long. */
+        V_VT(&escapement) = VT_I2;
+        V_I2(&escapement) = V_BOOL(&enabled) ? offset : 0;
+        hr = MSO_TO_OO_GetRangeAddress(This->pRange, &first_row, &first_column, &last_row, &last_column);
+        for (row = 0; SUCCEEDED(hr) && row <= last_row - first_row; ++row) {
+            for (column = 0; SUCCEEDED(hr) && column <= last_column - first_column; ++column) {
+                hr = font_text_cursor(This, column, row, &cursor);
+                if (SUCCEEDED(hr))
+                    hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, V_DISPATCH(&cursor),
+                                  L"CharEscapement", 1, escapement);
+                VariantClear(&cursor);
+                VariantClear(&result);
+            }
+        }
+    }
+    VariantClear(&enabled);
+    VariantClear(&cursor);
+    VariantClear(&result);
+    return hr;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_Subscript(I_Font *iface, VARIANT *value)
+{
+    return font_get_script(iface, value, FALSE);
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_Subscript(I_Font *iface, VARIANT value)
+{
+    return font_put_script(iface, value, -50);
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_get_Superscript(I_Font *iface, VARIANT *value)
+{
+    return font_get_script(iface, value, TRUE);
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Font_put_Superscript(I_Font *iface, VARIANT value)
+{
+    return font_put_script(iface, value, 50);
 }
 
 /*IDispatch methods*/
