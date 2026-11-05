@@ -39,7 +39,7 @@ HRESULT AutoWrap(int autoType, VARIANT *pvResult, IDispatch *pDisp, LPOLESTR ptN
     HRESULT hr;
 
     VARIANTARG vararg[10];
-    EXCEPINFO exi;
+    EXCEPINFO exi = {0};
 
     /* Begin variable-argument list...*/
     va_list marker;
@@ -74,6 +74,7 @@ HRESULT AutoWrap(int autoType, VARIANT *pvResult, IDispatch *pDisp, LPOLESTR ptN
     /* Make the call!*/
     hr = IDispatch_Invoke(pDisp,dispID, &IID_NULL, /*LOCALE_SYSTEM_DEFAULT*/ LOCALE_USER_DEFAULT, autoType, &dp, pvResult, &exi, NULL);
     if (FAILED(hr)) {
+        TRACE("Invoke failed hr=%08x dispid=%i flags=%i argc=%i\n", hr, dispID, autoType, cArgs);
         switch(hr) {
         case DISP_E_BADPARAMCOUNT: TRACE("DISP_E_BADPARAMCOUNT \n");break;
         case DISP_E_BADVARTYPE: TRACE("DISP_E_BADVARTYPE \n");break;
