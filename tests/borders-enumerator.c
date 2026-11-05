@@ -71,6 +71,25 @@ static void invalid_indices(I_Borders *borders)
     }
 }
 
+static void weight_contract(I_Borders *borders)
+{
+    IDispatch *dispatch = NULL;
+    I_Border *border = NULL;
+    CHECK(I_Borders_get_Weight(borders, NULL) == E_POINTER);
+    CHECK(I_Borders_put_Weight(borders, (XlBorderWeight)3) == E_INVALIDARG);
+    CHECK(I_Borders_get_Item(borders, xlEdgeLeft, &dispatch) == S_OK && dispatch);
+    if (!dispatch) return;
+    CHECK(IDispatch_QueryInterface(dispatch, &IID_I_Border, (void **)&border) == S_OK);
+    if (border) {
+        CHECK(I_Border_get_Weight(border, NULL) == E_POINTER);
+        CHECK(I_Border_get_LineStyle(border, NULL) == E_POINTER);
+        CHECK(I_Border_put_Weight(border, (XlBorderWeight)3) == E_INVALIDARG);
+        CHECK(I_Border_put_LineStyle(border, (XlLineStyle)12345) == E_INVALIDARG);
+        I_Border_Release(border);
+    }
+    IDispatch_Release(dispatch);
+}
+
 int __cdecl main(void)
 {
     CLSID clsid;
@@ -100,6 +119,7 @@ int __cdecl main(void)
     REQUIRE(I_Borders_get_Count(borders, &count) == S_OK && count > 3 && count < 65);
     CHECK(count == 8);
     invalid_indices(borders);
+    weight_contract(borders);
     CHECK(I_Borders_get_Count(borders, NULL) == E_POINTER);
     CHECK(I_Borders_get_Item(borders, xlEdgeLeft, NULL) == E_POINTER);
     CHECK(I_Borders_get__Default(borders, xlEdgeLeft, NULL) == E_POINTER);

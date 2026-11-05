@@ -353,49 +353,31 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_put_LineStyle(
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Weight(
-        I_Borders* iface,
-        XlBorderWeight *pweight)
+        I_Borders* iface, XlBorderWeight *pweight)
 {
-    BordersImpl *This = BORDERS_THIS(iface);
-    HRESULT hres;
-    I_Border *border_tmp;
-    TRACE_IN;
-
-    if (!This) {
-        ERR("object is NULL \n");
-        return E_POINTER;
-    }
-
-    I_Borders_get_Item(iface, xlEdgeTop,(IDispatch**) &border_tmp);
-    I_Border_get_Weight(border_tmp, pweight);
-    I_Border_Release(border_tmp);
-
-    TRACE_OUT;
-    return S_OK;
+    I_Border *border;
+    HRESULT hr;
+    if (!pweight) return E_POINTER;
+    hr = I_Borders_get_Item(iface, xlEdgeTop, (IDispatch**)&border);
+    if (FAILED(hr)) return hr;
+    hr = I_Border_get_Weight(border, pweight);
+    I_Border_Release(border);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
-        I_Borders* iface,
-        XlBorderWeight weight)
+        I_Borders* iface, XlBorderWeight weight)
 {
-    BordersImpl *This = BORDERS_THIS(iface);
-    HRESULT hres;
-    I_Border *border_tmp;
-    int i;
-    TRACE_IN;
-
-    if (!This) {
-        ERR("object is NULL \n");           
-        return E_POINTER;
+    I_Border *border;
+    HRESULT hr;
+    int key;
+    for (key = xlEdgeLeft; key <= xlInsideHorizontal; ++key) {
+        hr = I_Borders_get_Item(iface, key, (IDispatch**)&border);
+        if (FAILED(hr)) return hr;
+        hr = I_Border_put_Weight(border, weight);
+        I_Border_Release(border);
+        if (FAILED(hr)) return hr;
     }
-
-    for (i=1;i<=12;i++) {
-        if ((i==5)||(i==6)) continue;
-        I_Borders_get_Item(iface, i,(IDispatch**) &border_tmp);
-        I_Border_put_Weight(border_tmp, weight);
-        I_Border_Release(border_tmp);
-    }
-    TRACE_OUT;
     return S_OK;
 }
 

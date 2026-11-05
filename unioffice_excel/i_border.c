@@ -646,469 +646,199 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Creator(
     return S_OK;
 }
 
+/* UNO line dimensions are signed shorts in hundredths of a millimetre. */
+static HRESULT border_weight_width(XlBorderWeight weight, LONG *width)
+{
+    switch (weight) {
+    case xlHairline: *width = 2; break;
+    case xlThin: *width = 26; break;
+    case xlMedium: *width = 88; break;
+    case xlThick: *width = 141; break;
+    default: return E_INVALIDARG;
+    }
+    return S_OK;
+}
+
+static HRESULT border_line_property(BorderImpl *This, const WCHAR **name,
+        const WCHAR **valid)
+{
+    *valid = NULL;
+    switch (This->key) {
+    case xlLeft: case xlEdgeLeft: *name = L"LeftLine"; *valid = L"IsLeftLineValid"; break;
+    case xlRight: case xlEdgeRight: *name = L"RightLine"; *valid = L"IsRightLineValid"; break;
+    case xlTop: case xlEdgeTop: *name = L"TopLine"; *valid = L"IsTopLineValid"; break;
+    case xlBottom: case xlEdgeBottom: *name = L"BottomLine"; *valid = L"IsBottomLineValid"; break;
+    case xlInsideVertical: *name = L"VerticalLine"; *valid = L"IsVerticalLineValid"; break;
+    case xlInsideHorizontal: *name = L"HorizontalLine"; *valid = L"IsHorizontalLineValid"; break;
+    case xlDiagonalDown: *name = L"DiagonalTLBR"; break;
+    case xlDiagonalUp: *name = L"DiagonalBLTR"; break;
+    default: return DISP_E_BADINDEX;
+    }
+    return S_OK;
+}
+
+static HRESULT border_load_line(BorderImpl *This, VARIANT *table, VARIANT *line)
+{
+    const WCHAR *name, *valid;
+    HRESULT hr = border_line_property(This, &name, &valid);
+    if (FAILED(hr)) return hr;
+    if (!This->pOORange) return E_UNEXPECTED;
+    if (!valid) return border_get_diagonal(This->pOORange, name, line);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, table, This->pOORange, L"TableBorder", 0);
+    if (FAILED(hr)) return hr;
+    if (V_VT(table) != VT_DISPATCH || !V_DISPATCH(table)) return E_UNEXPECTED;
+    return AutoWrap(DISPATCH_PROPERTYGET, line, V_DISPATCH(table), (WCHAR*)name, 0);
+}
+
+static HRESULT border_store_line(BorderImpl *This, VARIANT table, VARIANT line)
+{
+    static const WCHAR *flags[] = {L"IsLeftLineValid", L"IsRightLineValid",
+        L"IsTopLineValid", L"IsBottomLineValid", L"IsVerticalLineValid",
+        L"IsHorizontalLineValid", L"IsDistanceValid"};
+    const WCHAR *name, *valid;
+    VARIANT selected;
+    unsigned int i;
+    HRESULT hr = border_line_property(This, &name, &valid);
+    if (FAILED(hr)) return hr;
+    if (!valid) return AutoWrap(DISPATCH_PROPERTYPUT, NULL, This->pOORange, (WCHAR*)name, 1, line);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, NULL, V_DISPATCH(&table), (WCHAR*)name, 1, line);
+    if (FAILED(hr)) return hr;
+    VariantInit(&selected);
+    V_VT(&selected) = VT_BOOL;
+    for (i = 0; i < sizeof(flags) / sizeof(flags[0]); ++i) {
+        V_BOOL(&selected) = !lstrcmpW(flags[i], valid) ? VARIANT_TRUE : VARIANT_FALSE;
+        hr = AutoWrap(DISPATCH_PROPERTYPUT, NULL, V_DISPATCH(&table), (WCHAR*)flags[i], 1, selected);
+        if (FAILED(hr)) return hr;
+    }
+    return AutoWrap(DISPATCH_PROPERTYPUT, NULL, This->pOORange, L"TableBorder", 1, table);
+}
+
+static HRESULT border_read_dimension(VARIANT line, const WCHAR *name, LONG *value)
+{
+    VARIANT result;
+    HRESULT hr;
+    if (V_VT(&line) != VT_DISPATCH || !V_DISPATCH(&line)) return E_UNEXPECTED;
+    VariantInit(&result);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &result, V_DISPATCH(&line), (WCHAR*)name, 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeType(&result, &result, 0, VT_I4);
+    if (SUCCEEDED(hr)) *value = V_I4(&result);
+    VariantClear(&result);
+    return hr;
+}
+
+static HRESULT border_dimensions(VARIANT line, LONG *inner, LONG *outer, LONG *gap)
+{
+    HRESULT hr = border_read_dimension(line, L"InnerLineWidth", inner);
+    if (SUCCEEDED(hr)) hr = border_read_dimension(line, L"OuterLineWidth", outer);
+    if (SUCCEEDED(hr)) hr = border_read_dimension(line, L"LineDistance", gap);
+    return hr;
+}
+
+static HRESULT border_write_dimensions(BorderImpl *This, VARIANT table, VARIANT line,
+        LONG width, BOOL doubled)
+{
+    VARIANT value;
+    LONG stroke = doubled ? (width + 1) / 3 : width;
+    HRESULT hr;
+    if (doubled && stroke < 1) stroke = 1;
+    VariantInit(&value);
+    V_VT(&value) = VT_I2;
+    V_I2(&value) = doubled ? stroke : 0;
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, NULL, V_DISPATCH(&line), L"InnerLineWidth", 1, value);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, NULL, V_DISPATCH(&line), L"LineDistance", 1, value);
+    V_I2(&value) = stroke;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, NULL, V_DISPATCH(&line), L"OuterLineWidth", 1, value);
+    if (SUCCEEDED(hr)) hr = border_store_line(This, table, line);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
-        I_Border* iface,
-        XlLineStyle *plinestyle)
+        I_Border* iface, XlLineStyle *plinestyle)
 {
     BorderImpl *This = BORDER_THIS(iface);
-    HRESULT hres;
-    VARIANT vret;
-    VARIANT X,Y;
-    LONG in,out,l;
-    TRACE_IN;
-
-    VariantInit(&vret);
-    VariantInit(&X);
-    VariantInit(&Y);
-
-    if (!This) {
-        ERR("Object is NULL \n");
-        return E_FAIL;
-    }
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
-    if (FAILED(hres)) {
-        ERR("get TableBorder\n");
-        return E_FAIL;
-    }
-
-    switch(This->key) {
-/*    case xlLeft:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"LeftBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get LeftBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlRight:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"RightBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get RightBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlTop:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"TopBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get TopBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlBottom:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"BottomBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get BottomBorder\n");
-            return E_FAIL;
-        }
-        break;*/
-    case xlLeft:
-    case xlEdgeLeft:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"LeftLine", 0);
-        if (FAILED(hres)) {
-            ERR("get LeftLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlRight:
-    case xlEdgeRight:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"RightLine", 0);
-        if (FAILED(hres)) {
-            ERR("get RightLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlTop:
-    case xlEdgeTop:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"TopLine", 0);
-        if (FAILED(hres)) {
-            ERR("get TopLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlBottom:
-    case xlEdgeBottom:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"BottomLine", 0);
-        if (FAILED(hres)) {
-            ERR("get BottomLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlInsideHorizontal:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"HorizontalLine", 0);
-        if (FAILED(hres)) {
-            ERR("get HorizontalLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlInsideVertical:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"VerticalLine", 0);
-        if (FAILED(hres)) {
-            ERR("get VerticalLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlDiagonalDown:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
-        if (FAILED(hres)) {
-            ERR("get DiagonalTLBR\n");
-            return E_FAIL;
-        }
-        break;
-    case xlDiagonalUp:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
-        if (FAILED(hres)) {
-            ERR("get DiagonalBLTR\n");
-            return E_FAIL;
-        }
-        break;
-    default :
-        TRACE("NOT REALIZE %i \n",This->key);
-    }
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, V_DISPATCH(&Y), L"InnerLineWidth", 0);
-    if (FAILED(hres)) {
-        ERR("InnerLineWidth \n");
-        return E_FAIL;
-    }
-    hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
-    in=V_I4(&vret);
-    VariantClear(&vret);
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, V_DISPATCH(&Y), L"OuterLineWidth", 0);
-    if (FAILED(hres)) {
-        ERR("OuterLineWidth \n");
-        return E_FAIL;
-    }
-    hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
-    out=V_I4(&vret);
-    VariantClear(&vret);
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vret, V_DISPATCH(&Y), L"LineDistance", 0);
-    if (FAILED(hres)) {
-        ERR("LineDistance \n");
-        return E_FAIL;
-    }
-    hres = VariantChangeTypeEx(&vret, &vret, 0, 0, VT_I4);
-    l=V_I4(&vret);
-
-    if ((l==0)&&(out==0)&&(in==0)) *plinestyle=xlLineStyleNone;
-        else if ((l==0)&&(out==0)) *plinestyle=xlContinuous;
-            else *plinestyle=xlDouble;
-
-    VariantClear(&vret);
-    VariantClear(&X);
-    VariantClear(&Y);
-
-    TRACE_OUT;
-    return S_OK;
+    VARIANT table, line;
+    LONG inner, outer, gap;
+    HRESULT hr;
+    if (!plinestyle) return E_POINTER;
+    VariantInit(&table);
+    VariantInit(&line);
+    hr = border_load_line(This, &table, &line);
+    if (SUCCEEDED(hr)) hr = border_dimensions(line, &inner, &outer, &gap);
+    if (SUCCEEDED(hr)) *plinestyle = !inner && !outer ? xlLineStyleNone :
+        (inner && outer && gap ? xlDouble : xlContinuous);
+    VariantClear(&line);
+    VariantClear(&table);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
-        I_Border* iface,
-        XlLineStyle linestyle)
+        I_Border* iface, XlLineStyle linestyle)
 {
     BorderImpl *This = BORDER_THIS(iface);
-    HRESULT hres;
-    VARIANT vret;
-    VARIANT X,Y,param1;
-    TRACE_IN;
-
-    VariantInit(&vret);
-    VariantInit(&X);
-    VariantInit(&Y);
-    VariantInit(&param1);
-    LONG in,out,l;
-
-    if (!This) {
-        ERR("Object is NULL \n");
-        return E_FAIL;
-    }
-
-    switch(linestyle) {
-    case xlContinuous:
-        in = 10;
-        out = 0;
-        l = 0;
-        break;
-    case xlDouble:
-        in = 10;
-        out = 10;
-        l = 10;
-        break;
-    case xlLineStyleNone:
-        in = 0;
-        out = 0;
-        l = 0;
-        break;
-    case xlDash:
-    case xlDashDot:
-    case xlDashDotDot:
-    case xlDot:
-    case xlSlantDashDot:
-        TRACE("NOT IMPLEMENTED\n");
+    VARIANT table, line;
+    LONG inner, outer, gap, width;
+    HRESULT hr;
+    switch (linestyle) {
+    case xlContinuous: case xlDouble: case xlLineStyleNone: break;
+    case xlDash: case xlDashDot: case xlDashDotDot: case xlDot: case xlSlantDashDot:
         return E_NOTIMPL;
+    default: return E_INVALIDARG;
     }
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
-    if (FAILED(hres)) {
-        ERR("get TableBorder\n");
-        return E_FAIL;
+    VariantInit(&table);
+    VariantInit(&line);
+    hr = border_load_line(This, &table, &line);
+    if (SUCCEEDED(hr)) hr = border_dimensions(line, &inner, &outer, &gap);
+    if (SUCCEEDED(hr)) {
+        width = inner + outer + gap;
+        if (width <= 0) width = 26;
+        if (linestyle == xlLineStyleNone) width = 0;
+        hr = border_write_dimensions(This, table, line, width, linestyle == xlDouble);
     }
-
-    switch(This->key) {
- /*   case xlLeft:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"LeftBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get LeftBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlRight:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"RightBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get RightBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlTop:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"TopBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get TopBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlBottom:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, cur_range->pOORange, L"BottomBorder", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get BottomBorder\n");
-            return E_FAIL;
-        }
-        break;*/
-    case xlLeft:
-    case xlEdgeLeft:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"LeftLine", 0);
-        if (FAILED(hres)) {
-            ERR("get LeftLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlRight:
-    case xlEdgeRight:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"RightLine", 0);
-        if (FAILED(hres)) {
-            ERR("get RightLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlTop:
-    case xlEdgeTop:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"TopLine", 0);
-        if (FAILED(hres)) {
-            ERR("get TopLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlBottom:
-    case xlEdgeBottom:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"BottomLine", 0);
-        if (FAILED(hres)) {
-            ERR("get BottomLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlInsideHorizontal:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"HorizontalLine", 0);
-        if (FAILED(hres)) {
-            ERR("get HorizontalLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlInsideVertical:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, V_DISPATCH(&X), L"VerticalLine", 0);
-        if (FAILED(hres)) {
-            ERR("get VerticalLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlDiagonalDown:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
-        if (FAILED(hres)) {
-            ERR("get DiagonalTLBR\n");
-            return E_FAIL;
-        }
-        break;
-    case xlDiagonalUp:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
-        if (FAILED(hres)) {
-            ERR("get DiagonalBLTR\n");
-            return E_FAIL;
-        }
-        break;
-    default :
-        TRACE("NOT REALIZE %i \n",This->key);
-    }
-
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = in;
-    VariantClear(&vret);
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&Y), L"InnerLineWidth", 1, param1);
-    if (FAILED(hres)) {
-        ERR("InnerLineWidth \n");
-        return E_FAIL;
-    }
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = out;
-    VariantClear(&vret);
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&Y), L"OuterLineWidth", 1, param1);
-    if (FAILED(hres)) {
-        ERR("OuterLineWidth \n");
-        return E_FAIL;
-    }
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = out;
-    VariantClear(&vret);
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&Y), L"LineDistance", 1, param1);
-    if (FAILED(hres)) {
-        ERR("LineDistance \n");
-        return E_FAIL;
-    }
-
-    VariantClear(&param1);
-    V_VT(&param1) = VT_DISPATCH;
-    V_DISPATCH(&param1) = V_DISPATCH(&Y);
-    IDispatch_AddRef(V_DISPATCH(&param1));
-
-    switch(This->key) {
-/*    case xlLeft:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"LeftBorder", 1, param1);
-        if (FAILED(hres)) {
-            TRACE("ERROR when put LeftBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlRight:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"RightBorder", 1, param1);
-        if (FAILED(hres)) {
-            TRACE("ERROR when put RightBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlTop:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"TopBorder", 1, param1);
-        if (FAILED(hres)) {
-            TRACE("ERROR when put TopBorder\n");
-            return E_FAIL;
-        }
-        break;
-    case xlBottom:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, cur_range->pOORange, L"BottomBorder", 1, param1);
-        if (FAILED(hres)) {
-            TRACE("ERROR when put BottomBorder\n");
-            return E_FAIL;
-        }
-        break;*/
-    case xlLeft:
-    case xlEdgeLeft:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"LeftLine", 1, param1);
-        if (FAILED(hres)) {
-            ERR("get LeftLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlRight:
-    case xlEdgeRight:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"RightLine", 1, param1);
-        if (FAILED(hres)) {
-            ERR("get RightLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlTop:
-    case xlEdgeTop:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"TopLine", 1, param1);
-        if (FAILED(hres)) {
-            ERR("get TopLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlBottom:
-    case xlEdgeBottom:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"BottomLine", 1, param1);
-        if (FAILED(hres)) {
-            ERR("get BottomLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlInsideHorizontal:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"HorizontalLine", 1, param1);
-        if (FAILED(hres)) {
-            ERR("get HorizontalLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlInsideVertical:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, V_DISPATCH(&X), L"VerticalLine", 1, param1);
-        if (FAILED(hres)) {
-            ERR("get VerticalLine\n");
-            return E_FAIL;
-        }
-        break;
-    case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalTLBR", 1, param1);
-        if (FAILED(hres)) {
-            ERR("put DiagonalTLBR\n");
-            return E_FAIL;
-        }
-        break;
-    case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"DiagonalBLTR", 1, param1);
-        if (FAILED(hres)) {
-            ERR("put DiagonalBLTR\n");
-            return E_FAIL;
-        }
-        break;
-    default :
-        TRACE("NOT REALIZE %i \n",This->key);
-    }
-
-    VariantClear(&param1);
-    V_VT(&param1) = VT_DISPATCH;
-    V_DISPATCH(&param1) = V_DISPATCH(&X);
-    IDispatch_AddRef(V_DISPATCH(&param1));
-    VariantClear(&vret);
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"TableBorder", 1, param1);
-    if (FAILED(hres)) {
-        ERR("get TableBorder\n");
-        return E_FAIL;
-    }
-
-    VariantClear(&vret);
-    VariantClear(&X);
-    VariantClear(&Y);
-    VariantClear(&param1);
-
-    TRACE_OUT;
-    return S_OK;
+    VariantClear(&line);
+    VariantClear(&table);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_get_Weight(
-        I_Border* iface,
-        XlBorderWeight *pweight)
+        I_Border* iface, XlBorderWeight *pweight)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    BorderImpl *This = BORDER_THIS(iface);
+    VARIANT table, line;
+    LONG inner, outer, gap, width;
+    HRESULT hr;
+    if (!pweight) return E_POINTER;
+    VariantInit(&table);
+    VariantInit(&line);
+    hr = border_load_line(This, &table, &line);
+    if (SUCCEEDED(hr)) hr = border_dimensions(line, &inner, &outer, &gap);
+    if (SUCCEEDED(hr)) {
+        width = inner + outer + gap;
+        /* Nearest category tolerates UNO's conversion through twips. */
+        *pweight = width <= 0 ? xlThin : width <= 14 ? xlHairline :
+            width <= 57 ? xlThin : width <= 114 ? xlMedium : xlThick;
+    }
+    VariantClear(&line);
+    VariantClear(&table);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_put_Weight(
-        I_Border* iface,
-        XlBorderWeight weight)
+        I_Border* iface, XlBorderWeight weight)
 {
-    TRACE_NOTIMPL;
-    /*FIXME to realize*/
-//    I_Border_put_LineStyle(iface, xlContinuous);
-    return S_OK;
+    BorderImpl *This = BORDER_THIS(iface);
+    VARIANT table, line;
+    LONG inner, outer, gap, width;
+    HRESULT hr = border_weight_width(weight, &width);
+    if (FAILED(hr)) return hr;
+    VariantInit(&table);
+    VariantInit(&line);
+    hr = border_load_line(This, &table, &line);
+    if (SUCCEEDED(hr)) hr = border_dimensions(line, &inner, &outer, &gap);
+    if (SUCCEEDED(hr)) hr = border_write_dimensions(This, table, line, width,
+        inner > 0 && outer > 0 && gap > 0);
+    VariantClear(&line);
+    VariantClear(&table);
+    return hr;
 }
 
 /*** IDispatch methods ***/

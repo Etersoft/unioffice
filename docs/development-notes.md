@@ -308,6 +308,31 @@ put возвращает S_OK без изменений, get — E_NOTIMPL. От
 probe tests/border-weight.vbs сохранён; поддержку Weight ещё предстоит реализовать
 и проверить через реальные UNO widths. Новых подтверждённых Wine defects нет.
 
+## Реализация Border.Weight (2026-11-06)
+
+Заглушки get/put Weight заменены реальными UNO widths. Общие helpers для
+LineStyle/Weight убрали дублированный код: single stroke записывается в Outer,
+double использует обе линии и gap, Color сохраняется. Четыре категории имеют
+номинальные total widths2/26/88/141 сотых мм; double делит total на три части,
+getter учитывает округление. Это проверенная политика адаптера, не native Excel
+rendering oracle. LineStyleNone стирает размеры; Weight делает линию видимой.
+
+TableBorder setters включают только выбранный Is...LineValid: смешанные соседние
+границы не перезаписываются. Aggregate Weight проходит шесть недиагональных
+ключей и возвращает ошибки child calls. Getter пока сохраняет чтение верхней
+границы: legacy enum retval не позволяет Null для смешанной aggregate Weight.
+
+Расширенный border-weight.vbs дал374 OK на PE32 и PE64: все четыре веса,
+12 accepted indices, single/double, прямые UNO dimensions, aliases, aggregate,
+invalid weights и сохранение разных A1/A2 edges. Native COM test проверил NULL
+outputs/invalid enums; enumeration и diagonal probes также PASS.
+Полный набор7 tests прошёл на обеих архитектурах: legacy158/0, markers156/0.
+Старые расхождения counters tests4/6 сохраняются. Results:
+~/tmp/claude/unioffice-excel-suite-mw8b7s1v (32), -75jv9aff (64).
+Оба MSI обновлены, metadata/Unicode0 каждый; lifecycle не повторялся.
+Подробности и ограничения: [Weight results](border-weight-results.md).
+Новых подтверждённых дефектов Wine нет; нативная Windows не проверялась.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -481,9 +506,10 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
 
 1. MSI32/MSI64 и covered Excel PE32/PE64 сценарии проверены. Нативная Windows
    и другие версии Windows Installer потребуют отдельного окружения.
-2. Borders.Weight — подтверждённая заглушка; отдельный failing probe сохранён.
-   Count/уникальные члены/aliases проверены отдельным набором. Точный порядок
-   Excel и прочие неподдержанные интерфейсы не покрыты; Word содержит заглушки.
+2. Borders.Weight реализован и проверен. Mixed aggregate getter пока читает
+   верхнюю границу; возврат Null потребует отдельного изменения IDL/ABI.
+   Точный порядок обхода Excel и прочие неподдержанные интерфейсы не покрыты;
+   Word содержит заглушки, dashed/dotted LineStyle остаются E_NOTIMPL.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
 

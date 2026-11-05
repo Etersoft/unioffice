@@ -60,7 +60,7 @@ Both MSI packages were rebuilt from the updated DLLs; architecture/Unicode
 metadata checks returned zero failures for each. Installer lifecycle was not
 repeated because installer/registration logic was unchanged.
 
-## Known separate defect: Weight
+## Separate defect discovered at this stage: Weight
 
 An added aggregate-formatting check failed on both architectures when reading
 Border.Weight. Inspection confirms that its getter returns E_NOTIMPL and its
@@ -74,10 +74,13 @@ Run it with the usual ready-backend harness:
 sh tests/run-openoffice-backend.sh border-weight.vbs 'Border weight integration: PASS'
 ```
 
-Expected current result: failure when reading Weight, harness exit1 and no PASS.
+The result at this stage was failure on reading Weight, harness exit1 and no PASS.
 Do not treat the successful put as evidence of working formatting. The next
 implementation should validate actual UNO line widths, individual and aggregate
 Weight, all supported weight constants, and interactions with line style.
+
+The later [Weight implementation](border-weight-results.md) resolves this stub
+and expands the same probe into a passing physical-width regression test.
 
 ## Reproduction and logs
 

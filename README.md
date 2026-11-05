@@ -111,7 +111,9 @@ explicit expected success marker.
 Borders now enumerates eight distinct keys; legacy aliases 1–4 remain accepted
 by Item. Invalid indices fail before object creation. See
 [membership validation and compatibility limits](docs/borders-membership-results.md).
-`tests/border-weight.vbs` records a separate known failure: Weight is still a stub.
+`tests/border-weight.vbs` checks Weight through both Excel and actual UNO line
+dimensions, including single/double lines and aggregate formatting. See
+[weight behavior, validation and limits](docs/border-weight-results.md).
 
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments
