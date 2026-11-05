@@ -36,24 +36,32 @@ clean the selected variant with `make clean TOOLCHAIN=winegcc`.
 
 ## Installer and validation
 
-`make` builds libraries. MSI packaging is explicit and currently supports only
-PE32 i386: the legacy installer has no 64-bit component/template support.
-Build MinGW on Fedora, then package those artifacts on builder64:
+`make` builds libraries. MSI packaging is explicit and detects the DLL's PE
+architecture. It supports i386 and AMD64; other architectures are rejected.
 
 ```sh
+# On builder64, build and package winegcc PE64:
+make msi TOOLCHAIN=winegcc
+
+# Build MinGW PE32 on Fedora, then package its shared artifacts on builder64:
 WINEPREFIX=/path/to/test-prefix WINE=/usr/lib/wine-etersoft/wine64 \
   xvfb-run -a make -C MSI EXCEL_BUILD=../unioffice_excel/build/mingw-32 \
   OUTPUT=build/mingw-32/unioffice.msi
 ```
 
-Packaging uses Python 3 and the bundled CABARC/MsiDb tools under Wine. MsiDb
-requires a graphical session (Xvfb is sufficient). The script stages tables in
-`~/tmp/claude`, updates file sizes, preserves CP1251 text, and publishes the MSI
-only after successful imports. Existing `MSI/unioffice.msi` is preserved.
-`WINE` may include loader arguments. PE64 input is rejected before packaging.
-MSI32 has passed a Unicode metadata check, administrative extraction with matching
-payload hashes, and silent installation with COM registration in an isolated
-Wine prefix; silent uninstallation also passed. The MSI import workaround is tracked in
+Outputs are `MSI/build/winegcc-64/unioffice.msi` and
+`MSI/build/mingw-32/unioffice.msi`. Packaging uses Python 3 and bundled
+CABARC/MsiDb under Wine. MsiDb needs a graphical session; Xvfb is sufficient.
+The script stages tables in `~/tmp/claude`, updates file sizes, preserves CP1251
+text, and publishes only a completed package. Existing `MSI/unioffice.msi`
+is preserved. `WINE` may include loader arguments.
+
+MSI64 has independent product/component/upgrade identities and installs into
+system32; MSI32 installs into syswow64 on 64-bit Windows. Both variants passed
+metadata/Unicode checks. Coexistence, repair and both removal orders were tested
+under Wine; the surviving architecture remains usable. See
+[MSI64 validation](docs/msi64-results.md) for identities and reproduction.
+The MSI import workaround is tracked in
 [Wine bug 19875](https://bugs.etersoft.ru/show_bug.cgi?id=19875).
 
 ## OpenOffice integration tests
@@ -88,7 +96,7 @@ and coverage limits, and [PE64 results](docs/pe64-results.md).
 For PE64 testing, use a separate prefix with the PE64 DLL/TLB registered in
 system32, set `CLIENT_BITS=64` for shell probes, and pass `--bits 64` to the Python
 suite. Both selectors default to 32. Tests print the script host to identify the
-actual client architecture. MSI64 packaging is not implemented.
+actual client architecture. Both MSI32 and MSI64 packaging are supported.
 
 `tests/com-smoke.c` checks only the factory and TLB, without an office backend.
 Other legacy warnings remain.

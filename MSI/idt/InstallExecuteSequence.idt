@@ -36,7 +36,7 @@ RegisterProduct		6100
 RegisterProgIdInfo		4800
 RegisterTypeLibraries		5500
 RegisterUser		6000
-RegOofficeWin	NOT Installed AND OSType="windows"	6610
+RegOofficeWin	$Ooffice=3 AND OSType="windows"	6610
 RemoveDuplicateFiles		3400
 RemoveEnvironmentStrings		3300
 RemoveExistingProducts		6700
@@ -61,7 +61,7 @@ UnregisterFonts		2500
 UnregisterMIMEInfo		3000
 UnregisterProgIdInfo		2900
 UnregisterTypeLibraries		2300
-UnregOofficeWin	Installed AND OSType="windows"	1690
+UnregOofficeWin	Installed AND $Ooffice=2 AND OSType="windows"	1690
 ValidateProductID		700
 WriteEnvironmentStrings		5200
 WriteIniValues		5100

@@ -67,5 +67,6 @@ sole argument. Run each executable through the selected Wine loader in the clone
 prefix. Runtime test binaries are in the corresponding component build directories.
 
 This was a UniOffice defect, so no Wine bug was created. The independent Windows
-OpenOffice install remains 32-bit. MSI packaging still supports only PE32; these
-results do not establish MSI64 support or functioning Word Automation.
+OpenOffice install remains 32-bit. At this stage packaging supported only PE32. MSI64 was subsequently implemented
+and validated separately; see [MSI64 results](msi64-results.md). Word Automation
+remains outside the covered scenarios.
