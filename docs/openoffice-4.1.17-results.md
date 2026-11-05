@@ -107,3 +107,11 @@ New tests/font-script.vbs passed enabling/disabling, by-reference and numeric
 inputs, mutual switching, a 2x2 range and mixed-state reads. The original font
 test passed 32/0 (`unioffice-excel-suite-wo8_d87e`). Both compiler builds pass.
 The remaining known failures are Outline.ShowLevels and two Border operations.
+
+## Follow-up: Outline.ShowLevels fixed
+
+Marked the IDL result as retval, handled both axes and optional/zero arguments,
+and mapped Excel's 1-based levels to Calc's 0-based depth. The new outline-levels
+probe verified actual row/column visibility and passed all checks. Original
+test 2 passed 13/0 (unioffice-excel-suite-l2f44geo). Both drivers compile.
+Only the two Border failures remain to be diagnosed.

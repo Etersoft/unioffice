@@ -258,53 +258,43 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
 #undef RANGE_THIS
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
-        I_Outline* iface,
-        VARIANT RowLevels,
-        VARIANT ColumnLevels,
-        VARIANT *RHS)
+        I_Outline *iface, VARIANT RowLevels, VARIANT ColumnLevels, VARIANT *RHS)
 {
     OutlineImpl *This = OUTLINE_THIS(iface);
-    HRESULT hres;
-    VARIANT param1, param2, vret;
-    TRACE_IN;
+    VARIANT inputs[2], level, orientation, result;
+    HRESULT hr = S_OK;
+    int index;
 
-    VariantInit(&param1);
-    VariantInit(&param2);
-    VariantInit(&vret);
-
-    MSO_TO_OO_CorrectArg(RowLevels, &RowLevels);
-    MSO_TO_OO_CorrectArg(ColumnLevels, &ColumnLevels);
-
-    if (!Is_Variant_Null(RowLevels)) {
-        hres = VariantChangeTypeEx(&param1, &RowLevels, 0, 0, VT_I4);
-        if (FAILED(hres)) {
-            ERR("VariantChangeTypeEx   %08x\n", hres);
-            return hres;
+    if (!RHS) return E_POINTER;
+    VariantInit(RHS);
+    MSO_TO_OO_CorrectArg(RowLevels, &inputs[0]);
+    MSO_TO_OO_CorrectArg(ColumnLevels, &inputs[1]);
+    if (Is_Variant_Null(inputs[0]) && Is_Variant_Null(inputs[1])) return E_INVALIDARG;
+    VariantInit(&level);
+    VariantInit(&orientation);
+    VariantInit(&result);
+    V_VT(&orientation) = VT_I4;
+    for (index = 0; index < 2 && SUCCEEDED(hr); ++index) {
+        if (Is_Variant_Null(inputs[index])) continue;
+        hr = VariantChangeTypeEx(&level, &inputs[index], 0, 0, VT_I2);
+        if (FAILED(hr)) break;
+        if (V_I2(&level) < 0) {
+            hr = E_INVALIDARG;
+            break;
         }
-        V_VT(&param2) = VT_I4;
-        V_I4(&param2) = toROWS;
-    } else {
-        hres = VariantChangeTypeEx(&param1, &ColumnLevels, 0, 0, VT_I4);
-        if (FAILED(hres)) {
-            ERR("VariantChangeTypeEx   %08x\n", hres);
-            return hres;
-        }
-        V_VT(&param2) = VT_I4;
-        V_I4(&param2) = toCOLUMNS;
+        if (!V_I2(&level)) continue;
+        /* Excel labels outline levels from 1; Calc uses a zero-based depth. */
+        --V_I2(&level);
+        V_I4(&orientation) = index == 0 ? toROWS : toCOLUMNS;
+        hr = AutoWrap(DISPATCH_METHOD, &result, This->pOOSheet, L"showLevel", 2, orientation, level);
+        VariantClear(&result);
     }
-
-    hres = AutoWrap(DISPATCH_METHOD, &vret, This->pOOSheet, L"showLevel", 2, param2, param1);
-    if (FAILED(hres)) {
-        ERR("showLevel\n");
-        return hres;
+    VariantClear(&level);
+    if (SUCCEEDED(hr)) {
+        V_VT(RHS) = VT_BOOL;
+        V_BOOL(RHS) = VARIANT_TRUE;
     }
-
-    VariantClear(&param1);
-    VariantClear(&param2);
-    VariantClear(&vret);
-
-    TRACE_OUT;
-    return S_OK;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryColumn(

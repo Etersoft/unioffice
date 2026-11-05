@@ -1956,7 +1956,7 @@ library MSO_TO_OOLib
 		[id(dispid_outline_showlevels),helpstring("method ShowLevels")] HRESULT ShowLevels(
 			[in, optional] VARIANT RowLevels,
 			[in, optional] VARIANT ColumnLevels,
-			[out] VARIANT *RHS);
+			[out, retval] VARIANT *RHS);
 //SummaryColumn
 		[id(dispid_outline_summarycolumn),propget, helpstring("property SummaryColumn")] HRESULT SummaryColumn([out, retval] XlSummaryColumn* RHS);
 		[id(dispid_outline_summarycolumn),propput, helpstring("property SummaryColumn")] HRESULT SummaryColumn([in] XlSummaryColumn RHS);
