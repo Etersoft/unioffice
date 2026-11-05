@@ -231,6 +231,30 @@ cmp подтвердил побайтовое совпадение DLL и TLB с
 (canonical `/srv/lav/Projects/Claude/win-builder`), начальный commit 7100a78.
 После итоговой регрессии туда переносятся подтверждённые выводы.
 
+## PE64 Automation и unregister typelib (2026-11-06)
+
+Создан отдельный prefix ~/tmp/claude/unioffice-aoo64/prefix из остановленной
+копии PE32/OpenOffice окружения. PE64 DLL/TLB зарегистрированы в system32,
+используется system32/cscript.exe. Windows OpenOffice остаётся x86; COM
+marshaling между архитектурами работает в проверенных сценариях.
+
+Все семь тестов через winegcc PE64 прошли: 166/0 counters, 164 SUCCESS markers,
+каталог ~/tmp/claude/unioffice-excel-suite-8qgvlq1p. Прямой OpenOffice probe,
+Excel.Application round trip и расширенные Font/Outline/Border probes тоже PASS.
+Запускатели получили CLIENT_BITS=64 / --bits 64; default32 сохранён. Изменения
+сохранены в 1ff5ca9. Результаты и команды: [PE64](pe64-results.md).
+
+Проверка регистрации выявила дефект UniOffice: PE64 UnRegisterTypeLib с
+SYS_WIN32 удалял win32 и сохранял win64, несмотря на success. Native test
+воспроизвёл 2 failure(s). В ce5d3fd добавлен выбор SYS_WIN64 для _WIN64.
+После исправления tests/typelib-registration.c даёт 0 failures на обеих
+архитектурах, сохраняет соседнюю ветку и восстанавливает собственную регистрацию.
+После цикла registration/unregistration исходный test2 прошёл 13/0 и через
+PE64 (unioffice-excel-suite-ldpjs0yw), и через PE32 (unioffice-excel-suite-0j9voquh).
+MSI32 пересобран из актуальных артефактов; Unicode metadata check: 0.
+MSI64 и Word Automation по-прежнему не заявлены; исторические оговорки ниже
+об отсутствии PE64 runtime-проверки относятся к прежним этапам.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -402,7 +426,7 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
 Семь исходных тестов с Windows OpenOffice 4.1.17 x86 проходят. В рамках
 текущего набора регрессионных отказов не осталось. Возможные отдельные задачи:
 
-1. MSI64/полная PE64 automation — отдельная проверка и шаблон, если потребуется.
+1. MSI64 — отдельный шаблон, если потребуется. Excel PE64 проверен тем же набором.
 2. Семантика Borders.Count/enumeration legacy aliases и прочие неподдержанные
    интерфейсы не покрываются этим прогоном; Word содержит заглушки.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания

@@ -79,10 +79,16 @@ markers, and explicitly uses 32-bit cscript. Inspect `otchet.txt` and `script.lo
 in the printed result directory. Wine cscript may return zero after a script
 error, so completion markers and assertion totals determine success.
 
-The final OpenOffice 4.1.17 run passed all seven legacy tests (zero failures),
+Both PE32/MinGW and PE64/winegcc passed all seven legacy tests with Windows
+OpenOffice 4.1.17 x86 (zero failures),
 plus dedicated font-script, outline visibility and diagonal-border probes.
 See the [detailed results](docs/openoffice-4.1.17-results.md) for exact counters
-and coverage limits.
+and coverage limits, and [PE64 results](docs/pe64-results.md).
+
+For PE64 testing, use a separate prefix with the PE64 DLL/TLB registered in
+system32, set `CLIENT_BITS=64` for shell probes, and pass `--bits 64` to the Python
+suite. Both selectors default to 32. Tests print the script host to identify the
+actual client architecture. MSI64 packaging is not implemented.
 
 `tests/com-smoke.c` checks only the factory and TLB, without an office backend.
 Other legacy warnings remain.
