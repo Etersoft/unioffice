@@ -73,3 +73,26 @@ Next: diagnose PageSetup as a group, implement the font getters, then isolate
 Outline and Border failures. Re-run affected cases after fixes. Keep winegcc
 builds on builder64 and direct MinGW builds on Fedora. The tested prefix is
 retained with both OpenOffice and UniOffice installed for continued work.
+
+## Follow-up: PageSetup fixed
+
+The shared failure was a PROPERTYGET of StyleFamilies. All 24 call sites now
+invoke the documented UNO getStyleFamilies method with DISPATCH_METHOD.
+Both MinGW/Fedora and winegcc/builder64 builds passed. Targeted test 4 passed,
+then all seven tests were re-run with the updated PE32 DLL.
+
+Regression results (`~/tmp/claude/unioffice-excel-suite-_8c6q9m1`):
+
+| Test | Reported success | Reported failure |
+| --- | ---: | ---: |
+| 1 | 28 | 4 |
+| 2 | 12 | 1 |
+| 3 | 28 | 2 |
+| 4 | 34 | 0 |
+| 5 | 32 | 0 |
+| 6 | 12 | 0 |
+| 7 | 13 | 0 |
+
+Failed checks decreased from 31 to 7. Tests 4–7 pass; no new failures appeared.
+Test 4's success counter is 34 versus 33 markers; test 6 remains 12 versus 11.
+These legacy counter discrepancies do not affect the remaining failure list.

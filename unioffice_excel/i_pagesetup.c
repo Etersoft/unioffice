@@ -163,9 +163,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_LeftMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -235,9 +235,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_LeftMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
 
@@ -309,9 +309,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_RightMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -381,9 +381,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_RightMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -454,9 +454,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_TopMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -526,9 +526,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_TopMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -599,9 +599,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_BottomMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -671,9 +671,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_BottomMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -744,9 +744,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Orientation(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -816,9 +816,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Orientation(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -893,9 +893,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Zoom(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -960,9 +960,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_Zoom(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -1023,9 +1023,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesTall(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -1090,9 +1090,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesTall(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -1159,9 +1159,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FitToPagesWide(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -1226,9 +1226,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FitToPagesWide(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -1289,7 +1289,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_HeaderMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
         ERR(" StyleFamilies \n");
         return hres;
@@ -1361,7 +1361,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_HeaderMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
         ERR(" StyleFamilies \n");
         return hres;
@@ -1434,7 +1434,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_FooterMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
         ERR(" StyleFamilies \n");
         return hres;
@@ -1506,7 +1506,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_FooterMargin(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
         ERR(" StyleFamilies \n");
         return hres;
@@ -1579,9 +1579,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterHorizontally(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -1644,7 +1644,7 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterHorizontally(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
         ERR(" StyleFamilies \n");
         return hres;
@@ -1711,9 +1711,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_CenterVertically(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;
@@ -1776,9 +1776,9 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
     WTRACE(L"name of Style - %s \n", V_BSTR(&name_of_style));
 
     /*Теперь получим этот стиль из списка всех стилей*/
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vstyles, This->pOODocument, L"StyleFamilies",0);
+    hres = AutoWrap(DISPATCH_METHOD, &vstyles, This->pOODocument, L"getStyleFamilies",0);
     if (FAILED(hres)) {
-        ERR("StyleFamilies \n");
+        ERR("getStyleFamilies \n");
         return hres;
     }
     V_VT(&param1) = VT_BSTR;

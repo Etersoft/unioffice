@@ -140,6 +140,23 @@ Cells(1,1).Value, закрытие книги и Excel.Quit. Итог: UniOffice
 Исторические записи ниже об отсутствии backend относятся к прежнему префиксу
 `unioffice-com-check`, а не к новому `unioffice-aoo/prefix`.
 
+## Исправление PageSetup
+
+Воспроизведение с диагностическим `unioffice_excel.log` выявило общий отказ:
+доступ к `StyleFamilies` через DISPATCH_PROPERTYGET. UNO предоставляет метод
+[getStyleFamilies](https://www.openoffice.org/api/docs/common/ref/com/sun/star/style/XStyleFamiliesSupplier.html).
+Все 24 вызова в i_pagesetup.c переведены на DISPATCH_METHOD/getStyleFamilies.
+MinGW на Fedora и winegcc PE64 на builder64 успешно собраны.
+В тестовом префиксе проверена обновлённая MinGW DLL (установленная DLL заменена
+из результата сборки; после регрессии MSI32 пересобран с исправлением).
+
+Выборочный прогон `scripts/run-excel-suite.py --tests 4`:
+`~/tmp/claude/unioffice-excel-suite-6bcuesbf`, счётчики 34/0, маркеры 33/0.
+Legacy-счётчик снова расходится с числом маркеров; ошибок нет.
+Полный регрессионный прогон: `~/tmp/claude/unioffice-excel-suite-_8c6q9m1`.
+Все семь тестов завершились: №4–7 проходят, осталось 7 прежних ошибок
+в №1–3 (шрифты 4, Outline 1, Border 2). Новых ошибок не обнаружено.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -310,14 +327,15 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
 
 1. При необходимости подготовить отдельный шаблон MSI64: текущий установщик
    намеренно поддерживает только PE32. MSI32 собран и проверен установкой.
-2. Исправить ошибки интеграции OpenOffice 4.1.17: PageSetup (24),
-   Subscript/Superscript (4), Outline (1), Border (2). Полный прогон выполнен.
+2. Исправить оставшиеся ошибки интеграции OpenOffice 4.1.17:
+   Subscript/Superscript (4), Outline (1), Border (2). PageSetup исправлен.
 3. Постепенно разобрать оставшиеся предупреждения старого кода. Smoke-тест
    не покрывает автоматизацию таблиц и шрифтов; Word по-прежнему содержит заглушки.
 4. Обновлять заметки по результатам. Winegcc проверять только на builder64,
    прямой MinGW — на Fedora; задачи актуальных дефектов Wine — bugs.etersoft.ru.
 
 Существовавшие до работы незакоммиченные `.msi`, сгенерированные файлы Word,
-`IDL.segfault`, swap и временный заголовок Excel не удалялись. Коммиты и
-публикация не выполнялись. Учёт `work_time` при оформлении задач вести только
+`IDL.segfault`, swap и временный заголовок Excel не удалялись. Накопленные изменения зафиксированы отдельными коммитами: PE-сборка/ABI
+`2d4e460`, жизненный цикл COM `4d2e496`, MSI `1ef4a4d`, тесты/документация
+`a8621dd`, выбор отдельных тестов `0abc02d`. Публикация не выполнялась. Учёт `work_time` при оформлении задач вести только
 за соответствующий новый этап, не суммировать предыдущие этапы.
