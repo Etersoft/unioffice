@@ -1,0 +1,323 @@
+# UniOffice: сборка и проверка Wine/MinGW
+
+Рабочие заметки от 2026-11-05. Здесь разделены проверенные результаты,
+изменения исходников и ещё не завершённые проверки. Успешная компиляция
+не означает, что автоматизация Excel или Word уже работает.
+
+## Актуальное состояние после уточнений
+
+Пользователь уточнил: нужны только Windows PE DLL. Сборка `.dll.so` была
+ошибочным отклонением и не является поддерживаемым вариантом.
+
+- winegcc запускать на **builder64**: `make libraries TOOLCHAIN=winegcc -j4`.
+  Выбран `winegcc -b x86_64-windows`: Clang/lld, Wine headers/import libraries,
+  результат — PE32+ x86-64. MinGW на этом хосте для данного варианта не нужен.
+- На **Fedora только прямой MinGW**:
+  `make libraries TOOLCHAIN=mingw MINGW=i686-w64-mingw32 -j4` (PE32 i386).
+- Оба хоста видят общий `/srv` по NFS. Оба варианта успешно собраны после
+  последних изменений. COM smoke-тест для обоих PE DLL: **0 ошибок**.
+  Проверены экспорты, фабрика, LockServer/CanUnloadNow, чтение TLB, выгрузка.
+- PE64 тест собран на builder64:
+  `winegcc -b x86_64-windows -o unioffice_excel/build/winegcc-64/com-smoke-pe.exe tests/com-smoke.c -lole32 -loleaut32 -luuid`.
+  PE32 тест собран на Fedora через `i686-w64-mingw32-gcc` с теми же библиотеками.
+  Исполнялись локальным `/usr/lib/wine-etersoft/wine64` в изолированном префиксе;
+  пути DLL и TLB передавались как абсолютные `Z:/srv/...`.
+- В smoke-тесте убран CoInitialize: проверяются непосредственные DLL exports
+  и TLB, создание COM backend не требуется. Это исключает запуск RPC-служб.
+- Clang выявил ошибки старого кода: прямой доступ к VARIANT заменён макросами
+  `V_INT`/`V_DISPATCH`; исправлены небезопасные вызовы swprintf, включая запись
+  строки в себя. Для шести возвращающих VARIANT методов I_Range добавлены
+  адаптеры к сигнатурам WIDL с явным буфером результата после This.
+- Удалён отладочный fprintf из DllMain: после этого исчезло зависание ELF
+  PROCESS_ATTACH. Причина внутри CRT не установлена. Каждый ti_* теперь
+  освобождается через собственную vtable.
+- Запрос задачи Wine про argc в старом ELF-режиме был отправлен на согласование
+  (confirmation_id `29afc298-d800-49a2-bdfb-f560fe630e2d`), затем отозван после
+  уточнения цели. Это не дефект целевой PE-сборки; новая задача не создавалась.
+- Astra пока не требуется. Сообщить пользователю, если сложность разбора
+  потребует её подключения.
+
+Ниже сохранены исторические эксперименты, включая неактуальную схему ELF.
+При противоречии руководствоваться этим разделом и README.
+
+## Проверка MSI32
+
+Добавлен `scripts/build-msi.py`; `MSI/Makefile` вызывает его. `make` теперь
+собирает библиотеки; установщик собирается явно. PE64 отклоняется до запуска
+Wine: исходные Component/Directory/шаблон рассчитаны на 32 бита.
+
+MSI32 успешно упакован на builder64 из MinGW-артефактов Fedora в
+`MSI/build/mingw-32/unioffice.msi`. Существовавший `MSI/unioffice.msi` сохранён.
+Рабочие таблицы и CAB создаются во временном каталоге `~/tmp/claude`;
+размеры в File.idt вычисляются из реальных DLL/TLB. Binary.idt импортируется
+вместе с каталогом Binary/ потоков, повторный импорт самих .ibd не нужен.
+
+Используется обычный Wine вместо отсутствующего wine98; выбранный через WINE
+loader запускает также winepath.exe. MsiDb — GUI-программа, поэтому на сервере
+нужен Xvfb. Логи/тестовый префикс: `~/tmp/claude/unioffice-com-check/prefix`.
+
+Подтверждён дефект Wine: импорт Control.idt с документированным префиксом
+1251 в третьей строке завершается ошибкой. Аналогичный формат есть в Property
+и RadioButton. Обход применяется только к временным копиям: убрать префиксы,
+импортировать _ForceCodepage, задать LC_ALL=ru_RU.UTF-8 дочерним процессам.
+Один _ForceCodepage недостаточен: исходный IDT читается через CP_ACP, и ACP1252
+искажает русский текст. Проверка tests/msi-smoke.c через MsiRecordGetStringW
+подтвердила точное сохранение ОАО "Etersoft" после обхода (чтение при ACP1252).
+Текст лицензии целиком сохранён; его размер не был причиной сбоя импорта.
+
+Формат подтверждён [документацией Microsoft](https://learn.microsoft.com/en-us/windows/win32/msi/archive-file-format).
+Задача Wine создана: [19875](https://bugs.etersoft.ru/show_bug.cgi?id=19875),
+компонент «Установка программ / MSI».
+
+Проверено административное извлечение (`msiexec /a /qn`) в предварительно
+созданный каталог `~/tmp/claude/unioffice-msi-extract`, с Windows-путями через
+обратную косую черту. SHA-256 извлечённых DLL/TLB совпали с исходными:
+
+- DLL: `a561408665a7ccbc3516233be90434407207e1419d57396ec43bb6284c05176a`;
+- TLB: `6f4ec70a924f82a9374e974ec15137d84c7b461d1a5b81da8446db14c39ebd24`.
+
+Добавлен /s и кавычки вокруг пути DLL в Windows custom actions регистрации
+и удаления. Тихая установка MSI32 в тестовом префиксе завершилась успешно,
+regsvr32 зарегистрировал C:\windows\syswow64\unioffice_excel.dll; ключ
+CLSID\{00024500-0000-0000-C000-000000000046}\InprocServer32 проверен в /reg:32.
+Тихое удаление (`msiexec /x {643315BA-DEF8-4CBE-AB26-C54B71535DFD} /qn`)
+также прошло успешно: regsvr32 сообщил об отмене регистрации, DLL удалена.
+Журналы установки и удаления: `~/tmp/claude/unioffice-msi-{install,uninstall}.log`.
+
+В тестовом префиксе builder64 ключ HKCR\com.sun.star.ServiceManager\CLSID
+отсутствует. Наличие Linux LibreOffice (`/bin/soffice`, `/usr/lib64/libreoffice`)
+не означает наличие Windows COM backend. Полные VBS-тесты пока не запускались.
+
+## Windows OpenOffice backend: проверка 4.1.17
+
+На builder64 скачан официальный Windows x86 Apache OpenOffice 4.1.17 с
+SourceForge (ссылка с сайта Apache). SHA-256 проверен по файлу с downloads.apache.org:
+`sha256sum -c installer.sha256` → OK. Файлы находятся в
+`~/tmp/claude/unioffice-aoo/`, распаковка через `7z x -oinstaller`.
+
+Создан отдельный `WINEPREFIX=~/tmp/claude/unioffice-aoo/prefix`.
+Установка через `/usr/lib/wine-etersoft/wine64 msiexec /i <openoffice4117.msi>
+/qn /norestart ADDLOCAL=ALL SETUP_USED=1` под Xvfb завершилась с кодом 0.
+Без SETUP_USED=1 MSI отказывает в LaunchConditions: требует запуск через setup.exe.
+Это условие установщика, а не ошибка Wine. Путь установленного офиса:
+`C:\Program Files (x86)\OpenOffice 4`. Log: `unioffice-aoo/install.log`.
+
+MSI зарегистрировал ServiceManager и CLSID
+`{82154420-0FBF-11d4-8313-005004526AB4}`, LocalServer32 указывает на soffice.exe.
+Первый быстрый запуск COM до инициализации профиля не прошёл; повторный после
+запуска офиса прошёл полностью. Проверка `tests/openoffice-backend.vbs`:
+ServiceManager → Desktop → новый Calc → запись/чтение ячейки → закрытие.
+Скрипт `tests/run-openoffice-backend.sh` запускается через `sh` под Xvfb;
+Wine loader задаётся WINE. ServiceManager получает до 30 попыток ожидания.
+В конце освобождаются COM-ссылки и вызывается Desktop.terminate.
+
+В этом же префиксе установлен наш MSI32, затем прошла проба
+`tests/excel-backend.vbs`: Excel.Application, Workbooks.Add, запись и чтение
+Cells(1,1).Value, закрытие книги и Excel.Quit. Итог: UniOffice integration: PASS.
+Команда запуска: `sh tests/run-openoffice-backend.sh excel-backend.vbs
+"UniOffice integration: PASS"` в том же WINEPREFIX/WINE под Xvfb.
+
+Важно: Wine cscript вернул 0 даже при VBScript runtime error. Проверяющий shell
+скрипт проверяет и exit status, и явную строку PASS; один exit status недостаточен.
+
+Первый запуск исходной асинхронной цепочки в
+`~/tmp/claude/unioffice-excel-suite-5hr5n_7l` не завершился за 150 секунд.
+Он смешивал 32-битный первый cscript и последующие 64-битные cscript.exe,
+получая каскадные ошибки. Это не достоверная оценка совместимости методов.
+
+`scripts/run-excel-suite.py` переделан: каждый из семи исходных тестов копируется
+в отдельный временный подкаталог, сохраняет проверки и CP1251, получает только
+замену MsgBox на файл завершения. Отдельные каталоги предотвращают автоматический
+запуск следующего скрипта старой цепочкой. Каждый тест запускается через явный
+32-битный cscript после старта headless OpenOffice. Предел — 60 секунд на тест;
+после timeout прогон прекращается, чтобы зависший COM-вызов не влиял на следующие.
+Рабочий каталог повторного прогона:
+`~/tmp/claude/unioffice-excel-suite-qp5hmjge`. Все семь тестов завершились:
+по исходным счётчикам 134 успеха и 31 ошибка. №5–7 прошли, №1–4 имеют ошибки.
+У №6 12 успехов в счётчике, но 11 SUCCESS-маркеров. Подробности:
+[OpenOffice 4.1.17 results](openoffice-4.1.17-results.md).
+
+Исторические записи ниже об отсутствии backend относятся к прежнему префиксу
+`unioffice-com-check`, а не к новому `unioffice-aoo/prefix`.
+
+## Окружение и договорённости
+
+- Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
+  Локально путь также отображается как `/home/lav/Projects/obsoleted/UniOffice/unioffice`.
+- `ssh fedora`: Fedora видит тот же `/srv` через NFS. Правки общие;
+  не создавать вторую копию и не запускать одновременно сборку одного каталога.
+- Локально доступны `winegcc`, `wineg++`, `widl`, `xvfb-run`.
+  Установлены `wine-etersoft` и `wine-etersoft-devel` версии
+  `11.20.1-eter1.x86_64`; GCC сообщает `15.3.1`.
+- На Fedora найден `/usr/bin/i686-w64-mingw32-gcc` и `/usr/bin/widl`.
+  Наличие 64-битного MinGW не подтверждено.
+- Временные файлы и тестовые префиксы создавать в `~/tmp/claude`.
+  Для этой проверки создан `~/tmp/claude/unioffice-com-check/prefix`.
+  Не использовать рабочий Wine-префикс для экспериментов с регистрацией COM.
+- Задачи по доработке Wine заводить в `https://bugs.etersoft.ru/`.
+  Ошибки UniOffice не выдавать за ошибки Wine. Перед созданием искать дубликаты.
+- Согласовывать существенный план, выполнять обычные шаги самостоятельно.
+  Сообщения коммитов — на английском; несвязанные изменения разделять.
+  Для публикации использовать `gpush`, не `git push`.
+- `AGENTS.md` создан ранее; пользователь запретил перезаписывать существующий файл.
+  Актуальные сведения о новой сборке находятся в `README.md` и этой заметке.
+
+## Проверенные команды сборки
+
+```sh
+# Локально: Excel и Word, ELF x86-64 и библиотеки типов.
+make TOOLCHAIN=winegcc -j4
+
+# Fedora: Excel и Word, PE32 i386 и библиотеки типов, без MSI.
+ssh fedora 'cd /srv/lav/Projects/obsoleted/UniOffice/unioffice && make libraries TOOLCHAIN=mingw MINGW=i686-w64-mingw32 -j4'
+```
+
+Обе команды успешно выполнялись после добавления выбора компилятора.
+Повторная сборка без изменений не выполняла лишних команд. После последующих
+правок `LONG` и фабрики локальная сборка вновь прошла; повторная проверка
+этих последних правок на Fedora ещё требуется.
+
+- `TOOLCHAIN=mingw` оставлен по умолчанию; исторический `MINGW=i586-pc-mingw32`
+  нужно переопределять на Fedora.
+- `BITS`: 32 для MinGW, 64 для префикса `x86_64` и для winegcc по умолчанию.
+- Результаты: `unioffice_{excel,word}/build/<toolchain>-<bits>/`.
+  MinGW создаёт `.dll`, winegcc — `.dll.so`, оба — `.tlb`.
+- `Makefile.mingw` выбирает инструменты; `Makefile.component` содержит общие
+  правила генерации и компиляции. Имя первого файла оставлено историческим.
+- Для Winelib нужен `-mno-cygwin` при компиляции и линковке: используются
+  заголовки/функции MSVCRT, а не смесь с Unix libc.
+- В Winelib `__declspec(dllexport)` игнорируется компилятором ELF.
+  Добавлены `.spec` с четырьмя экспортами: `DllGetClassObject`,
+  `DllCanUnloadNow`, `DllRegisterServer`, `DllUnregisterServer`.
+  Символы проверены через `nm -D`; MinGW-экспорты — через `objdump -p`.
+- `--add-stdcall-alias` передаётся MinGW через `-Wl,`, а не непосредственно GCC.
+- Генерируемые заголовки включаются через `<...>`, чтобы старые файлы рядом
+  с исходниками не перекрывали заголовки выбранной сборки.
+- После изменения флагов/версии компилятора нужна очистка выбранного варианта:
+  `make clean TOOLCHAIN=winegcc`. Флаги командной строки автоматически не хешируются.
+- Неизвестный `TOOLCHAIN` отклоняется с понятной ошибкой.
+
+## IDL и MSI
+
+Современный `widl` отказался генерировать Excel TLB: `AppEvents` упоминался
+в `coclass Application`, но нигде не определялся. Убрана декларация этого
+не реализованного source interface; реализация событий не добавлялась.
+
+На Fedora `widl` первоначально не находил `stdole2.tlb`. Найдены пути:
+
+- `/usr/i686-w64-mingw32/sys-root/mingw/include/stdole2.tlb`;
+- `/usr/lib64/wine-etersoft/x86_64-windows/stdole2.tlb`.
+
+В Makefile добавлен поиск первого пути по `MINGW`, с передачей `-L` в `widl`.
+Для других расположений можно задать `IDLFLAGS="-L /path/to/typelibs"`.
+
+`make` для MinGW по-прежнему включает MSI; `make libraries` его пропускает.
+MSI использует `wine98`, `winepath` и утилиты в `MSI/bin/`, упаковывает только
+Excel. Путь к новой сборке передаётся через `EXCEL_BUILD`; пути CABARC
+переводятся `winepath -w`. `make msi TOOLCHAIN=winegcc` запрещён: ELF-библиотека
+не является Windows DLL для этого установщика. MSI после правок не проверялся.
+
+## Ошибки UniOffice и внесённые исправления
+
+### Размеры типов
+
+На Unix x86-64 `long` имеет 64 бита, Windows `LONG` — 32. IDL `long` порождает
+`LONG`; прежние C-реализации с `long *` не соответствовали COM-vtable и могли
+записывать лишние байты. В исходниках и заголовках Excel заменены C-типы `long`
+на `LONG`, включая связанные поля, локальные значения и прототипы.
+IDL, строки, комментарии и исходные кодировки сохранены. Это не полный аудит
+64-битной совместимости; остальные предупреждения требуют отдельного разбора.
+
+Добавлен доступный всем реализациям прототип `AutoWrap` из `tools.h`.
+В `debug.h` явно объявлен `extern BOOL write_log` и подключён `<wchar.h>`.
+
+### Жизненный цикл COM
+
+`OOFFICE_ClassFactory` — статический объект, но `Release` вызывал для него
+`HeapFree`. Этот вызов убран. В `QueryInterface` и `CreateInstance` фабрики
+теперь обнуляется выходной указатель перед отказом. `DllGetClassObject`
+проверяет `ppv` на `NULL` до записи и возвращает `E_POINTER`.
+
+Изменения пока проверены компиляцией. Тест не дошёл до вызовов фабрики из-за
+проблемы загрузки Winelib DLL (см. ниже); не считать их runtime-проверенными.
+
+При чтении также замечено: в `DllMain` при освобождении многих `ti_*`
+используется `ti_excel->lpVtbl`, а не vtable соответствующего объекта.
+Это ещё не исправлено и требует отдельной проверки.
+
+## COM smoke test и фактические результаты
+
+Добавлен `tests/com-smoke.c`. Тест принимает путь DLL и TLB, не регистрирует COM
+и не требует установленного OpenOffice. Он проверяет экспорты, неизвестный CLSID,
+нулевой выходной указатель, отказы QueryInterface/aggregation, циклы получения
+и освобождения фабрики, LockServer/CanUnloadNow и чтение TLB без регистрации.
+
+```sh
+winegcc -m64 -mno-cygwin \
+  -o unioffice_excel/build/winegcc-64/com-smoke.exe \
+  tests/com-smoke.c -lole32 -loleaut32 -luuid
+```
+
+`com-smoke.exe` здесь shell-запускатель, реальный ELF — `com-smoke.exe.so`.
+Запускать запускатель напрямую, а не передавать shell-файл как Windows EXE.
+Обычная обёртка `/usr/bin/wine` без DISPLAY/WAYLAND_DISPLAY отказалась работать;
+используется `xvfb-run -a`, `TMPDIR=~/tmp/claude`, отдельный `WINEPREFIX` и timeout.
+Предупреждения Mesa/DRI3 в Xvfb сами по себе не означают провал COM-теста.
+
+### ABI функции main: кандидат на задачу Wine
+
+При `int main(int argc, char **argv)` тест получил `argc=7215392`, хотя
+`GetCommandLineA()` показывал корректные два аргумента. После явного
+`int __cdecl main(...)` обработка аргументов заработала и выполнение дошло
+до `LoadLibraryA`. В выводе `winegcc -v` видно:
+`__cdecl=__stdcall`, `__stdcall=__attribute__((ms_abi))` для `-m64`.
+
+Это подтверждённое наблюдение на smoke-тесте, но пока не доказанная причина
+в Wine: нужен минимальный пример, проверка ABI startup-кода и воспроизведение
+с/без `__cdecl`. Дубликаты по слову `winegcc` искались в Etersoft:
+найдена только закрытая задача 16741 «winegcc: Could not find g++», она о другом.
+Новая задача пока не создана.
+
+### Загрузка DLL: открытый вопрос
+
+`LoadLibraryA` вернул ошибку 126 при абсолютном Windows-пути к имени `.dll`
+(на диске есть `.dll.so`). Попытка с именем `unioffice_excel.dll` и
+`WINEDLLPATH`, указывающим на каталог сборки, также дала 126.
+Проверка абсолютного пути с суффиксом `.dll.so` завершилась по timeout
+через 30 секунд (код 124), без итогового отчёта smoke-теста. Все запущенные
+в этой сессии тестовые команды завершены. Причина пока не установлена:
+не утверждать, что Wine вообще не поддерживает ELF DLL.
+
+Для дальнейшего разбора найден исходник
+[загрузчика upstream Wine](https://github.com/wine-mirror/wine/blob/master/dlls/ntdll/unix/loader.c).
+Он содержит обработку SO DLL и отдельный `load_so_dll`; это ориентир для анализа,
+а не доказательство поведения установленной сборки Etersoft.
+
+## Ограничения существующих интеграционных тестов
+
+`tests/Excel/all_test.vbs` запускает цепочку `test_<number>.vbs` асинхронно.
+Нужно дождаться конца цепочки и читать `otchet.txt`; код завершения запускателя
+не является результатом всех тестов. Запускать из `tests/Excel/` через
+`cscript.exe /E:vbscript all_test.vbs` в настроенном окружении.
+
+`_ApplicationConstructor` обращается к COM-серверу
+`com.sun.star.ServiceManager` и создаёт `com.sun.star.frame.Desktop`.
+Без совместимого зарегистрированного OpenOffice нельзя считать полный тест
+Excel.Application доступным. Word `DllGetClassObject` пока возвращает
+`E_NOTIMPL`: успешная сборка Word не означает готовую реализацию Word Automation.
+
+## Что делать дальше
+
+1. При необходимости подготовить отдельный шаблон MSI64: текущий установщик
+   намеренно поддерживает только PE32. MSI32 собран и проверен установкой.
+2. Исправить ошибки интеграции OpenOffice 4.1.17: PageSetup (24),
+   Subscript/Superscript (4), Outline (1), Border (2). Полный прогон выполнен.
+3. Постепенно разобрать оставшиеся предупреждения старого кода. Smoke-тест
+   не покрывает автоматизацию таблиц и шрифтов; Word по-прежнему содержит заглушки.
+4. Обновлять заметки по результатам. Winegcc проверять только на builder64,
+   прямой MinGW — на Fedora; задачи актуальных дефектов Wine — bugs.etersoft.ru.
+
+Существовавшие до работы незакоммиченные `.msi`, сгенерированные файлы Word,
+`IDL.segfault`, swap и временный заголовок Excel не удалялись. Коммиты и
+публикация не выполнялись. Учёт `work_time` при оформлении задач вести только
+за соответствующий новый этап, не суммировать предыдущие этапы.
