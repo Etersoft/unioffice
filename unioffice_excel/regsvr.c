@@ -564,6 +564,27 @@ __declspec(dllexport) STDAPI DllRegisterServer(void)
     return hr;
 }
 
+/* ProgIDs are shared by the PE32 and PE64 registrations of this class. */
+static BOOL peer_coclass_registered(void)
+{
+    WCHAR guid[39], path[80];
+    HKEY key;
+    DWORD type = 0, size = 0;
+    LONG status;
+    REGSAM view = sizeof(void *) == 8 ? KEY_WOW64_32KEY : KEY_WOW64_64KEY;
+
+    StringFromGUID2(&CLSID_Application, guid, 39);
+    lstrcpyW(path, L"CLSID\\");
+    lstrcatW(path, guid);
+    lstrcatW(path, L"\\InprocServer32");
+    status = RegOpenKeyExW(HKEY_CLASSES_ROOT, path, 0, KEY_QUERY_VALUE | view, &key);
+    if (status != ERROR_SUCCESS) return FALSE;
+    status = RegQueryValueExW(key, NULL, NULL, &type, NULL, &size);
+    RegCloseKey(key);
+    return status == ERROR_SUCCESS && (type == REG_SZ || type == REG_EXPAND_SZ)
+        && size > sizeof(WCHAR);
+}
+
 __declspec(dllexport) STDAPI DllUnregisterServer(void)
 {
     HRESULT hr;
@@ -572,7 +593,7 @@ __declspec(dllexport) STDAPI DllUnregisterServer(void)
     hr = unregister_coclasses(coclass_list);
     if (SUCCEEDED(hr))
         hr = unregister_interfaces(interface_list);
-    if (SUCCEEDED(hr))
+    if (SUCCEEDED(hr) && !peer_coclass_registered())
         hr = unregister_classes();
 
 #ifdef _WIN64

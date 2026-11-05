@@ -27,7 +27,7 @@ int __cdecl main(int argc, char **argv)
 {
     HMODULE module;
     registration_fn reg, unreg;
-    char peer_before[1024], peer_after[1024], own[1024];
+    char peer_before[1024], peer_after[1024], own[1024], progid[1024];
     LONG peer_status, own_status;
     HRESULT hr;
     int failures = 0;
@@ -46,12 +46,14 @@ int __cdecl main(int argc, char **argv)
     hr = reg();
     if (FAILED(hr)) { FreeLibrary(module); return 2; }
     if (registered_path(OWN_KEY, own, sizeof(own)) != ERROR_SUCCESS) ++failures;
+    if (registered_path("Excel.Application\\CLSID", progid, sizeof(progid)) != ERROR_SUCCESS) ++failures;
     hr = unreg();
     if (FAILED(hr)) ++failures;
     own_status = registered_path(OWN_KEY, own, sizeof(own));
     if (own_status != ERROR_FILE_NOT_FOUND && own_status != ERROR_PATH_NOT_FOUND) ++failures;
     peer_status = registered_path(PEER_KEY, peer_after, sizeof(peer_after));
     if (peer_status != ERROR_SUCCESS || strcmp(peer_before, peer_after)) ++failures;
+    if (registered_path("Excel.Application\\CLSID", progid, sizeof(progid)) != ERROR_SUCCESS) ++failures;
     /* Restore own registration even if assertions failed. */
     hr = reg();
     if (FAILED(hr)) ++failures;
