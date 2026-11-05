@@ -575,7 +575,11 @@ __declspec(dllexport) STDAPI DllUnregisterServer(void)
     if (SUCCEEDED(hr))
         hr = unregister_classes();
 
+#ifdef _WIN64
+    hr = UnRegisterTypeLib(&LIBID_MSO_TO_OOLib, 1, 0, 0, SYS_WIN64);
+#else
     hr = UnRegisterTypeLib(&LIBID_MSO_TO_OOLib, 1, 0, 0, SYS_WIN32);
+#endif
 
     TRACE_OUT;
     return hr;
