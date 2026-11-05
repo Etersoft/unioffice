@@ -1,5 +1,6 @@
 Option Explicit
 Dim manager, attempt
+WScript.Echo "Script host: " & WScript.FullName
 On Error Resume Next
 For attempt = 1 To 30
     Err.Clear

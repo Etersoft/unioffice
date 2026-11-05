@@ -12,7 +12,9 @@ import time
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--tests', nargs='+', type=int, choices=range(1, 8), default=list(range(1, 8)))
+    parser.add_argument('--bits', type=int, choices=(32, 64), default=32)
     args = parser.parse_args()
+    script_host = r'C:\windows\system32\cscript.exe' if args.bits == 64 else r'C:\windows\syswow64\cscript.exe'
     if not os.environ.get('WINEPREFIX'):
         raise SystemExit('Set WINEPREFIX to a disposable OpenOffice + UniOffice prefix')
     root = Path(__file__).resolve().parent.parent
@@ -20,6 +22,7 @@ def main():
     scratch.mkdir(parents=True, exist_ok=True)
     work = Path(tempfile.mkdtemp(prefix='unioffice-excel-suite-', dir=scratch))
     print(f'Results: {work}', flush=True)
+    print(f'Client bits: {args.bits}; prefix: {os.environ["WINEPREFIX"]}', flush=True)
     loader = os.environ.get('WINE', 'wine')
     failures = 0
     for number in args.tests:
@@ -41,7 +44,7 @@ def main():
             try:
                 time.sleep(3)
                 with (test_dir / 'ready.log').open('wb') as ready_log:
-                    subprocess.run([loader, r'C:\windows\syswow64\cscript.exe', '//nologo',
+                    subprocess.run([loader, script_host, '//nologo',
                                     'Z:' + str(root / 'tests/openoffice-ready.vbs')],
                                    stdout=ready_log, stderr=subprocess.STDOUT, timeout=60, check=False)
                 if b'OpenOffice readiness: PASS' not in (test_dir / 'ready.log').read_bytes():
@@ -49,7 +52,7 @@ def main():
                     failures += 1
                     break
                 with (test_dir / 'script.log').open('wb') as script_log:
-                    subprocess.run([loader, r'C:\windows\syswow64\cscript.exe', '//nologo',
+                    subprocess.run([loader, script_host, '//nologo',
                                     '/E:vbscript', source.name, str(number), '0', '0'],
                                    cwd=test_dir, stdout=script_log, stderr=subprocess.STDOUT,
                                    timeout=60, check=False)
