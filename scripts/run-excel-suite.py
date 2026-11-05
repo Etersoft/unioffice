@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run the seven legacy Excel VBS tests in a disposable Wine prefix."""
+import argparse
 import os
 from pathlib import Path
 import re
@@ -9,6 +10,9 @@ import time
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--tests', nargs='+', type=int, choices=range(1, 8), default=list(range(1, 8)))
+    args = parser.parse_args()
     if not os.environ.get('WINEPREFIX'):
         raise SystemExit('Set WINEPREFIX to a disposable OpenOffice + UniOffice prefix')
     root = Path(__file__).resolve().parent.parent
@@ -18,7 +22,7 @@ def main():
     print(f'Results: {work}', flush=True)
     loader = os.environ.get('WINE', 'wine')
     failures = 0
-    for number in range(1, 8):
+    for number in args.tests:
         source = root / f'tests/Excel/test_{number}.vbs'
         test_dir = work / f'test_{number}'
         test_dir.mkdir()
