@@ -79,9 +79,10 @@ markers, and explicitly uses 32-bit cscript. Inspect `otchet.txt` and `script.lo
 in the printed result directory. Wine cscript may return zero after a script
 error, so completion markers and assertion totals determine success.
 
-The OpenOffice 4.1.17 run completed all seven legacy tests: after fixing PageSetup, tests 4–7 passed;
-tests 1–3 report 7 remaining failed checks. See the
-[detailed results](docs/openoffice-4.1.17-results.md) for limitations and failures.
+The final OpenOffice 4.1.17 run passed all seven legacy tests (zero failures),
+plus dedicated font-script, outline visibility and diagonal-border probes.
+See the [detailed results](docs/openoffice-4.1.17-results.md) for exact counters
+and coverage limits.
 
 `tests/com-smoke.c` checks only the factory and TLB, without an office backend.
 Other legacy warnings remain.

@@ -49,7 +49,22 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
 
 #define BORDER_THIS(iface) DEFINE_THIS(BorderImpl, border, iface)
 
-    /*** IUnknown methods ***/
+    /* Use the explicit UNO property-set interface for diagonal structs. */
+static HRESULT border_get_diagonal(IDispatch *range, const WCHAR *name, VARIANT *line)
+{
+    VARIANT property;
+    HRESULT hr;
+
+    VariantInit(&property);
+    V_VT(&property) = VT_BSTR;
+    V_BSTR(&property) = SysAllocString(name);
+    if (!V_BSTR(&property)) return E_OUTOFMEMORY;
+    hr = AutoWrap(DISPATCH_METHOD, line, range, L"getPropertyValue", 1, property);
+    VariantClear(&property);
+    return hr;
+}
+
+/*** IUnknown methods ***/
 static ULONG WINAPI MSO_TO_OO_I_Border_AddRef(
         I_Border* iface)
 {
@@ -287,14 +302,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalBLTR\n");
             return E_FAIL;
@@ -422,14 +437,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalBLTR\n");
             return E_FAIL;
@@ -733,14 +748,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_LineStyle(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalBLTR\n");
             return E_FAIL;
@@ -914,14 +929,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
         }
         break;
     case xlDiagonalDown:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalTLBR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = AutoWrap(DISPATCH_PROPERTYGET, &Y, This->pOORange, L"DiagonalBLTR", 0);
+        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalBLTR\n");
             return E_FAIL;

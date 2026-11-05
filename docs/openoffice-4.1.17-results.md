@@ -115,3 +115,40 @@ and mapped Excel's 1-based levels to Calc's 0-based depth. The new outline-level
 probe verified actual row/column visibility and passed all checks. Original
 test 2 passed 13/0 (unioffice-excel-suite-l2f44geo). Both drivers compile.
 Only the two Border failures remain to be diagnosed.
+
+## Final regression: Border fixed (2026-11-06)
+
+Diagonal BorderLine structures are retrieved through explicit UNO
+XPropertySet.getPropertyValue instead of the failing dynamic PROPERTYGET path.
+Both diagonal directions now work. Root cause inside the Automation bridge
+was not established, so this is not recorded as a proven Wine defect.
+
+The new tests/border-diagonal.vbs checks LineStyle/ColorIndex readback for all
+12 legacy indices, direct UNO diagonal color/width, double lines and clearing.
+It passed. The original test 3 passed 30/0. Both compiler builds passed.
+
+All seven tests were then re-run together on updated PE32 DLL/TLB with
+Windows OpenOffice 4.1.17. Results at
+`~/tmp/claude/unioffice-excel-suite-dh6epjsc`:
+
+| Test | Reported success | Reported failure | SUCCESS markers |
+| --- | ---: | ---: | ---: |
+| 1 | 32 | 0 | 32 |
+| 2 | 13 | 0 | 13 |
+| 3 | 30 | 0 | 30 |
+| 4 | 34 | 0 | 33 |
+| 5 | 32 | 0 | 32 |
+| 6 | 12 | 0 | 11 |
+| 7 | 13 | 0 | 13 |
+| Total | 166 | 0 | 164 |
+
+Runner exit status: 0. All seven completion markers were checked. The legacy
+counter discrepancies in tests 4 and 6 remain documented rather than silently
+counted as independently verified assertions. This validates the covered PE32
+automation scenarios, not every Office interface or full PE64 automation.
+
+The final MSI32 was rebuilt with the current DLL/TLB. Unicode metadata check
+passed; administrative extraction in the clean test prefix succeeded and cmp
+confirmed that both extracted payload files match the tested artifacts byte
+for byte. An /a attempt in the prefix with the product installed failed at
+InstallAdminPackage; the prefix-state difference has not been isolated.
