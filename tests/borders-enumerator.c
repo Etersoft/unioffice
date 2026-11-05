@@ -73,8 +73,18 @@ static void invalid_indices(I_Borders *borders)
 
 static void weight_contract(I_Borders *borders)
 {
+    const XlLineStyle unsupported[] = {xlDash, xlDashDot, xlDashDotDot, xlDot, xlSlantDashDot};
+    unsigned int index;
     IDispatch *dispatch = NULL;
     I_Border *border = NULL;
+    CHECK(I_Borders_get_LineStyle(borders, NULL) == E_POINTER);
+    CHECK(I_Borders_get_Value(borders, NULL) == E_POINTER);
+    for (index = 0; index < sizeof(unsupported) / sizeof(unsupported[0]); ++index) {
+        CHECK(I_Borders_put_LineStyle(borders, unsupported[index]) == E_NOTIMPL);
+        CHECK(I_Borders_put_Value(borders, unsupported[index]) == E_NOTIMPL);
+    }
+    CHECK(I_Borders_put_LineStyle(borders, (XlLineStyle)12345) == E_INVALIDARG);
+    CHECK(I_Borders_put_Value(borders, (XlLineStyle)12345) == E_INVALIDARG);
     CHECK(I_Borders_get_Weight(borders, NULL) == E_POINTER);
     CHECK(I_Borders_put_Weight(borders, (XlBorderWeight)3) == E_INVALIDARG);
     CHECK(I_Borders_get_Item(borders, xlEdgeLeft, &dispatch) == S_OK && dispatch);

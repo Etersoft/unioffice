@@ -117,6 +117,8 @@ dimensions, including single/double lines and aggregate formatting. See
 Automation returns `Null` for mixed aggregate weights while preserving the old
 native enum getter. See [mixed Weight and ABI validation](docs/border-weight-mixed-results.md).
 `tests/range-address-variable.vbs` checks that Range calls preserve their string arguments.
+Unsupported line styles now report an error through aggregate `Borders.LineStyle`
+and its `Value` alias. See [backend capabilities and style checks](docs/border-style-results.md).
 
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments

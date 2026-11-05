@@ -366,6 +366,27 @@ DLL/TLB установлены парами; оба MSI пересобраны, 
 Подробности: [mixed Weight](border-weight-mixed-results.md),
 [Range arguments](range-argument-results.md). Native Excel/Windows не проверялись.
 
+## Возможности backend и ошибки aggregate LineStyle (2026-11-06)
+
+Проверка Windows AOO4.1.17 через32/64 script hosts: TableBorder/DiagonalTLBR
+есть, TableBorder2/LeftBorder2/DiagonalTLBR2 нет. Reflection знает BorderLine,
+но не BorderLine2/BorderLineStyle; у классической линии LineStyle даёт1B6.
+Расширенный struct документирован LibreOffice3.4 и не является подтверждённой
+возможностью установленного Apache backend. Пунктирная отрисовка не реализована.
+
+Найден конкретный дефект UniOffice: отдельная граница возвращает E_NOTIMPL,
+а aggregate LineStyle глотает HRESULT и возвращает S_OK; Value наследует ошибку.
+Новый VBS reproducer упал на первом aggregate Dash прежней DLL. Setter теперь
+возвращает первый child failure с Release; getter проверяет NULL и возвращает
+реальный HRESULT. Invalid style12345 даёт E_INVALIDARG; ABI/IDL не менялись.
+
+На PE32/MinGW Fedora и PE64/winegcc builder64 прошли style regression, native
+HRESULT/null/ABI checks, Weight374, mixed55, диагонали и legacy test3 (22/0,
+markers22/0). Остальные6 tests не повторялись. Outputs:
+~/tmp/claude/unioffice-excel-suite-6wh01dyo (32), -e0zfiu8l (64).
+Оба MSI пересобраны, metadata/Unicode0; installer lifecycle не повторялся.
+Подробности: [Border styles](border-style-results.md). Новых Wine defects нет.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -541,7 +562,9 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
    и другие версии Windows Installer потребуют отдельного окружения.
 2. Borders.Weight реализован, включая mixed Null в Automation без поломки
    прежней native vtable. Точный порядок обхода Excel и прочие неподдержанные
-   интерфейсы не покрыты; Word содержит заглушки, dashed/dotted LineStyle — E_NOTIMPL.
+   интерфейсы не покрыты; Word содержит заглушки. Отсутствие extended border API в Windows AOO4.1.17
+   подтверждено; dashed/dotted styles дают E_NOTIMPL, включая aggregate/Value.
+   Для поддержки пунктиров нужен отдельный проверенный backend с extended API.
    Другие случаи shallow VARIANT normalization требуют отдельного воспроизведения.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
