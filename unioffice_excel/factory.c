@@ -46,6 +46,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_QueryInterface(
     ClassFactoryImpl *This = CLASSFACTORY_THIS(iface);
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
+    *ppvObj = NULL;
 
     if (IsEqualGUID(riid, &IID_IUnknown) ||
             IsEqualGUID(riid, &IID_IClassFactory)) {
@@ -66,7 +67,7 @@ static ULONG WINAPI MSO_TO_OO_IClassFactory_Release(LPCLASSFACTORY iface)
 
     ref = InterlockedDecrement(&This->ref);
     if (ref == 0) {
-        HeapFree(GetProcessHeap(), 0, This);
+        /* OOFFICE_ClassFactory has static storage duration. */
         InterlockedDecrement(&dll_ref);
     }
     return ref;
@@ -84,6 +85,7 @@ static HRESULT WINAPI MSO_TO_OO_IClassFactory_CreateInstance(
     TRACE_IN;
 
     if (This == NULL || ppvObj == NULL) return E_POINTER;
+    *ppvObj = NULL;
 
     if (pUnkOuter != NULL) return CLASS_E_NOAGGREGATION;
 

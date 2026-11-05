@@ -49,7 +49,6 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
 {
     TRACE_IN;
     TRACE("(%p, %d, %p)\n", hinstDLL, fdwReason, lpvReserved);
-    fprintf(stderr,"WE ARE THERE \n");
     switch (fdwReason)
     {
         case DLL_PROCESS_ATTACH:
@@ -59,39 +58,39 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
             if(ti_excel)
                 ti_excel->lpVtbl->Release(ti_excel);
             if(ti_font)
-                ti_excel->lpVtbl->Release(ti_font);
+                ti_font->lpVtbl->Release(ti_font);
             if(ti_workbooks)
-                ti_excel->lpVtbl->Release(ti_workbooks);
+                ti_workbooks->lpVtbl->Release(ti_workbooks);
             if(ti_workbook)
-                ti_excel->lpVtbl->Release(ti_workbook);
+                ti_workbook->lpVtbl->Release(ti_workbook);
             if(ti_sheets)
-                ti_excel->lpVtbl->Release(ti_sheets);
+                ti_sheets->lpVtbl->Release(ti_sheets);
             if(ti_worksheet)
-                ti_excel->lpVtbl->Release(ti_worksheet);
+                ti_worksheet->lpVtbl->Release(ti_worksheet);
             if(ti_range)
-                ti_excel->lpVtbl->Release(ti_range);
+                ti_range->lpVtbl->Release(ti_range);
             if(ti_interrior)
-                ti_excel->lpVtbl->Release(ti_interrior);
+                ti_interrior->lpVtbl->Release(ti_interrior);
             if(ti_pagesetup)
-                ti_excel->lpVtbl->Release(ti_pagesetup);
+                ti_pagesetup->lpVtbl->Release(ti_pagesetup);
             if(ti_borders)
-                ti_excel->lpVtbl->Release(ti_borders);
+                ti_borders->lpVtbl->Release(ti_borders);
             if(ti_border)
-                ti_excel->lpVtbl->Release(ti_border);
+                ti_border->lpVtbl->Release(ti_border);
             if(ti_name)
-                ti_excel->lpVtbl->Release(ti_name);
+                ti_name->lpVtbl->Release(ti_name);
             if(ti_names)
-                ti_excel->lpVtbl->Release(ti_names);
+                ti_names->lpVtbl->Release(ti_names);
             if(ti_outline)
-                ti_excel->lpVtbl->Release(ti_outline);
+                ti_outline->lpVtbl->Release(ti_outline);
             if(ti_window)
-                ti_excel->lpVtbl->Release(ti_window);
+                ti_window->lpVtbl->Release(ti_window);
             if(ti_windows)
-                ti_excel->lpVtbl->Release(ti_windows);
+                ti_windows->lpVtbl->Release(ti_windows);
             if(ti_shapes)
-                ti_excel->lpVtbl->Release(ti_shapes);
+                ti_shapes->lpVtbl->Release(ti_shapes);
             if(ti_shape)
-                ti_excel->lpVtbl->Release(ti_shape);
+                ti_shape->lpVtbl->Release(ti_shape);
             break;
     }
     TRACE_OUT;
@@ -100,9 +99,11 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
 
 __declspec(dllexport) STDAPI DllGetClassObject(REFCLSID rclsid, REFIID iid, LPVOID *ppv)
 {
-    *ppv = NULL;
     char file_name[]= {'\\','u','n','i','o','f','f','i','c','e','_','e','x','c','e','l','.','l','o','g',0};
     int len,i=0;
+
+    if (!ppv) return E_POINTER;
+    *ppv = NULL;
     TRACE_IN;
 
     if (IsEqualGUID(rclsid, &CLSID_Application)) {
