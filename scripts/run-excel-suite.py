@@ -39,7 +39,15 @@ def main():
                                        '-headless', '-nofirststartwizard', '-norestore', '-nodefault'],
                                       stdout=office_log, stderr=subprocess.STDOUT)
             try:
-                time.sleep(5)
+                time.sleep(3)
+                with (test_dir / 'ready.log').open('wb') as ready_log:
+                    subprocess.run([loader, r'C:\windows\syswow64\cscript.exe', '//nologo',
+                                    'Z:' + str(root / 'tests/openoffice-ready.vbs')],
+                                   stdout=ready_log, stderr=subprocess.STDOUT, timeout=60, check=False)
+                if b'OpenOffice readiness: PASS' not in (test_dir / 'ready.log').read_bytes():
+                    print(f'test_{number}: backend not ready; inspect ready.log', flush=True)
+                    failures += 1
+                    break
                 with (test_dir / 'script.log').open('wb') as script_log:
                     subprocess.run([loader, r'C:\windows\syswow64\cscript.exe', '//nologo',
                                     '/E:vbscript', source.name, str(number), '0', '0'],
