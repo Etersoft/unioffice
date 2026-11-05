@@ -1,36 +1,9 @@
-# переименовать ver и name.idt
+EXCEL_BUILD ?= ../unioffice_excel/build/mingw-32
+OUTPUT ?= build/unioffice.msi
 
-MSIDB=wine98 bin/MsiDb.exe
-MAKECAB=wine98 bin/MAKECAB.EXE
-CABARC=wine98 bin/CABARC.EXE n
-PWD=`winepath -w $$(pwd)`
+.PHONY: all clean
+all:
+	python3 ../scripts/build-msi.py --excel-build "$(EXCEL_BUILD)" --output "$(OUTPUT)"
 
-VAR_ver=`cat ver.idt`
-VAR_name=`cat name.idt`
-
-all: unioffice.msi
-	$(MAKE) rmtmp
-
-# Заполняем CAB-файлы содержимым
-ooffice.cab: ../unioffice_excel/unioffice_excel.dll ../unioffice_excel/unioffice_excel.tlb
-	$(CABARC) $@ ..\\unioffice_excel\\unioffice_excel.tlb ..\\unioffice_excel\\unioffice_excel.dll
-
-# Удаляем временные файлы
-rmtmp:
-	rm -f *.cab
-
-# Удаляем все создаваемые файлы
-clean: rmtmp
-	rm -f unioffice.msi
-
-# Извлекаем .idt из msi (если правили его на стороне)
-extridt:
-	$(MSIDB) -d $(PWD)\\Unioffice.msi -f $(PWD)\\idt -e "*"
-	rm -f idt/_Validation.idt idt/_SummaryInformation.idt
-
-# Формируем пакет MSI из шаблона, добавляем CAB'ы и .idt
-unioffice.msi: bin/template.msi ooffice.cab
-	cp bin/template.msi $@
-	$(MSIDB) -d $@ -f $(PWD)\\idt -i "*"
-	$(MSIDB) -d $@ -f $(PWD)\\idt\\Binary -i "*"
-	$(MSIDB) -d $@ -a ooffice.cab
+clean:
+	rm -f "$(OUTPUT)"
