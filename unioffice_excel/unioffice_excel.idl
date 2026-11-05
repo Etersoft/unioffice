@@ -970,6 +970,32 @@ library MSO_TO_OOLib
 		[propget,id(dispid_borders__default), helpstring("property _Default")] HRESULT _Default([in] XlBordersIndex key, [out, retval] /*I_Border*/IDispatch **ppObject);
 	};
 
+    /* Dispatch-only contract: keep the legacy I_Borders vtable immutable. */
+    [uuid(38CD5803-18E6-4F67-9525-110B4F31896B)]
+    dispinterface D_Borders
+    {
+    properties:
+    methods:
+        [propget,id(dispid_borders_application)] IDispatch* Application();
+        [propget,id(dispid_borders_creator)] VARIANT Creator();
+        [propget,id(dispid_borders_parent)] IDispatch* Parent();
+        [propget,id(dispid_borders_color)] long Color();
+        [propput,id(dispid_borders_color)] void Color([in] long lcolor);
+        [propget,id(dispid_borders_colorindex)] long ColorIndex();
+        [propput,id(dispid_borders_colorindex)] void ColorIndex([in] long lcolorindex);
+        [propget,id(dispid_borders_count)] long Count();
+        [propget,id(dispid_borders_item)] IDispatch* Item([in] XlBordersIndex key);
+        [propget,id(dispid_borders_linestyle)] XlLineStyle LineStyle();
+        [propput,id(dispid_borders_linestyle)] void LineStyle([in] XlLineStyle linestyle);
+        [id(dispid_borders_getenumerator)] IUnknown* GetEnumerator();
+        [propget,id(dispid_borders_value)] XlLineStyle Value();
+        [propput,id(dispid_borders_value)] void Value([in] XlLineStyle linestyle);
+        [propget,id(dispid_borders_weight)] VARIANT Weight();
+        [propput,id(dispid_borders_weight)] void Weight([in] VARIANT weight);
+        [propget,id(dispid_borders__default)] IDispatch* _Default([in] XlBordersIndex key);
+    };
+
+
 
 	[
 		object,

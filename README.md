@@ -114,6 +114,9 @@ by Item. Invalid indices fail before object creation. See
 `tests/border-weight.vbs` checks Weight through both Excel and actual UNO line
 dimensions, including single/double lines and aggregate formatting. See
 [weight behavior, validation and limits](docs/border-weight-results.md).
+Automation returns `Null` for mixed aggregate weights while preserving the old
+native enum getter. See [mixed Weight and ABI validation](docs/border-weight-mixed-results.md).
+`tests/range-address-variable.vbs` checks that Range calls preserve their string arguments.
 
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments

@@ -799,16 +799,23 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_LineStyle(
     return hr;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_Border_get_Weight(
-        I_Border* iface, XlBorderWeight *pweight)
+HRESULT MSO_TO_OO_BorderWeight(IDispatch *range, XlBordersIndex key,
+        XlBorderWeight *pweight, BOOL *uniform)
 {
-    BorderImpl *This = BORDER_THIS(iface);
+    BorderImpl context = {0};
+    BorderImpl *This = &context;
+    const WCHAR *name, *valid;
+    VARIANT flag;
     VARIANT table, line;
     LONG inner, outer, gap, width;
     HRESULT hr;
     if (!pweight) return E_POINTER;
+    context.pOORange = range;
+    context.key = key;
     VariantInit(&table);
     VariantInit(&line);
+    VariantInit(&flag);
+    if (uniform) *uniform = TRUE;
     hr = border_load_line(This, &table, &line);
     if (SUCCEEDED(hr)) hr = border_dimensions(line, &inner, &outer, &gap);
     if (SUCCEEDED(hr)) {
@@ -817,9 +824,25 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Weight(
         *pweight = width <= 0 ? xlThin : width <= 14 ? xlHairline :
             width <= 57 ? xlThin : width <= 114 ? xlMedium : xlThick;
     }
+    if (SUCCEEDED(hr) && uniform) {
+        hr = border_line_property(This, &name, &valid);
+        if (SUCCEEDED(hr) && valid) {
+            hr = AutoWrap(DISPATCH_PROPERTYGET, &flag, V_DISPATCH(&table), (WCHAR*)valid, 0);
+            if (SUCCEEDED(hr)) hr = VariantChangeType(&flag, &flag, 0, VT_BOOL);
+            if (SUCCEEDED(hr)) *uniform = V_BOOL(&flag) != VARIANT_FALSE;
+        }
+    }
+    VariantClear(&flag);
     VariantClear(&line);
     VariantClear(&table);
     return hr;
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Border_get_Weight(
+        I_Border* iface, XlBorderWeight *pweight)
+{
+    BorderImpl *This = BORDER_THIS(iface);
+    return MSO_TO_OO_BorderWeight(This->pOORange, This->key, pweight, NULL);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Border_put_Weight(

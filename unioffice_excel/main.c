@@ -36,6 +36,7 @@ extern ITypeInfo *ti_range;
 extern ITypeInfo *ti_interrior;
 extern ITypeInfo *ti_pagesetup;
 extern ITypeInfo *ti_borders;
+extern ITypeInfo *ti_borders_dispatch;
 extern ITypeInfo *ti_border;
 extern ITypeInfo *ti_name;
 extern ITypeInfo *ti_names;
@@ -75,6 +76,8 @@ __declspec(dllexport) BOOL __stdcall DllMain(HINSTANCE hinstDLL, DWORD fdwReason
                 ti_pagesetup->lpVtbl->Release(ti_pagesetup);
             if(ti_borders)
                 ti_borders->lpVtbl->Release(ti_borders);
+            if(ti_borders_dispatch)
+                ti_borders_dispatch->lpVtbl->Release(ti_borders_dispatch);
             if(ti_border)
                 ti_border->lpVtbl->Release(ti_border);
             if(ti_name)

@@ -288,6 +288,10 @@ typedef struct
 
 extern ClassFactoryImpl OOFFICE_ClassFactory;
 
+/* Shared internal geometry reader; uniform refers to all line attributes. */
+HRESULT MSO_TO_OO_BorderWeight(IDispatch *range, XlBordersIndex key,
+        XlBorderWeight *weight, BOOL *uniform);
+
 /*Constructors*/
 
 extern HRESULT _ApplicationConstructor(LPVOID *ppObj);

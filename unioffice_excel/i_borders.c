@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 
 /* Enumeration membership excludes the four legacy aliases accepted by Item. */
 static const XlBordersIndex border_indices[] = {
@@ -28,6 +29,7 @@ static const XlBordersIndex border_indices[] = {
 enum { BORDER_COUNT = sizeof(border_indices) / sizeof(border_indices[0]) };
 
 ITypeInfo *ti_borders = NULL;
+ITypeInfo *ti_borders_dispatch = NULL;
 
 HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
 {
@@ -52,6 +54,25 @@ HRESULT get_typeinfo_borders(ITypeInfo **typeinfo)
     *typeinfo = ti_borders;
 
     return hres;
+}
+
+static HRESULT get_borders_dispatch_typeinfo(ITypeInfo **result)
+{
+    ITypeInfo *legacy;
+    ITypeLib *typelib;
+    UINT index;
+    HRESULT hr;
+    if (!ti_borders_dispatch) {
+        hr = get_typeinfo_borders(&legacy);
+        if (FAILED(hr)) return hr;
+        hr = ITypeInfo_GetContainingTypeLib(legacy, &typelib, &index);
+        if (FAILED(hr)) return hr;
+        hr = ITypeLib_GetTypeInfoOfGuid(typelib, &DIID_D_Borders, &ti_borders_dispatch);
+        ITypeLib_Release(typelib);
+        if (FAILED(hr)) return hr;
+    }
+    *result = ti_borders_dispatch;
+    return S_OK;
 }
 
 /*IBorders interface*/
@@ -96,7 +117,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_QueryInterface(
 
     if (IsEqualGUID(riid, &IID_IDispatch) ||
             IsEqualGUID(riid, &IID_IUnknown) ||
-            IsEqualGUID(riid, &IID_I_Borders)) {
+            IsEqualGUID(riid, &IID_I_Borders) ||
+            IsEqualGUID(riid, &DIID_D_Borders)) {
         *ppvObject = BORDERS_BORDERS(This);
         I_Borders_AddRef((I_Borders*)(*ppvObject));
         return S_OK;
@@ -365,6 +387,80 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_get_Weight(
     return hr;
 }
 
+static BOOL borders_match_weight(XlBorderWeight weight, BOOL *have_weight,
+        XlBorderWeight *common)
+{
+    if (!*have_weight) {
+        *common = weight;
+        *have_weight = TRUE;
+    }
+    return *common == weight;
+}
+
+/* Only ambiguous lines need per-cell inspection; colors/styles alone are not mixed weights. */
+static HRESULT borders_weight_variant(I_Borders *iface, VARIANT *result)
+{
+    BordersImpl *This = BORDERS_THIS(iface);
+    LONG first_row, first_column, last_row, last_column, rows, columns;
+    LONG x0, x1, y0, y1, x, y;
+    XlBordersIndex key, cell_key;
+    XlBorderWeight weight, common = xlThin;
+    BOOL uniform, have_weight = FALSE;
+    VARIANT cell, row, column;
+    HRESULT hr;
+    VariantInit(result);
+    hr = MSO_TO_OO_GetRangeAddress(This->pRange, &first_row, &first_column, &last_row, &last_column);
+    if (FAILED(hr)) return hr;
+    rows = last_row - first_row + 1;
+    columns = last_column - first_column + 1;
+    if (rows <= 0 || columns <= 0) return E_UNEXPECTED;
+    for (key = xlEdgeLeft; key <= xlInsideHorizontal; ++key) {
+        if ((key == xlInsideVertical && columns == 1) ||
+                (key == xlInsideHorizontal && rows == 1)) continue;
+        hr = MSO_TO_OO_BorderWeight(This->pOORange, key, &weight, &uniform);
+        if (FAILED(hr)) return hr;
+        if (uniform) {
+            if (!borders_match_weight(weight, &have_weight, &common)) goto mixed;
+            continue;
+        }
+        x0 = y0 = 0;
+        x1 = columns;
+        y1 = rows;
+        cell_key = key;
+        switch (key) {
+        case xlEdgeLeft: x1 = 1; break;
+        case xlEdgeRight: x0 = columns - 1; break;
+        case xlEdgeTop: y1 = 1; break;
+        case xlEdgeBottom: y0 = rows - 1; break;
+        case xlInsideVertical: x0 = 1; cell_key = xlEdgeLeft; break;
+        case xlInsideHorizontal: y0 = 1; cell_key = xlEdgeTop; break;
+        default: return E_UNEXPECTED;
+        }
+        VariantInit(&row);
+        VariantInit(&column);
+        V_VT(&row) = V_VT(&column) = VT_I4;
+        for (y = y0; y < y1; ++y) {
+            for (x = x0; x < x1; ++x) {
+                V_I4(&row) = y;
+                V_I4(&column) = x;
+                VariantInit(&cell);
+                hr = AutoWrap(DISPATCH_METHOD, &cell, This->pOORange, L"getCellByPosition", 2, row, column);
+                if (SUCCEEDED(hr) && (V_VT(&cell) != VT_DISPATCH || !V_DISPATCH(&cell))) hr = E_UNEXPECTED;
+                if (SUCCEEDED(hr)) hr = MSO_TO_OO_BorderWeight(V_DISPATCH(&cell), cell_key, &weight, NULL);
+                VariantClear(&cell);
+                if (FAILED(hr)) return hr;
+                if (!borders_match_weight(weight, &have_weight, &common)) goto mixed;
+            }
+        }
+    }
+    V_VT(result) = VT_I4;
+    V_I4(result) = common;
+    return S_OK;
+mixed:
+    V_VT(result) = VT_NULL;
+    return S_OK;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Borders_put_Weight(
         I_Borders* iface, XlBorderWeight weight)
 {
@@ -502,23 +598,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetTypeInfoCount(
         UINT *pctinfo)
 {
     TRACE_IN;
+    if (!pctinfo) return E_POINTER;
     *pctinfo = 1;
     TRACE_OUT;
     return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_GetTypeInfo(
-        I_Borders* iface,
-        UINT iTInfo,
-        LCID lcid,
-        ITypeInfo **ppTInfo)
+        I_Borders* iface, UINT iTInfo, LCID lcid, ITypeInfo **ppTInfo)
 {
-    HRESULT hres = get_typeinfo_borders(ppTInfo);
-    TRACE("\n");
-    if (FAILED(hres))
-        ERR("GetTypeInfo");
-
-    return hres;
+    HRESULT hr;
+    if (!ppTInfo) return E_POINTER;
+    *ppTInfo = NULL;
+    if (iTInfo) return DISP_E_BADINDEX;
+    hr = get_borders_dispatch_typeinfo(ppTInfo);
+    if (SUCCEEDED(hr)) ITypeInfo_AddRef(*ppTInfo);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Borders_GetIDsOfNames(
@@ -532,7 +627,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_GetIDsOfNames(
     ITypeInfo *typeinfo;
     HRESULT hres;
     TRACE_IN;
-    hres = get_typeinfo_borders(&typeinfo);
+    hres = get_borders_dispatch_typeinfo(&typeinfo);
     if(FAILED(hres))
         return hres;
 
@@ -558,6 +653,21 @@ static HRESULT WINAPI MSO_TO_OO_I_Borders_Invoke(
     ITypeInfo *typeinfo;
     HRESULT hres;
     TRACE_IN;
+    if (!IsEqualGUID(riid, &IID_NULL)) return DISP_E_UNKNOWNINTERFACE;
+    if (!pDispParams) return E_POINTER;
+    if (dispIdMember == dispid_borders_weight && (wFlags & DISPATCH_PROPERTYGET)) {
+        VARIANT result;
+        if (pDispParams->cArgs) return DISP_E_BADPARAMCOUNT;
+        hres = borders_weight_variant(iface, &result);
+        if (SUCCEEDED(hres) && pVarResult) {
+            VariantInit(pVarResult);
+            V_VT(pVarResult) = V_VT(&result);
+            if (V_VT(&result) == VT_I4) V_I4(pVarResult) = V_I4(&result);
+        }
+        VariantClear(&result);
+        return hres;
+    }
+    /* Legacy metadata describes the unchanged native vtable used for other calls. */
     hres = get_typeinfo_borders(&typeinfo);
     if(FAILED(hres))
         return hres;

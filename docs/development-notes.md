@@ -333,6 +333,39 @@ outputs/invalid enums; enumeration и diagonal probes также PASS.
 Подробности и ограничения: [Weight results](border-weight-results.md).
 Новых подтверждённых дефектов Wine нет; нативная Windows не проверялась.
 
+## Mixed Borders.Weight и сохранение ABI (2026-11-06)
+
+Automation getter теперь даёт VT_I4 для одинакового веса и VT_NULL для разных.
+Legacy I_Borders IDL/vtable/getter XlBorderWeight* сохранены без изменения IID:
+нативные клиенты по-прежнему читают top edge. Добавлен pure dispinterface
+D_Borders (38CD5803-18E6-4F67-9525-110B4F31896B), Weight metadata=VARIANT;
+IDispatch обслуживает mixed getter отдельно, остальные calls идут через старую
+typeinfo/vtable. TypeInfo AddRef/outputs проверены native test с enum-buffer canaries.
+
+Сравниваются шесть недиагональных сторон с пропуском отсутствующих inner lines
+у single cell/row/column. Неоднозначные UNO validity flags требуют per-cell
+проверки нужных сегментов, чтобы разные colors/styles при одинаковом Weight
+не давали ложный Null. Mixed probe55 checks и физический Weight probe374 прошли
+на PE32 и PE64. Полные7 legacy tests: counters158/0, markers156/0 каждый.
+Results: ~/tmp/claude/unioffice-excel-suite-w_qyjlm2 (32), -hjmdhjh4 (64).
+Первый параллельный PE32 suite-e85hajwi упал в test5 после создания workbook,
+до Weight. Отдельный5/6/7 suite-wwimq370 прошёл, затем прошёл полный повтор32.
+Первый отказ не скрыт, root cause не установлен и Wine defect не объявлялся.
+
+Дополнительно выявлена порча строкового argument Application.Range на PE64:
+отдельный Range/Borders.Count probe воспроизвёл её без Weight. Копирование
+аргументов VariantCopyInd в owned locals устранило ошибку; оба final probes
+прошли32/64. Чистые вложенные VBScript arrays проходили без UniOffice.
+Гипотезы о primitive-result assignment/VariantInit не устраняли симптом;
+новый Wine defect не доказан. Исправление Range сохранено отдельным коммитом9922be8.
+
+DLL/TLB установлены парами; оба MSI пересобраны, metadata/Unicode0. После
+установки каждого mixed probePASS. Lifecycle/coexistence прошёл repair64 и оба
+порядка удаления с работающим surviving client, затем очистку последнего.
+Только prefix unioffice-msi64 в конце без обоих продуктов; рабочие fixtures сохранены.
+Подробности: [mixed Weight](border-weight-mixed-results.md),
+[Range arguments](range-argument-results.md). Native Excel/Windows не проверялись.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -506,10 +539,10 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
 
 1. MSI32/MSI64 и covered Excel PE32/PE64 сценарии проверены. Нативная Windows
    и другие версии Windows Installer потребуют отдельного окружения.
-2. Borders.Weight реализован и проверен. Mixed aggregate getter пока читает
-   верхнюю границу; возврат Null потребует отдельного изменения IDL/ABI.
-   Точный порядок обхода Excel и прочие неподдержанные интерфейсы не покрыты;
-   Word содержит заглушки, dashed/dotted LineStyle остаются E_NOTIMPL.
+2. Borders.Weight реализован, включая mixed Null в Automation без поломки
+   прежней native vtable. Точный порядок обхода Excel и прочие неподдержанные
+   интерфейсы не покрыты; Word содержит заглушки, dashed/dotted LineStyle — E_NOTIMPL.
+   Другие случаи shallow VARIANT normalization требуют отдельного воспроизведения.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
 

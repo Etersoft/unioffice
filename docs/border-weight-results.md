@@ -44,6 +44,10 @@ in the legacy IDL does not support returning Null for mixed aggregate weights;
 that contract was not changed here. Invalid weights return E_INVALIDARG before
 modifying line geometry; null getter outputs return E_POINTER.
 
+The subsequent [mixed Weight implementation](border-weight-mixed-results.md)
+adds a separate dispatch-only contract with numeric/Null results. The native
+enum getter remains unchanged for binary compatibility.
+
 References: [Excel Weight](https://learn.microsoft.com/en-us/office/vba/api/excel.border.weight),
 [weight constants](https://learn.microsoft.com/office/vba/api/Excel.XlBorderWeight),
 [UNO BorderLine](https://api.libreoffice.org/docs/idl/ref/structcom_1_1sun_1_1star_1_1table_1_1BorderLine.html)

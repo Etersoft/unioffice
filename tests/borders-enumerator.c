@@ -90,6 +90,66 @@ static void weight_contract(I_Borders *borders)
     IDispatch_Release(dispatch);
 }
 
+static void mixed_weight_contract(I_Borders *borders)
+{
+    struct { LONG before; XlBorderWeight weight; LONG after; } legacy = {12345, xlHairline, 67890};
+    ITypeInfo *info = NULL, *invalid = (ITypeInfo *)1;
+    TYPEATTR *attributes = NULL;
+    FUNCDESC *function;
+    IDispatch *dispatch = NULL;
+    I_Border *border = NULL;
+    IUnknown *automation = NULL;
+    VARIANT result;
+    UINT index;
+    BOOL found = FALSE;
+    CHECK(I_Borders_GetTypeInfo(borders, 1, 0, &invalid) == DISP_E_BADINDEX && !invalid);
+    CHECK(I_Borders_GetTypeInfo(borders, 0, 0, NULL) == E_POINTER);
+    CHECK(I_Borders_GetTypeInfoCount(borders, NULL) == E_POINTER);
+    CHECK(I_Borders_QueryInterface(borders, &DIID_D_Borders, (void **)&automation) == S_OK && automation);
+    if (automation) IUnknown_Release(automation);
+    CHECK(I_Borders_GetTypeInfo(borders, 0, 0, &info) == S_OK && info);
+    if (info) {
+        CHECK(ITypeInfo_GetTypeAttr(info, &attributes) == S_OK);
+        if (attributes) {
+            CHECK(IsEqualGUID(&attributes->guid, &DIID_D_Borders));
+            CHECK(attributes->typekind == TKIND_DISPATCH);
+            CHECK(!(attributes->wTypeFlags & TYPEFLAG_FDUAL));
+            for (index = 0; index < attributes->cFuncs; ++index) {
+                if (FAILED(ITypeInfo_GetFuncDesc(info, index, &function))) { CHECK(0); continue; }
+                if (function->memid == 11 && function->invkind == INVOKE_PROPERTYGET) {
+                    found = TRUE;
+                    CHECK(function->elemdescFunc.tdesc.vt == VT_VARIANT);
+                }
+                ITypeInfo_ReleaseFuncDesc(info, function);
+            }
+            CHECK(found);
+            ITypeInfo_ReleaseTypeAttr(info, attributes);
+        }
+        ITypeInfo_Release(info);
+    }
+    CHECK(I_Borders_put_Weight(borders, xlThin) == S_OK);
+    VariantInit(&result);
+    CHECK(invoke((IDispatch *)borders, L"Weight", DISPATCH_PROPERTYGET, NULL, 0, &result) == S_OK);
+    CHECK(V_VT(&result) == VT_I4 && V_I4(&result) == xlThin);
+    VariantClear(&result);
+    CHECK(I_Borders_get_Item(borders, xlEdgeLeft, &dispatch) == S_OK && dispatch);
+    if (dispatch) {
+        CHECK(IDispatch_QueryInterface(dispatch, &IID_I_Border, (void **)&border) == S_OK);
+        if (border) {
+            CHECK(I_Border_put_Weight(border, xlThick) == S_OK);
+            I_Border_Release(border);
+        }
+        IDispatch_Release(dispatch);
+    }
+    CHECK(invoke((IDispatch *)borders, L"Weight", DISPATCH_PROPERTYGET, NULL, 0, &result) == S_OK);
+    CHECK(V_VT(&result) == VT_NULL);
+    VariantClear(&result);
+    /* This unchanged legacy slot must still write one enum, even for mixed borders. */
+    CHECK(I_Borders_get_Weight(borders, &legacy.weight) == S_OK);
+    CHECK(legacy.weight == xlThin && legacy.before == 12345 && legacy.after == 67890);
+    CHECK(I_Borders_put_Weight(borders, xlThin) == S_OK);
+}
+
 int __cdecl main(void)
 {
     CLSID clsid;
@@ -120,6 +180,7 @@ int __cdecl main(void)
     CHECK(count == 8);
     invalid_indices(borders);
     weight_contract(borders);
+    mixed_weight_contract(borders);
     CHECK(I_Borders_get_Count(borders, NULL) == E_POINTER);
     CHECK(I_Borders_get_Item(borders, xlEdgeLeft, NULL) == E_POINTER);
     CHECK(I_Borders_get__Default(borders, xlEdgeLeft, NULL) == E_POINTER);
