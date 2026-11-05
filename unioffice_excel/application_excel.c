@@ -951,22 +951,22 @@ static HRESULT WINAPI IMP_Application_get_Range(
         VARIANT Cell2,
         IDispatch **ppRange)
 {
-    _ApplicationImpl *This = APPEXCEL_THIS(iface);
-    HRESULT hres; 
-    I_Worksheet *wsh;
-    TRACE_IN;
-
-    MSO_TO_OO_CorrectArg(Cell1, &Cell1);
-    MSO_TO_OO_CorrectArg(Cell2, &Cell2);
-
-    hres = IMP_Application_get_ActiveSheet(iface, (IDispatch**) &wsh);
-
-    hres = I_Worksheet_get_Range(wsh,Cell1, Cell2, ppRange);
-
-    I_Worksheet_Release(wsh);
-
-    TRACE_OUT;
-    return hres;
+    I_Worksheet *sheet = NULL;
+    VARIANT first, last;
+    HRESULT hr;
+    if (!ppRange) return E_POINTER;
+    *ppRange = NULL;
+    VariantInit(&first);
+    VariantInit(&last);
+    /* Do not normalize the caller's by-reference VARIANT in place. */
+    hr = VariantCopyInd(&first, &Cell1);
+    if (SUCCEEDED(hr)) hr = VariantCopyInd(&last, &Cell2);
+    if (SUCCEEDED(hr)) hr = IMP_Application_get_ActiveSheet(iface, (IDispatch**)&sheet);
+    if (SUCCEEDED(hr)) hr = I_Worksheet_get_Range(sheet, first, last, ppRange);
+    if (sheet) I_Worksheet_Release(sheet);
+    VariantClear(&last);
+    VariantClear(&first);
+    return hr;
 }
 
 static HRESULT WINAPI IMP_Application_get_Columns(
