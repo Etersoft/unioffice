@@ -1759,8 +1759,10 @@ static HRESULT WINAPI IMP_Application_CentimetersToPoints(
         LCID lcid,
         double *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    if (!RHS) return E_POINTER;
+    /* One inch is 2.54 cm and 72 points. */
+    *RHS = Centimeters * 72.0 / 2.54;
+    return S_OK;
 }
 
 static HRESULT WINAPI IMP_Application_CheckSpelling(

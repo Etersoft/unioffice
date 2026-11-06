@@ -1842,8 +1842,53 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_UsedRange(
         LCID lcid,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    WorksheetImpl *This = (WorksheetImpl*)iface;
+    VARIANT cursor, result, address, field, a[4];
+    static const LPOLESTR names[4] = {L"EndRow", L"EndColumn", L"StartRow", L"StartColumn"};
+    I_Range *range = NULL;
+    HRESULT hr;
+    int i;
+    TRACE_IN;
+
+    if (!This || !RHS) return E_POINTER;
+    *RHS = NULL;
+    VariantInit(&cursor);
+    VariantInit(&result);
+    VariantInit(&address);
+    /* Excel's used range starts at the first used cell, not necessarily A1. */
+    hr = AutoWrap(DISPATCH_METHOD, &cursor, This->pOOSheet, L"createCursor", 0);
+    V_VT(&a[0]) = VT_BOOL;
+    V_BOOL(&a[0]) = VARIANT_FALSE;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(&cursor), L"gotoStartOfUsedArea", 1, a[0]);
+    VariantClear(&result);
+    V_BOOL(&a[0]) = VARIANT_TRUE;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(&cursor), L"gotoEndOfUsedArea", 1, a[0]);
+    VariantClear(&result);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &address, V_DISPATCH(&cursor), L"getRangeAddress", 0);
+    for (i = 0; SUCCEEDED(hr) && i < 4; i++) {
+        VariantInit(&field);
+        hr = AutoWrap(DISPATCH_PROPERTYGET, &field, V_DISPATCH(&address), names[i], 0);
+        if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&field, &field, 0, 0, VT_I4);
+        if (SUCCEEDED(hr)) {
+            V_VT(&a[i]) = VT_I4;
+            V_I4(&a[i]) = V_I4(&field);
+        }
+        VariantClear(&field);
+    }
+    VariantClear(&address);
+    VariantClear(&cursor);
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_METHOD, &result, This->pOOSheet, L"getCellRangeByPosition", 4, a[0], a[1], a[2], a[3]);
+    if (SUCCEEDED(hr)) hr = _I_RangeConstructor((void**)&range);
+    if (SUCCEEDED(hr)) {
+        I_Range_AddRef(range);
+        hr = MSO_TO_OO_I_Range_Initialize3(range, V_DISPATCH(&result), (IDispatch*)iface, NULL);
+        if (SUCCEEDED(hr)) *RHS = (IDispatch*)range;
+        else I_Range_Release(range);
+    }
+    VariantClear(&result);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_HPageBreaks(

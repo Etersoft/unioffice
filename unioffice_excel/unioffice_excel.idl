@@ -2434,7 +2434,7 @@ library MSO_TO_OOLib
 			[out,retval] XlSheetType* RHS);
 //UsedRange
 		[id(dispid_worksheet_usedrange),propget,helpstring("property UsedRange")] HRESULT UsedRange(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out,retval] IDispatch**/*IRange***/ RHS);
 //HPageBreaks
 		[id(dispid_worksheet_hpagebreaks),propget,helpstring("property HPageBreaks")] HRESULT HPageBreaks([out,retval] IDispatch** RHS);
@@ -2976,10 +2976,10 @@ library MSO_TO_OOLib
 			[in] LCID lcid);
 //Saved
 		[id(dispid_workbook_saved),propget,helpstring("property Saved")] HRESULT Saved(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_saved),propput,helpstring("property Saved")] HRESULT Saved(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 //SaveLinkValues
 		[id(dispid_workbook_savelinkvalues),propget,helpstring("property SaveLinkValues")] HRESULT SaveLinkValues(
@@ -4187,7 +4187,7 @@ library MSO_TO_OOLib
 	
 		[id(dispid_application_centimeterstopoints), helpstring("method CentimetersToPoints")] HRESULT CentimetersToPoints(
 			[in] double Centimeters,
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out, retval] double* RHS);
 
 		[id(dispid_application_checkspelling), helpstring("method CheckSpelling")] HRESULT CheckSpelling(

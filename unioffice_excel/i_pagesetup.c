@@ -1815,23 +1815,134 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_CenterVertically(
 }
 
 
+static UINT pagesetup_column_name(WCHAR *out, LONG column)
+{
+    WCHAR reversed[8];
+    UINT n = 0, i;
+    column++;
+    while (column > 0 && n < 8) {
+        reversed[n++] = L'A' + (column - 1) % 26;
+        column = (column - 1) / 26;
+    }
+    for (i = 0; i < n; i++) out[i] = reversed[n - 1 - i];
+    return n;
+}
+
+static HRESULT pagesetup_address_field(IDispatch *address, LPOLESTR name, LONG *value)
+{
+    VARIANT field;
+    HRESULT hr;
+    VariantInit(&field);
+    hr = AutoWrap(DISPATCH_PROPERTYGET, &field, address, name, 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&field, &field, 0, 0, VT_I4);
+    if (SUCCEEDED(hr)) *value = V_I4(&field);
+    VariantClear(&field);
+    return hr;
+}
+
+static HRESULT pagesetup_put_address_field(IDispatch *address, LPOLESTR name, LONG value)
+{
+    VARIANT field, result;
+    HRESULT hr;
+    VariantInit(&result);
+    V_VT(&field) = VT_I4;
+    V_I4(&field) = value;
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, address, name, 1, field);
+    VariantClear(&result);
+    return hr;
+}
+
+static HRESULT pagesetup_title_rows_text(IDispatch *sheet, WCHAR *out)
+{
+    VARIANT enabled, address;
+    LONG first = 0, last = 0;
+    HRESULT hr;
+
+    out[0] = 0;
+    VariantInit(&enabled);
+    VariantInit(&address);
+    hr = AutoWrap(DISPATCH_METHOD, &enabled, sheet, L"getPrintTitleRows", 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&enabled, &enabled, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr) && V_BOOL(&enabled)) {
+        hr = AutoWrap(DISPATCH_METHOD, &address, sheet, L"getTitleRows", 0);
+        if (SUCCEEDED(hr)) hr = pagesetup_address_field(V_DISPATCH(&address), L"StartRow", &first);
+        if (SUCCEEDED(hr)) hr = pagesetup_address_field(V_DISPATCH(&address), L"EndRow", &last);
+        if (SUCCEEDED(hr)) wsprintfW(out, L"$%d:$%d", first + 1, last + 1);
+    }
+    VariantClear(&enabled);
+    VariantClear(&address);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintTitleRows(
         I_PageSetup* iface,
         BSTR *value)
 {
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
+    WCHAR text[32];
+    HRESULT hr;
     TRACE_IN;
-    TRACE_NOTIMPL;
-    *value = SysAllocString(L"");
+
+    if (!This || !value) return E_POINTER;
+    *value = NULL;
+    hr = pagesetup_title_rows_text(This->pOOSheet, text);
+    if (SUCCEEDED(hr)) {
+        *value = SysAllocString(text);
+        if (!*value) hr = E_OUTOFMEMORY;
+    }
     TRACE_OUT;
-    return S_OK;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintTitleRows(
         I_PageSetup* iface,
         BSTR value)
 {
-    TRACE_NOTIMPL;
-    return S_OK;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
+    VARIANT enabled, address, result;
+    LONG rows[2] = {0, 0};
+    const WCHAR *text = value ? value : L"", *bang;
+    int count = 0;
+    HRESULT hr = S_OK;
+    TRACE_IN;
+
+    if (!This) return E_POINTER;
+    /* Accept "$1:$2", "1:2", "$1", "A1:B2" and an optional sheet prefix. */
+    bang = wcsrchr(text, L'!');
+    if (bang) text = bang + 1;
+    while (*text && count < 2) {
+        if (*text >= L'0' && *text <= L'9') {
+            LONG n = 0;
+            while (*text >= L'0' && *text <= L'9') n = n * 10 + (*text++ - L'0');
+            rows[count++] = n;
+        } else text++;
+    }
+    while (*text) {
+        if (*text >= L'0' && *text <= L'9') return E_INVALIDARG;
+        text++;
+    }
+    if (count == 1) rows[1] = rows[0];
+    if (count && (rows[0] < 1 || rows[1] < rows[0])) return E_INVALIDARG;
+    if (!count && value && value[0]) return E_INVALIDARG;
+
+    VariantInit(&address);
+    VariantInit(&result);
+    if (count) {
+        hr = AutoWrap(DISPATCH_METHOD, &address, This->pOOSheet, L"getTitleRows", 0);
+        if (SUCCEEDED(hr)) hr = pagesetup_put_address_field(V_DISPATCH(&address), L"StartRow", rows[0] - 1);
+        if (SUCCEEDED(hr)) hr = pagesetup_put_address_field(V_DISPATCH(&address), L"EndRow", rows[1] - 1);
+        if (SUCCEEDED(hr)) hr = pagesetup_put_address_field(V_DISPATCH(&address), L"StartColumn", 0);
+        if (SUCCEEDED(hr)) hr = pagesetup_put_address_field(V_DISPATCH(&address), L"EndColumn", 0);
+        if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, This->pOOSheet, L"setTitleRows", 1, address);
+        VariantClear(&result);
+    }
+    V_VT(&enabled) = VT_BOOL;
+    V_BOOL(&enabled) = count ? VARIANT_TRUE : VARIANT_FALSE;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, This->pOOSheet, L"setPrintTitleRows", 1, enabled);
+    VariantClear(&result);
+    VariantClear(&address);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_Application(
@@ -2050,8 +2161,55 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_get_PrintArea(
         I_PageSetup* iface,
         BSTR *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    PageSetupImpl *This = PAGESETUP_THIS(iface);
+    VARIANT areas, *items = NULL;
+    WCHAR *text = NULL;
+    LONG lower = 0, upper = -1, i, bounds[4];
+    UINT length = 0;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (!This || !value) return E_POINTER;
+    *value = NULL;
+    VariantInit(&areas);
+    hr = AutoWrap(DISPATCH_METHOD, &areas, This->pOOSheet, L"getPrintAreas", 0);
+    if (SUCCEEDED(hr) && !(V_VT(&areas) & VT_ARRAY)) hr = E_FAIL;
+    if (SUCCEEDED(hr)) {
+        SafeArrayGetLBound(V_ARRAY(&areas), 1, &lower);
+        SafeArrayGetUBound(V_ARRAY(&areas), 1, &upper);
+        text = HeapAlloc(GetProcessHeap(), 0, ((upper - lower + 1) * 40 + 1) * sizeof(WCHAR));
+        if (!text) hr = E_OUTOFMEMORY;
+    }
+    if (SUCCEEDED(hr)) hr = SafeArrayAccessData(V_ARRAY(&areas), (void**)&items);
+    /* Excel reports print areas as comma-separated absolute A1 references. */
+    for (i = 0; SUCCEEDED(hr) && i <= upper - lower; i++) {
+        IDispatch *address = V_VT(&items[i]) == VT_DISPATCH ? V_DISPATCH(&items[i]) : NULL;
+        if (!address) { hr = E_FAIL; break; }
+        hr = pagesetup_address_field(address, L"StartColumn", &bounds[0]);
+        if (SUCCEEDED(hr)) hr = pagesetup_address_field(address, L"StartRow", &bounds[1]);
+        if (SUCCEEDED(hr)) hr = pagesetup_address_field(address, L"EndColumn", &bounds[2]);
+        if (SUCCEEDED(hr)) hr = pagesetup_address_field(address, L"EndRow", &bounds[3]);
+        if (FAILED(hr)) break;
+        if (i) text[length++] = L',';
+        text[length++] = L'$';
+        length += pagesetup_column_name(text + length, bounds[0]);
+        length += wsprintfW(text + length, L"$%d", bounds[1] + 1);
+        if (bounds[0] != bounds[2] || bounds[1] != bounds[3]) {
+            text[length++] = L':';
+            text[length++] = L'$';
+            length += pagesetup_column_name(text + length, bounds[2]);
+            length += wsprintfW(text + length, L"$%d", bounds[3] + 1);
+        }
+    }
+    if (items) SafeArrayUnaccessData(V_ARRAY(&areas));
+    if (SUCCEEDED(hr)) {
+        *value = SysAllocStringLen(text, length);
+        if (!*value) hr = E_OUTOFMEMORY;
+    }
+    if (text) HeapFree(GetProcessHeap(), 0, text);
+    VariantClear(&areas);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintArea(
@@ -2079,6 +2237,18 @@ static HRESULT WINAPI MSO_TO_OO_I_PageSetup_put_PrintArea(
         return E_POINTER;           
     } 
       
+    /* An empty PrintArea removes the sheet's print ranges, as in Excel. */
+    if (!value || !value[0]) {
+        pPropVals = SafeArrayCreateVector(VT_VARIANT, 0, 0);
+        if (!pPropVals) return E_OUTOFMEMORY;
+        V_VT(&param1) = VT_ARRAY | VT_VARIANT;
+        V_ARRAY(&param1) = pPropVals;
+        hres = AutoWrap(DISPATCH_METHOD, &vret, This->pOOSheet, L"setPrintAreas", 1, param1);
+        VariantClear(&param1);
+        VariantClear(&vret);
+        return hres;
+    }
+
     hres = I_PageSetup_get_Parent(iface, (IDispatch**)&wrksh);
     if (FAILED(hres)) {
         ERR("PageSetup_get_Parent\n");

@@ -1334,8 +1334,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Saved(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    VARIANT modified;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (!This || !RHS) return E_POINTER;
+    if (!This->pDoc) return E_POINTER;
+    VariantInit(&modified);
+    hr = AutoWrap(DISPATCH_METHOD, &modified, This->pDoc, L"isModified", 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&modified, &modified, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr)) *RHS = V_BOOL(&modified) ? VARIANT_FALSE : VARIANT_TRUE;
+    VariantClear(&modified);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Saved(
@@ -1343,8 +1355,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_put_Saved(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    VARIANT modified, result;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (!This) return E_POINTER;
+    if (!This->pDoc) return E_POINTER;
+    VariantInit(&result);
+    V_VT(&modified) = VT_BOOL;
+    V_BOOL(&modified) = RHS ? VARIANT_FALSE : VARIANT_TRUE;
+    hr = AutoWrap(DISPATCH_METHOD, &result, This->pDoc, L"setModified", 1, modified);
+    VariantClear(&result);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_SaveLinkValues(

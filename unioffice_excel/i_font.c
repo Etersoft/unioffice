@@ -796,19 +796,36 @@ static HRESULT WINAPI MSO_TO_OO_I_Font_get_OutlineFont(
         I_Font* iface,
         VARIANT *RHS)
 {
+    FontImpl *This = (FontImpl*)iface;
+    HRESULT hr;
     TRACE_IN;
-    V_VT(RHS) = VT_BOOL;
-    V_BOOL(RHS) = VARIANT_FALSE;
+
+    if (!This || !RHS) return E_POINTER;
+    VariantInit(RHS);
+    /* Excel's outline font is the contoured character attribute in UNO. */
+    hr = AutoWrap(DISPATCH_PROPERTYGET, RHS, This->pOORange, L"CharContoured", 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(RHS, RHS, 0, 0, VT_BOOL);
     TRACE_OUT;
-    return S_OK;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Font_put_OutlineFont(
         I_Font* iface,
         VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return S_OK;
+    FontImpl *This = (FontImpl*)iface;
+    VARIANT value, result;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (!This) return E_POINTER;
+    VariantInit(&value);
+    VariantInit(&result);
+    hr = VariantChangeTypeEx(&value, &RHS, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, This->pOORange, L"CharContoured", 1, value);
+    VariantClear(&result);
+    TRACE_OUT;
+    return hr;
 }
 
 /* Escapement belongs to cell text, not the spreadsheet range property set. */
