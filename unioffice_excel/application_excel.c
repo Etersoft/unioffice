@@ -267,7 +267,7 @@ static HRESULT WINAPI IMP_Application_QueryInterface(
     
     if ( IsEqualGUID(riid, &IID__Application)) {
         TRACE("_Application \n");
-        *ppvObject = DISPAPPEXCEL(This);
+        *ppvObject = APPEXCEL(This);
     }
     
     if (IsEqualGUID(riid, &IID_IConnectionPointContainer)) {

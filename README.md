@@ -130,6 +130,8 @@ and numeric-string row indices. See [Cells dispatch checks](docs/cells-indexing-
 Range.Rows/Columns preserve the source bounds and support subrange indexing;
 Cells restores cell indexing and Count. See
 [row/column collection validation](docs/range-rows-columns-results.md).
+Native clients receive the published vtable for IID__Application; see
+[dual-interface ABI checks](docs/application-interface-results.md).
 
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments

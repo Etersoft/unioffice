@@ -503,6 +503,22 @@ selection/Count; Worksheet/Application Rows/Columns, enumeration, string slices,
 nonpositive offsets, полный набор value/format/delete/insert semantics и native
 Windows oracle не проверены. Нового подтверждённого Wine defect нет.
 
+## Application.QueryInterface: опубликованная dual vtable (2026-11-06)
+
+Новый native Rows/Columns тест выявил ошибку QueryInterface(IID__Application):
+возвращался private Disp_Application с прямыми return values вместо опубликованных
+HRESULT/out-parameter slots. PE32 возвращал S_OK/мусор без записи output, затем
+тест упал. Это подтверждено сопоставлением QI, IDL, generated header и обеих vtable;
+не Wine defect. Теперь IID__Application → APPEXCEL, канонический IUnknown остаётся
+прежним DISPAPPEXCEL, остальные QI branches/IDL/registration не менялись.
+
+Отдельный tests/application-interface.c проверяет guarded Creator output/HRESULT,
+QI roundtrip/repeat, canonical IUnknown identity и CoCreateInstance dual IID.
+Отчёт: [Application ABI](application-interface-results.md). Исходный failure log:
+~/tmp/claude/unioffice-sheet-axes-32-native-before-qi.log.
+Отдельный ABI probe и расширенный native COM test дали0 failures на PE32/PE64.
+Логи -interface-final.log/-native-final.log с prefix unioffice-sheet-axes-{32,64}.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
