@@ -59,6 +59,7 @@ before changing installation context; automatic context migration is not added.
 | DLL/factory/TLB, Application ABI, type-info lifetime, enumerators | 0 failures | 0 failures |
 | All 18 existing VBS integration probes | PASS | PASS |
 | All 7 legacy scripts, elevated and limited tokens | PASS | PASS |
+| Separate non-administrator account and fresh profile | PASS | PASS |
 | Final MSI metadata/Unicode and machine context | PASS | PASS |
 | Repair with both clients retained | PASS | PASS |
 | Both removal orders and surviving client | PASS | PASS |
@@ -71,6 +72,30 @@ Native DLL/TLB hashes matched Linux build outputs. After the MSI-only scope
 change, payload hashes were unchanged and both surviving-client workflows passed.
 Both final packages also passed installation/repair/removal under Wine; both
 strict legacy suites and the new C probe passed there after the code fix.
+
+## Separate standard-user check
+
+A subsequent run on the same VM tested a genuinely separate local account,
+unioffice_std (SID ending 1002), rather than the administrator's filtered token.
+System-side group enumeration confirmed that it did not belong to Administrators;
+its process also reported Administrator=False. Its USERPROFILE and ApplicationData
+known folders pointed to C:\Users\unioffice_std, independently of the guest account.
+Both unchanged machine-installed MSI products returned state 5 for this identity.
+
+The existing runner executed all seven original scripts for PE32 and PE64 in
+this fresh profile. Both suites passed: counters 158/0, 156 successful markers,
+no failed markers. No DLL copying, COM re-registration, package rebuild or
+additional privileges were used. The existing headless startup initialized this
+user's OpenOffice profile. Results: standard-user/results/runs/
+unioffice-windows-47d97e58ab204e14bbb88e42a83406fd under the guest evidence base.
+
+The temporary account was disabled after the run and its encrypted credential
+file deleted; the existing guest session and installed packages were retained.
+Verified logs on builder64: ~/tmp/claude/unioffice-standard-user-validation/results.zip,
+SHA256 d0dbde2a3d6cbc0bcdb62632e1a62557f408f77aab1e83b984e7ae42b6daa8e3.
+The archive includes identity.json, account-cleanup.json, suite.log, complete
+reports and a preserved launcher setup error that occurred before the suites.
+No new application or MSI defect was found in this check.
 
 ## Reproduction
 

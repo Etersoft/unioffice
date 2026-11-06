@@ -40,6 +40,8 @@ Both clients use the same tested x86 backend. Both packages can coexist.
 Installation is machine-wide (ALLUSERS=1) and requires administrator privileges;
 normal Automation runs without elevation. Before replacing an older per-user
 package, remove it under the identity that installed it.
+Both original suites also passed under a separate account with no administrator
+group membership and its own fresh OpenOffice profile.
 Registration is performed by MSI; manual DLL copying/registration is unnecessary.
 Build and packaging commands are in the [README](../README.md).
 
