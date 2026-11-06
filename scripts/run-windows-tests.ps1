@@ -2,8 +2,11 @@
 param(
     [ValidateSet(32, 64)][int[]]$Bits = @(32, 64),
     [ValidateSet('All', 'Suite', 'Probes')][string]$Mode = 'All',
-    [string]$OutputRoot = "$env:USERPROFILE\tmp\claude"
+    [string]$OutputRoot = "$env:USERPROFILE\tmp\claude",
+    # Run only the named probes (for example windows-visible.vbs); skips the suite.
+    [string[]]$Only = @()
 )
+if ($Only.Count) { $Mode = 'Probes' }
 $ErrorActionPreference = 'Stop'
 if ([IntPtr]::Size -ne 8) { throw 'Use 64-bit PowerShell to select cscript architecture reliably' }
 $root = Split-Path $PSScriptRoot -Parent
@@ -50,8 +53,17 @@ function Invoke-Passed {
 }
 
 function Start-ReadyOffice {
+    param([switch]$Visible)
     $office = 'C:\Program Files (x86)\OpenOffice 4\program\soffice.exe'
-    Start-Process $office -ArgumentList '-headless -nofirststartwizard -norestore -nodefault' | Out-Null
+    $arguments = '-nofirststartwizard -norestore -nodefault'
+    if ($Visible) {
+        # A running headless instance would receive the request and stay windowless.
+        Get-Process soffice, soffice.bin -ErrorAction SilentlyContinue | Stop-Process -Force
+        Start-Sleep -Seconds 2
+    } else {
+        $arguments = '-headless ' + $arguments
+    }
+    Start-Process $office -ArgumentList $arguments | Out-Null
     Start-Sleep -Seconds 3
     Invoke-Passed $cscript @('//nologo', (Join-Path $root 'tests\openoffice-ready.vbs')) 'OpenOffice readiness: PASS' 'ready'
 }
@@ -82,13 +94,17 @@ try {
                 }
                 Write-Host "PE${bit} installed COM registration: $registered"
             } finally { $hive.Dispose() }
-            Invoke-Passed (Join-Path $build 'com-smoke.exe') @($dll, $tlb) 'COM smoke: 0 failure(s)' 'com-smoke'
+            if (-not $Only.Count) {
+                Invoke-Passed (Join-Path $build 'com-smoke.exe') @($dll, $tlb) 'COM smoke: 0 failure(s)' 'com-smoke'
+            }
             foreach ($probe in @(
                 @('application-interface.exe', 'Application interface: 0 failure(s)'),
                 @('typeinfo-lifetime.exe', 'TypeInfo lifetime: 0 failure(s)'),
                 @('borders-enumerator.exe', 'Borders enumerator: 0 failure(s)'),
-                @('range-enumerator.exe', 'Range enumerator: 0 failure(s)')
+                @('range-enumerator.exe', 'Range enumerator: 0 failure(s)'),
+                @('range-value-errors.exe', 'Range value errors: 0 failure(s)')
             )) {
+                if ($Only.Count -and $Only -notcontains $probe[0]) { continue }
                 Start-ReadyOffice
                 Invoke-Passed (Join-Path $build $probe[0]) @() $probe[1] $probe[0]
             }
@@ -110,12 +126,29 @@ try {
                 @('range-address-variable.vbs', 'Range address lifetime: PASS'),
                 @('range-rows-columns.vbs', 'Range Rows and Columns: PASS'),
                 @('sheet-rows-columns.vbs', 'Sheet Rows and Columns: PASS'),
-                @('range-enumeration.vbs', 'Range enumeration: PASS')
+                @('range-enumeration.vbs', 'Range enumeration: PASS'),
+                @('range-properties.vbs', 'Range properties: PASS'),
+                @('sheet-properties.vbs', 'Sheet properties: PASS'),
+                @('application-ui-state.vbs', 'Application UI state: PASS'),
+                @('names.vbs', 'Names: PASS'),
+                @('shapes-line.vbs', 'Shapes line: PASS'),
+                @('application-property.vbs', 'Application property: PASS'),
+                @('windows.vbs', 'Windows: PASS'),
+                @('paste-special.vbs', 'Paste special: PASS')
             )) {
+                if ($Only.Count -and $Only -notcontains $probe[0]) { continue }
                 Start-ReadyOffice
                 Invoke-Passed $cscript @('//nologo', (Join-Path $root "tests\$($probe[0])")) $probe[1] $probe[0]
             }
-            Invoke-Passed (Join-Path $build 'typelib-registration.exe') @($dll) '0 failure(s)' 'typelib'
+            # Window geometry, state and print preview need a visible desktop window.
+            if (-not $Only.Count -or $Only -contains 'windows-visible.vbs') {
+                Start-ReadyOffice -Visible
+                Invoke-Passed $cscript @('//nologo', (Join-Path $root 'tests\windows-visible.vbs')) 'Visible windows: PASS' 'windows-visible.vbs'
+                Get-Process soffice, soffice.bin -ErrorAction SilentlyContinue | Stop-Process -Force
+            }
+            if (-not $Only.Count) {
+                Invoke-Passed (Join-Path $build 'typelib-registration.exe') @($dll) '0 failure(s)' 'typelib'
+            }
         }
         if ($Mode -ne 'Probes') {
             foreach ($number in 1..7) {
