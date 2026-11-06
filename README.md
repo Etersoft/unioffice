@@ -125,6 +125,8 @@ conversion errors; exported Cells ranges retain their worksheet parent. See
 `Range.Item` supports cell indexing, column letters, linear indices and value
 assignment; numeric default indexing and indexed Range.Cells share this behavior.
 See [Item validation and limits](docs/range-item-results.md).
+Application/Worksheet.Cells now share that handler, including one-index get/put
+and numeric-string row indices. See [Cells dispatch checks](docs/cells-indexing-results.md).
 
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments

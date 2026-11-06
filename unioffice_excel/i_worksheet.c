@@ -2407,15 +2407,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
     }
 
     /*special operation*/
-    if ((dispIdMember == dispid_worksheet_cells) && (wFlags == DISPATCH_PROPERTYPUT)) {
-        if (pDispParams->cArgs != 3) return DISP_E_BADPARAMCOUNT;
+    if (dispIdMember == dispid_worksheet_cells) {
+        if (!pDispParams) return E_POINTER;
+        if (pVarResult) VariantInit(pVarResult);
         hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &dret);
         if (FAILED(hres)) return hres;
-        pretdisp = NULL;
-        hres = I_Range_get__Default((I_Range*)dret, pDispParams->rgvarg[2], pDispParams->rgvarg[1], &pretdisp);
-        if (SUCCEEDED(hres)) hres = I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
-        if (pretdisp) IDispatch_Release(pretdisp);
+        /* Forward the full call so Cells(index) behaves like Cells.Item(index). */
+        hres = IDispatch_Invoke(dret, dispid_range_cells, riid, lcid, wFlags,
+                pDispParams, pVarResult ? pVarResult : &tmpval, pExcepInfo, puArgErr);
         IDispatch_Release(dret);
+        VariantClear(&tmpval);
         return hres;
     }
     /*special operation*/

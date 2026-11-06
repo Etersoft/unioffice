@@ -4530,40 +4530,15 @@ static HRESULT WINAPI IMP_Application_Invoke(
             return S_OK;
         }
     case dispid_application_cells:
-        if (wFlags == DISPATCH_PROPERTYPUT) {
-            if (pDispParams->cArgs != 3) return DISP_E_BADPARAMCOUNT;
-            hres = IMP_Application_get_Cells(iface, &pdisp);
-            if (FAILED(hres)) return hres;
-            pretdisp = NULL;
-            hres = I_Range_get__Default((I_Range*)pdisp, pDispParams->rgvarg[2], pDispParams->rgvarg[1], &pretdisp);
-            if (SUCCEEDED(hres)) hres = I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
-            if (pretdisp) IDispatch_Release(pretdisp);
-            IDispatch_Release(pdisp);
-            return hres;
-        }
+        if (!pDispParams) return E_POINTER;
+        if (pVarResult) VariantInit(pVarResult);
         hres = IMP_Application_get_Cells(iface, &pdisp);
         if (FAILED(hres)) return hres;
-        pretdisp = NULL;
-        switch (pDispParams->cArgs) {
-        case 0:
-            pretdisp = pdisp;
-            IDispatch_AddRef(pretdisp);
-            break;
-        case 1:
-            hres = I_Range_get__Default((I_Range*)pdisp, pDispParams->rgvarg[0], vNull, &pretdisp);
-            break;
-        case 2:
-            hres = I_Range_get__Default((I_Range*)pdisp, pDispParams->rgvarg[1], pDispParams->rgvarg[0], &pretdisp);
-            break;
-        default:
-            hres = DISP_E_BADPARAMCOUNT;
-        }
+        /* Share Item selection, assignment and omitted-index handling with Range.Cells. */
+        hres = IDispatch_Invoke(pdisp, dispid_range_cells, riid, lcid, wFlags,
+                pDispParams, pVarResult ? pVarResult : &vRet, pExcepInfo, puArgErr);
         IDispatch_Release(pdisp);
-        if (FAILED(hres)) return hres;
-        if (pVarResult) {
-            V_VT(pVarResult) = VT_DISPATCH;
-            V_DISPATCH(pVarResult) = pretdisp;
-        } else if (pretdisp) IDispatch_Release(pretdisp);
+        VariantClear(&vRet);
         return hres;
     case dispid_application_version:
         if (wFlags==DISPATCH_PROPERTYPUT) {

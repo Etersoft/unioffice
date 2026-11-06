@@ -452,6 +452,31 @@ PASS. Полные7 legacy tests каждый: counters158/0, markers156/0; outp
 metadata/Unicode0; lifecycle не повторялся (IDL/registration unchanged). DLL в
 fixtures побайтно совпадают с build outputs. Native Windows не проверялась.
 
+## Application/Worksheet.Cells: общий dispatch (2026-11-06)
+
+Отдельный cells-indexing.vbs воспроизвёл9 failures в39 выполненных checks на
+PE32 и PE64: Application.Cells(4), одноиндексный put обоих owners, неверный
+target при Cells("2","AA") put и отсутствие ошибки для invalid string index.
+Причины — VT_EMPTY вместо omitted column, требование двух индексов для put и
+legacy named-range lookup для string row. Теперь оба Cells Invoke передают
+полный вызов в Range.Cells handler с уже реализованными правилами Item.
+IDL/IID/vtable/native getters не менялись. Calls без result pointer получают
+temporary VARIANT с обязательным VariantClear; child HRESULT возвращается.
+
+На обеих архитектурах new VBS49 checks PASS. C тест проверил точные HRESULT,
+VT_EMPTY при ошибке, byref Double и BSTR ownership, ignored get results,
+METHOD|PROPERTYGET, NULL DISPPARAMS, bad get/put argcount:0 failures. Новый
+валидный get требует и error0, и non-Nothing object. Прежний legacy BSTR default
+для Worksheet.Range сохранён; Cells использует numeric Item coercion.
+Подробности: [Cells indexing](cells-indexing-results.md).
+
+Final PE32/PE64: прежние Item/Cells ownership/parent/Worksheet.Range/Application.Range
+probes PASS; полные7 legacy tests последовательно на обеих: counters158/0,
+markers156/0. Outputs ~/tmp/claude/unioffice-excel-suite-0lyrmghp (32), -_ucysqo5
+(64). MSI32/MSI64 пересобраны, architecture/Unicode metadata0; lifecycle не
+повторялся (registration/IDL unchanged). Deployed DLL совпали с outputs побайтно.
+Нативная Windows не проверялась; нового подтверждённого Wine defect нет.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.

@@ -1,4 +1,4 @@
-/* COM contracts: Borders metadata/enumeration and Range argument handling. */
+/* COM contracts: Borders metadata/enumeration and Range/Cells dispatch. */
 #define COBJMACROS
 #include <windows.h>
 #include <ole2.h>
@@ -246,13 +246,87 @@ done:
     VariantClear(&row);
 }
 
+static void cells_dispatch_contract(IDispatch *owner)
+{
+    LPOLESTR name = L"Cells";
+    DISPID id, put = DISPID_PROPERTYPUT;
+    VARIANT arguments[4], result;
+    DISPPARAMS params = {arguments, NULL, 0, 0};
+    DOUBLE index = 4;
+    I_Range *cell = NULL;
+    UINT item;
+    for (item = 0; item < 4; ++item) VariantInit(&arguments[item]);
+    VariantInit(&result);
+    CHECK_HR(IDispatch_GetIDsOfNames(owner, &IID_NULL, &name, 1, 0, &id), S_OK);
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYGET,
+                             NULL, &result, NULL, NULL), E_POINTER);
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYGET,
+                             &params, NULL, NULL, NULL), S_OK);
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYGET,
+                             &params, &result, NULL, NULL), S_OK);
+    CHECK(V_VT(&result) == VT_DISPATCH && V_DISPATCH(&result));
+    VariantClear(&result);
+    V_VT(&arguments[0]) = VT_R8 | VT_BYREF;
+    V_R8REF(&arguments[0]) = &index;
+    params.cArgs = 1;
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_METHOD | DISPATCH_PROPERTYGET,
+                             &params, &result, NULL, NULL), S_OK);
+    if (V_VT(&result) == VT_DISPATCH && V_DISPATCH(&result)) {
+        CHECK_HR(IDispatch_QueryInterface(V_DISPATCH(&result), &IID_I_Range, (void **)&cell), S_OK);
+        if (cell) {
+            CHECK(I_Range_get_Row(cell) == 1 && I_Range_get_Column(cell) == 4);
+            I_Range_Release(cell);
+        }
+    } else CHECK(0);
+    VariantClear(&result);
+    CHECK(index == 4);
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYGET,
+                             &params, NULL, NULL, NULL), S_OK);
+    arguments[1] = arguments[0];
+    V_VT(&arguments[0]) = VT_BSTR;
+    V_BSTR(&arguments[0]) = SysAllocString(L"native-owned-value");
+    params.cArgs = 2;
+    params.cNamedArgs = 1;
+    params.rgdispidNamedArgs = &put;
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYPUT,
+                             &params, NULL, NULL, NULL), S_OK);
+    CHECK(index == 4 && !lstrcmpW(V_BSTR(&arguments[0]), L"native-owned-value"));
+    VariantClear(&arguments[0]);
+    V_VT(&arguments[0]) = VT_BSTR;
+    V_BSTR(&arguments[0]) = SysAllocString(L"invalid-index");
+    params.cArgs = 1;
+    params.cNamedArgs = 0;
+    params.rgdispidNamedArgs = NULL;
+    V_VT(&result) = VT_I4;
+    V_I4(&result) = 123;
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYGET,
+                             &params, &result, NULL, NULL), DISP_E_TYPEMISMATCH);
+    CHECK(V_VT(&result) == VT_EMPTY);
+    CHECK(!lstrcmpW(V_BSTR(&arguments[0]), L"invalid-index"));
+    params.cArgs = 3;
+    V_VT(&result) = VT_I4;
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYGET,
+                             &params, &result, NULL, NULL), DISP_E_BADPARAMCOUNT);
+    CHECK(V_VT(&result) == VT_EMPTY);
+    params.cArgs = 1;
+    params.cNamedArgs = 1;
+    params.rgdispidNamedArgs = &put;
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYPUT,
+                             &params, NULL, NULL, NULL), DISP_E_BADPARAMCOUNT);
+    params.cArgs = 4;
+    CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYPUT,
+                             &params, NULL, NULL, NULL), DISP_E_BADPARAMCOUNT);
+    VariantClear(&result);
+    for (item = 0; item < 4; ++item) VariantClear(&arguments[item]);
+}
+
 int __cdecl main(void)
 {
     CLSID clsid;
     IDispatch *excel = NULL;
     I_Borders *borders = NULL;
     IEnumVARIANT *first = NULL, *second = NULL, *clone = NULL;
-    VARIANT books, workbook, range, collection, argument;
+    VARIANT books, workbook, range, collection, argument, sheet;
     LONG count = 0;
     HRESULT hr = CoInitialize(NULL);
     if (FAILED(hr)) return 2;
@@ -261,11 +335,16 @@ int __cdecl main(void)
     VariantInit(&range);
     VariantInit(&collection);
     VariantInit(&argument);
+    VariantInit(&sheet);
     REQUIRE(CLSIDFromProgID(L"Excel.Application", &clsid) == S_OK);
     REQUIRE(CoCreateInstance(&clsid, NULL, CLSCTX_INPROC_SERVER, &IID_IDispatch,
                              (void **)&excel) == S_OK);
     REQUIRE(invoke(excel, L"Workbooks", DISPATCH_PROPERTYGET, NULL, 0, &books) == S_OK);
     REQUIRE(invoke(V_DISPATCH(&books), L"Add", DISPATCH_METHOD, NULL, 0, &workbook) == S_OK);
+    REQUIRE(invoke(excel, L"ActiveSheet", DISPATCH_PROPERTYGET, NULL, 0, &sheet) == S_OK);
+    cells_dispatch_contract(excel);
+    cells_dispatch_contract(V_DISPATCH(&sheet));
+    VariantClear(&sheet);
     V_VT(&argument) = VT_BSTR;
     V_BSTR(&argument) = SysAllocString(L"A1:D4");
     REQUIRE(invoke(excel, L"Range", DISPATCH_PROPERTYGET, &argument, 1, &range) == S_OK);
@@ -321,6 +400,7 @@ int __cdecl main(void)
     CHECK(IEnumVARIANT_Reset(second) == S_OK);
     next(second, count + 1, count, S_FALSE);
 done:
+    VariantClear(&sheet);
     if (clone) IEnumVARIANT_Release(clone);
     if (second) IEnumVARIANT_Release(second);
     if (first) IEnumVARIANT_Release(first);
