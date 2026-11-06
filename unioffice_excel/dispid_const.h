@@ -935,7 +935,7 @@
 #define dispid_windows_arrange                                  1
 #define dispid_windows_count                                    2
 #define dispid_windows_item                                     3
-#define dispid_windows__newenum                                 4
+#define dispid_windows__newenum                                 -4
 #define dispid_windows__default                                 0
 
 

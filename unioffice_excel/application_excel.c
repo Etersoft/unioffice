@@ -370,8 +370,21 @@ static HRESULT WINAPI IMP_Application_put_WindowState(
         LCID lcid,
         XlWindowState State)
 {
-    TRACE_NOTIMPL;
-    return S_OK;
+    _ApplicationImpl *This = APPEXCEL_THIS(iface);
+    WorkbooksImpl *books;
+    HRESULT hr = S_OK, hr2;
+    int i;
+
+    if (!This) return E_POINTER;
+    if (State != xlMaximized && State != xlMinimized && State != xlNormal) return E_INVALIDARG;
+    /* LibreOffice has one top window per document; apply to all of them. */
+    books = (WorkbooksImpl*)This->pdWorkbooks;
+    for (i = 0; books && i < books->count_workbooks; i++) {
+        if (!books->pworkbook[i]) continue;
+        hr2 = MSO_TO_OO_SetWorkbookWindowState(books->pworkbook[i], State);
+        if (FAILED(hr2) && SUCCEEDED(hr)) hr = hr2;
+    }
+    return hr;
 }
 
 static HRESULT WINAPI IMP_Application_get_WindowState(
@@ -379,8 +392,17 @@ static HRESULT WINAPI IMP_Application_get_WindowState(
         LCID lcid,
         XlWindowState *State)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    IDispatch *book = NULL;
+    HRESULT hr;
+    if (!State) return E_POINTER;
+    hr = _Application_get_ActiveWorkbook(iface, &book);
+    if (FAILED(hr) || !book) {
+        *State = xlNormal;
+        return S_OK;
+    }
+    hr = MSO_TO_OO_GetWorkbookWindowState((I_Workbook*)book, State);
+    IDispatch_Release(book);
+    return hr;
 }
 
 static HRESULT WINAPI IMP_Application_put_Visible(
@@ -1088,8 +1110,16 @@ static HRESULT WINAPI IMP_Application_get_ActiveWindow(
         _Application* iface,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    IDispatch *book = NULL;
+    HRESULT hr;
+    if (!RHS) return E_POINTER;
+    *RHS = NULL;
+    /* Excel returns Nothing when no workbook is open. */
+    hr = _Application_get_ActiveWorkbook(iface, &book);
+    if (FAILED(hr) || !book) return S_OK;
+    hr = MSO_TO_OO_Window_Create((I_Workbook*)book, RHS);
+    IDispatch_Release(book);
+    return hr;
 }
 
 static HRESULT WINAPI IMP_Application_get_AddIns(
@@ -1466,8 +1496,7 @@ static HRESULT WINAPI IMP_Application_get_Windows(
         _Application* iface,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return MSO_TO_OO_Windows_Create(iface, NULL, RHS);
 }
 
 static HRESULT WINAPI IMP_Application_get_WorksheetFunction(
@@ -4432,11 +4461,16 @@ static HRESULT WINAPI IMP_Application_Invoke(
               return E_FAIL;
             }
             tmp = V_I4(&vtmp);
-            IMP_Application_put_WindowState(iface, 0, tmp);
-            return S_OK;
+            return IMP_Application_put_WindowState(iface, 0, tmp);
         } else {
-
-            return E_NOTIMPL;
+            XlWindowState state;
+            hres = IMP_Application_get_WindowState(iface, 0, &state);
+            if (FAILED(hres)) return hres;
+            if (pVarResult) {
+                V_VT(pVarResult) = VT_I4;
+                V_I4(pVarResult) = state;
+            }
+            return S_OK;
         }
     case dispid_application_visible:
         if (wFlags==DISPATCH_PROPERTYPUT) {

@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 #include <oleauto.h>
 
 ITypeInfo *ti_sheets = NULL;
@@ -501,8 +502,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Sheets_PrintPreview(
         VARIANT EnableChanges,
         LCID lcid)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    SheetsImpl *This = (SheetsImpl*)iface;
+    if (!This || !This->pwb) return E_POINTER;
+    return MSO_TO_OO_PrintPreview((I_Workbook*)This->pwb);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Sheets_Select(

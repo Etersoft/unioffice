@@ -199,3 +199,26 @@ HRESULT MSO_TO_OO_ConvertFormula(
 
 LONG MSO_TO_OO_SheetColumnCount(
         IDispatch *oosheet);
+
+HRESULT MSO_TO_OO_ActivateWorkbook(
+        I_Workbook *workbook);
+
+HRESULT MSO_TO_OO_GetWorkbookWindowState(
+        I_Workbook *workbook,
+        XlWindowState *state);
+
+HRESULT MSO_TO_OO_SetWorkbookWindowState(
+        I_Workbook *workbook,
+        XlWindowState state);
+
+HRESULT MSO_TO_OO_PrintPreview(
+        I_Workbook *workbook);
+
+HRESULT MSO_TO_OO_Windows_Create(
+        _Application *app,
+        I_Workbook *workbook,
+        IDispatch **result);
+
+HRESULT MSO_TO_OO_Window_Create(
+        I_Workbook *workbook,
+        IDispatch **result);

@@ -4479,8 +4479,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_PrintPreview(
         VARIANT EnableChanges,
         VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT omitted;
+    if (RHS) VariantInit(RHS);
+    if (!This || !This->pwsheet) return E_POINTER;
+    VariantInit(&omitted);
+    V_VT(&omitted) = VT_ERROR;
+    V_ERROR(&omitted) = DISP_E_PARAMNOTFOUND;
+    return I_Worksheet_PrintPreview((I_Worksheet*)This->pwsheet, omitted, 0);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_QueryTable(

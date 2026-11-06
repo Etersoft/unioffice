@@ -215,15 +215,15 @@ typedef struct
     const I_WindowsVtbl *_windowsVtbl;
     LONG ref;
     _Application *pApplication;        /*pointer to Application*/
+    I_Workbook *pWorkbook;             /*one workbook's windows, or NULL for all*/
 } WindowsImpl;
 
 typedef struct
 {
     const I_WindowVtbl *_windowVtbl;
-    
     LONG ref;
-    I_Windows *pWindows;                     /*pointer to IWindows*/
-} WindowImpl; 
+    I_Workbook *pWorkbook;             /*workbook shown in this window*/
+} WindowImpl;
 
 typedef struct
 {
@@ -315,7 +315,5 @@ extern HRESULT _I_ShapeConstructor(LPVOID *ppObj);
 extern HRESULT _NamesConstructor(LPVOID *ppObj);
 extern HRESULT _NameConstructor(LPVOID *ppObj);
 extern HRESULT _I_OutlineConstructor(LPVOID *ppObj);
-extern HRESULT _I_WindowsConstructor(LPVOID *ppObj);
-extern HRESULT _I_WindowConstructor(LPVOID *ppObj);
 #endif /* __OOFFICE_PRIVATE_H__ */
 

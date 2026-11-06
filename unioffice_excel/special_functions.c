@@ -2075,3 +2075,176 @@ LONG MSO_TO_OO_SheetColumnCount(
     VariantClear(&columns);
     return result;
 }
+
+static HRESULT workbook_container_window(I_Workbook *workbook, IDispatch **window)
+{
+    WorkbookImpl *wb = (WorkbookImpl*)workbook;
+    VARIANT controller, frame, result;
+    HRESULT hr;
+
+    *window = NULL;
+    if (!wb || !wb->pDoc) return E_POINTER;
+    VariantInit(&controller);
+    VariantInit(&frame);
+    VariantInit(&result);
+    hr = AutoWrap(DISPATCH_METHOD, &controller, wb->pDoc, L"getCurrentController", 0);
+    if (SUCCEEDED(hr) && V_VT(&controller) == VT_DISPATCH)
+        hr = AutoWrap(DISPATCH_METHOD, &frame, V_DISPATCH(&controller), L"getFrame", 0);
+    else if (SUCCEEDED(hr)) hr = E_FAIL;
+    if (SUCCEEDED(hr) && V_VT(&frame) == VT_DISPATCH)
+        hr = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(&frame), L"getContainerWindow", 0);
+    else if (SUCCEEDED(hr)) hr = E_FAIL;
+    if (SUCCEEDED(hr) && V_VT(&result) == VT_DISPATCH) {
+        *window = V_DISPATCH(&result);
+        VariantInit(&result);
+    } else if (SUCCEEDED(hr)) hr = E_FAIL;
+    VariantClear(&result);
+    VariantClear(&frame);
+    VariantClear(&controller);
+    return hr;
+}
+
+/* Make the workbook UniOffice's active workbook and bring its window forward. */
+HRESULT MSO_TO_OO_ActivateWorkbook(
+        I_Workbook *workbook)
+{
+    WorkbookImpl *wb = (WorkbookImpl*)workbook;
+    WorkbooksImpl *books = wb ? (WorkbooksImpl*)wb->pworkbooks : NULL;
+    IDispatch *window = NULL;
+    VARIANT result;
+    int i, index = -1;
+
+    if (!books) return E_POINTER;
+    for (i = 0; i < books->count_workbooks; i++)
+        if (books->pworkbook[i] == workbook) index = i;
+    if (index < 0) return E_FAIL;
+    books->current_workbook = index;
+    VariantInit(&result);
+    if (SUCCEEDED(workbook_container_window(workbook, &window))) {
+        /* Hidden documents have no top window to raise; that is not an error. */
+        AutoWrap(DISPATCH_METHOD, &result, window, L"toFront", 0);
+        VariantClear(&result);
+        AutoWrap(DISPATCH_METHOD, &result, window, L"setFocus", 0);
+        VariantClear(&result);
+        IDispatch_Release(window);
+    }
+    return S_OK;
+}
+
+/* XlWindowState via the container window's XTopWindow2 properties. */
+HRESULT MSO_TO_OO_GetWorkbookWindowState(
+        I_Workbook *workbook,
+        XlWindowState *state)
+{
+    IDispatch *window = NULL;
+    VARIANT maximized, minimized;
+    HRESULT hr;
+
+    if (!state) return E_POINTER;
+    VariantInit(&maximized);
+    VariantInit(&minimized);
+    hr = workbook_container_window(workbook, &window);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYGET, &minimized, window, L"IsMinimized", 0);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYGET, &maximized, window, L"IsMaximized", 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&minimized, &minimized, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&maximized, &maximized, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr))
+        *state = V_BOOL(&minimized) ? xlMinimized : V_BOOL(&maximized) ? xlMaximized : xlNormal;
+    if (window) IDispatch_Release(window);
+    return hr;
+}
+
+HRESULT MSO_TO_OO_SetWorkbookWindowState(
+        I_Workbook *workbook,
+        XlWindowState state)
+{
+    IDispatch *window = NULL;
+    VARIANT flag, result;
+    HRESULT hr;
+
+    if (state != xlMaximized && state != xlMinimized && state != xlNormal) return E_INVALIDARG;
+    VariantInit(&result);
+    hr = workbook_container_window(workbook, &window);
+    V_VT(&flag) = VT_BOOL;
+    V_BOOL(&flag) = state == xlMinimized ? VARIANT_TRUE : VARIANT_FALSE;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, window, L"IsMinimized", 1, flag);
+    VariantClear(&result);
+    V_BOOL(&flag) = state == xlMaximized ? VARIANT_TRUE : VARIANT_FALSE;
+    if (SUCCEEDED(hr) && state != xlMinimized)
+        hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, window, L"IsMaximized", 1, flag);
+    VariantClear(&result);
+    if (window) IDispatch_Release(window);
+    return hr;
+}
+
+static BOOL workbook_in_preview(I_Workbook *workbook, BOOL *closed)
+{
+    WorkbookImpl *wb = (WorkbookImpl*)workbook;
+    VARIANT controller, name, result;
+    BOOL preview = FALSE;
+
+    *closed = FALSE;
+    VariantInit(&controller);
+    VariantInit(&result);
+    if (FAILED(AutoWrap(DISPATCH_METHOD, &controller, wb->pDoc, L"getCurrentController", 0)) ||
+            V_VT(&controller) != VT_DISPATCH || !V_DISPATCH(&controller)) {
+        *closed = TRUE;
+        VariantClear(&controller);
+        return FALSE;
+    }
+    /* The page preview controller is not a SpreadsheetView; in AOO it does
+       not even implement XServiceInfo, so a failed query also means preview. */
+    V_VT(&name) = VT_BSTR;
+    V_BSTR(&name) = SysAllocString(L"com.sun.star.sheet.SpreadsheetView");
+    preview = TRUE;
+    if (SUCCEEDED(AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(&controller), L"supportsService", 1, name)) &&
+            SUCCEEDED(VariantChangeTypeEx(&result, &result, 0, 0, VT_BOOL)))
+        preview = !V_BOOL(&result);
+    SysFreeString(V_BSTR(&name));
+    VariantClear(&result);
+    VariantClear(&controller);
+    return preview;
+}
+
+/* Excel's PrintPreview is modal: return after the user closes the preview. */
+HRESULT MSO_TO_OO_PrintPreview(
+        I_Workbook *workbook)
+{
+    WorkbookImpl *wb = (WorkbookImpl*)workbook;
+    SAFEARRAY *none;
+    VARIANT params;
+    BSTR command;
+    BOOL closed;
+    MSG msg;
+    HRESULT hr;
+    int wait;
+
+    if (!wb || !wb->pDoc) return E_POINTER;
+    none = SafeArrayCreateVector(VT_DISPATCH, 0, 0);
+    if (!none) return E_OUTOFMEMORY;
+    V_VT(&params) = VT_DISPATCH | VT_ARRAY;
+    V_ARRAY(&params) = none;
+    command = SysAllocString(L".uno:PrintPreview");
+    hr = MSO_TO_OO_ExecuteDispatchHelper_WB(workbook, command, params);
+    SysFreeString(command);
+    SafeArrayDestroy(none);
+    if (FAILED(hr)) return hr;
+    /* Preview switching is asynchronous; a hidden document never gets one. */
+    for (wait = 0; wait < 50 && !workbook_in_preview(workbook, &closed); wait++) {
+        if (closed) return E_FAIL;
+        while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessageW(&msg);
+        }
+        Sleep(100);
+    }
+    if (!workbook_in_preview(workbook, &closed)) return E_FAIL;
+    while (workbook_in_preview(workbook, &closed)) {
+        MsgWaitForMultipleObjects(0, NULL, FALSE, 200, QS_ALLINPUT);
+        while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessageW(&msg);
+        }
+    }
+    return S_OK;
+}

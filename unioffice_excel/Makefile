@@ -2,7 +2,7 @@ include ../Makefile.mingw
 
 MODULE = unioffice_excel
 LINK = $(CC)
-LIBS = -ladvapi32 -lole32 -loleaut32 -luser32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
+LIBS = -ladvapi32 -lole32 -loleaut32 -luser32 -lgdi32 -lkernel32 -lshell32 -luuid -lshlwapi -lmsvcrt
 
 OBJECT_NAMES = unioffice_excel_i.o \
 	tools.o \

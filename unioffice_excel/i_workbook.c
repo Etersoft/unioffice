@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 
 ITypeInfo *ti_workbook = NULL;
 
@@ -529,8 +530,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_Activate(
         I_Workbook* iface,
         LCID lcid)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return MSO_TO_OO_ActivateWorkbook(iface);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_ActiveChart(
@@ -1176,8 +1176,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_PrintPreview(
         VARIANT EnableChanges,
         LCID lcid)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return MSO_TO_OO_PrintPreview(iface);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook__Protect(
@@ -1573,8 +1572,12 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Windows(
         I_Workbook* iface,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    WorkbookImpl *This = (WorkbookImpl*)iface;
+    WorkbooksImpl *books = This ? (WorkbooksImpl*)This->pworkbooks : NULL;
+    if (!RHS) return E_POINTER;
+    *RHS = NULL;
+    if (!books) return E_POINTER;
+    return MSO_TO_OO_Windows_Create(books->pApplication, iface, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_WriteReserved(

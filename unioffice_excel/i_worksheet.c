@@ -951,8 +951,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_PrintPreview(
         VARIANT EnableChanges,
         LCID lcid)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    WorksheetImpl *This = (WorksheetImpl*)iface;
+    HRESULT hr;
+    if (!This || !This->pwb) return E_POINTER;
+    /* The backend previews the active sheet. */
+    hr = I_Worksheet_Activate(iface, lcid);
+    if (SUCCEEDED(hr)) hr = MSO_TO_OO_PrintPreview(This->pwb);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet__Protect(

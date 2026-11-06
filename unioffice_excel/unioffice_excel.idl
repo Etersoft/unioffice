@@ -869,7 +869,7 @@ library MSO_TO_OOLib
 		xlChartInPlace 			= 0x00000004,
 		xlClipboard 			= 0x00000003,
 		xlInfo 				= 0xFFFFEFDF,
-		xlWorkbook 			= 0x0000000
+		xlWorkbook 			= 0x00000001
 	} XlWindowType;
 
 	typedef enum {
@@ -2012,7 +2012,7 @@ library MSO_TO_OOLib
 //Parent
 		[id(dispid_worksheet_parent),propget,helpstring("property Parent")] HRESULT Parent([out,retval] IDispatch** RHS);
 //Activate
-		[id(dispid_worksheet_activate),helpstring("method Activate")] HRESULT Activate([in] LCID lcid);
+		[id(dispid_worksheet_activate),helpstring("method Activate")] HRESULT Activate([lcid] LCID lcid);
 //Copy
 		[id(dispid_worksheet_copy),helpstring("method Copy")] HRESULT Copy(
 			[in,optional] VARIANT Before,
@@ -2077,7 +2077,7 @@ library MSO_TO_OOLib
 //PrintPreview
 		[id(dispid_worksheet_printpreview),helpstring("method PrintPreview")] HRESULT PrintPreview(
 			[in,optional] VARIANT EnableChanges,
-			[in] LCID lcid);
+			[lcid] LCID lcid);
 //_Protect
 		[id(dispid_worksheet__protect),hidden,helpstring("method _Protect")] HRESULT _Protect(
 			[in,optional] VARIANT Password,
@@ -2622,7 +2622,7 @@ library MSO_TO_OOLib
 //PrintPreview
 		[id(dispid_sheets_printpreview), helpstring("method PrintPreview")] HRESULT PrintPreview(
 			[in, optional] VARIANT EnableChanges,
-			[in] LCID lcid);
+			[lcid] LCID lcid);
 //Select
 		[id(dispid_sheets_select), helpstring("method Select")] HRESULT Select(
 			[in, optional] VARIANT Replace,
@@ -2675,7 +2675,7 @@ library MSO_TO_OOLib
 		[id(dispid_workbook_acceptlabelsinformulas),propget,helpstring("property AcceptLabelsInFormulas")] HRESULT AcceptLabelsInFormulas([out,retval] VARIANT_BOOL* RHS);
 		[id(dispid_workbook_acceptlabelsinformulas),propput,helpstring("property AcceptLabelsInFormulas")] HRESULT AcceptLabelsInFormulas([in] VARIANT_BOOL RHS);
 //Activate
-		[id(dispid_workbook_activate),helpstring("method Activate")] HRESULT Activate([in] LCID lcid);
+		[id(dispid_workbook_activate),helpstring("method Activate")] HRESULT Activate([lcid] LCID lcid);
 //ActiveChart
 		[id(dispid_workbook_activeChart),propget,helpstring("property ActiveChart")] HRESULT ActiveChart([out,retval] IDispatch** RHS);
 //ActiveSheet
@@ -2909,7 +2909,7 @@ library MSO_TO_OOLib
 //PrintPreview
 		[id(dispid_workbook_printpreview),helpstring("method PrintPreview")] HRESULT PrintPreview(
 			[in,optional] VARIANT EnableChanges,
-			[in] LCID lcid);
+			[lcid] LCID lcid);
 //_Protect
 		[id(dispid_workbook__protect),hidden,helpstring("method _Protect")] HRESULT _Protect(
 			[in,optional] VARIANT Password,
@@ -3604,11 +3604,11 @@ library MSO_TO_OOLib
 //Parent
 		[id(dispid_window_parent), propget, helpstring("property Parent")]HRESULT Parent([out, retval] IDispatch** RHS);
 //Activate
-		[id(dispid_window_activate), propget, helpstring("method Activate")]HRESULT Activate([out, retval]VARIANT* RHS);
+		[id(dispid_window_activate), helpstring("method Activate")]HRESULT Activate([out, retval]VARIANT* RHS);
 //ActivateNext
-		[id(dispid_window_activatenext), propget, helpstring("method ActivateNext")]HRESULT ActivateNext([out, retval]VARIANT* RHS);
+		[id(dispid_window_activatenext), helpstring("method ActivateNext")]HRESULT ActivateNext([out, retval]VARIANT* RHS);
 //ActivatePrevious
-		[id(dispid_window_activateprevious), propget, helpstring("method ActivatePrevious")]HRESULT ActivatePrevious([out, retval]VARIANT* RHS);
+		[id(dispid_window_activateprevious), helpstring("method ActivatePrevious")]HRESULT ActivatePrevious([out, retval]VARIANT* RHS);
 //ActiveCell
 		[id(dispid_window_activecell), propget, helpstring("property ActiveCell")]HRESULT ActiveCell([out, retval] IDispatch** RHS);
 //ActiveChart
@@ -3621,9 +3621,9 @@ library MSO_TO_OOLib
 		[id(dispid_window_caption), propget, helpstring("property Caption")]HRESULT Caption([out, retval] VARIANT* RHS);
 		[id(dispid_window_caption), propput, helpstring("property Caption")]HRESULT Caption([in] VARIANT RHS);
 //Close
-		[id(dispid_window_close), propget, helpstring("method Close")]HRESULT Close(  [in] VARIANT SaveChanges,
-			[in] VARIANT Filename,
-			[in] VARIANT RouteWorkbook,
+		[id(dispid_window_close), helpstring("method Close")]HRESULT Close(  [in, optional] VARIANT SaveChanges,
+			[in, optional] VARIANT Filename,
+			[in, optional] VARIANT RouteWorkbook,
 			[out, retval] VARIANT_BOOL *RHS);
 //DisplayFormulas
 		[id(dispid_window_displayformulas), propget, helpstring("property DisplayFormulas")]HRESULT DisplayFormulas([out, retval] VARIANT_BOOL* RHS);
@@ -3670,10 +3670,10 @@ library MSO_TO_OOLib
 //Index
 		[id(dispid_window_index), propget, helpstring("property Index")]HRESULT Index([out, retval] long* RHS);
 //LargeScroll
-		[id(dispid_window_largescroll), helpstring("method LargeScroll")]HRESULT LargeScroll(  [in] VARIANT Down,
-			[in] VARIANT Up,
-			[in] VARIANT toRight,
-			[in] VARIANT toLeft,
+		[id(dispid_window_largescroll), helpstring("method LargeScroll")]HRESULT LargeScroll(  [in, optional] VARIANT Down,
+			[in, optional] VARIANT Up,
+			[in, optional] VARIANT toRight,
+			[in, optional] VARIANT toLeft,
 			[out, retval] VARIANT *RHS);
 //left
 		[id(dispid_window_left), propget, helpstring("property Left")]HRESULT Left([out, retval] double* RHS);
@@ -3698,7 +3698,7 @@ library MSO_TO_OOLib
 			[out, retval] VARIANT *RHS);
 //PrintPreview
 		[id(dispid_window_printpreview), helpstring("method PrintPreview")]HRESULT PrintPreview(
-			[in] VARIANT EnableChanges,
+			[in, optional] VARIANT EnableChanges,
 			[out, retval] VARIANT *RHS);
 //RangeSelection
 		[id(dispid_window_rangeselection), propget, helpstring("property RangeSelection")]HRESULT RangeSelection([out, retval] IDispatch** RHS);
@@ -3718,10 +3718,10 @@ library MSO_TO_OOLib
 //Selection
 		[id(dispid_window_selection), propget, helpstring("property Selection")]HRESULT Selection([out, retval] IDispatch** RHS);
 //SmallScroll
-		[id(dispid_window_smallscroll), helpstring("method SmallScroll")]HRESULT SmallScroll(  [in] VARIANT Down,
-			[in] VARIANT Up,
-			[in] VARIANT toRight,
-			[in] VARIANT toLeft,
+		[id(dispid_window_smallscroll), helpstring("method SmallScroll")]HRESULT SmallScroll(  [in, optional] VARIANT Down,
+			[in, optional] VARIANT Up,
+			[in, optional] VARIANT toRight,
+			[in, optional] VARIANT toLeft,
 			[out, retval] VARIANT *RHS);
 //Split
 		[id(dispid_window_split), propget, helpstring("property Split")]HRESULT Split([out, retval] VARIANT_BOOL* RHS);
@@ -4956,10 +4956,10 @@ library MSO_TO_OOLib
 		        [out, retval] VARIANT_BOOL* RHS);
 
 		[propput,id(dispid_application_windowstate)] HRESULT WindowState(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[in] XlWindowState State);
 		[propget,id(dispid_application_windowstate)] HRESULT WindowState(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out, retval] XlWindowState *State);
 
 		[id(dispid_application_uilanguage), propget, hidden, helpstring("property UILanguage")] HRESULT UILanguage(
