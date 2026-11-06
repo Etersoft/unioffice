@@ -731,7 +731,8 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
    Worksheet.Range/Cells normalization и parent lifetime проверены и исправлены.
    Range.Item и single-rectangle Range.Rows/Columns selection/Count реализованы;
    Worksheet/Application Rows/Columns и ascending slices также реализованы.
-   Multi-area, enumeration, reverse slices и прочие normalization sites
+   Single-area Range/Cells/Rows/Columns enumeration реализован и проверен;
+   см. [отчёт](range-enumeration-results.md). Multi-area, reverse slices и прочие normalization sites
    остаются отдельными возможными работами.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.

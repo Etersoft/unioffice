@@ -73,7 +73,9 @@ packages were rebuilt with final DLLs and passed architecture/Unicode metadata
 checks (-{mingw-32,winegcc-64}-msi-final-check.log). Installer lifecycle was not
 repeated because registration and IDL did not change. No Wine defect was established.
 
-Native Windows, multi-area ranges, enumeration, exact Excel script error numbers,
+Single-area enumeration was added in a subsequent stage; see
+[Range enumeration](range-enumeration-results.md).
+Native Windows, multi-area ranges, exact Excel script error numbers,
 reversed slices and exhaustive value/format/delete/insert behavior remain outside
 this validation. Selected backend failures are propagated rather than translated
 to Excel's exact error codes.

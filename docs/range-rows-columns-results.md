@@ -58,7 +58,8 @@ This change covers single-rectangle Range.Rows/Columns selection and Count.
 The [subsequent sheet collection change](sheet-rows-columns-results.md) adds
 Worksheet/Application.Rows/Columns and ascending slices such as "1:3"/"A:C";
 the bounded Range probe now has98 checks. The validation above records the
-initial collection stage. Multi-area selection, enumeration, nonpositive offsets
+initial collection stage. [Single-area enumeration](range-enumeration-results.md)
+was added subsequently. Multi-area selection, nonpositive offsets
 and exhaustive row/column value/format/delete/insert behavior remain outside
 validation. Excel's script error number1004 is not reproduced by E_INVALIDARG.
 Existing named lookup for ordinary Range default remains.

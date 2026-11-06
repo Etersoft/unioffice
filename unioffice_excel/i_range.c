@@ -3429,12 +3429,170 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_NavigateArrow(
     return E_NOTIMPL;
 }
 
+/* Lazy, independent cursors: never materialize a worksheet-sized collection. */
+typedef struct {
+    const IEnumVARIANTVtbl *vtbl;
+    LONG ref;
+    I_Range *range;
+    ULONGLONG position, count;
+    ULONG width, row, column;
+} RangeEnumerator;
+
+static HRESULT range_enum_copy(RangeEnumerator *source, IEnumVARIANT **result);
+
+static ULONG WINAPI range_enum_addref(IEnumVARIANT *iface)
+{
+    return InterlockedIncrement(&((RangeEnumerator*)iface)->ref);
+}
+
+static HRESULT WINAPI range_enum_query(IEnumVARIANT *iface, REFIID iid, void **result)
+{
+    if (!result) return E_POINTER;
+    *result = NULL;
+    if (!IsEqualGUID(iid, &IID_IUnknown) && !IsEqualGUID(iid, &IID_IEnumVARIANT))
+        return E_NOINTERFACE;
+    *result = iface;
+    range_enum_addref(iface);
+    return S_OK;
+}
+
+static ULONG WINAPI range_enum_release(IEnumVARIANT *iface)
+{
+    RangeEnumerator *This = (RangeEnumerator*)iface;
+    ULONG ref = InterlockedDecrement(&This->ref);
+    if (!ref) {
+        I_Range_Release(This->range);
+        HeapFree(GetProcessHeap(), 0, This);
+        InterlockedDecrement(&dll_ref);
+    }
+    return ref;
+}
+
+static HRESULT WINAPI range_enum_next(IEnumVARIANT *iface, ULONG requested,
+        VARIANT *values, ULONG *fetched)
+{
+    RangeEnumerator *This = (RangeEnumerator*)iface;
+    RangeCollectionKind kind = ((RangeImpl*)This->range)->collection_kind;
+    ULONG current_row = This->row, current_column = This->column;
+    ULONG i, produced = 0;
+    VARIANT row, column;
+    IDispatch *item;
+    HRESULT hr;
+    if (fetched) *fetched = 0;
+    if (!values) return E_INVALIDARG;
+    for (i = 0; i < requested; ++i) VariantInit(&values[i]);
+    VariantInit(&row);
+    VariantInit(&column);
+    V_VT(&row) = VT_I4;
+    V_VT(&column) = VT_ERROR;
+    V_ERROR(&column) = DISP_E_PARAMNOTFOUND;
+    while (produced < requested && This->position + produced < This->count) {
+        if (kind == RANGE_CELLS) {
+            V_I4(&row) = current_row + 1;
+            V_VT(&column) = VT_I4;
+            V_I4(&column) = current_column + 1;
+        } else V_I4(&row) = This->position + produced + 1;
+        hr = range_item_cell(This->range, row, column, &item);
+        if (FAILED(hr)) {
+            /* Failed batches transfer nothing and leave the cursor unchanged. */
+            for (i = 0; i < produced; ++i) VariantClear(&values[i]);
+            return hr;
+        }
+        V_VT(&values[produced]) = VT_DISPATCH;
+        V_DISPATCH(&values[produced]) = item;
+        ++produced;
+        if (++current_column == This->width) {
+            current_column = 0;
+            ++current_row;
+        }
+    }
+    This->row = current_row;
+    This->column = current_column;
+    This->position += produced;
+    if (fetched) *fetched = produced;
+    return produced == requested ? S_OK : S_FALSE;
+}
+
+static HRESULT WINAPI range_enum_skip(IEnumVARIANT *iface, ULONG requested)
+{
+    RangeEnumerator *This = (RangeEnumerator*)iface;
+    ULONGLONG remaining = This->count - This->position;
+    if (requested > remaining) {
+        This->position = This->count;
+        return S_FALSE;
+    }
+    This->position += requested;
+    /* 32-bit division avoids a new libgcc DLL dependency in the PE32 build. */
+    This->row += requested / This->width;
+    This->column += requested % This->width;
+    if (This->column >= This->width) {
+        This->column -= This->width;
+        ++This->row;
+    }
+    return S_OK;
+}
+
+static HRESULT WINAPI range_enum_reset(IEnumVARIANT *iface)
+{
+    RangeEnumerator *This = (RangeEnumerator*)iface;
+    This->position = 0;
+    This->row = This->column = 0;
+    return S_OK;
+}
+
+static HRESULT WINAPI range_enum_clone(IEnumVARIANT *iface, IEnumVARIANT **result)
+{
+    return range_enum_copy((RangeEnumerator*)iface, result);
+}
+
+static const IEnumVARIANTVtbl range_enum_vtbl = {
+    range_enum_query, range_enum_addref, range_enum_release,
+    range_enum_next, range_enum_skip, range_enum_reset, range_enum_clone
+};
+
+static HRESULT range_enum_copy(RangeEnumerator *source, IEnumVARIANT **result)
+{
+    RangeEnumerator *copy;
+    if (!result) return E_POINTER;
+    *result = NULL;
+    copy = HeapAlloc(GetProcessHeap(), 0, sizeof(*copy));
+    if (!copy) return E_OUTOFMEMORY;
+    *copy = *source;
+    copy->vtbl = &range_enum_vtbl;
+    copy->ref = 1;
+    I_Range_AddRef(copy->range);
+    InterlockedIncrement(&dll_ref);
+    *result = (IEnumVARIANT*)copy;
+    return S_OK;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_get__NewEnum(
         I_Range* iface,
         IUnknown **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    RangeEnumerator source;
+    IEnumVARIANT *enumerator;
+    LONG first_row, first_column, last_row, last_column, height;
+    HRESULT hr;
+    if (!RHS) return E_POINTER;
+    *RHS = NULL;
+    hr = MSO_TO_OO_GetRangeAddress(iface, &first_row, &first_column,
+            &last_row, &last_column);
+    if (FAILED(hr)) return hr;
+    source.width = last_column - first_column + 1;
+    height = last_row - first_row + 1;
+    if (source.width < 1 || height < 1) return E_UNEXPECTED;
+    source.range = iface;
+    source.position = 0;
+    source.row = source.column = 0;
+    if (((RangeImpl*)iface)->collection_kind == RANGE_ROWS) source.count = height;
+    else if (((RangeImpl*)iface)->collection_kind == RANGE_COLUMNS) source.count = source.width;
+    else source.count = (ULONGLONG)source.width * height;
+    source.vtbl = &range_enum_vtbl;
+    source.ref = 1;
+    hr = range_enum_copy(&source, &enumerator);
+    if (SUCCEEDED(hr)) *RHS = (IUnknown*)enumerator;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Next(
@@ -4445,6 +4603,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
 
     switch(dispIdMember)
     {
+    case dispid_range__newenum:
+        if (pVarResult) VariantInit(pVarResult);
+        if (!pDispParams) return E_POINTER;
+        if (!(wFlags & (DISPATCH_PROPERTYGET | DISPATCH_METHOD)))
+            return DISP_E_MEMBERNOTFOUND;
+        if (pDispParams->cArgs) return DISP_E_BADPARAMCOUNT;
+        hres = MSO_TO_OO_I_Range_get__NewEnum(iface, &V_UNKNOWN(&vRet));
+        if (FAILED(hres)) return hres;
+        V_VT(&vRet) = VT_UNKNOWN;
+        if (pVarResult) *pVarResult = vRet;
+        else VariantClear(&vRet);
+        return S_OK;
     case dispid_range_rows:
     case dispid_range_columns:
     case dispid_range_cells:

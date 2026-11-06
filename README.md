@@ -133,6 +133,8 @@ Cells restores cell indexing and Count. See
 Worksheet/Application.Rows/Columns share these collections and support numeric
 indices, column letters and ascending slices. See
 [sheet collection checks and backend dimensions](docs/sheet-rows-columns-results.md).
+Range, Cells, Rows and Columns support lazy `For Each` enumeration with independent
+cursors. See [enumeration contracts and validation](docs/range-enumeration-results.md).
 Native clients receive the published vtable for IID__Application; see
 [dual-interface ABI checks](docs/application-interface-results.md).
 
