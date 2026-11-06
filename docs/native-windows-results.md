@@ -73,6 +73,28 @@ change, payload hashes were unchanged and both surviving-client workflows passed
 Both final packages also passed installation/repair/removal under Wine; both
 strict legacy suites and the new C probe passed there after the code fix.
 
+## Package re-acceptance: 2026-11-07
+
+After the [function stages](function-gaps-results.md), both MSIs were rebuilt
+from commit 7f5ac32 (DLLs now also import gdi32) and accepted again on the same
+VM. The previously installed products, whose DLLs had been replaced by hand
+during testing, were removed first, and no payload remained.
+
+| Check | PE32/MinGW | PE64/winegcc |
+| --- | --- | --- |
+| msi-smoke metadata/Unicode/ALLUSERS | 0 failures | 0 failures |
+| Installation; payload equals the build (SHA-256) | PASS | PASS |
+| `test-windows-msi.ps1`: repair, both removal orders, surviving client, final cleanup | PASS | PASS |
+| Reinstallation, then the complete `run-windows-tests.ps1` per architecture: 34 probes (COM smoke, 5 C probes, 26 VBScript probes, visible windows, typelib registration) and the 7 legacy scripts at 158/0 with 156 markers | PASS | PASS |
+| Wine `test-msi-coexistence.py` in `unioffice-msi64` | PASS | PASS |
+
+Both products are installed again for review. The checksums in
+[native-windows-packages.sha256](native-windows-packages.sha256) now list the new packages.
+Guest evidence: `C:\Users\Public\tmp\claude\uo-msi-accept` (accept.log,
+lifecycle.log, suite.log), results `unioffice-msi-windows-973e454fb3a145f9a566310cb13468bf`
+and `unioffice-windows-92fb9e19d510488cab9fda3a7d1c7e4f` under the guest user's
+`tmp\claude`. The separate standard-user check below was not repeated.
+
 ## Separate standard-user check
 
 A subsequent run on the same VM tested a genuinely separate local account,

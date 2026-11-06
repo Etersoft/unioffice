@@ -151,8 +151,9 @@ including `windows-visible.vbs` with geometry, window states, frozen panes,
 scrolling and the modal print preview, and the seven legacy scripts (counters
 158/0, 156 markers). Guest results:
 `C:\Users\guest\tmp\claude\unioffice-windows-dcf7b3610b2d4e179d343e514cdc154f`.
-The installed DLL/TLB were replaced by the tested builds (SHA-256 PE32
-`c862d89e…bc344`, PE64 `52f084ed…347b7`); MSI packages were not rebuilt.
+The installed DLL/TLB were first replaced by the tested builds (SHA-256 PE32
+`c862d89e…bc344`, PE64 `52f084ed…347b7`). The MSI packages were then rebuilt
+and accepted again; see [package re-acceptance](native-windows-results.md#package-re-acceptance-2026-11-07).
 Wine (builder64, both architectures): 31 of 31 probes and the legacy suite
 with the same counters. `windows-visible.vbs` needs a desktop window manager and
 does not run in the headless Wine fixture.

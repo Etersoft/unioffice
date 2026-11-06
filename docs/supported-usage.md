@@ -15,6 +15,9 @@ interface member is not automatically a task.
 | Cells and ranges | String/numeric values, formulas and array scenarios in test5; Item/Cells addressing, selection, offsets, resize, row/column views and single-area enumeration |
 | Formatting | Legacy font properties, subscript/superscript, solid/double/absent borders, colors, supported weights and mixed-weight results |
 | Sheet layout | Group/ungroup and outline levels; page margins, orientation, zoom, centering and fit-to-page properties |
+| Range properties | Hidden, CurrentRegion, NumberFormat, FormulaR1C1, FormulaLocal, Address/AddressLocal, typed formula results in Value, PasteSpecial |
+| Sheets, names and shapes | UsedRange, PrintArea, PrintTitleRows, OutlineFont, Summary row/column setting, Names.Add and Name references, Shapes.AddLine |
+| Application and windows | Saved, CentimetersToPoints, ScreenUpdating, Interactive, CutCopyMode, Window/Windows view settings, scrolling, frozen panes, geometry, WindowState, modal PrintPreview |
 | COM contracts | Published Application interface, owned arguments/results, retained parents and independent enumerator cursors |
 | Distribution | PE32/MinGW and PE64/winegcc MSI packages, registration, repair, architecture coexistence and removal |
 
