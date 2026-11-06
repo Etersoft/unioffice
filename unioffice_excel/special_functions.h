@@ -196,3 +196,6 @@ HRESULT MSO_TO_OO_ConvertFormula(
         LONG from,
         LONG to,
         BSTR *out);
+
+LONG MSO_TO_OO_SheetColumnCount(
+        IDispatch *oosheet);

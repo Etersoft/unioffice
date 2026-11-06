@@ -2064,3 +2064,21 @@ HRESULT MSO_TO_OO_ConvertFormula(
     return hr;
 }
 
+/* Sheet width differs between office versions (256, 1024, 16384 columns);
+   read it from the backend instead of inferring it from a version string. */
+LONG MSO_TO_OO_SheetColumnCount(
+        IDispatch *oosheet)
+{
+    VARIANT columns, count;
+    LONG result = 1024;
+    VariantInit(&columns);
+    VariantInit(&count);
+    if (oosheet && SUCCEEDED(AutoWrap(DISPATCH_METHOD, &columns, oosheet, L"getColumns", 0)) &&
+            V_VT(&columns) == VT_DISPATCH &&
+            SUCCEEDED(AutoWrap(DISPATCH_METHOD, &count, V_DISPATCH(&columns), L"getCount", 0)) &&
+            SUCCEEDED(VariantChangeTypeEx(&count, &count, 0, 0, VT_I4)) && V_I4(&count) > 0)
+        result = V_I4(&count);
+    VariantClear(&count);
+    VariantClear(&columns);
+    return result;
+}

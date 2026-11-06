@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 
 ITypeInfo *ti_outline = NULL;
 
@@ -216,13 +217,10 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_put_AutomaticStyles(
 
     if (RHS == VARIANT_TRUE) {
         V_VT(&cols) = VT_BSTR;
-        switch (OOVersion) {
-        case VER_2:
-            V_BSTR(&cols) = SysAllocString(L"1:256");
-            break;
-        case VER_3:
-            V_BSTR(&cols) = SysAllocString(L"1:1024");
-            break;
+        {
+            WCHAR all_columns[24];
+            wsprintfW(all_columns, L"1:%d", (int)MSO_TO_OO_SheetColumnCount(This->pOOSheet));
+            V_BSTR(&cols) = SysAllocString(all_columns);
         }
         I_Worksheet_get_Columns(This->pWorksheet, cols, (IDispatch**)&tmp_range);
         

@@ -3653,26 +3653,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Group(
     if (FAILED(hres)) {
         TRACE("ERROR when GetRangeAddress\n");
     }
-    switch (OOVersion) {
-    case VER_2:
-        if (endcolumn-startcolumn==255) {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toROWS;
-        } else {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toCOLUMNS;
-        }
-        break;
-    case VER_3:
-        if (endcolumn-startcolumn==1023) {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toROWS;
-        } else {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toCOLUMNS;
-        }
-        break;
-    }
+    /* A full-width range groups rows; the width comes from the backend sheet. */
+    V_VT(&param2) = VT_I4;
+    V_I4(&param2) = endcolumn - startcolumn == MSO_TO_OO_SheetColumnCount(wsh->pOOSheet) - 1 ? toROWS : toCOLUMNS;
     /* Collection views retain their rectangle; its width no longer implies the axis. */
     if (This->collection_kind != RANGE_CELLS) {
         V_VT(&param2) = VT_I4;
@@ -4637,26 +4620,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Ungroup(
     if (FAILED(hres)) {
         TRACE("ERROR when GetRangeAddress\n");
     }
-    switch (OOVersion) {
-    case VER_2:
-        if (endcolumn-startcolumn==255) {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toROWS;
-        } else {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toCOLUMNS;
-        }
-        break;
-    case VER_3:
-        if (endcolumn-startcolumn==1023) {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toROWS;
-        } else {
-            V_VT(&param2) = VT_I4;
-            V_I4(&param2) = toCOLUMNS;
-        }
-        break;
-    }
+    /* A full-width range groups rows; the width comes from the backend sheet. */
+    V_VT(&param2) = VT_I4;
+    V_I4(&param2) = endcolumn - startcolumn == MSO_TO_OO_SheetColumnCount(wsh->pOOSheet) - 1 ? toROWS : toCOLUMNS;
     /* Collection views retain their rectangle; its width no longer implies the axis. */
     if (This->collection_kind != RANGE_CELLS) {
         V_VT(&param2) = VT_I4;

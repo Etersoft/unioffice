@@ -72,6 +72,18 @@ Check oosheet.getPrintTitleRows() = False, "Empty PrintTitleRows disables titles
 Set titles = Nothing
 Set setup = Nothing
 
+' Full-width ranges group rows using the backend's real sheet width.
+Dim lastColumn
+lastColumn = oosheet.getColumns().getCount()
+sheet.Range(sheet.Cells(12, 1), sheet.Cells(13, lastColumn)).Group
+sheet.Outline.ShowLevels 1
+Check oosheet.getRows().getByIndex(11).IsVisible = False, "Full-width Group groups rows"
+Check oosheet.getColumns().getByIndex(1).IsVisible = True, "Full-width Group leaves columns"
+sheet.Outline.ShowLevels 2
+sheet.Range(sheet.Cells(12, 1), sheet.Cells(13, lastColumn)).Ungroup
+sheet.Outline.ShowLevels 1
+Check oosheet.getRows().getByIndex(11).IsVisible = True, "Full-width Ungroup removes row group"
+
 Set oosheet = Nothing
 Set document = Nothing
 Set documents = Nothing
