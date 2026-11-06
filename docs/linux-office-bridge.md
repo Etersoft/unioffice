@@ -25,6 +25,40 @@ this investigation does not establish runtime support for it.
   `WINE_UNIX_CALL`, `unixlib.c` exports native and WOW64 function tables, and
   its build separates `cpcsp_proxy.dll` from `cpcsp_proxy.so`.
 
+## What the historical mingw-widl port provided
+
+The repository has seven commits, all by Vitaly Lipatov on 2008-12-29. Its
+Makefile builds `widl.exe` with `i386-mingw32msvc-gcc`; the existing untracked
+binary is PE32. The observable purpose was a standalone Windows build of Wine's
+IDL compiler, able to generate COM headers, IID definitions, type libraries
+and RPC stubs. A particular UniOffice workflow using this adjacent executable
+was not established: the inspected historical Excel Makefile selects `widl`
+without referring to this directory.
+
+| Commit | Change |
+| --- | --- |
+| `5efab3c` | Imports the compiler and standalone Makefile |
+| `e1d6076`, `89dd195` | Supply Wine headers/configuration and the include path |
+| `b9338be` | Corrects cleanup and Windows output suffixes |
+| `726577c` | Comments out language IDs missing from the then-current MinGW headers; the message says `hasp.c`, but changes `hash.c` |
+| `0bfddb6` | Adds Wine's WPP preprocessor and mkstemps source and links libwpp |
+| `93da5cc` | Builds libwpp before recursively building widl.exe |
+
+Compared the initial import against local upstream Wine tag `wine-1.1.11`
+(commit `0b3b6e67ea663e853cc6bb93f4da447ab934e50d`): all 23 compiler source/header/
+lexer/parser files match byte for byte. At the final revision, `hash.c` is the
+only changed compiler source. Added support sources/headers also match that tag
+except `include/wine/port.h`, whose differences concern mkdir, poll and symlink
+portability declarations. No custom UNO transport or IDL-generation fix was
+found in the import or subsequent commits.
+
+The useful result is the standalone build recipe, especially `0bfddb6` plus
+`93da5cc`. There is no demonstrated fix to cherry-pick into the current UniOffice
+toolchain: it already uses modern WIDL and has passed both PE builds. Preserve
+the history as a reference; do not revive the old compiler or its language-ID
+workaround without a concrete compatibility failure. This inspection did not
+rebuild/run the historical tool or modify its existing generated files.
+
 ## Recommended component boundary
 
 Develop the bridge in the existing `unioffice-host` repository as a separately
