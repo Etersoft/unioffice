@@ -1,9 +1,11 @@
 # Supported UniOffice usage
 
-The delivery target is the existing Excel Automation subset over Windows Apache
-OpenOffice. Further development should fix failures in this subset and complete
-its build/install/use/remove workflow. New COM methods require a concrete usage
-requirement; an unimplemented interface member is not automatically a task.
+The current verified delivery is the existing Excel Automation subset over
+Windows Apache OpenOffice. The long-term goal includes multiple office suites
+and Word Automation; see the [roadmap](roadmap.md). Preserve the existing
+build/install/use/remove workflow while extending support in separate stages.
+New COM methods should serve concrete client workflows; an unimplemented
+interface member is not automatically a task.
 
 ## Verified functional scope
 

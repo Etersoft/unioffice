@@ -66,11 +66,13 @@ rebuild/run the historical tool or modify its existing generated files.
 ## Recommended component boundary
 
 Develop the bridge in the existing `unioffice-host` repository as a separately
-packaged Wine component. Keep Excel compatibility in this repository. Proposed
-flow (component names are illustrative):
+packaged Wine component. Keep Excel and future Word compatibility in this
+repository; the bridge should serve both Calc and Writer. See the broader
+[multi-office roadmap](roadmap.md). Proposed flow (component names are
+illustrative; Word is not implemented yet):
 
 ```text
-Windows client -> UniOffice Excel DLL -> COM IDispatch frontend (PE DLL)
+Windows client -> UniOffice Excel/Word -> COM IDispatch frontend (PE DLL)
                                              |
                                        Wine unix calls
                                              |

@@ -9,6 +9,15 @@ Windows or Wine. **Linux LibreOffice/OpenOffice integration remains open**: the
 current DLL expects a registered Windows `com.sun.star.ServiceManager`.
 See the [Linux bridge findings and plan](docs/linux-office-bridge.md).
 
+## Project direction
+
+The long-term goal is broad office-suite support with both **Excel and Word
+Automation**. Develop office-specific adapters behind shared compatibility
+infrastructure, starting with the working Windows backend and Linux UNO bridge.
+Word support is planned; the current Word component is still a stub. See the
+[multi-office and Word roadmap](docs/roadmap.md) for the proposed stages and
+architecture. The verified capabilities below describe today's implementation.
+
 ## Status and supported use
 
 The tested subset includes workbooks and worksheets, cell values/formulas,

@@ -2,6 +2,7 @@
 
 ## Setup, status and architecture
 
+- [Multi-office and Word roadmap](roadmap.md).
 - [Supported functions and Windows/Wine installation](supported-usage.md).
 - [Native Windows results, fixes and reproduction](native-windows-results.md)
   and [accepted package checksums](native-windows-packages.sha256).
