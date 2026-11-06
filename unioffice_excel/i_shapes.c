@@ -165,11 +165,13 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_GetTypeInfo(
         LCID lcid,
         ITypeInfo **ppTInfo)
 {
-    HRESULT hres = get_typeinfo_shapes(ppTInfo);
-    TRACE("\n");
-    if (FAILED(hres))
-        TRACE("Error when GetTypeInfo");
-
+    HRESULT hres;
+    if (!ppTInfo) return E_POINTER;
+    *ppTInfo = NULL;
+    if (iTInfo) return DISP_E_BADINDEX;
+    hres = get_typeinfo_shapes(ppTInfo);
+    /* The cache owns one reference; the caller must receive another. */
+    if (SUCCEEDED(hres)) ITypeInfo_AddRef(*ppTInfo);
     return hres;
 }
 
