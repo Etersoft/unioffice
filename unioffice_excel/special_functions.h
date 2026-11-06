@@ -178,6 +178,12 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Index(
 BOOL    Is_Variant_Null(
         VARIANT var);
 
+HRESULT MSO_TO_OO_ApplyWorkbookUiState(
+        _ApplicationImpl *app,
+        I_Workbook *workbook);
+
+HRESULT MSO_TO_OO_ApplyApplicationUiState(
+        _ApplicationImpl *app);
 
 BSTR MSO_TO_OO_SwapFormulaSeparators(
         const WCHAR *text,

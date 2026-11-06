@@ -4535,10 +4535,10 @@ library MSO_TO_OOLib
 			[out, retval] VARIANT* RHS);
 
 		[id(dispid_application_interactive), propget, helpstring("property Interactive")] HRESULT Interactive(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out, retval] VARIANT_BOOL* RHS);
 		[id(dispid_application_interactive), propput, helpstring("property Interactive")] HRESULT Interactive(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[in] VARIANT_BOOL RHS);
 
 		[id(dispid_application_international), propget, helpstring("property International")] HRESULT International(

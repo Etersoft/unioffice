@@ -1901,6 +1901,75 @@ if ((V_VT(&var)==VT_EMPTY) || (V_VT(&var)==VT_NULL) || (V_VT(&var)==VT_ERROR)) r
 return 0;
 }
 
+/* Bring one workbook in line with Application.ScreenUpdating/Interactive.
+   The lock flag keeps lockControllers/addActionLock balanced per document. */
+HRESULT MSO_TO_OO_ApplyWorkbookUiState(
+        _ApplicationImpl *app,
+        I_Workbook *workbook)
+{
+    WorkbookImpl *wb = (WorkbookImpl*)workbook;
+    VARIANT result, controller, frame, window, enable;
+    BOOL lock;
+    HRESULT hr = S_OK, hr2;
+
+    if (!app || !wb || !wb->pDoc) return E_POINTER;
+    VariantInit(&result);
+    lock = app->screenupdating == VARIANT_FALSE;
+    if (lock && !wb->controllers_locked) {
+        hr = AutoWrap(DISPATCH_METHOD, &result, wb->pDoc, L"lockControllers", 0);
+        VariantClear(&result);
+        if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, wb->pDoc, L"addActionLock", 0);
+        VariantClear(&result);
+        if (SUCCEEDED(hr)) wb->controllers_locked = TRUE;
+    } else if (!lock && wb->controllers_locked) {
+        hr = AutoWrap(DISPATCH_METHOD, &result, wb->pDoc, L"removeActionLock", 0);
+        VariantClear(&result);
+        if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, wb->pDoc, L"unlockControllers", 0);
+        VariantClear(&result);
+        if (SUCCEEDED(hr)) wb->controllers_locked = FALSE;
+    }
+
+    /* Interactive=False disables keyboard and mouse input to the document window. */
+    VariantInit(&controller);
+    VariantInit(&frame);
+    VariantInit(&window);
+    hr2 = AutoWrap(DISPATCH_METHOD, &controller, wb->pDoc, L"getCurrentController", 0);
+    if (SUCCEEDED(hr2) && V_VT(&controller) == VT_DISPATCH && V_DISPATCH(&controller))
+        hr2 = AutoWrap(DISPATCH_METHOD, &frame, V_DISPATCH(&controller), L"getFrame", 0);
+    else if (SUCCEEDED(hr2)) hr2 = E_FAIL;
+    if (SUCCEEDED(hr2) && V_VT(&frame) == VT_DISPATCH && V_DISPATCH(&frame))
+        hr2 = AutoWrap(DISPATCH_METHOD, &window, V_DISPATCH(&frame), L"getContainerWindow", 0);
+    else if (SUCCEEDED(hr2)) hr2 = E_FAIL;
+    V_VT(&enable) = VT_BOOL;
+    V_BOOL(&enable) = app->interactive;
+    if (SUCCEEDED(hr2) && V_VT(&window) == VT_DISPATCH && V_DISPATCH(&window))
+        hr2 = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(&window), L"setEnable", 1, enable);
+    else if (SUCCEEDED(hr2)) hr2 = E_FAIL;
+    VariantClear(&result);
+    VariantClear(&window);
+    VariantClear(&frame);
+    VariantClear(&controller);
+    return FAILED(hr) ? hr : hr2;
+}
+
+HRESULT MSO_TO_OO_ApplyApplicationUiState(
+        _ApplicationImpl *app)
+{
+    WorkbooksImpl *books;
+    HRESULT hr = S_OK, hr2;
+    int i;
+
+    if (!app) return E_POINTER;
+    books = (WorkbooksImpl*)app->pdWorkbooks;
+    if (!books) return S_OK;
+    for (i = 0; i < books->count_workbooks; i++) {
+        if (!books->pworkbook[i]) continue;
+        hr2 = MSO_TO_OO_ApplyWorkbookUiState(app, books->pworkbook[i]);
+        if (FAILED(hr2) && SUCCEEDED(hr)) hr = hr2;
+    }
+    return hr;
+}
+
 BSTR MSO_TO_OO_SwapFormulaSeparators(const WCHAR *text, BOOL to_uno)
 {
     UINT i, length = lstrlenW(text);

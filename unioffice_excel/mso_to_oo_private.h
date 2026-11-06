@@ -232,6 +232,7 @@ typedef struct
     IDispatch *pworkbooks;                   /*pointer to Application*/
     IDispatch *pDoc;                         /*pointer to Document*/
     IDispatch *pSheets;                      /*pointer to Sheets*/
+    BOOL controllers_locked;                 /*ScreenUpdating=False lock held*/
 //    BSTR filename;             
 } WorkbookImpl;
 
@@ -270,6 +271,7 @@ typedef struct
     IDispatch *pdWorkbooks;
 
     VARIANT_BOOL screenupdating;
+    VARIANT_BOOL interactive;
     VARIANT_BOOL displayalerts;
     VARIANT_BOOL visible;
     LONG sheetsinnewworkbook;

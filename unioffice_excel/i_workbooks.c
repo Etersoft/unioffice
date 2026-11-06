@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 #include <oleauto.h>
 
 ITypeInfo *ti_workbooks = NULL;
@@ -223,6 +224,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Add(
         return hres;
     }
     I_Workbook_AddRef(*ppWorkbook);
+    MSO_TO_OO_ApplyWorkbookUiState((_ApplicationImpl*)This->pApplication, This->pworkbook[This->current_workbook]);
     TRACE_OUT;
     return S_OK;
 }
@@ -433,6 +435,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_Open(
     }
     SysFreeString(filenametmp);
     I_Workbook_AddRef(*ppWorkbook);
+    MSO_TO_OO_ApplyWorkbookUiState((_ApplicationImpl*)This->pApplication, This->pworkbook[This->current_workbook]);
 
     TRACE_OUT;
     return S_OK;

@@ -2638,6 +2638,7 @@ extern HRESULT _I_WorkbookConstructor(LPVOID *ppObj)
     workbook->pworkbooks = NULL;
     workbook->pDoc = NULL;
     workbook->pSheets = NULL;
+    workbook->controllers_locked = FALSE;
 
     *ppObj = &workbook->pworkbookVtbl;
     

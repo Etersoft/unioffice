@@ -816,69 +816,15 @@ static HRESULT WINAPI IMP_Application_put_ScreenUpdating(
 {
     _ApplicationImpl *This = APPEXCEL_THIS(iface);
     HRESULT hres;
-    IDispatch *wb;
-    VARIANT tmp;
     TRACE_IN;
 
-    VariantInit(&tmp);
-
-    if (vbscup == VARIANT_TRUE) {
-        hres = _Application_get_ActiveWorkbook(iface, &wb);
-        WorkbookImpl *wbi = (WorkbookImpl*)wb;
-        if (FAILED(hres)) {
-            TRACE("ERROR when get ActiveWorkbook \n");
-            return E_FAIL;
-        }
-
-        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"unLockControllers", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR When unLockControllers\n");
-            IDispatch_Release(wb);
-            return E_FAIL;
-        }
-
-        VariantClear(&tmp);
-        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"removeActionLock", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR When removeActionLock\n");
-            IDispatch_Release(wb);
-            return E_FAIL;
-        }
-    } else {
-/*
-Отключение вывода
-Document.OleFunction("lockControllers");
-Document.OleFunction("addActionLock");
-*/
-        hres = _Application_get_ActiveWorkbook(iface, &wb);
-        WorkbookImpl *wbi = (WorkbookImpl*)wb;
-        if (FAILED(hres)) {
-            TRACE("ERROR when get ActiveWorkbook \n");
-            return E_FAIL;
-        }
-
-        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"lockControllers", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR When lockControllers\n");
-            IDispatch_Release(wb);
-            return E_FAIL;
-        }
-
-        VariantClear(&tmp);
-        hres = AutoWrap(DISPATCH_METHOD, &tmp, wbi->pDoc, L"addActionLock", 0);
-        if (FAILED(hres)) {
-            TRACE("ERROR When addActionLock\n");
-            IDispatch_Release(wb);
-            return E_FAIL;
-        }
-
-
-    }
-
-    This->screenupdating = vbscup;
-
+    if (!This) return E_POINTER;
+    /* The state also applies to workbooks opened later, with or without an
+       active workbook now; each document holds at most one lock. */
+    This->screenupdating = vbscup ? VARIANT_TRUE : VARIANT_FALSE;
+    hres = MSO_TO_OO_ApplyApplicationUiState(This);
     TRACE_OUT;
-    return S_OK;
+    return hres;
 }
 
 static HRESULT WINAPI IMP_Application_get_ScreenUpdating(
@@ -2556,8 +2502,10 @@ static HRESULT WINAPI IMP_Application_get_Interactive(
         LCID lcid,
         VARIANT_BOOL *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    _ApplicationImpl *This = APPEXCEL_THIS(iface);
+    if (!This || !RHS) return E_POINTER;
+    *RHS = This->interactive;
+    return S_OK;
 }
 
 static HRESULT WINAPI IMP_Application_put_Interactive(
@@ -2565,8 +2513,10 @@ static HRESULT WINAPI IMP_Application_put_Interactive(
         LCID lcid,
         VARIANT_BOOL RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    _ApplicationImpl *This = APPEXCEL_THIS(iface);
+    if (!This) return E_POINTER;
+    This->interactive = RHS ? VARIANT_TRUE : VARIANT_FALSE;
+    return MSO_TO_OO_ApplyApplicationUiState(This);
 }
 
 static HRESULT WINAPI IMP_Application_get_International(
@@ -7317,6 +7267,7 @@ HRESULT _ApplicationConstructor(LPVOID *ppObj)
     _applicationexcell->pdOODesktop = NULL;
     _applicationexcell->pdWorkbooks = NULL;
     _applicationexcell->screenupdating = VARIANT_TRUE;
+    _applicationexcell->interactive = VARIANT_TRUE;
     _applicationexcell->visible = VARIANT_FALSE;
     _applicationexcell->sheetsinnewworkbook = 1;
     _applicationexcell->displayalerts = VARIANT_TRUE;
