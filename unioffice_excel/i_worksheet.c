@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 
 
 ITypeInfo *ti_worksheet = NULL;
@@ -168,15 +169,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Cells(
         IDispatch **ppRange)
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
-    TRACE_IN;
-
-    if (This->pAllRange==NULL) return E_FAIL;
-
-    *ppRange = This->pAllRange;
-    IDispatch_AddRef(This->pAllRange);
-
-    TRACE_OUT;
-    return S_OK;
+    I_Range *range;
+    HRESULT hr;
+    if (!ppRange) return E_POINTER;
+    *ppRange = NULL;
+    /* The private cached range has a weak parent; exported ranges must own it. */
+    hr = _I_RangeConstructor((void**)&range);
+    if (FAILED(hr)) return hr;
+    I_Range_AddRef(range);
+    hr = MSO_TO_OO_I_Range_Initialize3(range, This->pOOSheet, (IDispatch*)iface, NULL);
+    if (FAILED(hr)) I_Range_Release(range);
+    else *ppRange = (IDispatch*)range;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
