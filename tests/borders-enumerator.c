@@ -13,6 +13,13 @@ static int failures;
     fprintf(stderr, "FAIL line %d: %s\n", __LINE__, #condition); \
     ++failures; goto done; \
 } } while (0)
+#define CHECK_HR(expression, expected) do { HRESULT actual = (expression); \
+    if (actual != (expected)) { \
+        fprintf(stderr, "FAIL line %d: %s returned 0x%08lx, expected 0x%08lx\n", \
+                __LINE__, #expression, (unsigned long)actual, (unsigned long)(expected)); \
+        ++failures; \
+    } \
+} while (0)
 
 static HRESULT invoke(IDispatch *object, const WCHAR *name, WORD flags,
                       VARIANT *arguments, UINT count, VARIANT *result)
@@ -137,9 +144,9 @@ static void mixed_weight_contract(I_Borders *borders)
         }
         ITypeInfo_Release(info);
     }
-    CHECK(I_Borders_put_Weight(borders, xlThin) == S_OK);
+    CHECK_HR(I_Borders_put_Weight(borders, xlThin), S_OK);
     VariantInit(&result);
-    CHECK(invoke((IDispatch *)borders, L"Weight", DISPATCH_PROPERTYGET, NULL, 0, &result) == S_OK);
+    CHECK_HR(invoke((IDispatch *)borders, L"Weight", DISPATCH_PROPERTYGET, NULL, 0, &result), S_OK);
     CHECK(V_VT(&result) == VT_I4 && V_I4(&result) == xlThin);
     VariantClear(&result);
     CHECK(I_Borders_get_Item(borders, xlEdgeLeft, &dispatch) == S_OK && dispatch);
@@ -165,7 +172,8 @@ static void range_argument_contract(IDispatch *dispatch)
     I_Range *range = NULL;
     I_Worksheet *worksheet = NULL;
     IDispatch *parent = NULL, *result = (IDispatch *)1;
-    VARIANT row, column;
+    VARIANT row, column, value, missing, reference, arguments[3];
+    DOUBLE original_row = 2;
     VariantInit(&row);
     VariantInit(&column);
     V_VT(&row) = VT_I4;
@@ -178,6 +186,49 @@ static void range_argument_contract(IDispatch *dispatch)
     CHECK(I_Range_get__Default(range, row, column, &result) == DISP_E_TYPEMISMATCH);
     CHECK(result == NULL);
     CHECK(V_VT(&column) == VT_BSTR && !lstrcmpW(V_BSTR(&column), L"invalid-column"));
+    VariantInit(&value);
+    VariantInit(&missing);
+    VariantInit(&reference);
+    V_VT(&missing) = VT_ERROR;
+    V_ERROR(&missing) = DISP_E_PARAMNOTFOUND;
+    CHECK(I_Range_get_Item(range, row, column, 0, NULL) == E_POINTER);
+    V_VT(&value) = VT_I4;
+    V_I4(&value) = 123;
+    CHECK(I_Range_get_Item(range, row, column, 0, &value) == DISP_E_TYPEMISMATCH);
+    CHECK(V_VT(&value) == VT_EMPTY);
+    CHECK(I_Range_put_Item(range, row, column, 0, row) == DISP_E_TYPEMISMATCH);
+    CHECK(V_VT(&column) == VT_BSTR && !lstrcmpW(V_BSTR(&column), L"invalid-column"));
+    VariantClear(&column);
+    V_VT(&column) = VT_BSTR;
+    V_BSTR(&column) = SysAllocString(L"AA");
+    V_VT(&reference) = VT_R8 | VT_BYREF;
+    V_R8REF(&reference) = &original_row;
+    CHECK(I_Range_get_Item(range, reference, column, 0, &value) == S_OK);
+    CHECK(V_VT(&value) == VT_DISPATCH && V_DISPATCH(&value));
+    VariantClear(&value);
+    CHECK(original_row == 2 && !lstrcmpW(V_BSTR(&column), L"AA"));
+    CHECK(I_Range_get_Item(range, reference, missing, 0, &value) == S_OK);
+    CHECK(V_VT(&value) == VT_DISPATCH && V_DISPATCH(&value));
+    VariantClear(&value);
+    CHECK(I_Range_get__Default(range, reference, missing, &result) == S_OK && result);
+    if (result) IDispatch_Release(result);
+    CHECK(I_Range_put_Item(range, reference, column, 0, row) == S_OK);
+    CHECK(I_Range_put__Default(range, reference, column, 0, row) == S_OK);
+    CHECK(original_row == 2 && !lstrcmpW(V_BSTR(&column), L"AA"));
+    arguments[0] = column;
+    arguments[1] = reference;
+    arguments[2] = row;
+    CHECK(invoke(dispatch, L"Item", DISPATCH_PROPERTYGET, arguments, 0, &value) == DISP_E_BADPARAMCOUNT);
+    CHECK(invoke(dispatch, L"Item", DISPATCH_PROPERTYGET, arguments, 3, &value) == DISP_E_BADPARAMCOUNT);
+    CHECK(invoke(dispatch, L"Item", DISPATCH_PROPERTYGET, arguments, 2, NULL) == E_POINTER);
+    CHECK(invoke(dispatch, L"Item", DISPATCH_METHOD | DISPATCH_PROPERTYGET, arguments, 2, &value) == S_OK);
+    CHECK(V_VT(&value) == VT_DISPATCH && V_DISPATCH(&value));
+    VariantClear(&value);
+    VariantClear(&column);
+    V_VT(&column) = VT_BSTR;
+    V_BSTR(&column) = SysAllocString(L"ZZZZZZZZZZZZZZZZ");
+    CHECK(I_Range_get_Item(range, row, column, 0, &value) == DISP_E_OVERFLOW);
+    CHECK(V_VT(&value) == VT_EMPTY);
     CHECK(I_Range_get_Parent(range, &parent) == S_OK && parent);
     if (!parent) goto done;
     CHECK(IDispatch_QueryInterface(parent, &IID_I_Worksheet, (void **)&worksheet) == S_OK && worksheet);

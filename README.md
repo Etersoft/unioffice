@@ -122,6 +122,9 @@ and its `Value` alias. See [backend capabilities and style checks](docs/border-s
 Worksheet ranges and cell indexers preserve caller-owned variants and return
 conversion errors; exported Cells ranges retain their worksheet parent. See
 [Range/Cells ownership results](docs/range-cell-ownership-results.md).
+`Range.Item` supports cell indexing, column letters, linear indices and value
+assignment; numeric default indexing and indexed Range.Cells share this behavior.
+See [Item validation and limits](docs/range-item-results.md).
 
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments

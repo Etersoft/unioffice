@@ -134,6 +134,91 @@ static ULONG WINAPI MSO_TO_OO_I_Range_Release(
 }
 
 /*** I_Range methods ***/
+/* Work on owned variants: automation arguments can point into caller storage. */
+static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
+        VARIANT column_index, IDispatch **result)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    I_Range *cell = NULL;
+    IDispatch *all_cells = NULL;
+    VARIANT row, column;
+    struct CELL_COORD coordinates;
+    LONG start_row, start_column, end_row, end_column, width;
+    UINT index, length;
+    WCHAR letter;
+    BOOL letters = TRUE;
+    HRESULT hr;
+    if (!result) return E_POINTER;
+    *result = NULL;
+    VariantInit(&row);
+    VariantInit(&column);
+    hr = VariantCopyInd(&row, &row_index);
+    if (SUCCEEDED(hr)) hr = VariantCopyInd(&column, &column_index);
+    if (FAILED(hr)) goto done;
+    hr = VariantChangeTypeEx(&row, &row, 0, 0, VT_I4);
+    if (FAILED(hr)) goto done;
+    if (V_I4(&row) < 1) { hr = E_INVALIDARG; goto done; }
+    if (!This->pwsheet) { hr = E_POINTER; goto done; }
+    hr = MSO_TO_OO_GetRangeAddress(iface, &start_row, &start_column,
+            &end_row, &end_column);
+    if (FAILED(hr)) goto done;
+    if (V_VT(&column) == VT_ERROR && V_ERROR(&column) == DISP_E_PARAMNOTFOUND) {
+        width = end_column - start_column + 1;
+        if (width < 1) { hr = E_UNEXPECTED; goto done; }
+        coordinates.x = (V_I4(&row) - 1) % width + 1;
+        coordinates.y = (V_I4(&row) - 1) / width + 1;
+    } else {
+        length = V_VT(&column) == VT_BSTR ? SysStringLen(V_BSTR(&column)) : 0;
+        for (index = 0; index < length; ++index) {
+            letter = V_BSTR(&column)[index];
+            if (!((letter >= L'A' && letter <= L'Z') ||
+                    (letter >= L'a' && letter <= L'z'))) letters = FALSE;
+        }
+        if (length && letters) {
+            coordinates.x = 0;
+            for (index = 0; index < length; ++index) {
+                letter = V_BSTR(&column)[index];
+                if (letter >= L'a' && letter <= L'z') letter -= L'a' - L'A';
+                if (coordinates.x > (0x7fffffff - (letter - L'A' + 1)) / 26) {
+                    hr = DISP_E_OVERFLOW;
+                    goto done;
+                }
+                coordinates.x = coordinates.x * 26 + letter - L'A' + 1;
+            }
+        } else {
+            hr = VariantChangeTypeEx(&column, &column, 0, 0, VT_I4);
+            if (FAILED(hr)) goto done;
+            coordinates.x = V_I4(&column);
+        }
+        if (coordinates.x < 1) { hr = E_INVALIDARG; goto done; }
+        coordinates.y = V_I4(&row);
+    }
+    if (coordinates.x > 0x7fffffff - start_column ||
+            coordinates.y > 0x7fffffff - start_row) {
+        hr = DISP_E_OVERFLOW;
+        goto done;
+    }
+    coordinates.x += start_column;
+    coordinates.y += start_row;
+    /* UNO subranges reject offsets beyond their bounds; Excel Item allows them. */
+    hr = I_Worksheet_get_Cells((I_Worksheet*)This->pwsheet, &all_cells);
+    if (FAILED(hr)) goto done;
+    hr = _I_RangeConstructor((void**)&cell);
+    if (FAILED(hr)) goto done;
+    I_Range_AddRef(cell);
+    hr = MSO_TO_OO_I_Range_Initialize(cell, (I_Range*)all_cells, coordinates, coordinates);
+    if (SUCCEEDED(hr)) {
+        *result = (IDispatch*)cell;
+        cell = NULL;
+    }
+done:
+    if (cell) I_Range_Release(cell);
+    if (all_cells) IDispatch_Release(all_cells);
+    VariantClear(&column);
+    VariantClear(&row);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         I_Range* iface,
         VARIANT varRowIndex,
@@ -141,38 +226,25 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         IDispatch **ppObject)
 {
     I_Range *cell = NULL;
-    VARIANT row, column;
-    struct CELL_COORD coordinates;
+    VARIANT row;
     HRESULT hr;
     if (!ppObject) return E_POINTER;
     *ppObject = NULL;
     VariantInit(&row);
-    VariantInit(&column);
     hr = VariantCopyInd(&row, &varRowIndex);
-    if (SUCCEEDED(hr)) hr = VariantCopyInd(&column, &varColumnIndex);
-    if (FAILED(hr)) goto done;
-    if (V_VT(&row) != VT_BSTR) {
-        hr = VariantChangeTypeEx(&row, &row, 0, 0, VT_I4);
-        if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&column, &column, 0, 0, VT_I4);
-        if (FAILED(hr)) goto done;
-    }
-    hr = _I_RangeConstructor((void**)&cell);
-    if (FAILED(hr)) goto done;
-    I_Range_AddRef(cell);
+    if (FAILED(hr)) return hr;
+    /* Worksheet.Range still uses the legacy named-range default lookup. */
     if (V_VT(&row) == VT_BSTR) {
-        hr = MSO_TO_OO_I_Range_Initialize_ByName(cell, iface, row);
+        hr = _I_RangeConstructor((void**)&cell);
+        if (SUCCEEDED(hr)) {
+            I_Range_AddRef(cell);
+            hr = MSO_TO_OO_I_Range_Initialize_ByName(cell, iface, row);
+            if (SUCCEEDED(hr)) *ppObject = (IDispatch*)cell;
+            else I_Range_Release(cell);
+        }
     } else {
-        coordinates.x = V_I4(&column);
-        coordinates.y = V_I4(&row);
-        hr = MSO_TO_OO_I_Range_Initialize(cell, iface, coordinates, coordinates);
+        hr = range_item_cell(iface, row, varColumnIndex, ppObject);
     }
-    if (SUCCEEDED(hr)) {
-        *ppObject = (IDispatch*)cell;
-        cell = NULL;
-    }
-done:
-    if (cell) I_Range_Release(cell);
-    VariantClear(&column);
     VariantClear(&row);
     return hr;
 }
@@ -2639,6 +2711,18 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_DataSeries(
     return E_NOTIMPL;
 }
 
+static HRESULT range_put_cell_value(IDispatch *cell, LCID lcid, VARIANT value)
+{
+    VARIANT owned, empty;
+    HRESULT hr;
+    VariantInit(&owned);
+    VariantInit(&empty);
+    hr = VariantCopyInd(&owned, &value);
+    if (SUCCEEDED(hr)) hr = I_Range_put_Value((I_Range*)cell, empty, lcid, owned);
+    VariantClear(&owned);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_put__Default(
         I_Range* iface,
         VARIANT varRowIndex,
@@ -2646,8 +2730,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put__Default(
         LCID lcid,
         VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    IDispatch *cell = NULL;
+    HRESULT hr = MSO_TO_OO_I_Range_get__Default(iface, varRowIndex, varColumnIndex, &cell);
+    if (SUCCEEDED(hr)) hr = range_put_cell_value(cell, lcid, RHS);
+    if (cell) IDispatch_Release(cell);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Dependents(
@@ -3176,8 +3263,16 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Item(
         LCID lcid,
         VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    IDispatch *cell = NULL;
+    HRESULT hr;
+    if (!RHS) return E_POINTER;
+    VariantInit(RHS);
+    hr = range_item_cell(iface, RowIndex, ColumnIndex, &cell);
+    if (SUCCEEDED(hr)) {
+        V_VT(RHS) = VT_DISPATCH;
+        V_DISPATCH(RHS) = cell;
+    }
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_Item(
@@ -3187,8 +3282,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Item(
         LCID lcid,
         VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    IDispatch *cell = NULL;
+    HRESULT hr = range_item_cell(iface, RowIndex, ColumnIndex, &cell);
+    if (SUCCEEDED(hr)) hr = range_put_cell_value(cell, lcid, RHS);
+    if (cell) IDispatch_Release(cell);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Justify(
@@ -4262,6 +4360,55 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
 
     switch(dispIdMember)
     {
+    case dispid_range_cells:
+        if (!pDispParams) return E_POINTER;
+        if (!pDispParams->cArgs && (wFlags & (DISPATCH_PROPERTYGET | DISPATCH_METHOD))) {
+            if (!pVarResult) return E_POINTER;
+            VariantInit(pVarResult);
+            hres = MSO_TO_OO_I_Range_get_Cells(iface, &dret);
+            if (SUCCEEDED(hres)) {
+                V_VT(pVarResult) = VT_DISPATCH;
+                V_DISPATCH(pVarResult) = dret;
+            }
+            return hres;
+        }
+        /* Indexed Cells uses the same cell selection and assignment as Item. */
+    case dispid_range_item:
+    case dispid_range__default:
+        /* Keep the published LCID/vtable signatures, but hide LCID from scripts. */
+        if (!pDispParams) return E_POINTER;
+        V_VT(&var2) = VT_ERROR;
+        V_ERROR(&var2) = DISP_E_PARAMNOTFOUND;
+        if (wFlags & DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs < 2 || pDispParams->cArgs > 3)
+                return DISP_E_BADPARAMCOUNT;
+            if (pDispParams->cArgs == 3) var2 = pDispParams->rgvarg[1];
+            if (dispIdMember != dispid_range__default)
+                return MSO_TO_OO_I_Range_put_Item(iface,
+                        pDispParams->rgvarg[pDispParams->cArgs - 1], var2,
+                        lcid, pDispParams->rgvarg[0]);
+            return MSO_TO_OO_I_Range_put__Default(iface,
+                    pDispParams->rgvarg[pDispParams->cArgs - 1], var2,
+                    lcid, pDispParams->rgvarg[0]);
+        }
+        if (!(wFlags & (DISPATCH_PROPERTYGET | DISPATCH_METHOD)))
+            return DISP_E_MEMBERNOTFOUND;
+        if (pDispParams->cArgs < 1 || pDispParams->cArgs > 2)
+            return DISP_E_BADPARAMCOUNT;
+        if (!pVarResult) return E_POINTER;
+        VariantInit(pVarResult);
+        if (pDispParams->cArgs == 2) var2 = pDispParams->rgvarg[0];
+        if (dispIdMember != dispid_range__default)
+            return MSO_TO_OO_I_Range_get_Item(iface,
+                    pDispParams->rgvarg[pDispParams->cArgs - 1], var2,
+                    lcid, pVarResult);
+        hres = MSO_TO_OO_I_Range_get__Default(iface,
+                pDispParams->rgvarg[pDispParams->cArgs - 1], var2, &dret);
+        if (SUCCEEDED(hres)) {
+            V_VT(pVarResult) = VT_DISPATCH;
+            V_DISPATCH(pVarResult) = dret;
+        }
+        return hres;
     case dispid_range_value:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if ((pDispParams->cArgs>2)||(pDispParams->cArgs==0)) return E_FAIL;

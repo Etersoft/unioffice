@@ -49,8 +49,8 @@ HRESULT get_typeinfo_border(ITypeInfo **typeinfo)
 
 #define BORDER_THIS(iface) DEFINE_THIS(BorderImpl, border, iface)
 
-    /* Use the explicit UNO property-set interface for diagonal structs. */
-static HRESULT border_get_diagonal(IDispatch *range, const WCHAR *name, VARIANT *line)
+/* Use explicit UNO property-set methods for structs after range method calls. */
+static HRESULT border_get_property(IDispatch *range, const WCHAR *name, VARIANT *line)
 {
     VARIANT property;
     HRESULT hr;
@@ -60,6 +60,19 @@ static HRESULT border_get_diagonal(IDispatch *range, const WCHAR *name, VARIANT 
     V_BSTR(&property) = SysAllocString(name);
     if (!V_BSTR(&property)) return E_OUTOFMEMORY;
     hr = AutoWrap(DISPATCH_METHOD, line, range, L"getPropertyValue", 1, property);
+    VariantClear(&property);
+    return hr;
+}
+
+static HRESULT border_set_property(IDispatch *range, const WCHAR *name, VARIANT value)
+{
+    VARIANT property;
+    HRESULT hr;
+    VariantInit(&property);
+    V_VT(&property) = VT_BSTR;
+    V_BSTR(&property) = SysAllocString(name);
+    if (!V_BSTR(&property)) return E_OUTOFMEMORY;
+    hr = AutoWrap(DISPATCH_METHOD, NULL, range, L"setPropertyValue", 2, value, property);
     VariantClear(&property);
     return hr;
 }
@@ -220,7 +233,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
         return E_FAIL;
     }
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
+    hres = border_get_property(This->pOORange, L"TableBorder", &X);
     if (FAILED(hres)) {
         ERR("get TableBorder\n");
         return E_FAIL;
@@ -302,14 +315,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_get_Color(
         }
         break;
     case xlDiagonalDown:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
+        hres = border_get_property(This->pOORange, L"DiagonalTLBR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
+        hres = border_get_property(This->pOORange, L"DiagonalBLTR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalBLTR\n");
             return E_FAIL;
@@ -355,7 +368,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     /*Делаем границу видимой*/
     I_Border_put_LineStyle(iface, xlContinuous);
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &X, This->pOORange, L"TableBorder", 0);
+    hres = border_get_property(This->pOORange, L"TableBorder", &X);
     if (FAILED(hres)) {
         ERR("get TableBorder\n");
         return E_FAIL;
@@ -437,14 +450,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
         }
         break;
     case xlDiagonalDown:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalTLBR", &Y);
+        hres = border_get_property(This->pOORange, L"DiagonalTLBR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalTLBR\n");
             return E_FAIL;
         }
         break;
     case xlDiagonalUp:
-        hres = border_get_diagonal(This->pOORange, L"DiagonalBLTR", &Y);
+        hres = border_get_property(This->pOORange, L"DiagonalBLTR", &Y);
         if (FAILED(hres)) {
             ERR("get DiagonalBLTR\n");
             return E_FAIL;
@@ -568,7 +581,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Border_put_Color(
     IDispatch_AddRef(V_DISPATCH(&param1));
     VariantClear(&vret);
 
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vret, This->pOORange, L"TableBorder", 1, param1);
+    hres = border_set_property(This->pOORange, L"TableBorder", param1);
     if (FAILED(hres)) {
         ERR("get TableBorder\n");
         return E_FAIL;
@@ -683,8 +696,8 @@ static HRESULT border_load_line(BorderImpl *This, VARIANT *table, VARIANT *line)
     HRESULT hr = border_line_property(This, &name, &valid);
     if (FAILED(hr)) return hr;
     if (!This->pOORange) return E_UNEXPECTED;
-    if (!valid) return border_get_diagonal(This->pOORange, name, line);
-    hr = AutoWrap(DISPATCH_PROPERTYGET, table, This->pOORange, L"TableBorder", 0);
+    if (!valid) return border_get_property(This->pOORange, name, line);
+    hr = border_get_property(This->pOORange, L"TableBorder", table);
     if (FAILED(hr)) return hr;
     if (V_VT(table) != VT_DISPATCH || !V_DISPATCH(table)) return E_UNEXPECTED;
     return AutoWrap(DISPATCH_PROPERTYGET, line, V_DISPATCH(table), (WCHAR*)name, 0);
@@ -710,7 +723,7 @@ static HRESULT border_store_line(BorderImpl *This, VARIANT table, VARIANT line)
         hr = AutoWrap(DISPATCH_PROPERTYPUT, NULL, V_DISPATCH(&table), (WCHAR*)flags[i], 1, selected);
         if (FAILED(hr)) return hr;
     }
-    return AutoWrap(DISPATCH_PROPERTYPUT, NULL, This->pOORange, L"TableBorder", 1, table);
+    return border_set_property(This->pOORange, L"TableBorder", table);
 }
 
 static HRESULT border_read_dimension(VARIANT line, const WCHAR *name, LONG *value)

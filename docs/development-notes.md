@@ -420,6 +420,38 @@ metadata/Unicode0; installer lifecycle не повторялся, регистр
 [Cells parent](cells-parent-lifetime-results.md). Нативная Windows не проверена;
 новых подтверждённых Wine defects нет. Range.Item stub остаётся отдельной задачей.
 
+## Range.Item и индексированное присваивание (2026-11-06)
+
+Range.Item больше не заглушка: cell ranges поддерживают положительные
+относительные row/column, буквенные столбцы, linear row-major index и assignment.
+Numeric default indexer и Range.Cells используют ту же выборку. Публичные
+IDL/IID/vtable сохранены: обычный LCID argument из старого IDL скрывается от
+скриптов в Invoke. Legacy BSTR lookup для Worksheet.Range сохранён отдельно.
+Rows/Columns collection rules, multi-area и nonpositive offsets не покрыты.
+
+UNO не разрешил Item за пределами исходного subrange: теперь offsets переводятся
+в абсолютные sheet coordinates, child создаётся через owned worksheet Cells.
+Входы и RHS копируются VariantCopyInd; cleanup освобождает все temporaries.
+
+Новый C-тест выявил9 дальнейших Weight failures. Контроль без range calls прошёл,
+без value writes всё ещё падал. Прямой C PROPERTYGET TableBorder вернул80004002,
+а getPropertyValue("TableBorder") на том же target — S_OK. Прямой UNO VBS control
+прошёл оба пути; Wine defect этим не установлен. TableBorder read/write переведены
+на явные UNO методы, включая Color/Weight. Тест покрывает Weight/Color/LineStyle
+после Item, точные HRESULT, byref Double, BSTR ownership, overflow и bad argcount.
+
+Одна быстрая NFS-правка не привела к incremental rebuild на Fedora: i_range.o
+оказался старше исходника, несмотря на совпадающие source hashes. Исправлено
+targeted make -W i_range.c; перед повтором сверены deployed DLL. Это не runtime bug.
+Подробности и команды: [Range.Item](range-item-results.md).
+
+Финальные PE32/PE64: Item36 checks PASS, native COM0 failures, прежние
+Worksheet.Range/Cells/parent/Application.Range и mixed Weight/Weight/style probes
+PASS. Полные7 legacy tests каждый: counters158/0, markers156/0; outputs
+~/tmp/claude/unioffice-excel-suite-clxbrb0m (32), -f807h133 (64). Оба MSI пересобраны,
+metadata/Unicode0; lifecycle не повторялся (IDL/registration unchanged). DLL в
+fixtures побайтно совпадают с build outputs. Native Windows не проверялась.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -599,7 +631,8 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
    подтверждено; dashed/dotted styles дают E_NOTIMPL, включая aggregate/Value.
    Для поддержки пунктиров нужен отдельный проверенный backend с extended API.
    Worksheet.Range/Cells normalization и parent lifetime проверены и исправлены.
-   Range.Item и прочие normalization sites остаются отдельными возможными работами.
+   Range.Item для cell ranges реализован; Rows/Columns collection semantics,
+   multi-area и прочие normalization sites остаются отдельными возможными работами.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
 
