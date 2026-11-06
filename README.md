@@ -130,6 +130,9 @@ and numeric-string row indices. See [Cells dispatch checks](docs/cells-indexing-
 Range.Rows/Columns preserve the source bounds and support subrange indexing;
 Cells restores cell indexing and Count. See
 [row/column collection validation](docs/range-rows-columns-results.md).
+Worksheet/Application.Rows/Columns share these collections and support numeric
+indices, column letters and ascending slices. See
+[sheet collection checks and backend dimensions](docs/sheet-rows-columns-results.md).
 Native clients receive the published vtable for IID__Application; see
 [dual-interface ABI checks](docs/application-interface-results.md).
 

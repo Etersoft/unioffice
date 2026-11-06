@@ -519,6 +519,37 @@ QI roundtrip/repeat, canonical IUnknown identity и CoCreateInstance dual IID.
 Отдельный ABI probe и расширенный native COM test дали0 failures на PE32/PE64.
 Логи -interface-final.log/-native-final.log с prefix unioffice-sheet-axes-{32,64}.
 
+## Worksheet/Application.Rows/Columns и slices (2026-11-06)
+
+Исходный PE64 VBS остановился на Worksheet.Rows без аргумента до assertions:
+legacy IDL требует index. Специальные Invoke handlers допускают0/1 аргумент,
+ignored result, METHOD|PROPERTYGET, возвращают ошибки getter; IDL/IIDs/native
+slots не менялись. Worksheet native getters получают Cells → Rows/Columns
+collection → Item с owned VariantCopyInd; Application получает ActiveSheet и
+передаёт запрос. VT_EMPTY/VT_NULL/missing означают всю collection; прочие VT_ERROR
+теперь проходят conversion error вместо молчаливого omitted index.
+
+Общий Item parser принимает numeric/letter indices и ascending slices "2:4"/
+"b:d", также относительно bounded Range. Некорректные endpoints, multiple colons,
+reverse/zero bounds и overflow дают ошибку. Старые парсеры могли использовать
+неинициализированный start при одиночной букве и менять caller VARIANT.
+Размеры теперь фактические UNO: AOO4.1.17 —1048576 rows/1024 columns; прежние Columns
+были обрезаны до65536 rows. EntireRow/EntireColumn используют те же getters;
+их string buffer увеличен до24 WCHAR ("1048576:1048576" не помещался в10).
+
+Окончательные PE32/PE64: новый sheet VBS177 checks, bounded Range98, dedicated
+Application ABI0 и expanded native COM0 failures. Прежние Cells49/Item36/ownership/
+parent/Worksheet.Range/Application.Range probes PASS. Все7 legacy tests
+последовательно на каждой: counters158/0, markers156/0. Outputs
+~/tmp/claude/unioffice-excel-suite-undy_3_x (32), -yybcp7d7 (64). Fixture DLLs
+совпали с build outputs. MSI32/MSI64 rebuilt final DLLs, metadata/Unicode0;
+lifecycle не повторялся (registration/IDL unchanged). Отчёт:
+[Sheet Rows/Columns](sheet-rows-columns-results.md). Logs prefix
+~/tmp/claude/unioffice-sheet-axes-{32,64}; red64 — IDL argcount, native-before-qi32 —
+отдельная dual-vtable ошибка b268269. Нового Wine defect не установлено.
+Native Windows, enumeration/multi-area, точные Excel error numbers, reverse
+slices и полный value/format/delete/insert набор не проверены.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -699,8 +730,9 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
    Для поддержки пунктиров нужен отдельный проверенный backend с extended API.
    Worksheet.Range/Cells normalization и parent lifetime проверены и исправлены.
    Range.Item и single-rectangle Range.Rows/Columns selection/Count реализованы;
-   Worksheet/Application Rows/Columns, multi-area, string slices, enumeration
-   и прочие normalization sites остаются отдельными возможными работами.
+   Worksheet/Application Rows/Columns и ascending slices также реализованы.
+   Multi-area, enumeration, reverse slices и прочие normalization sites
+   остаются отдельными возможными работами.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
 

@@ -970,63 +970,29 @@ static HRESULT WINAPI IMP_Application_get_Range(
 }
 
 static HRESULT WINAPI IMP_Application_get_Columns(
-        _Application* iface,
-        VARIANT param,
-        IDispatch **ppRange)
+        _Application *iface, VARIANT param, IDispatch **ppRange)
 {
-    HRESULT hres;
-    IDispatch *active_sheet;
-    TRACE_IN;
-
-    MSO_TO_OO_CorrectArg(param, &param);
-
-    hres = IMP_Application_get_ActiveSheet(iface, &active_sheet);
-
-    if (FAILED(hres)) {
-        TRACE("No active sheet \n");
-        return E_FAIL;
-    }
-
-    hres = I_Worksheet_get_Columns((I_Worksheet*)active_sheet, param, ppRange);
-    if (FAILED(hres)) {
-        IDispatch_Release(active_sheet);
-        TRACE("FAILED I_Worksheet_get_Columns \n");
-        return hres;
-    }
-    IDispatch_Release(active_sheet);
-
-    TRACE_OUT;
-    return S_OK;
+    I_Worksheet *sheet = NULL;
+    HRESULT hr;
+    if (!ppRange) return E_POINTER;
+    *ppRange = NULL;
+    hr = IMP_Application_get_ActiveSheet(iface, (IDispatch**)&sheet);
+    if (SUCCEEDED(hr)) hr = I_Worksheet_get_Columns(sheet, param, ppRange);
+    if (sheet) I_Worksheet_Release(sheet);
+    return hr;
 }
 
 static HRESULT WINAPI IMP_Application_get_Rows(
-        _Application* iface,
-        VARIANT param,
-        IDispatch **ppRange)
+        _Application *iface, VARIANT param, IDispatch **ppRange)
 {
-    HRESULT hres;
-    IDispatch *active_sheet;
-    TRACE_IN;
-
-    MSO_TO_OO_CorrectArg(param, &param);
-
-    hres = IMP_Application_get_ActiveSheet(iface, &active_sheet);
-
-    if (FAILED(hres)) {
-        TRACE("No active sheet \n");
-        return E_FAIL;
-    }
-
-    hres = I_Worksheet_get_Rows((I_Worksheet*)active_sheet, param, ppRange);
-    if (FAILED(hres)) {
-        IDispatch_Release(active_sheet);
-        TRACE("FAILED I_Worksheet_get_Rows \n");
-        return hres;
-    }
-    IDispatch_Release(active_sheet);
-
-    TRACE_OUT;
-    return S_OK;
+    I_Worksheet *sheet = NULL;
+    HRESULT hr;
+    if (!ppRange) return E_POINTER;
+    *ppRange = NULL;
+    hr = IMP_Application_get_ActiveSheet(iface, (IDispatch**)&sheet);
+    if (SUCCEEDED(hr)) hr = I_Worksheet_get_Rows(sheet, param, ppRange);
+    if (sheet) I_Worksheet_Release(sheet);
+    return hr;
 }
 
 static HRESULT WINAPI IMP_Application_get_Selection(
@@ -4529,6 +4495,25 @@ static HRESULT WINAPI IMP_Application_Invoke(
             }
             return S_OK;
         }
+    case dispid_application_rows:
+    case dispid_application_columns:
+        if (!pDispParams) return E_POINTER;
+        if (pVarResult) VariantInit(pVarResult);
+        if (!(wFlags & (DISPATCH_PROPERTYGET | DISPATCH_METHOD))) return DISP_E_MEMBERNOTFOUND;
+        if (pDispParams->cArgs > 1) return DISP_E_BADPARAMCOUNT;
+        V_VT(&cell1) = VT_ERROR;
+        V_ERROR(&cell1) = DISP_E_PARAMNOTFOUND;
+        if (pDispParams->cArgs) cell1 = pDispParams->rgvarg[0];
+        if (dispIdMember == dispid_application_columns)
+            hres = IMP_Application_get_Columns(iface, cell1, &pdisp);
+        else hres = IMP_Application_get_Rows(iface, cell1, &pdisp);
+        if (SUCCEEDED(hres)) {
+            V_VT(&vRet) = VT_DISPATCH;
+            V_DISPATCH(&vRet) = pdisp;
+            if (pVarResult) *pVarResult = vRet;
+            else VariantClear(&vRet);
+        }
+        return hres;
     case dispid_application_cells:
         if (!pDispParams) return E_POINTER;
         if (pVarResult) VariantInit(pVarResult);

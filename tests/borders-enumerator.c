@@ -327,6 +327,114 @@ static void range_collection_contract(IDispatch *dispatch)
     I_Range_Release(range);
 }
 
+static HRESULT native_axis_get(_Application *application, I_Worksheet *sheet,
+        BOOL columns, VARIANT index, IDispatch **result)
+{
+    if (application) return columns ? _Application_get_Columns(application, index, result) :
+            _Application_get_Rows(application, index, result);
+    return columns ? I_Worksheet_get_Columns(sheet, index, result) :
+            I_Worksheet_get_Rows(sheet, index, result);
+}
+
+static void sheet_axis_contract(IDispatch *owner, BOOL is_application)
+{
+    _Application *application = NULL;
+    I_Worksheet *sheet = NULL;
+    I_Range *range = NULL;
+    IDispatch *selected = NULL;
+    VARIANT index, missing, reference, result, arguments[2];
+    DOUBLE offset = 2;
+    BSTR slice = NULL;
+    LONG count = 0;
+    UINT kind;
+    LPOLESTR name;
+    DISPID id;
+    VariantInit(&index);
+    VariantInit(&missing);
+    VariantInit(&reference);
+    VariantInit(&result);
+    V_VT(&missing) = VT_ERROR;
+    V_ERROR(&missing) = DISP_E_PARAMNOTFOUND;
+    if (is_application)
+        CHECK(IDispatch_QueryInterface(owner, &IID__Application, (void**)&application) == S_OK);
+    else CHECK(IDispatch_QueryInterface(owner, &IID_I_Worksheet, (void**)&sheet) == S_OK);
+    if (!application && !sheet) return;
+    for (kind = 0; kind < 2; ++kind) {
+        name = kind ? L"Columns" : L"Rows";
+        CHECK_HR(native_axis_get(application, sheet, kind, missing, NULL), E_POINTER);
+        CHECK_HR(native_axis_get(application, sheet, kind, index, &selected), S_OK);
+        if (selected) {
+            CHECK(IDispatch_QueryInterface(selected, &IID_I_Range, (void**)&range) == S_OK);
+            if (range) {
+                CHECK(I_Range_get_Count(range, &count) == S_OK && count > 4);
+                I_Range_Release(range);
+                range = NULL;
+            }
+            IDispatch_Release(selected);
+            selected = NULL;
+        }
+        V_VT(&reference) = VT_R8 | VT_BYREF;
+        V_R8REF(&reference) = &offset;
+        CHECK_HR(native_axis_get(application, sheet, kind, reference, &selected), S_OK);
+        CHECK(offset == 2);
+        if (selected) {
+            CHECK(IDispatch_QueryInterface(selected, &IID_I_Range, (void**)&range) == S_OK);
+            if (range) {
+                CHECK(I_Range_get_Row(range) == (kind ? 1 : 2));
+                CHECK(I_Range_get_Column(range) == (kind ? 2 : 1));
+                CHECK(I_Range_get_Count(range, &count) == S_OK && count == 1);
+                I_Range_Release(range);
+                range = NULL;
+            }
+            IDispatch_Release(selected);
+            selected = NULL;
+        }
+        slice = SysAllocString(kind ? L"b:d" : L"2:4");
+        V_VT(&reference) = VT_BSTR | VT_BYREF;
+        V_BSTRREF(&reference) = &slice;
+        CHECK_HR(native_axis_get(application, sheet, kind, reference, &selected), S_OK);
+        CHECK(!lstrcmpW(slice, kind ? L"b:d" : L"2:4"));
+        if (selected) {
+            CHECK(IDispatch_QueryInterface(selected, &IID_I_Range, (void**)&range) == S_OK);
+            if (range) {
+                CHECK(I_Range_get_Count(range, &count) == S_OK && count == 3);
+                I_Range_Release(range);
+                range = NULL;
+            }
+            IDispatch_Release(selected);
+            selected = NULL;
+        }
+        SysFreeString(slice);
+        slice = NULL;
+        V_VT(&index) = VT_BSTR;
+        V_BSTR(&index) = SysAllocString(kind ? L"B::D" : L"2::4");
+        selected = (IDispatch*)1;
+        CHECK_HR(native_axis_get(application, sheet, kind, index, &selected), E_INVALIDARG);
+        CHECK(selected == NULL && SysStringLen(V_BSTR(&index)) == 4);
+        CHECK_HR(invoke(owner, name, DISPATCH_PROPERTYGET, &index, 1, &result), E_INVALIDARG);
+        CHECK(V_VT(&result) == VT_EMPTY);
+        VariantClear(&index);
+        V_VT(&index) = VT_ERROR;
+        V_ERROR(&index) = E_FAIL;
+        selected = (IDispatch*)1;
+        CHECK_HR(native_axis_get(application, sheet, kind, index, &selected), DISP_E_TYPEMISMATCH);
+        CHECK(selected == NULL);
+        VariantClear(&index);
+        CHECK_HR(invoke(owner, name, DISPATCH_METHOD | DISPATCH_PROPERTYGET, NULL, 0, NULL), S_OK);
+        arguments[0] = arguments[1] = missing;
+        CHECK_HR(invoke(owner, name, DISPATCH_PROPERTYGET, arguments, 2, &result), DISP_E_BADPARAMCOUNT);
+        CHECK(V_VT(&result) == VT_EMPTY);
+        CHECK_HR(IDispatch_GetIDsOfNames(owner, &IID_NULL, &name, 1, 0, &id), S_OK);
+        CHECK_HR(IDispatch_Invoke(owner, id, &IID_NULL, 0, DISPATCH_PROPERTYGET,
+                NULL, &result, NULL, NULL), E_POINTER);
+    }
+    if (application) _Application_Release(application);
+    if (sheet) I_Worksheet_Release(sheet);
+    VariantClear(&result);
+    VariantClear(&reference);
+    VariantClear(&index);
+}
+
 static void cells_dispatch_contract(IDispatch *owner)
 {
     LPOLESTR name = L"Cells";
@@ -425,6 +533,8 @@ int __cdecl main(void)
     REQUIRE(invoke(excel, L"ActiveSheet", DISPATCH_PROPERTYGET, NULL, 0, &sheet) == S_OK);
     cells_dispatch_contract(excel);
     cells_dispatch_contract(V_DISPATCH(&sheet));
+    sheet_axis_contract(excel, TRUE);
+    sheet_axis_contract(V_DISPATCH(&sheet), FALSE);
     VariantClear(&sheet);
     V_VT(&argument) = VT_BSTR;
     V_BSTR(&argument) = SysAllocString(L"A1:D4");

@@ -154,6 +154,71 @@ static HRESULT range_collection_view(I_Range *iface, RangeCollectionKind kind,
     return hr;
 }
 
+/* Coerce only an owned index; column letters are relative numeric offsets. */
+static HRESULT range_index_number(VARIANT *value, BOOL allow_letters, LONG *number)
+{
+    UINT i, length = V_VT(value) == VT_BSTR ? SysStringLen(V_BSTR(value)) : 0;
+    WCHAR letter;
+    BOOL letters = allow_letters && length;
+    HRESULT hr;
+    for (i = 0; letters && i < length; ++i) {
+        letter = V_BSTR(value)[i];
+        if (!((letter >= L'A' && letter <= L'Z') ||
+                (letter >= L'a' && letter <= L'z'))) letters = FALSE;
+    }
+    if (letters) {
+        *number = 0;
+        for (i = 0; i < length; ++i) {
+            letter = V_BSTR(value)[i];
+            if (letter >= L'a' && letter <= L'z') letter -= L'a' - L'A';
+            if (*number > (0x7fffffff - (letter - L'A' + 1)) / 26)
+                return DISP_E_OVERFLOW;
+            *number = *number * 26 + letter - L'A' + 1;
+        }
+    } else {
+        hr = VariantChangeTypeEx(value, value, 0, 0, VT_I4);
+        if (FAILED(hr)) return hr;
+        *number = V_I4(value);
+    }
+    return *number >= 1 ? S_OK : E_INVALIDARG;
+}
+
+/* Parse a single index or one bounded slice without modifying caller strings. */
+static HRESULT range_axis_indices(VARIANT *value, BOOL columns, LONG *first, LONG *last)
+{
+    UINT i, separator = 0, length;
+    VARIANT left, right;
+    HRESULT hr;
+    if (V_VT(value) == VT_BSTR) {
+        length = SysStringLen(V_BSTR(value));
+        for (i = 0; i < length; ++i) {
+            if (V_BSTR(value)[i] != L':') continue;
+            if (separator || !i || i + 1 == length) return E_INVALIDARG;
+            separator = i;
+        }
+        if (separator) {
+            VariantInit(&left);
+            VariantInit(&right);
+            V_VT(&left) = V_VT(&right) = VT_BSTR;
+            V_BSTR(&left) = SysAllocStringLen(V_BSTR(value), separator);
+            V_BSTR(&right) = SysAllocStringLen(V_BSTR(value) + separator + 1,
+                    length - separator - 1);
+            if (!V_BSTR(&left) || !V_BSTR(&right)) hr = E_OUTOFMEMORY;
+            else {
+                hr = range_index_number(&left, columns, first);
+                if (SUCCEEDED(hr)) hr = range_index_number(&right, columns, last);
+                if (SUCCEEDED(hr) && *last < *first) hr = E_INVALIDARG;
+            }
+            VariantClear(&right);
+            VariantClear(&left);
+            return hr;
+        }
+    }
+    hr = range_index_number(value, columns, first);
+    if (SUCCEEDED(hr)) *last = *first;
+    return hr;
+}
+
 /* Work on owned variants: automation arguments can point into caller storage. */
 static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
         VARIANT column_index, IDispatch **result)
@@ -163,10 +228,7 @@ static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
     IDispatch *all_cells = NULL;
     VARIANT row, column;
     struct CELL_COORD coordinates, last;
-    LONG start_row, start_column, end_row, end_column, width;
-    UINT index, length;
-    WCHAR letter;
-    BOOL letters = TRUE;
+    LONG start_row, start_column, end_row, end_column, width, first_index, last_index;
     HRESULT hr;
     if (!result) return E_POINTER;
     *result = NULL;
@@ -175,73 +237,58 @@ static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
     hr = VariantCopyInd(&row, &row_index);
     if (SUCCEEDED(hr)) hr = VariantCopyInd(&column, &column_index);
     if (FAILED(hr)) goto done;
+    if (!This->pwsheet) { hr = E_POINTER; goto done; }
+    hr = MSO_TO_OO_GetRangeAddress(iface, &start_row, &start_column,
+            &end_row, &end_column);
+    if (FAILED(hr)) goto done;
     if (This->collection_kind != RANGE_CELLS) {
         if (V_VT(&column) != VT_ERROR || V_ERROR(&column) != DISP_E_PARAMNOTFOUND) {
             hr = E_INVALIDARG;
             goto done;
         }
-        if (This->collection_kind == RANGE_COLUMNS) {
-            VariantClear(&column);
-            column = row;
-            VariantInit(&row);
-            V_VT(&row) = VT_I4;
-            V_I4(&row) = 1;
-        }
-    }
-    hr = VariantChangeTypeEx(&row, &row, 0, 0, VT_I4);
-    if (FAILED(hr)) goto done;
-    if (V_I4(&row) < 1) { hr = E_INVALIDARG; goto done; }
-    if (!This->pwsheet) { hr = E_POINTER; goto done; }
-    hr = MSO_TO_OO_GetRangeAddress(iface, &start_row, &start_column,
-            &end_row, &end_column);
-    if (FAILED(hr)) goto done;
-    if (V_VT(&column) == VT_ERROR && V_ERROR(&column) == DISP_E_PARAMNOTFOUND) {
-        width = This->collection_kind == RANGE_ROWS ? 1 : end_column - start_column + 1;
-        if (width < 1) { hr = E_UNEXPECTED; goto done; }
-        coordinates.x = (V_I4(&row) - 1) % width + 1;
-        coordinates.y = (V_I4(&row) - 1) / width + 1;
-    } else {
-        length = V_VT(&column) == VT_BSTR ? SysStringLen(V_BSTR(&column)) : 0;
-        for (index = 0; index < length; ++index) {
-            letter = V_BSTR(&column)[index];
-            if (!((letter >= L'A' && letter <= L'Z') ||
-                    (letter >= L'a' && letter <= L'z'))) letters = FALSE;
-        }
-        if (length && letters) {
-            coordinates.x = 0;
-            for (index = 0; index < length; ++index) {
-                letter = V_BSTR(&column)[index];
-                if (letter >= L'a' && letter <= L'z') letter -= L'a' - L'A';
-                if (coordinates.x > (0x7fffffff - (letter - L'A' + 1)) / 26) {
-                    hr = DISP_E_OVERFLOW;
-                    goto done;
-                }
-                coordinates.x = coordinates.x * 26 + letter - L'A' + 1;
-            }
+        hr = range_axis_indices(&row, This->collection_kind == RANGE_COLUMNS,
+                &first_index, &last_index);
+        if (FAILED(hr)) goto done;
+        if (This->collection_kind == RANGE_ROWS) {
+            coordinates.x = 1;
+            coordinates.y = first_index;
+            last.x = end_column - start_column + 1;
+            last.y = last_index;
         } else {
-            hr = VariantChangeTypeEx(&column, &column, 0, 0, VT_I4);
-            if (FAILED(hr)) goto done;
-            coordinates.x = V_I4(&column);
+            coordinates.x = first_index;
+            coordinates.y = 1;
+            last.x = last_index;
+            last.y = end_row - start_row + 1;
         }
-        if (coordinates.x < 1) { hr = E_INVALIDARG; goto done; }
-        coordinates.y = V_I4(&row);
+    } else {
+        hr = range_index_number(&row, FALSE, &first_index);
+        if (FAILED(hr)) goto done;
+        if (V_VT(&column) == VT_ERROR && V_ERROR(&column) == DISP_E_PARAMNOTFOUND) {
+            width = end_column - start_column + 1;
+            if (width < 1) { hr = E_UNEXPECTED; goto done; }
+            coordinates.x = (first_index - 1) % width + 1;
+            coordinates.y = (first_index - 1) / width + 1;
+        } else {
+            hr = range_index_number(&column, TRUE, &coordinates.x);
+            if (FAILED(hr)) goto done;
+            coordinates.y = first_index;
+        }
+        last = coordinates;
     }
-    if (coordinates.x > 0x7fffffff - start_column ||
-            coordinates.y > 0x7fffffff - start_row) {
+    if (last.x > 0x7fffffff - start_column || last.y > 0x7fffffff - start_row) {
         hr = DISP_E_OVERFLOW;
         goto done;
     }
     coordinates.x += start_column;
     coordinates.y += start_row;
+    last.x += start_column;
+    last.y += start_row;
     /* UNO subranges reject offsets beyond their bounds; Excel Item allows them. */
     hr = I_Worksheet_get_Cells((I_Worksheet*)This->pwsheet, &all_cells);
     if (FAILED(hr)) goto done;
     hr = _I_RangeConstructor((void**)&cell);
     if (FAILED(hr)) goto done;
     I_Range_AddRef(cell);
-    last = coordinates;
-    if (This->collection_kind == RANGE_ROWS) last.x = end_column + 1;
-    if (This->collection_kind == RANGE_COLUMNS) last.y = end_row + 1;
     hr = MSO_TO_OO_I_Range_Initialize(cell, (I_Range*)all_cells, coordinates, last);
     if (SUCCEEDED(hr)) {
         ((RangeImpl*)cell)->collection_kind = This->collection_kind;
@@ -2264,7 +2311,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireColumn(
     IUnknown *punk;
     VARIANT range, vcount, vstr, param1, vcolumn, vname1, vname2;
     HRESULT hres;
-    WCHAR str[10];
+    WCHAR str[24];
     LONG start,end;
     TRACE_IN;
 
@@ -2357,7 +2404,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_EntireRow(
     IUnknown *punk;
     VARIANT range, vcount, vstr, param1, vrow, vname1, vname2;
     HRESULT hres;
-    WCHAR str[10];
+    WCHAR str[24];
     LONG start,end;
     LONG startrow=0, startcolumn=0, endrow=0, endcolumn=0;
     TRACE_IN;

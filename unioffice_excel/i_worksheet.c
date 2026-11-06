@@ -372,277 +372,56 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Activate(
     return S_OK;
 }
 
-static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
-        I_Worksheet* iface,
-        VARIANT Row,
-        IDispatch **ppRange)
+/* Native Rows/Columns keep their published VARIANT slot and share Range.Item. */
+static HRESULT worksheet_axis_range(I_Worksheet *iface, VARIANT index,
+        BOOL columns, IDispatch **result)
 {
-    WorksheetImpl *This = (WorksheetImpl*)iface;
-    IDispatch *pRange;
-    IUnknown *punk = NULL;
-    HRESULT hres;
-    IDispatch *tmp_range;
-    TRACE_IN;
-
-    MSO_TO_OO_CorrectArg(Row, &Row);
-
-    if (This==NULL) return E_POINTER;
-
-    if (Is_Variant_Null(Row)) {
-        TRACE("PARAMETER IS NULL\n",V_I4(&Row));
-        /*Без параметра*/
-        /*Возвращаем всю таблицу*/
-        TRACE(" ----> get_Cells \n");
-        return MSO_TO_OO_I_Worksheet_get_Cells(iface, ppRange);
-    } else {
-        /*преобразовываем любой тип к I4*/
-        hres = VariantChangeTypeEx(&Row, &Row, 0, 0, VT_I4);
-
-        if (V_VT(&Row) == VT_I4) {
-            /*параметр это индекс*/
-            TRACE("PARAMETER IS %i\n",V_I4(&Row));
-            hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
-            if (FAILED(hres)) {
-                TRACE("ERROR get_Cells\n");
-                return hres;
-            }
-            /*Создаем новый объект I_Range*/
-            hres = _I_RangeConstructor((LPVOID*) &punk);
-
-            if (FAILED(hres)) return E_NOINTERFACE;
-
-            hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-            if (pRange == NULL) {
-                return E_FAIL;
-            }
-            struct CELL_COORD cell1,cell2;
-            cell1.x = 1;
-            cell1.y = V_I4(&Row);
-            switch (OOVersion) {
-            case VER_2: 
-                cell2.x = 256;
-                break;
-            case VER_3:
-                cell2.x = 1024;
-                break;
-            }
-            cell2.y = V_I4(&Row);
-            hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
-            if (hres != S_OK) {
-                IDispatch_Release(pRange);
-                I_Range_Release(tmp_range);
-                return hres;
-            }
-
-            *ppRange = pRange;
-            I_Range_AddRef((I_Range*)*ppRange);
-            I_Range_Release(pRange);
-            I_Range_Release(tmp_range);
-            TRACE_OUT;
-            return S_OK;
-        } else 
-            if (V_VT(&Row) == VT_BSTR) {
-                /*параметр это строка*/
-                WTRACE(L"PARAMETER IS %s\n",V_BSTR(&Row));
-                WCHAR *tmp_str;
-                int i, row1, row2, itmp;
-                tmp_str = V_BSTR(&Row);
-                i=0;
-                itmp=0;
-                while (tmp_str[i]!=0) {
-                    if ((tmp_str[i]>=L'0')&&(tmp_str[i]<=L'9')) {
-                        itmp=itmp*10+(tmp_str[i]-L'0');
-                    }
-                    if (tmp_str[i]==L':') {
-                        row1 = itmp;
-                        itmp = 0;
-                    }
-                    i++;
-                }
-                row2 = itmp;
-
-                hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
-                if (FAILED(hres)) {
-                    TRACE("ERROR get_Cells\n");
-                    return hres;
-                }
-
-                /*Создаем новый объект I_Range*/
-                hres = _I_RangeConstructor((LPVOID*) &punk);
-
-                if (FAILED(hres)) return E_NOINTERFACE;
-
-                hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-
-                if (pRange == NULL) {
-                    return E_FAIL;
-                }
-                struct CELL_COORD cell1,cell2;
-                cell1.x = 1;
-                cell1.y = row1;
-                switch (OOVersion) {
-                case VER_2:
-                    cell2.x = 256;
-                    break;
-                case VER_3:
-                    cell2.x = 1024;
-                    break;
-                }
-                cell2.y = row2;
-TRACE("PARAMETRS IS %i     %i \n", row1,row2);
-                hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
-                if (FAILED(hres)) {
-                    TRACE("ERROR Range_Initialize\n");
-                    IDispatch_Release(pRange);
-                    IDispatch_Release(tmp_range);
-                    return hres;
-                }
-
-                *ppRange = pRange;
-                I_Range_AddRef((I_Range*)*ppRange);
-                I_Range_Release(pRange);
-                I_Range_Release(tmp_range);
-                TRACE_OUT;
-                return S_OK;
-            } else {
-                *ppRange = NULL;
-                return E_FAIL;
-            }
+    IDispatch *cells = NULL, *collection = NULL;
+    VARIANT owned, missing, selected;
+    HRESULT hr;
+    if (!result) return E_POINTER;
+    *result = NULL;
+    VariantInit(&owned);
+    VariantInit(&missing);
+    VariantInit(&selected);
+    V_VT(&missing) = VT_ERROR;
+    V_ERROR(&missing) = DISP_E_PARAMNOTFOUND;
+    hr = VariantCopyInd(&owned, &index);
+    if (SUCCEEDED(hr)) hr = MSO_TO_OO_I_Worksheet_get_Cells(iface, &cells);
+    if (SUCCEEDED(hr)) {
+        if (columns) hr = I_Range_get_Columns((I_Range*)cells, &collection);
+        else hr = I_Range_get_Rows((I_Range*)cells, &collection);
     }
+    if (SUCCEEDED(hr)) {
+        if (V_VT(&owned) == VT_EMPTY || V_VT(&owned) == VT_NULL ||
+                (V_VT(&owned) == VT_ERROR && V_ERROR(&owned) == DISP_E_PARAMNOTFOUND)) {
+            *result = collection;
+            collection = NULL;
+        } else {
+            hr = I_Range_get_Item((I_Range*)collection, owned, missing, 0, &selected);
+            if (SUCCEEDED(hr)) {
+                *result = V_DISPATCH(&selected);
+                VariantInit(&selected);
+            }
+        }
+    }
+    VariantClear(&selected);
+    VariantClear(&owned);
+    if (collection) IDispatch_Release(collection);
+    if (cells) IDispatch_Release(cells);
+    return hr;
+}
 
-    return E_FAIL;
+static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Rows(
+        I_Worksheet *iface, VARIANT Row, IDispatch **ppRange)
+{
+    return worksheet_axis_range(iface, Row, FALSE, ppRange);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Columns(
-        I_Worksheet* iface,
-        VARIANT Column,
-        IDispatch **ppRange)
+        I_Worksheet *iface, VARIANT Column, IDispatch **ppRange)
 {
-    WorksheetImpl *This = (WorksheetImpl*)iface;
-    IDispatch *pRange;
-    IUnknown *punk = NULL;
-    HRESULT hres;
-    IDispatch *tmp_range;
-    TRACE_IN;
-
-    MSO_TO_OO_CorrectArg(Column, &Column);
-
-    if (This==NULL) return E_POINTER;
-
-    if (Is_Variant_Null(Column)) {
-        TRACE("PARAMETER IS NULL\n",V_I4(&Column));
-        /*Без параметра*/
-        /*Возвращаем всю таблицу*/
-        TRACE(" ----> get_Cells \n");
-        return MSO_TO_OO_I_Worksheet_get_Cells(iface, ppRange);
-    } else {
-        /*преобразовываем любой тип к I4*/
-        hres = VariantChangeTypeEx(&Column, &Column, 0, 0, VT_I4);
-
-        if (V_VT(&Column) == VT_I4) {
-            /*параметр это индекс*/
-            TRACE("PARAMETER IS %i\n",V_I4(&Column));
-            hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
-            if (FAILED(hres)) {
-                TRACE("ERROR get_Cells\n");
-                return hres;
-            }
-            /*Создаем новый объект I_Range*/
-            hres = _I_RangeConstructor((LPVOID*) &punk);
-
-            if (FAILED(hres)) return E_NOINTERFACE;
-
-            hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-
-            if (pRange == NULL) {
-                return E_FAIL;
-            }
-            struct CELL_COORD cell1,cell2;
-            cell1.x = V_I4(&Column);
-            cell1.y = 1;
-            cell2.x = V_I4(&Column);
-            cell2.y = 65536;
-            hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
-            if (FAILED(hres)) {
-                IDispatch_Release(pRange);
-                IDispatch_Release(tmp_range);
-                return hres;
-            }
-
-            *ppRange = pRange;
-            I_Range_AddRef((I_Range*)*ppRange);
-            IDispatch_Release(pRange);
-            IDispatch_Release(tmp_range);
-            TRACE_OUT;
-            return S_OK;
-        } else 
-            if (V_VT(&Column) == VT_BSTR) {
-                /*параметр это строка*/
-                /*Разбираем строки вида `col1:col2`*/
-                WTRACE(L"PARAMETER IS STRING %s\n",V_BSTR(&Column));
-                WCHAR *tmp_str;
-                int i, col1, col2, itmp;
-                tmp_str = V_BSTR(&Column);
-                i=0;
-                itmp=0;
-                while (tmp_str[i]!=0) {
-                    if ((tmp_str[i]>=L'0')&&(tmp_str[i]<=L'9')) {
-                        itmp=itmp*10+(tmp_str[i]-L'0');
-                    }
-                    if ((tmp_str[i]>=L'A')&&(tmp_str[i]<=L'Z')) {
-                        itmp=itmp*26+(tmp_str[i]-L'A')+1;
-                    }
-                    if (tmp_str[i]==L':') {
-                        col1 = itmp;
-                        itmp = 0;
-                    }
-                    i++;
-                }
-                col2 = itmp;
-
-                hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &tmp_range);
-                if (FAILED(hres)) {
-                    TRACE("ERROR get_Cells\n");
-                    return hres;
-                }
-
-                /*Создаем новый объект I_Range*/
-                hres = _I_RangeConstructor((LPVOID*) &punk);
-
-                if (FAILED(hres)) return E_NOINTERFACE;
-
-                hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-
-                if (pRange == NULL) {
-                    return E_FAIL;
-                }
-                struct CELL_COORD cell1,cell2;
-                cell1.x = col1;
-                cell1.y = 1;
-                cell2.x = col2;
-                cell2.y = 65536;
-TRACE("PARAMETRS IS %i     %i \n", col1,col2);
-                hres = MSO_TO_OO_I_Range_Initialize(pRange,tmp_range, cell1, cell2);
-                if (FAILED(hres)) {
-                    TRACE("ERROR Range_Initialize\n");
-                    IDispatch_Release(pRange);
-                    IDispatch_Release(tmp_range);
-                    return hres;
-                }
-
-                *ppRange = pRange;
-                I_Range_AddRef((I_Range*)pRange);
-                IDispatch_Release(pRange);
-                IDispatch_Release(tmp_range);
-                TRACE_OUT;
-                return S_OK;
-            } else {
-                *ppRange = NULL;
-                return E_FAIL;
-            }
-    }
-
-    return E_FAIL;
+    return worksheet_axis_range(iface, Column, TRUE, ppRange);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Copy(
@@ -2406,6 +2185,26 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
         return E_POINTER;
     }
 
+    /* The legacy IDL requires an index; Automation also permits no index. */
+    if (dispIdMember == dispid_worksheet_rows || dispIdMember == dispid_worksheet_columns) {
+        if (!pDispParams) return E_POINTER;
+        if (pVarResult) VariantInit(pVarResult);
+        if (!(wFlags & (DISPATCH_PROPERTYGET | DISPATCH_METHOD))) return DISP_E_MEMBERNOTFOUND;
+        if (pDispParams->cArgs > 1) return DISP_E_BADPARAMCOUNT;
+        V_VT(&cell1) = VT_ERROR;
+        V_ERROR(&cell1) = DISP_E_PARAMNOTFOUND;
+        if (pDispParams->cArgs) cell1 = pDispParams->rgvarg[0];
+        if (dispIdMember == dispid_worksheet_columns)
+            hres = MSO_TO_OO_I_Worksheet_get_Columns(iface, cell1, &dret);
+        else hres = MSO_TO_OO_I_Worksheet_get_Rows(iface, cell1, &dret);
+        if (SUCCEEDED(hres)) {
+            V_VT(&tmpval) = VT_DISPATCH;
+            V_DISPATCH(&tmpval) = dret;
+            if (pVarResult) *pVarResult = tmpval;
+            else VariantClear(&tmpval);
+        }
+        return hres;
+    }
     /*special operation*/
     if (dispIdMember == dispid_worksheet_cells) {
         if (!pDispParams) return E_POINTER;

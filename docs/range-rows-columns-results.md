@@ -55,8 +55,10 @@ did not change. No Wine defect was established; native Windows was not tested.
 ## Scope
 
 This change covers single-rectangle Range.Rows/Columns selection and Count.
-Worksheet/Application Rows/Columns handlers retain their legacy behavior.
-Multi-area selection, enumeration, string slices such as "1:3"/"A:C", nonpositive
-offsets and exhaustive row/column value/format/delete/insert behavior are outside
-this validation. Excel's script error number1004 is not reproduced by the native
-E_INVALIDARG result. Existing named lookup for ordinary Range default remains.
+The [subsequent sheet collection change](sheet-rows-columns-results.md) adds
+Worksheet/Application.Rows/Columns and ascending slices such as "1:3"/"A:C";
+the bounded Range probe now has98 checks. The validation above records the
+initial collection stage. Multi-area selection, enumeration, nonpositive offsets
+and exhaustive row/column value/format/delete/insert behavior remain outside
+validation. Excel's script error number1004 is not reproduced by E_INVALIDARG.
+Existing named lookup for ordinary Range default remains.

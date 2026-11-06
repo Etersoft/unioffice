@@ -77,6 +77,8 @@ Set part = columns.Item(1, 1)
 Check Err.Number <> 0, "Columns rejects second Item argument"
 Err.Clear
 On Error GoTo 0
+SelectItem rows, "2:3", 3, 2, 2, 3, "Relative row slice"
+SelectItem columns, "b:d", 2, 3, 3, 3, "Relative column slice"
 Set part = rows.Cells(4)
 Shape part, 3, 2, 1, 1, "Rows.Cells(4)"
 Set part = columns.Cells(2, 2)
