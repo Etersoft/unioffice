@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 
 ITypeInfo *ti_name = NULL;
 
@@ -130,6 +131,88 @@ static ULONG WINAPI MSO_TO_OO_Name_Release(
 }
 
 /*** Name methods ***/
+static IDispatch *name_document(NamesImpl *names)
+{
+    if (!names || !names->pWorkbook) return NULL;
+    return ((WorkbookImpl*)names->pWorkbook)->pDoc;
+}
+
+static HRESULT name_convert(NamesImpl *names, IDispatch *position, const WCHAR *text,
+        LONG excel_convention, BOOL to_uno, BSTR *out)
+{
+    /* Excel RefersTo text (with '=') to UNO named-range content, or back. */
+    IDispatch *document = name_document(names);
+    BSTR converted = NULL;
+    HRESULT hr;
+    UINT length;
+
+    *out = NULL;
+    if (to_uno) {
+        if (text[0] != L'=') return E_INVALIDARG;
+        return MSO_TO_OO_ConvertFormula(document, position, text, excel_convention, 0, out);
+    }
+    hr = MSO_TO_OO_ConvertFormula(document, position, text, 0, excel_convention, &converted);
+    if (FAILED(hr)) return hr;
+    length = SysStringLen(converted);
+    *out = SysAllocStringLen(NULL, length + 1);
+    if (*out) {
+        (*out)[0] = L'=';
+        memcpy(*out + 1, converted, length * sizeof(WCHAR));
+    } else hr = E_OUTOFMEMORY;
+    SysFreeString(converted);
+    return hr;
+}
+
+static HRESULT name_get_refers(Name *iface, LONG convention, VARIANT *value)
+{
+    NameImpl *This = NAME_THIS(iface);
+    VARIANT content, position;
+    BSTR text = NULL;
+    HRESULT hr;
+
+    if (!This || !value) return E_POINTER;
+    VariantInit(value);
+    VariantInit(&content);
+    VariantInit(&position);
+    hr = AutoWrap(DISPATCH_METHOD, &content, This->pOOName, L"getContent", 0);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &position, This->pOOName, L"getReferencePosition", 0);
+    if (SUCCEEDED(hr) && (V_VT(&content) != VT_BSTR || V_VT(&position) != VT_DISPATCH)) hr = E_FAIL;
+    if (SUCCEEDED(hr))
+        hr = name_convert((NamesImpl*)This->pNames, V_DISPATCH(&position), V_BSTR(&content), convention, FALSE, &text);
+    if (SUCCEEDED(hr)) {
+        V_VT(value) = VT_BSTR;
+        V_BSTR(value) = text;
+    }
+    VariantClear(&content);
+    VariantClear(&position);
+    return hr;
+}
+
+static HRESULT name_put_refers(Name *iface, LONG convention, VARIANT value)
+{
+    NameImpl *This = NAME_THIS(iface);
+    VARIANT text, position, content, result;
+    HRESULT hr;
+
+    if (!This) return E_POINTER;
+    VariantInit(&text);
+    VariantInit(&position);
+    VariantInit(&result);
+    hr = VariantChangeTypeEx(&text, &value, 0, 0, VT_BSTR);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &position, This->pOOName, L"getReferencePosition", 0);
+    if (SUCCEEDED(hr) && V_VT(&position) != VT_DISPATCH) hr = E_FAIL;
+    V_VT(&content) = VT_BSTR;
+    V_BSTR(&content) = NULL;
+    if (SUCCEEDED(hr))
+        hr = name_convert((NamesImpl*)This->pNames, V_DISPATCH(&position), V_BSTR(&text), convention, TRUE, &V_BSTR(&content));
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, This->pOOName, L"setContent", 1, content);
+    SysFreeString(V_BSTR(&content));
+    VariantClear(&result);
+    VariantClear(&position);
+    VariantClear(&text);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_Name_get_Application(
         Name* iface,
         IDispatch **value)
@@ -182,16 +265,53 @@ static HRESULT WINAPI MSO_TO_OO_Name_get__Default(
         Name* iface,
         BSTR *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    VARIANT text;
+    HRESULT hr;
+    if (!value) return E_POINTER;
+    *value = NULL;
+    /* Excel's default member of Name is its RefersTo text. */
+    hr = name_get_refers(iface, 1, &text);
+    if (SUCCEEDED(hr)) *value = V_BSTR(&text);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_Index(
         Name* iface,
         int *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    NameImpl *This = NAME_THIS(iface);
+    NamesImpl *names;
+    VARIANT name, count, index, item, other;
+    LONG i;
+    HRESULT hr;
+
+    if (!This || !value) return E_POINTER;
+    *value = 0;
+    names = (NamesImpl*)This->pNames;
+    VariantInit(&name);
+    VariantInit(&count);
+    hr = AutoWrap(DISPATCH_METHOD, &name, This->pOOName, L"getName", 0);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &count, names->pOONames, L"getCount", 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&count, &count, 0, 0, VT_I4);
+    if (SUCCEEDED(hr) && V_VT(&name) != VT_BSTR) hr = E_FAIL;
+    /* Index follows the getByIndex order used by Names.Item(n). */
+    for (i = 0; SUCCEEDED(hr) && i < V_I4(&count) && !*value; i++) {
+        VariantInit(&item);
+        VariantInit(&other);
+        V_VT(&index) = VT_I4;
+        V_I4(&index) = i;
+        hr = AutoWrap(DISPATCH_METHOD, &item, names->pOONames, L"getByIndex", 1, index);
+        if (SUCCEEDED(hr) && V_VT(&item) == VT_DISPATCH)
+            hr = AutoWrap(DISPATCH_METHOD, &other, V_DISPATCH(&item), L"getName", 0);
+        if (SUCCEEDED(hr) && V_VT(&other) == VT_BSTR && !lstrcmpiW(V_BSTR(&other), V_BSTR(&name)))
+            *value = i + 1;
+        VariantClear(&other);
+        VariantClear(&item);
+    }
+    if (SUCCEEDED(hr) && !*value) hr = E_FAIL;
+    VariantClear(&count);
+    VariantClear(&name);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_Category(
@@ -231,8 +351,19 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_CategoryLocal(
 static HRESULT WINAPI MSO_TO_OO_Name_Delete(
         Name* iface)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    NameImpl *This = NAME_THIS(iface);
+    VARIANT name, result;
+    HRESULT hr;
+
+    if (!This) return E_POINTER;
+    VariantInit(&name);
+    VariantInit(&result);
+    hr = AutoWrap(DISPATCH_METHOD, &name, This->pOOName, L"getName", 0);
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_METHOD, &result, ((NamesImpl*)This->pNames)->pOONames, L"removeByName", 1, name);
+    VariantClear(&result);
+    VariantClear(&name);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_MacroType(
@@ -306,8 +437,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersTo(
         LCID lcid,
         VARIANT *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_get_refers(iface, 1, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_RefersTo(
@@ -315,8 +445,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_RefersTo(
         LCID lcid,
         VARIANT value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_put_refers(iface, 1, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_ShortcutKey(
@@ -339,64 +468,62 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_Value(
         Name* iface,
         BSTR *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return MSO_TO_OO_Name_get__Default(iface, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_Value(
         Name* iface,
         BSTR value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    VARIANT text;
+    V_VT(&text) = VT_BSTR;
+    V_BSTR(&text) = value;
+    return name_put_refers(iface, 1, text);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_Visible(
         Name* iface,
         VARIANT_BOOL *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    if (!value) return E_POINTER;
+    /* UNO named ranges have no hidden state. */
+    *value = VARIANT_TRUE;
+    return S_OK;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_Visible(
         Name* iface,
         VARIANT_BOOL value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return value ? S_OK : E_NOTIMPL;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_NameLocal(
         Name* iface,
         BSTR *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return Name_get_Name(iface, 0, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_NameLocal(
         Name* iface,
         BSTR value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return Name_put_Name(iface, 0, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToLocal(
         Name* iface,
         VARIANT *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_get_refers(iface, 1, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToLocal(
         Name* iface,
         VARIANT value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_put_refers(iface, 1, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1(
@@ -404,8 +531,7 @@ static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1(
         LCID lcid,
         VARIANT *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_get_refers(iface, 2, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1(
@@ -413,24 +539,21 @@ static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1(
         LCID lcid,
         VARIANT value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_put_refers(iface, 2, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToR1C1Local(
         Name* iface,
         VARIANT *value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_get_refers(iface, 2, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_put_RefersToR1C1Local(
         Name* iface,
         VARIANT value)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return name_put_refers(iface, 2, value);
 }
 
 static HRESULT WINAPI MSO_TO_OO_Name_get_RefersToRange(
@@ -600,8 +723,6 @@ static HRESULT WINAPI MSO_TO_OO_Name_Invoke(
             if (pVarResult!=NULL){
                 V_VT(pVarResult)=VT_BSTR;
                 V_BSTR(pVarResult)=SysAllocString(tmpbstr);
-            } else {
-                IDispatch_Release(dret);
             }
             SysFreeString(tmpbstr);
             return S_OK;
@@ -942,8 +1063,87 @@ static HRESULT WINAPI MSO_TO_OO_Names_Add(
         VARIANT RefersToR1C1Local,
         IDispatch **ppvalue)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    NamesImpl *This = NAMES_THIS(iface);
+    IDispatch *document;
+    VARIANT name, text, refers, visible, sheets, sheet, cell, position, exists, result, type, zero;
+    VARIANT *source;
+    LONG convention = 1;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (!This || !ppvalue) return E_POINTER;
+    *ppvalue = NULL;
+    document = name_document(This);
+    if (!document) return E_POINTER;
+    /* Category, macro and shortcut metadata have no UNO named-range storage. */
+    if (!Is_Variant_Null(MacroType) || !Is_Variant_Null(ShortcutKey) ||
+            !Is_Variant_Null(Category) || !Is_Variant_Null(CategoryLocal))
+        return E_NOTIMPL;
+    VariantInit(&name);
+    VariantInit(&text);
+    VariantInit(&visible);
+    VariantInit(&sheets);
+    VariantInit(&sheet);
+    VariantInit(&cell);
+    VariantInit(&position);
+    VariantInit(&exists);
+    VariantInit(&result);
+    V_VT(&refers) = VT_BSTR;
+    V_BSTR(&refers) = NULL;
+    if (!Is_Variant_Null(Visible)) {
+        hr = VariantChangeTypeEx(&visible, &Visible, 0, 0, VT_BOOL);
+        if (FAILED(hr)) return hr;
+        if (!V_BOOL(&visible)) return E_NOTIMPL;
+    }
+    source = !Is_Variant_Null(Name) ? &Name : &NameLocal;
+    if (Is_Variant_Null(*source)) return E_INVALIDARG;
+    hr = VariantChangeTypeEx(&name, source, 0, 0, VT_BSTR);
+    if (FAILED(hr)) return hr;
+    if (!Is_Variant_Null(RefersTo)) source = &RefersTo;
+    else if (!Is_Variant_Null(RefersToLocal)) source = &RefersToLocal;
+    else {
+        convention = 2;
+        source = !Is_Variant_Null(RefersToR1C1) ? &RefersToR1C1 : &RefersToR1C1Local;
+    }
+    if (Is_Variant_Null(*source)) hr = E_INVALIDARG;
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&text, source, 0, 0, VT_BSTR);
+
+    V_VT(&zero) = VT_I4;
+    V_I4(&zero) = 0;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &sheets, document, L"getSheets", 0);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &sheet, V_DISPATCH(&sheets), L"getByIndex", 1, zero);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &cell, V_DISPATCH(&sheet), L"getCellByPosition", 2, zero, zero);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &position, V_DISPATCH(&cell), L"getCellAddress", 0);
+    if (SUCCEEDED(hr))
+        hr = name_convert(This, V_DISPATCH(&position), V_BSTR(&text), convention, TRUE, &V_BSTR(&refers));
+    /* Excel replaces an existing name; UNO rejects a duplicate. */
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &exists, This->pOONames, L"hasByName", 1, name);
+    if (SUCCEEDED(hr) && V_VT(&exists) == VT_BOOL && V_BOOL(&exists)) {
+        hr = AutoWrap(DISPATCH_METHOD, &result, This->pOONames, L"removeByName", 1, name);
+        VariantClear(&result);
+    }
+    V_VT(&type) = VT_I4;
+    V_I4(&type) = 0;
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_METHOD, &result, This->pOONames, L"addNewByName", 4, type, position, refers, name);
+    VariantClear(&result);
+    if (SUCCEEDED(hr)) {
+        VARIANT omitted;
+        VariantInit(&omitted);
+        V_VT(&omitted) = VT_ERROR;
+        V_ERROR(&omitted) = DISP_E_PARAMNOTFOUND;
+        hr = MSO_TO_OO_Names__Default(iface, name, omitted, omitted, ppvalue);
+    }
+    SysFreeString(V_BSTR(&refers));
+    VariantClear(&exists);
+    VariantClear(&position);
+    VariantClear(&cell);
+    VariantClear(&sheet);
+    VariantClear(&sheets);
+    VariantClear(&text);
+    VariantClear(&name);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_Names_GetEnumerator(

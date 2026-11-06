@@ -1876,10 +1876,22 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Index(
         return E_FAIL;
     }
 
-    hres = AutoWrap(DISPATCH_METHOD, &vRet2, V_DISPATCH(&vRet), L"getByIndex",1,varindex);
+    /* Excel collection indexes start at 1, UNO indexes at 0. */
+    {
+        VARIANT index;
+        VariantInit(&index);
+        hres = VariantChangeTypeEx(&index, &varindex, 0, 0, VT_I4);
+        if (FAILED(hres) || V_I4(&index) < 1) {
+            VariantClear(&vRet);
+            return DISP_E_BADINDEX;
+        }
+        V_I4(&index) -= 1;
+        hres = AutoWrap(DISPATCH_METHOD, &vRet2, V_DISPATCH(&vRet), L"getByIndex",1,index);
+    }
     if (FAILED(hres)) {
         TRACE("ERROR when NamedRange \n");
-        return E_FAIL;
+        VariantClear(&vRet);
+        return DISP_E_BADINDEX;
     }
 
     if (This->pOOName!=NULL) {
@@ -1995,5 +2007,60 @@ BSTR MSO_TO_OO_SwapFormulaSeparators(const WCHAR *text, BOOL to_uno)
         }
     }
     return out;
+}
+
+/* Translate a formula between UNO address conventions (OOO=0, XL_A1=1,
+   XL_R1C1=2) at a reference position; Excel sides use ',' separators. */
+HRESULT MSO_TO_OO_ConvertFormula(
+        IDispatch *document,
+        IDispatch *position,
+        const WCHAR *text,
+        LONG from,
+        LONG to,
+        BSTR *out)
+{
+    IDispatch *parser = NULL;
+    VARIANT name, value, result, tokens, formula, vposition;
+    HRESULT hr;
+
+    *out = NULL;
+    if (!document || !position || !text) return E_POINTER;
+    VariantInit(&result);
+    VariantInit(&tokens);
+    V_VT(&name) = VT_BSTR;
+    V_BSTR(&name) = SysAllocString(L"com.sun.star.sheet.FormulaParser");
+    hr = AutoWrap(DISPATCH_METHOD, &result, document, L"createInstance", 1, name);
+    SysFreeString(V_BSTR(&name));
+    if (SUCCEEDED(hr) && V_VT(&result) == VT_DISPATCH && V_DISPATCH(&result)) {
+        parser = V_DISPATCH(&result);
+        VariantInit(&result);
+    } else {
+        VariantClear(&result);
+        return FAILED(hr) ? hr : E_FAIL;
+    }
+    V_VT(&value) = VT_BOOL;
+    V_BOOL(&value) = VARIANT_TRUE;
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, parser, L"CompileEnglish", 1, value);
+    V_VT(&value) = VT_I4;
+    V_I4(&value) = from;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, parser, L"FormulaConvention", 1, value);
+    V_VT(&vposition) = VT_DISPATCH;
+    V_DISPATCH(&vposition) = position;
+    V_VT(&formula) = VT_BSTR;
+    V_BSTR(&formula) = from ? MSO_TO_OO_SwapFormulaSeparators(text, TRUE) : SysAllocString(text);
+    if (SUCCEEDED(hr) && !V_BSTR(&formula)) hr = E_OUTOFMEMORY;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &tokens, parser, L"parseFormula", 2, vposition, formula);
+    SysFreeString(V_BSTR(&formula));
+    V_I4(&value) = to;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, parser, L"FormulaConvention", 1, value);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, parser, L"printFormula", 2, vposition, tokens);
+    if (SUCCEEDED(hr) && V_VT(&result) == VT_BSTR) {
+        *out = to ? MSO_TO_OO_SwapFormulaSeparators(V_BSTR(&result), FALSE) : SysAllocString(V_BSTR(&result));
+        if (!*out) hr = E_OUTOFMEMORY;
+    } else if (SUCCEEDED(hr)) hr = E_FAIL;
+    VariantClear(&result);
+    VariantClear(&tokens);
+    IDispatch_Release(parser);
+    return hr;
 }
 

@@ -188,3 +188,11 @@ HRESULT MSO_TO_OO_ApplyApplicationUiState(
 BSTR MSO_TO_OO_SwapFormulaSeparators(
         const WCHAR *text,
         BOOL to_uno);
+
+HRESULT MSO_TO_OO_ConvertFormula(
+        IDispatch *document,
+        IDispatch *position,
+        const WCHAR *text,
+        LONG from,
+        LONG to,
+        BSTR *out);

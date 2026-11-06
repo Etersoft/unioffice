@@ -3350,10 +3350,10 @@ library MSO_TO_OOLib
 			[in] BSTR value);
 //RefersTo
 		[propget,id(dispid_name_refersto), helpstring("property RefersTo")] HRESULT RefersTo(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out, retval] VARIANT *value);
 		[propput,id(dispid_name_refersto), helpstring("property RefersTo")] HRESULT RefersTo(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[in] VARIANT value);
 //ShortcutKey
 		[propget,id(dispid_name_shortcutkey), helpstring("property ShortcutKey")] HRESULT ShortcutKey([out, retval] BSTR *value);
@@ -3362,8 +3362,8 @@ library MSO_TO_OOLib
 		[propget,id(dispid_name_value), helpstring("property Value")] HRESULT Value([out, retval] BSTR *value);
 		[propput,id(dispid_name_value), helpstring("property Value")] HRESULT Value([in] BSTR value);
 //Visible
-		[propget,id(dispid_name_value), helpstring("property Visible")] HRESULT Visible([out, retval] VARIANT_BOOL *value);
-		[propput,id(dispid_name_value), helpstring("property Visible")] HRESULT Visible([in] VARIANT_BOOL value);
+		[propget,id(dispid_name_visible), helpstring("property Visible")] HRESULT Visible([out, retval] VARIANT_BOOL *value);
+		[propput,id(dispid_name_visible), helpstring("property Visible")] HRESULT Visible([in] VARIANT_BOOL value);
 //NameLocal
 		[propget,id(dispid_name_namelocal), helpstring("property NameLocal")] HRESULT NameLocal([out, retval] BSTR *value);
 		[propput,id(dispid_name_namelocal), helpstring("property NameLocal")] HRESULT NameLocal([in] BSTR value);
@@ -3372,10 +3372,10 @@ library MSO_TO_OOLib
 		[propput,id(dispid_name_referstolocal), helpstring("property RefersToLocal")] HRESULT RefersToLocal([in] VARIANT value);
 //RefersToR1C1
 		[propget,id(dispid_name_referstor1c1), helpstring("property RefersToR1C1")] HRESULT RefersToR1C1(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out, retval] VARIANT *value);
 		[propput,id(dispid_name_referstor1c1), helpstring("property RefersToR1C1")] HRESULT RefersToR1C1(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[in] VARIANT value);
 //RefersToR1C1Local
 		[propget,id(dispid_name_referstor1c1local), helpstring("property RefersToR1C1Local")] HRESULT RefersToR1C1Local([out, retval] VARIANT *value);
