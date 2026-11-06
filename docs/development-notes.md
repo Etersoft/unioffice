@@ -17,6 +17,10 @@
 восстановление и оба порядка удаления; [отчёт](native-windows-results.md).
 Дополнительная проверка под отдельной учётной записью без членства в
 Administrators, с собственным новым профилем, также прошла для PE32 и PE64.
+Это завершает проверку Windows backend, но не Linux-офиса. В соседнем
+`unioffice-host` найден старый Linux UNO DocumentLoader без исходников и COM-части;
+рекомендация для моста — отдельный PE/Unix-компонент по схеме cpcsp proxy.
+[Находки и план](linux-office-bridge.md) фиксируют эту открытую задачу.
 
 Пользователь уточнил: нужны только Windows PE DLL. Сборка `.dll.so` была
 ошибочным отклонением и не является поддерживаемым вариантом.
@@ -741,6 +745,9 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
    [native-windows-packages.sha256](native-windows-packages.sha256).
    Обязательных незавершённых проверок текущего набора нет; другие версии
    Windows и Windows Installer остаются за границами этого результата.
+   Это утверждение относится к проверенному Windows backend. Вызов Linux-офиса
+   через отдельный COM/UNO-мост остаётся незавершённым направлением;
+   см. [план](linux-office-bridge.md).
 2. Borders.Weight реализован, включая mixed Null в Automation без поломки
    прежней native vtable. Точный порядок обхода Excel и прочие неподдержанные
    интерфейсы не покрыты; Word содержит заглушки. Отсутствие extended border API в Windows AOO4.1.17

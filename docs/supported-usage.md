@@ -28,6 +28,8 @@ as `com.sun.star.ServiceManager`. Complete OpenOffice's first-start setup in the
 user profile before Automation. The Linux OpenOffice
 installation alone does not supply this Windows COM backend. See the
 [backend setup results](openoffice-4.1.17-results.md).
+Linux office integration remains open; see the
+[local bridge findings and proposed design](linux-office-bridge.md).
 
 Choose the UniOffice package by the **client process** architecture:
 
