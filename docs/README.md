@@ -1,9 +1,14 @@
 # Documentation guide
 
+## Start here
+
+1. [Working notes](development-notes.md): current state, build, checks and
+   limitations.
+2. [Issue audit](issue-audit-2026-11-06.md): status decisions and remaining work.
+3. [Roadmap](roadmap.md): the order of the next development stages.
+
 ## Setup, status and architecture
 
-- [Issue audit: completed work, reopened gaps and remaining verification](issue-audit-2026-11-06.md).
-- [Multi-office and Word roadmap](roadmap.md).
 - [Supported functions and Windows/Wine installation](supported-usage.md).
 - [Native Windows results, fixes and reproduction](native-windows-results.md)
   and [accepted package checksums](native-windows-packages.sha256).
@@ -30,6 +35,6 @@ tested; the reports retain their original environments and coverage limits.
 | Range enumeration | [Lazy traversal, independent cursors and COM validation](range-enumeration-results.md) |
 | Application interface | [Published dual-interface ABI](application-interface-results.md) |
 
-The [development notes](development-notes.md) preserve the detailed work log,
+The [working notes](development-notes.md) also preserve the detailed work log,
 including superseded Winelib experiments. The current outputs are Windows PE
 DLLs; Linux backend integration remains a separate open task.

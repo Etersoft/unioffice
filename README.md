@@ -200,7 +200,13 @@ scope, reuse candidates and remaining gap. None of these is a new dependency.
 C++ Word component; `MSI/` installer tables/tools; `scripts/` build/test runners;
 `tests/` VBScript and native COM regressions; `docs/` setup, evidence and design.
 
-Start with the [documentation guide](docs/README.md). The
-[development notes](docs/development-notes.md) retain historical experiments;
-their Winelib builds are not the current output format.
+Start with:
+
+- [Working notes](docs/development-notes.md): current state, build, checks and
+  limitations. Their historical Winelib builds are not the current output format.
+- [Issue audit](docs/issue-audit-2026-11-06.md): status decisions and remaining work.
+- [Roadmap](docs/roadmap.md): the order of the next development stages.
+
+The [documentation guide](docs/README.md) indexes setup, evidence and design reports.
+
 License: [GNU LGPL 2.1 or later](COPYING), as stated in the source headers.
