@@ -45,7 +45,40 @@ group membership and its own fresh OpenOffice profile.
 Registration is performed by MSI; manual DLL copying/registration is unnecessary.
 Build and packaging commands are in the [README](../README.md).
 
-## Install and verify
+## Native Windows: install and verify
+
+Use the accepted MSI files listed in
+[the package manifest](native-windows-packages.sha256). Copy `scripts/` and
+`tests/` from the same revision to retain the functional checks. Choose the
+package by client bitness, even though the backend is x86.
+
+Install Windows Apache OpenOffice first and complete its first-start setup in
+the account that will run Automation. From an elevated Command Prompt at the
+repository root, install the selected UniOffice package. These commands install
+both variants, waiting for each installer to finish:
+
+```bat
+start /wait msiexec.exe /i MSI\build\mingw-32\unioffice.msi /qn /norestart
+start /wait msiexec.exe /i MSI\build\winegcc-64\unioffice.msi /qn /norestart
+```
+
+Then use ordinary **64-bit PowerShell** in a dedicated test account:
+
+```powershell
+# Both installed client architectures:
+.\scripts\run-windows-tests.ps1 -Mode Suite
+# If only the 32-bit package is installed:
+.\scripts\run-windows-tests.ps1 -Mode Suite -Bits 32
+```
+
+Suite mode needs the repository scripts, not compiled C probes. It runs the
+seven original tests, prints `Native Windows tests: PASS` only after all checks,
+and saves reports under `~/tmp/claude/unioffice-windows-*`. Tests create documents
+and quit OpenOffice; close other office work before running them. The full
+probe and destructive MSI-maintenance commands are in the
+[native validation report](native-windows-results.md).
+
+## Wine: install and verify
 
 From the repository root, after installing Windows OpenOffice into the dedicated
 prefix, this installs and checks the 32-bit client in one graphical session:
