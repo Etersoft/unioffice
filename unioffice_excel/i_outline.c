@@ -295,40 +295,162 @@ static HRESULT WINAPI MSO_TO_OO_I_Outline_ShowLevels(
     return hr;
 }
 
+static HRESULT outline_setting_name(OutlineImpl *This, const WCHAR *kind, VARIANT *name)
+{
+    VARIANT sheet;
+    WCHAR text[300];
+    HRESULT hr;
+
+    /* UNO outlines have no summary position, so the Excel setting is kept
+       per sheet in the document's user-defined properties. */
+    VariantInit(&sheet);
+    hr = AutoWrap(DISPATCH_METHOD, &sheet, This->pOOSheet, L"getName", 0);
+    if (SUCCEEDED(hr) && (V_VT(&sheet) != VT_BSTR || SysStringLen(V_BSTR(&sheet)) > 250)) hr = E_FAIL;
+    if (SUCCEEDED(hr)) {
+        wsprintfW(text, L"UniOffice.Outline.%s.%s", kind, V_BSTR(&sheet));
+        V_VT(name) = VT_BSTR;
+        V_BSTR(name) = SysAllocString(text);
+        if (!V_BSTR(name)) hr = E_OUTOFMEMORY;
+    }
+    VariantClear(&sheet);
+    return hr;
+}
+
+static HRESULT outline_settings(OutlineImpl *This, IDispatch **properties)
+{
+    WorksheetImpl *sheet = (WorksheetImpl*)This->pWorksheet;
+    WorkbookImpl *book = sheet ? (WorkbookImpl*)sheet->pwb : NULL;
+    VARIANT info, result;
+    HRESULT hr;
+
+    *properties = NULL;
+    if (!book || !book->pDoc) return E_POINTER;
+    VariantInit(&info);
+    VariantInit(&result);
+    hr = AutoWrap(DISPATCH_METHOD, &info, book->pDoc, L"getDocumentProperties", 0);
+    if (SUCCEEDED(hr) && V_VT(&info) == VT_DISPATCH)
+        hr = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(&info), L"getUserDefinedProperties", 0);
+    else if (SUCCEEDED(hr)) hr = E_FAIL;
+    if (SUCCEEDED(hr) && V_VT(&result) == VT_DISPATCH) {
+        *properties = V_DISPATCH(&result);
+        VariantInit(&result);
+    } else if (SUCCEEDED(hr)) hr = E_FAIL;
+    VariantClear(&result);
+    VariantClear(&info);
+    return hr;
+}
+
+static HRESULT outline_has_setting(IDispatch *properties, VARIANT *name, BOOL *exists)
+{
+    VARIANT info, result;
+    HRESULT hr;
+    VariantInit(&info);
+    VariantInit(&result);
+    *exists = FALSE;
+    hr = AutoWrap(DISPATCH_METHOD, &info, properties, L"getPropertySetInfo", 0);
+    if (SUCCEEDED(hr) && V_VT(&info) == VT_DISPATCH)
+        hr = AutoWrap(DISPATCH_METHOD, &result, V_DISPATCH(&info), L"hasPropertyByName", 1, *name);
+    else if (SUCCEEDED(hr)) hr = E_FAIL;
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&result, &result, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr)) *exists = V_BOOL(&result) != VARIANT_FALSE;
+    VariantClear(&result);
+    VariantClear(&info);
+    return hr;
+}
+
+static HRESULT outline_get_setting(OutlineImpl *This, const WCHAR *kind, LONG fallback, LONG *value)
+{
+    IDispatch *properties = NULL;
+    VARIANT name, result;
+    BOOL exists = FALSE;
+    HRESULT hr;
+
+    *value = fallback;
+    VariantInit(&name);
+    VariantInit(&result);
+    hr = outline_settings(This, &properties);
+    if (SUCCEEDED(hr)) hr = outline_setting_name(This, kind, &name);
+    /* A missing property means the Excel default. */
+    if (SUCCEEDED(hr)) hr = outline_has_setting(properties, &name, &exists);
+    if (SUCCEEDED(hr) && exists) {
+        hr = AutoWrap(DISPATCH_METHOD, &result, properties, L"getPropertyValue", 1, name);
+        if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&result, &result, 0, 0, VT_I4);
+        if (SUCCEEDED(hr)) *value = V_I4(&result);
+    }
+    VariantClear(&result);
+    VariantClear(&name);
+    if (properties) IDispatch_Release(properties);
+    return hr;
+}
+
+static HRESULT outline_put_setting(OutlineImpl *This, const WCHAR *kind, LONG value)
+{
+    IDispatch *properties = NULL;
+    VARIANT name, number, attributes, result;
+    BOOL exists = FALSE;
+    HRESULT hr;
+
+    VariantInit(&name);
+    VariantInit(&result);
+    /* Document user properties accept short but not long integers. */
+    V_VT(&number) = VT_I2;
+    V_I2(&number) = (SHORT)value;
+    hr = outline_settings(This, &properties);
+    if (SUCCEEDED(hr)) hr = outline_setting_name(This, kind, &name);
+    if (SUCCEEDED(hr)) hr = outline_has_setting(properties, &name, &exists);
+    if (SUCCEEDED(hr) && exists) {
+        hr = AutoWrap(DISPATCH_METHOD, &result, properties, L"setPropertyValue", 2, number, name);
+    } else if (SUCCEEDED(hr)) {
+        V_VT(&attributes) = VT_I2;
+        V_I2(&attributes) = 128; /* PropertyAttribute.REMOVABLE */
+        hr = AutoWrap(DISPATCH_METHOD, &result, properties, L"addProperty", 3, number, attributes, name);
+    }
+    VariantClear(&result);
+    VariantClear(&name);
+    if (properties) IDispatch_Release(properties);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryColumn(
         I_Outline* iface,
         XlSummaryColumn *RHS)
 {
-    TRACE_IN;
-    *RHS = xlSummaryOnLeft;
-    TRACE_OUT;
-    return S_OK;
+    LONG value;
+    HRESULT hr;
+    if (!iface || !RHS) return E_POINTER;
+    hr = outline_get_setting(OUTLINE_THIS(iface), L"SummaryColumn", xlSummaryOnRight, &value);
+    if (SUCCEEDED(hr)) *RHS = value;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_put_SummaryColumn(
         I_Outline* iface,
         XlSummaryColumn RHS)
 {
-    TRACE("\n");
-    return S_OK;
+    if (!iface) return E_POINTER;
+    if (RHS != xlSummaryOnLeft && RHS != xlSummaryOnRight) return E_INVALIDARG;
+    return outline_put_setting(OUTLINE_THIS(iface), L"SummaryColumn", RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_get_SummaryRow(
         I_Outline* iface,
         XlSummaryRow *RHS)
 {
-    TRACE_IN;
-    *RHS = xlSummaryAbove;
-    TRACE_OUT;
-    return S_OK;
+    LONG value;
+    HRESULT hr;
+    if (!iface || !RHS) return E_POINTER;
+    hr = outline_get_setting(OUTLINE_THIS(iface), L"SummaryRow", xlSummaryBelow, &value);
+    if (SUCCEEDED(hr)) *RHS = value;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Outline_put_SummaryRow(
         I_Outline* iface,
         XlSummaryRow RHS)
 {
-    TRACE_NOTIMPL;
-    return S_OK;
+    if (!iface) return E_POINTER;
+    if (RHS != xlSummaryAbove && RHS != xlSummaryBelow) return E_INVALIDARG;
+    return outline_put_setting(OUTLINE_THIS(iface), L"SummaryRow", RHS);
 }
 
 

@@ -29,6 +29,23 @@ Check columns.getByIndex(1).IsVisible = True, "Omitted rows allow column-only up
 outline.ShowLevels 0, 1
 Check rows.getByIndex(1).IsVisible = True, "Zero leaves rows unchanged"
 Check columns.getByIndex(1).IsVisible = False, "Collapse columns only"
+' SummaryRow/SummaryColumn default to Excel's Below/Right and persist per sheet.
+Check outline.SummaryRow = 1, "SummaryRow defaults to xlSummaryBelow"
+Check outline.SummaryColumn = -4152, "SummaryColumn defaults to xlSummaryOnRight"
+outline.SummaryRow = 0
+outline.SummaryColumn = -4131
+Check excel.Sheets(1).Outline.SummaryRow = 0, "SummaryRow persists for the sheet"
+Check excel.Sheets(1).Outline.SummaryColumn = -4131, "SummaryColumn persists for the sheet"
+Check document.getDocumentProperties().getUserDefinedProperties().getPropertyValue("UniOffice.Outline.SummaryRow." & sheet.getName()) = 0, "SummaryRow is stored in the document"
+Dim failed
+On Error Resume Next
+outline.SummaryRow = 5
+failed = Err.Number <> 0
+Err.Clear
+On Error GoTo 0
+Check failed, "Invalid SummaryRow is rejected"
+outline.SummaryRow = 1
+Check excel.Sheets(1).Outline.SummaryRow = 1, "SummaryRow returns to Below"
 Set outline = Nothing
 Set rows = Nothing
 Set columns = Nothing
