@@ -1,7 +1,7 @@
 %%{init: {"theme":"base","fontFamily":"Arial, sans-serif","htmlLabels":false,"deterministicIds":true,"deterministicIDSeed":"unioffice-architecture","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryTextColor":"#172033","lineColor":"#64748b","clusterBkg":"#f8fafc","clusterBorder":"#cbd5e1"},"flowchart":{"htmlLabels":false,"curve":"basis","nodeSpacing":35,"rankSpacing":40,"padding":18}}}%%
 flowchart TB
-    accTitle: UniOffice architecture and planned Wine COM to UNO bridge
-    accDescr: Solid green connections show the working Excel to Windows OpenOffice path. Dashed blue connections show planned Word, backend selection, a Wine PE proxy and ELF adapter, Linux offices and further providers.
+    accTitle: UniOffice architecture and planned Wine bridge to LibreOffice
+    accDescr: Solid green connections show the verified Excel and Windows Apache OpenOffice baseline. Dashed blue connections show planned Word, backend selection, a Wine PE proxy and ELF adapter, the priority Linux LibreOffice backend and further providers.
 
     CLIENT(["Windows client under Wine<br/>1C · VBScript · native COM"])
 
@@ -13,7 +13,7 @@ flowchart TB
 
     SELECT{"Backend selection<br/>Planned"}
     WINCOM["Windows Automation<br/>com.sun.star.ServiceManager"]
-    WINOFFICE["Windows Apache OpenOffice<br/>under Wine · Calc verified"]
+    WINOFFICE["Apache OpenOffice 4.1.17<br/>Verified Windows baseline"]
     OTHER["Additional API adapters<br/>Planned"]
 
     subgraph HOST["unioffice-host · planned Wine bridge"]
@@ -22,7 +22,7 @@ flowchart TB
         UNIXLIB["UNO adapter · Linux ELF .so<br/>Native UNO runtime<br/>Object references + values"]
     end
 
-    LINUXOFFICE["Linux LibreOffice / OpenOffice<br/>Calc + Writer<br/>Separate office process"]
+    LINUXOFFICE["Linux LibreOffice<br/>Calc + Writer · priority backend<br/>Separate office process"]
     FUTURE["Other office suites<br/>Future integrations"]
 
     CLIENT -->|COM| EXCEL

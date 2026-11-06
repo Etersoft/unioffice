@@ -1,36 +1,40 @@
 # UniOffice
 
-UniOffice lets existing Windows applications automate an Excel-compatible COM
-interface backed by OpenOffice. Clients create `Excel.Application`; UniOffice
-translates the covered operations into office UNO calls through Automation.
+UniOffice aims to let existing Windows applications use **LibreOffice** through
+Microsoft-compatible Excel and Word COM interfaces. The current implementation
+provides an Excel Automation subset; Word support is planned.
 
-The working backend is **Windows Apache OpenOffice 4.1.17 x86**, under native
-Windows or Wine. **Linux LibreOffice/OpenOffice integration remains open**: the
-current DLL expects a registered Windows `com.sun.star.ServiceManager`.
+**LibreOffice is the priority backend for further development.** The completed
+validation baseline uses **Windows Apache OpenOffice 4.1.17 x86**, under native
+Windows or Wine. LibreOffice acceptance and the Linux UNO integration are still
+pending; the current DLL expects a registered Windows `com.sun.star.ServiceManager`.
 See the [Linux bridge findings and plan](docs/linux-office-bridge.md).
 
 ## Project direction
 
 The long-term goal is broad office-suite support with both **Excel and Word
 Automation**. Develop office-specific adapters behind shared compatibility
-infrastructure, starting with the working Windows backend and Linux UNO bridge.
+infrastructure, building on the verified Windows baseline and prioritizing the
+Linux LibreOffice UNO bridge.
 Word support is planned; the current Word component is still a stub. See the
 [multi-office and Word roadmap](docs/roadmap.md) for the proposed stages and
 architecture. The verified capabilities below describe today's implementation.
 
 ## Architecture: current path and planned Wine proxy
 
-![UniOffice architecture: the working Excel to Windows OpenOffice path, with planned Word, Wine COM/UNO proxy, native Linux UNO adapter and other office backends.](docs/diagrams/architecture.svg)
+![UniOffice architecture: the verified Excel baseline and planned Word, Wine COM/UNO proxy, Linux LibreOffice backend and other office adapters.](docs/diagrams/architecture.png)
 
-**Green / solid:** the verified Excel path. **Blue / dashed:** planned components
-and connections. The proposed Wine proxy provides COM dispatch in a PE DLL;
+**Green / solid:** the verified Excel/Apache OpenOffice baseline. **Blue / dashed:**
+planned LibreOffice integration, Word and shared infrastructure. The proposed
+Wine proxy provides COM dispatch in a PE DLL;
 its native ELF companion uses the Linux UNO runtime to reach the office over UNO/URP.
 The office runs in a separate process. The existing Windows backend also works
 in native Windows, where the Wine/Unix route is unnecessary.
 
 The bridge is shared by Excel and future Word support; office-specific
 compatibility stays in their adapters. Backend selection and additional office
-adapters are planned. See the [editable Mermaid source](docs/diagrams/architecture.mmd),
+adapters are planned. See the [vector diagram](docs/diagrams/architecture.svg),
+[editable Mermaid source](docs/diagrams/architecture.mmd),
 [bridge design](docs/linux-office-bridge.md) and [roadmap](docs/roadmap.md).
 
 ## Status and supported use
@@ -48,7 +52,7 @@ and MSI installation, repair, coexistence and both removal orders:
 | PE32 / MSI32 | MinGW on Fedora | Windows 10 Pro 22H2 x64; Wine@Etersoft 11.20.1-eter1 |
 | PE64 / MSI64 | winegcc on builder64 | Windows 10 Pro 22H2 x64; Wine@Etersoft 11.20.1-eter1 |
 
-Both use the same x86 OpenOffice backend. Native functional suites also passed
+Both were verified with the same x86 Apache OpenOffice backend. Native functional suites also passed
 under a separate standard user with a fresh profile. These results cover the
 stated configurations and scenarios, rather than full Microsoft Excel coverage.
 Evidence: [native Windows](docs/native-windows-results.md) and
@@ -61,7 +65,8 @@ Choose the package by the **client process bitness**:
 - 32-bit client: `MSI/build/mingw-32/unioffice.msi`.
 - 64-bit client: `MSI/build/winegcc-64/unioffice.msi`.
 
-Install Windows OpenOffice first and complete its first-start setup in the
+To reproduce the accepted baseline, install Windows Apache OpenOffice 4.1.17 x86
+first and complete its first-start setup in the
 runtime user's profile. Install UniOffice with administrator privileges;
 Automation itself runs without elevation. Both packages can coexist and MSI
 handles COM registration. Older per-user packages must be removed under their
@@ -111,16 +116,16 @@ for example `make clean TOOLCHAIN=winegcc`.
 ## Build MSI packages
 
 Package on builder64 after building the matching DLL/TLB. Packaging needs
-Python 3, Wine, a configured disposable `WINEPREFIX`, and a graphical session
-or Xvfb. Set `WINE` to the chosen loader, for example
+Python 3, Wine, a configured disposable `WINEPREFIX`, and a graphical session.
+Set `WINE` to the chosen loader, for example
 `/usr/lib/wine-etersoft/wine64`, then run:
 
 ```sh
 # Build and package winegcc PE64.
-xvfb-run -a make msi TOOLCHAIN=winegcc
+make msi TOOLCHAIN=winegcc
 
 # Package the MinGW PE32 artifacts already built on Fedora.
-xvfb-run -a make -C MSI EXCEL_BUILD=../unioffice_excel/build/mingw-32 \
+make -C MSI EXCEL_BUILD=../unioffice_excel/build/mingw-32 \
   OUTPUT=build/mingw-32/unioffice.msi
 ```
 
@@ -141,21 +146,22 @@ in a dedicated Windows test account:
 # Select one installed architecture with -Bits 32 or -Bits 64.
 ```
 
-For Wine, use an isolated prefix containing Windows OpenOffice and the matching
-UniOffice package. The existing PE32 fixture on builder64 is shown below:
+For the accepted Wine baseline, use an isolated prefix containing Windows
+Apache OpenOffice and the matching UniOffice package. The existing PE32 fixture
+on builder64 is shown below; run in a graphical session:
 
 ```sh
 mkdir -p "$HOME/tmp/claude"
 export TMPDIR="$HOME/tmp/claude"
 export WINEPREFIX="$HOME/tmp/claude/unioffice-aoo/prefix"
 export WINE=/usr/lib/wine-etersoft/wine64 CLIENT_BITS=32
-xvfb-run -a sh tests/run-openoffice-backend.sh
-xvfb-run -a sh tests/run-openoffice-backend.sh excel-backend.vbs 'UniOffice integration: PASS'
-xvfb-run -a python3 scripts/run-excel-suite.py --bits 32
+sh tests/run-openoffice-backend.sh
+sh tests/run-openoffice-backend.sh excel-backend.vbs 'UniOffice integration: PASS'
+python3 scripts/run-excel-suite.py --bits 32
 ```
 
-For PE64, select its own prefix, `CLIENT_BITS=64` and `--bits 64`. Direct backend
-MSI installation needs `SETUP_USED=1`; see [backend setup](docs/openoffice-4.1.17-results.md).
+For PE64, select its own prefix, `CLIENT_BITS=64` and `--bits 64`. Direct Apache
+OpenOffice MSI installation needs `SETUP_USED=1`; see [backend setup](docs/openoffice-4.1.17-results.md).
 Tests create documents and quit the office; close other office work first.
 
 The runners preserve the legacy assertions/CP1251 encoding and require complete

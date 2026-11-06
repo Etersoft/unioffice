@@ -3,6 +3,8 @@
 Inspected on 2026-11-06. The accepted Windows/Wine results use Windows Apache
 OpenOffice. A Linux office backend is still an open delivery requirement;
 this investigation does not establish runtime support for it.
+LibreOffice is now the priority target for the Linux bridge. Historical Apache
+OpenOffice evidence remains the validation baseline, not a LibreOffice result.
 
 ## Existing local work
 

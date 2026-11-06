@@ -2,7 +2,8 @@
 
 The long-term direction, confirmed on 2026-11-06, is to make UniOffice an office
 compatibility layer supporting multiple office suites and both Excel and Word
-Automation. Broad office coverage is a development goal; the current verified
+Automation. **LibreOffice is the priority suite for further development.**
+Broad office coverage is a development goal; the current verified
 delivery remains the Excel subset over Windows Apache OpenOffice 4.1.17.
 See [supported usage](supported-usage.md) for present capabilities.
 
@@ -14,7 +15,8 @@ infrastructure for activation, values, errors and object lifetimes. The planned
 backend boundary should accommodate:
 
 - The working Windows OpenOffice Automation backend.
-- Native Linux LibreOffice/OpenOffice through the proposed COM/UNO bridge.
+- Native Linux LibreOffice through the proposed COM/UNO bridge, with further
+  UNO-based suites following separate validation.
 - Further office suites through adapters to their available APIs.
 
 The current Excel code calls UNO through IDispatch directly; a general backend
@@ -39,7 +41,7 @@ alone does not establish Automation compatibility.
 
 1. Preserve the accepted Excel PE32/PE64 packages and tests as the baseline.
    Continue fixing reproducible defects in the existing workflows.
-2. Bring up the Linux UNO backend: rebuild the SDK client, validate a Calc cell
+2. Bring up the Linux LibreOffice UNO backend: rebuild the SDK client, validate a Calc cell
    round trip, add the COM frontend and run the existing Excel suites. Check a
    basic Writer document through the shared bridge before treating it as a
    general office bridge. Validate PE32/WOW64 and deployment separately.
