@@ -9,6 +9,31 @@ import tempfile
 import time
 
 
+# These are the assertions executed by the checked-in, noninteractive scripts.
+EXPECTED_SUCCESS = {1: 32, 2: 13, 3: 22, 4: 33, 5: 32, 6: 11, 7: 13}
+# The legacy scripts increment success once without logging an assertion here.
+COUNTER_EXCESS = {4: 1, 6: 1}
+
+
+def result_errors(number, totals, report, returncode):
+    """Require complete assertion evidence, independently of cscript's exit code."""
+    errors = []
+    expected = EXPECTED_SUCCESS[number]
+    if returncode:
+        errors.append(f'script exited with status {returncode}')
+    if len(totals) != 2 or any(not re.fullmatch(r'[0-9]+', value) for value in totals):
+        errors.append('missing or malformed completion counters')
+    elif (int(totals[0]), int(totals[1])) != (expected + COUNTER_EXCESS.get(number, 0), 0):
+        errors.append(f'expected completion counters {expected + COUNTER_EXCESS.get(number, 0)} 0')
+    success = report.count(b'[SUCCESS]')
+    failed = report.count(b'[FAILED]')
+    if success != expected:
+        errors.append(f'expected {expected} successful assertions, got {success}')
+    if failed:
+        errors.append(f'report contains {failed} failed assertion(s)')
+    return errors
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--tests', nargs='+', type=int, choices=range(1, 8), default=list(range(1, 8)))
@@ -44,18 +69,18 @@ def main():
             try:
                 time.sleep(3)
                 with (test_dir / 'ready.log').open('wb') as ready_log:
-                    subprocess.run([loader, script_host, '//nologo',
-                                    'Z:' + str(root / 'tests/openoffice-ready.vbs')],
-                                   stdout=ready_log, stderr=subprocess.STDOUT, timeout=60, check=False)
-                if b'OpenOffice readiness: PASS' not in (test_dir / 'ready.log').read_bytes():
+                    ready = subprocess.run([loader, script_host, '//nologo',
+                                            'Z:' + str(root / 'tests/openoffice-ready.vbs')],
+                                           stdout=ready_log, stderr=subprocess.STDOUT, timeout=60, check=False)
+                if ready.returncode or b'OpenOffice readiness: PASS' not in (test_dir / 'ready.log').read_bytes():
                     print(f'test_{number}: backend not ready; inspect ready.log', flush=True)
                     failures += 1
                     break
                 with (test_dir / 'script.log').open('wb') as script_log:
-                    subprocess.run([loader, script_host, '//nologo',
-                                    '/E:vbscript', source.name, str(number), '0', '0'],
-                                   cwd=test_dir, stdout=script_log, stderr=subprocess.STDOUT,
-                                   timeout=60, check=False)
+                    result = subprocess.run([loader, script_host, '//nologo',
+                                             '/E:vbscript', source.name, str(number), '0', '0'],
+                                            cwd=test_dir, stdout=script_log, stderr=subprocess.STDOUT,
+                                            timeout=60, check=False)
             except subprocess.TimeoutExpired:
                 print(f'test_{number}: TIMEOUT', flush=True)
                 failures += 1
@@ -65,13 +90,20 @@ def main():
                 office.terminate()
         report = (test_dir / 'otchet.txt').read_bytes()
         done = test_dir / 'suite.done'
-        totals = done.read_text().split() if done.exists() else []
+        try:
+            totals = done.read_text(encoding='ascii').split() if done.exists() else []
+        except (OSError, UnicodeError) as error:
+            print(f'test_{number}: cannot read completion counters: {error}', flush=True)
+            totals = []
         print(f'test_{number}: totals={totals}; markers={report.count(b"[SUCCESS]")} success, '
               f'{report.count(b"[FAILED]")} failed', flush=True)
         for line in report.splitlines():
             if b'[FAILED]' in line:
                 print(line.decode('cp1251', errors='replace'), flush=True)
-        if len(totals) != 2 or totals[1] != '0':
+        errors = result_errors(number, totals, report, result.returncode)
+        if errors:
+            for error in errors:
+                print(f'test_{number}: FAILED: {error}', flush=True)
             failures += 1
     return 1 if failures else 0
 
