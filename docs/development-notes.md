@@ -21,6 +21,12 @@
 исправлена причина закрытия LATER на FIXED. Полезные исторические решения
 сохранены, частичные реализации и клиентские случаи без нового воспроизведения
 отмечены отдельно: [публичный отчёт](issue-audit-2026-11-06.md).
+Этап 2026-11-06 по переоткрытым функциям: реализованы Range.Hidden,
+CurrentRegion, NumberFormat, FormulaR1C1/FormulaLocal, UsedRange,
+PrintArea/PrintTitleRows, OutlineFont, Saved, CentimetersToPoints,
+ScreenUpdating/Interactive, Names.Add/Name, ширина листа из backend и
+Shapes.AddLine. Крупные или неясные задачи без проверяемого аналога в UNO
+закрыты WONTFIX по решению пользователя: [отчёт](function-gaps-results.md).
 Нативная Windows10 проверена: найдены и исправлены borrowed ITypeInfo
 (4c951d8) и per-user MSI context при общесистемных файлах/COM (0559f6b).
 Обе архитектуры проходят исходные тесты без повышения прав, а итоговые MSI —

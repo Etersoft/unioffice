@@ -34,6 +34,7 @@ tested; the reports retain their original environments and coverage limits.
 | Row/column views | [Bounded Range collections](range-rows-columns-results.md), [Worksheet/Application collections](sheet-rows-columns-results.md) |
 | Range enumeration | [Lazy traversal, independent cursors and COM validation](range-enumeration-results.md) |
 | Application interface | [Published dual-interface ABI](application-interface-results.md) |
+| Reopened function gaps | [Range, sheet, workbook, application, names and shapes members](function-gaps-results.md) |
 
 The [working notes](development-notes.md) also preserve the detailed work log,
 including superseded Winelib experiments. The current outputs are Windows PE
