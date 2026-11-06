@@ -146,6 +146,8 @@ typedef struct
 #define SHEETS_SHEETS(x) ((I_Sheets*)&(x)->psheetsVtbl)
 #define SHEETS_ENUM(x) ((IEnumVARIANT*)&(x)->penumeratorVtbl)
 
+typedef enum { RANGE_CELLS, RANGE_ROWS, RANGE_COLUMNS } RangeCollectionKind;
+
 typedef struct
 {
     const I_RangeVtbl *prangeVtbl;
@@ -153,6 +155,7 @@ typedef struct
     IDispatch *pOORange;                /*Pointer to OO Range*/
     IDispatch *pwsheet;                 /*pointer to worksheet*/
     int is_release;
+    RangeCollectionKind collection_kind;
 } RangeImpl;
 
 typedef struct

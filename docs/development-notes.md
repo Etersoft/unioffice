@@ -477,6 +477,32 @@ markers156/0. Outputs ~/tmp/claude/unioffice-excel-suite-0lyrmghp (32), -_ucysqo
 повторялся (registration/IDL unchanged). Deployed DLL совпали с outputs побайтно.
 Нативная Windows не проверялась; нового подтверждённого Wine defect нет.
 
+## Range.Rows/Columns: границы и тип коллекции (2026-11-06)
+
+Раньше get_Rows/get_Columns вызывали EntireRow/EntireColumn: терялись границы
+исходного диапазона, Count/Item следовали cell rules. PE64 red probe получил
+49 failures в71 выполненной проверке. Теперь отдельные views сохраняют UNO
+rectangle и сильную ссылку на worksheet. Private collection_kind управляет
+Count и Item/default selection: B2:D4.Rows(2) → B3:D3; Columns("AA") → AB2:AB4.
+Второй Item index запрещён (E_INVALIDARG), положительные offsets могут выходить
+за исходный rectangle. Cells создаёт отдельный cell view, не меняя source.
+Group/Ungroup используют collection axis; прежняя width heuristic остаётся
+только для обычных cell ranges. IDL/IIDs/public vtables не менялись; private
+header forced rebuild пересобрал все зависимые объекты на обоих хостах.
+
+Final PE32/PE64: new VBS86 PASS каждый, C COM0 failures (native slots, NULL,
+Count/coordinates, byref Double, BSTR conversion/overflow, exact HRESULT/VT_EMPTY,
+ignored result). Прежние Cells49/Item36/ownership/parent/Worksheet/Application
+probes PASS. Все7 legacy tests последовательно оба: counters158/0, markers156/0,
+включая Group/Ungroup. Outputs ~/tmp/claude/unioffice-excel-suite-x7x89q44 (32),
+-bqcaa4i6 (64). MSI32/MSI64 rebuilt, metadata/Unicode0; lifecycle не повторялся
+(registration/IDL unchanged). Fixture DLLs побайтно совпали с outputs.
+
+Отчёт: [Rows/Columns](range-rows-columns-results.md). Это single-rectangle Range
+selection/Count; Worksheet/Application Rows/Columns, enumeration, string slices,
+nonpositive offsets, полный набор value/format/delete/insert semantics и native
+Windows oracle не проверены. Нового подтверждённого Wine defect нет.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -656,8 +682,9 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
    подтверждено; dashed/dotted styles дают E_NOTIMPL, включая aggregate/Value.
    Для поддержки пунктиров нужен отдельный проверенный backend с extended API.
    Worksheet.Range/Cells normalization и parent lifetime проверены и исправлены.
-   Range.Item для cell ranges реализован; Rows/Columns collection semantics,
-   multi-area и прочие normalization sites остаются отдельными возможными работами.
+   Range.Item и single-rectangle Range.Rows/Columns selection/Count реализованы;
+   Worksheet/Application Rows/Columns, multi-area, string slices, enumeration
+   и прочие normalization sites остаются отдельными возможными работами.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
 

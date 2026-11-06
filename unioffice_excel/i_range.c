@@ -134,6 +134,26 @@ static ULONG WINAPI MSO_TO_OO_I_Range_Release(
 }
 
 /*** I_Range methods ***/
+/* A view owns the same UNO rectangle and worksheet without mutating its source. */
+static HRESULT range_collection_view(I_Range *iface, RangeCollectionKind kind,
+        IDispatch **result)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    I_Range *view = NULL;
+    HRESULT hr;
+    if (!result) return E_POINTER;
+    *result = NULL;
+    hr = _I_RangeConstructor((void**)&view);
+    if (FAILED(hr)) return hr;
+    I_Range_AddRef(view);
+    hr = MSO_TO_OO_I_Range_Initialize3(view, This->pOORange, This->pwsheet, NULL);
+    if (SUCCEEDED(hr)) {
+        ((RangeImpl*)view)->collection_kind = kind;
+        *result = (IDispatch*)view;
+    } else I_Range_Release(view);
+    return hr;
+}
+
 /* Work on owned variants: automation arguments can point into caller storage. */
 static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
         VARIANT column_index, IDispatch **result)
@@ -142,7 +162,7 @@ static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
     I_Range *cell = NULL;
     IDispatch *all_cells = NULL;
     VARIANT row, column;
-    struct CELL_COORD coordinates;
+    struct CELL_COORD coordinates, last;
     LONG start_row, start_column, end_row, end_column, width;
     UINT index, length;
     WCHAR letter;
@@ -155,6 +175,19 @@ static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
     hr = VariantCopyInd(&row, &row_index);
     if (SUCCEEDED(hr)) hr = VariantCopyInd(&column, &column_index);
     if (FAILED(hr)) goto done;
+    if (This->collection_kind != RANGE_CELLS) {
+        if (V_VT(&column) != VT_ERROR || V_ERROR(&column) != DISP_E_PARAMNOTFOUND) {
+            hr = E_INVALIDARG;
+            goto done;
+        }
+        if (This->collection_kind == RANGE_COLUMNS) {
+            VariantClear(&column);
+            column = row;
+            VariantInit(&row);
+            V_VT(&row) = VT_I4;
+            V_I4(&row) = 1;
+        }
+    }
     hr = VariantChangeTypeEx(&row, &row, 0, 0, VT_I4);
     if (FAILED(hr)) goto done;
     if (V_I4(&row) < 1) { hr = E_INVALIDARG; goto done; }
@@ -163,7 +196,7 @@ static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
             &end_row, &end_column);
     if (FAILED(hr)) goto done;
     if (V_VT(&column) == VT_ERROR && V_ERROR(&column) == DISP_E_PARAMNOTFOUND) {
-        width = end_column - start_column + 1;
+        width = This->collection_kind == RANGE_ROWS ? 1 : end_column - start_column + 1;
         if (width < 1) { hr = E_UNEXPECTED; goto done; }
         coordinates.x = (V_I4(&row) - 1) % width + 1;
         coordinates.y = (V_I4(&row) - 1) / width + 1;
@@ -206,8 +239,12 @@ static HRESULT range_item_cell(I_Range *iface, VARIANT row_index,
     hr = _I_RangeConstructor((void**)&cell);
     if (FAILED(hr)) goto done;
     I_Range_AddRef(cell);
-    hr = MSO_TO_OO_I_Range_Initialize(cell, (I_Range*)all_cells, coordinates, coordinates);
+    last = coordinates;
+    if (This->collection_kind == RANGE_ROWS) last.x = end_column + 1;
+    if (This->collection_kind == RANGE_COLUMNS) last.y = end_row + 1;
+    hr = MSO_TO_OO_I_Range_Initialize(cell, (I_Range*)all_cells, coordinates, last);
     if (SUCCEEDED(hr)) {
+        ((RangeImpl*)cell)->collection_kind = This->collection_kind;
         *result = (IDispatch*)cell;
         cell = NULL;
     }
@@ -234,7 +271,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
     hr = VariantCopyInd(&row, &varRowIndex);
     if (FAILED(hr)) return hr;
     /* Worksheet.Range still uses the legacy named-range default lookup. */
-    if (V_VT(&row) == VT_BSTR) {
+    if (((RangeImpl*)iface)->collection_kind == RANGE_CELLS && V_VT(&row) == VT_BSTR) {
         hr = _I_RangeConstructor((void**)&cell);
         if (SUCCEEDED(hr)) {
             I_Range_AddRef(cell);
@@ -1374,15 +1411,14 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Count(
     LONG startrow, startcolumn, endrow, endcolumn,w,h;
     TRACE_IN;
 
+    if (!lcount) return E_POINTER;
     hres = MSO_TO_OO_GetRangeAddress(iface, &startrow, &startcolumn, &endrow, &endcolumn);
-    if (FAILED(hres)) {
-        TRACE("ERROR when GetRangeAddress\n");
-        return hres;
-    }
+    if (FAILED(hres)) return hres;
     w = endcolumn - startcolumn + 1;
     h = endrow - startrow + 1;
-
-    *lcount = w*h;
+    if (((RangeImpl*)iface)->collection_kind == RANGE_ROWS) *lcount = h;
+    else if (((RangeImpl*)iface)->collection_kind == RANGE_COLUMNS) *lcount = w;
+    else *lcount = w*h;
 
     TRACE_OUT;
     return S_OK;
@@ -2564,13 +2600,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Cells(
         I_Range* iface,
         IDispatch **RHS)
 {
-    TRACE_IN;
-
-    *RHS = (IDispatch*)iface;
-    I_Range_AddRef(*RHS);
-
-    TRACE_OUT;
-    return S_OK;
+    return range_collection_view(iface, RANGE_CELLS, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Characters(
@@ -2608,8 +2638,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Columns(
         I_Range* iface,
         IDispatch **RHS)
 {
-    TRACE(" ----> get_EntireColumn\n");
-    return I_Range_get_EntireColumn(iface, RHS);;
+    return range_collection_view(iface, RANGE_COLUMNS, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Consolidate(
@@ -3198,6 +3227,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Group(
         }
         break;
     }
+    /* Collection views retain their rectangle; its width no longer implies the axis. */
+    if (This->collection_kind != RANGE_CELLS) {
+        V_VT(&param2) = VT_I4;
+        V_I4(&param2) = This->collection_kind == RANGE_ROWS ? toROWS : toCOLUMNS;
+    }
     hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"group", 2, param2, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when group \n");
@@ -3728,8 +3762,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Rows(
         I_Range* iface,
         IDispatch **RHS)
 {
-    TRACE(" ----> get_EntireRow\n");
-    return I_Range_get_EntireRow(iface, RHS);
+    return range_collection_view(iface, RANGE_ROWS, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Run(
@@ -4019,6 +4052,11 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Ungroup(
             V_I4(&param2) = toCOLUMNS;
         }
         break;
+    }
+    /* Collection views retain their rectangle; its width no longer implies the axis. */
+    if (This->collection_kind != RANGE_CELLS) {
+        V_VT(&param2) = VT_I4;
+        V_I4(&param2) = This->collection_kind == RANGE_ROWS ? toROWS : toCOLUMNS;
     }
     hres = AutoWrap(DISPATCH_METHOD, &vret, wsh->pOOSheet, L"ungroup", 2, param2, param1);
     if (FAILED(hres)) {
@@ -4360,19 +4398,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
 
     switch(dispIdMember)
     {
+    case dispid_range_rows:
+    case dispid_range_columns:
     case dispid_range_cells:
         if (!pDispParams) return E_POINTER;
+        if (pVarResult) VariantInit(pVarResult);
+        if (dispIdMember == dispid_range_rows)
+            hres = MSO_TO_OO_I_Range_get_Rows(iface, &dret);
+        else if (dispIdMember == dispid_range_columns)
+            hres = MSO_TO_OO_I_Range_get_Columns(iface, &dret);
+        else hres = MSO_TO_OO_I_Range_get_Cells(iface, &dret);
+        if (FAILED(hres)) return hres;
         if (!pDispParams->cArgs && (wFlags & (DISPATCH_PROPERTYGET | DISPATCH_METHOD))) {
-            if (!pVarResult) return E_POINTER;
-            VariantInit(pVarResult);
-            hres = MSO_TO_OO_I_Range_get_Cells(iface, &dret);
-            if (SUCCEEDED(hres)) {
-                V_VT(pVarResult) = VT_DISPATCH;
-                V_DISPATCH(pVarResult) = dret;
-            }
-            return hres;
+            V_VT(&vRet) = VT_DISPATCH;
+            V_DISPATCH(&vRet) = dret;
+            if (pVarResult) *pVarResult = vRet;
+            else VariantClear(&vRet);
+            return S_OK;
         }
-        /* Indexed Cells uses the same cell selection and assignment as Item. */
+        hres = IDispatch_Invoke(dret, dispid_range_item, riid, lcid, wFlags,
+                pDispParams, pVarResult ? pVarResult : &vRet, pExcepInfo, puArgErr);
+        IDispatch_Release(dret);
+        VariantClear(&vRet);
+        return hres;
     case dispid_range_item:
     case dispid_range__default:
         /* Keep the published LCID/vtable signatures, but hide LCID from scripts. */
@@ -4804,6 +4852,7 @@ extern HRESULT _I_RangeConstructor(LPVOID *ppObj)
     range->pOORange = NULL;
     range->pwsheet = NULL;
     range->is_release = 1;
+    range->collection_kind = RANGE_CELLS;
 
     *ppObj = &range->prangeVtbl;
     

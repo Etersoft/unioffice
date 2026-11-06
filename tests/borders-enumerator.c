@@ -246,6 +246,87 @@ done:
     VariantClear(&row);
 }
 
+/* The supplied source is A1:D4. Exercise native slots as well as Invoke. */
+static void range_collection_contract(IDispatch *dispatch)
+{
+    I_Range *range = NULL, *view = NULL, *selected = NULL;
+    IDispatch *collection = NULL, *cells = NULL;
+    VARIANT index, missing, result, arguments[2];
+    DOUBLE offset = 2;
+    LONG count = 0;
+    UINT kind;
+    VariantInit(&index);
+    VariantInit(&missing);
+    VariantInit(&result);
+    V_VT(&missing) = VT_ERROR;
+    V_ERROR(&missing) = DISP_E_PARAMNOTFOUND;
+    CHECK(IDispatch_QueryInterface(dispatch, &IID_I_Range, (void**)&range) == S_OK);
+    if (!range) return;
+    CHECK(I_Range_get_Rows(range, NULL) == E_POINTER);
+    CHECK(I_Range_get_Columns(range, NULL) == E_POINTER);
+    CHECK(I_Range_get_Cells(range, NULL) == E_POINTER);
+    CHECK(I_Range_get_Count(range, NULL) == E_POINTER);
+    for (kind = 0; kind < 2; ++kind) {
+        if (kind == 0) CHECK(I_Range_get_Rows(range, &collection) == S_OK);
+        else CHECK(I_Range_get_Columns(range, &collection) == S_OK);
+        if (!collection) continue;
+        CHECK(IDispatch_QueryInterface(collection, &IID_I_Range, (void**)&view) == S_OK);
+        if (!view) { IDispatch_Release(collection); collection = NULL; continue; }
+        CHECK(I_Range_get_Count(view, &count) == S_OK && count == 4);
+        V_VT(&index) = VT_R8 | VT_BYREF;
+        V_R8REF(&index) = &offset;
+        CHECK_HR(I_Range_get_Item(view, index, missing, 0, &result), S_OK);
+        CHECK(offset == 2);
+        if (V_VT(&result) == VT_DISPATCH && V_DISPATCH(&result)) {
+            CHECK(IDispatch_QueryInterface(V_DISPATCH(&result), &IID_I_Range, (void**)&selected) == S_OK);
+            if (selected) {
+                CHECK(I_Range_get_Row(selected) == (kind == 0 ? 2 : 1));
+                CHECK(I_Range_get_Column(selected) == (kind == 0 ? 1 : 2));
+                CHECK(I_Range_get_Count(selected, &count) == S_OK && count == 1);
+                CHECK(I_Range_get_Cells(selected, &cells) == S_OK && cells);
+                I_Range_Release(selected);
+                selected = NULL;
+                if (cells) {
+                    CHECK(IDispatch_QueryInterface(cells, &IID_I_Range, (void**)&selected) == S_OK);
+                    if (selected) {
+                        CHECK(I_Range_get_Count(selected, &count) == S_OK && count == 4);
+                        I_Range_Release(selected);
+                        selected = NULL;
+                    }
+                    IDispatch_Release(cells);
+                    cells = NULL;
+                }
+            }
+        } else CHECK(FALSE);
+        VariantClear(&result);
+        CHECK_HR(I_Range_get_Item(view, index, index, 0, &result), E_INVALIDARG);
+        CHECK(V_VT(&result) == VT_EMPTY && offset == 2);
+        V_VT(&index) = VT_BSTR;
+        V_BSTR(&index) = SysAllocString(kind == 0 ? L"bad-row" : L"ZZZZZZZZZZZZZZ");
+        CHECK_HR(I_Range_get_Item(view, index, missing, 0, &result),
+                kind == 0 ? DISP_E_TYPEMISMATCH : DISP_E_OVERFLOW);
+        CHECK(V_VT(&result) == VT_EMPTY && V_VT(&index) == VT_BSTR);
+        VariantClear(&index);
+        V_VT(&index) = VT_I4;
+        V_I4(&index) = 0;
+        CHECK_HR(I_Range_get_Item(view, index, missing, 0, &result), E_INVALIDARG);
+        CHECK(V_VT(&result) == VT_EMPTY);
+        arguments[0] = arguments[1] = index;
+        CHECK_HR(invoke(dispatch, kind == 0 ? L"Rows" : L"Columns",
+                DISPATCH_PROPERTYGET, arguments, 2, &result), E_INVALIDARG);
+        CHECK(V_VT(&result) == VT_EMPTY);
+        CHECK_HR(invoke(dispatch, kind == 0 ? L"Rows" : L"Columns",
+                DISPATCH_METHOD | DISPATCH_PROPERTYGET, NULL, 0, NULL), S_OK);
+        I_Range_Release(view);
+        view = NULL;
+        IDispatch_Release(collection);
+        collection = NULL;
+    }
+    CHECK(I_Range_get_Count(range, &count) == S_OK && count == 16);
+    VariantClear(&index);
+    I_Range_Release(range);
+}
+
 static void cells_dispatch_contract(IDispatch *owner)
 {
     LPOLESTR name = L"Cells";
@@ -350,6 +431,7 @@ int __cdecl main(void)
     REQUIRE(invoke(excel, L"Range", DISPATCH_PROPERTYGET, &argument, 1, &range) == S_OK);
     VariantClear(&argument);
     range_argument_contract(V_DISPATCH(&range));
+    range_collection_contract(V_DISPATCH(&range));
     REQUIRE(invoke(V_DISPATCH(&range), L"Borders", DISPATCH_PROPERTYGET, NULL, 0, &collection) == S_OK);
     REQUIRE(IDispatch_QueryInterface(V_DISPATCH(&collection), &IID_I_Borders, (void **)&borders) == S_OK);
     REQUIRE(I_Borders_get_Count(borders, &count) == S_OK && count > 3 && count < 65);
