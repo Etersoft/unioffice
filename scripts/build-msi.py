@@ -54,6 +54,13 @@ def main():
             if fields[0] == b'1251':
                 lines[2] = b'\t'.join(fields[1:])
                 archive.write_bytes(b'\r\n'.join(lines) + b'\r\n')
+        # The payload and COM registration are machine-wide. Without ALLUSERS,
+        # deployment as SYSTEM creates a per-user product other admins cannot repair.
+        properties = work / 'idt' / 'Property.idt'
+        rows = [row for row in properties.read_bytes().splitlines()
+                if not row.startswith(b'ALLUSERS\t')]
+        rows.append(b'ALLUSERS\t1')
+        properties.write_bytes(b'\r\n'.join(rows) + b'\r\n')
         if bits == 64:
             # Distinct identities allow independent install/uninstall of x86 and x64.
             component = work / 'idt' / 'Component.idt'

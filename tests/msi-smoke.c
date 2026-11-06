@@ -38,6 +38,9 @@ int __cdecl main(int argc, char **argv)
     int number = 0, bits = argc == 3 ? atoi(argv[2]) : 32;
     if ((argc != 2 && argc != 3) || (bits != 32 && bits != 64)) return 2;
     if (MsiOpenDatabaseA(argv[1], MSIDBOPEN_READONLY, &database)) return 3;
+    record = query_record(database, L"SELECT `Value` FROM `Property` WHERE `Property`='ALLUSERS'");
+    check_string(record, 1, L"1");
+    MsiCloseHandle(record);
     record = query_record(database, L"SELECT `Value` FROM `Property` WHERE `Property`='Manufacturer'");
     check_string(record, 1, L"\x041e\x0410\x041e \"Etersoft\"");
     MsiCloseHandle(record);
