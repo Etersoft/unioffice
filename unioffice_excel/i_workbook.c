@@ -391,39 +391,49 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Name(
         BSTR *retval)
 {
     WorkbookImpl *This = (WorkbookImpl*)iface;
-    VARIANT vRes, ooframe, oocontr;
-    HRESULT hres;
+    VARIANT url, title;
+    HRESULT hr;
     TRACE_IN;
 
-    VariantInit(&vRes);
-    VariantInit(&oocontr);
-    VariantInit(&ooframe);
-
-    hres = AutoWrap(DISPATCH_METHOD, &oocontr,This->pDoc, L"getCurrentController",0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when getCurrentController \n");
-        return hres;
+    if (!This || !retval) return E_POINTER;
+    *retval = NULL;
+    VariantInit(&url);
+    VariantInit(&title);
+    /* Excel names a workbook after its file, not after the window caption. */
+    hr = AutoWrap(DISPATCH_METHOD, &url, This->pDoc, L"getURL", 0);
+    if (SUCCEEDED(hr) && V_VT(&url) == VT_BSTR && SysStringLen(V_BSTR(&url))) {
+        const WCHAR *name = wcsrchr(V_BSTR(&url), L'/');
+        UINT length, i, n = 0;
+        char *bytes;
+        name = name ? name + 1 : V_BSTR(&url);
+        length = lstrlenW(name);
+        bytes = HeapAlloc(GetProcessHeap(), 0, length + 1);
+        if (!bytes) hr = E_OUTOFMEMORY;
+        for (i = 0; bytes && i < length; i++) {
+            if (name[i] == L'%' && i + 2 < length && iswxdigit(name[i + 1]) && iswxdigit(name[i + 2])) {
+                WCHAR hex[3] = {name[i + 1], name[i + 2], 0};
+                bytes[n++] = (char)wcstol(hex, NULL, 16);
+                i += 2;
+            } else bytes[n++] = (char)name[i];
+        }
+        if (bytes) {
+            int wide = MultiByteToWideChar(CP_UTF8, 0, bytes, n, NULL, 0);
+            *retval = SysAllocStringLen(NULL, wide);
+            if (*retval) MultiByteToWideChar(CP_UTF8, 0, bytes, n, *retval, wide);
+            else hr = E_OUTOFMEMORY;
+            HeapFree(GetProcessHeap(), 0, bytes);
+        }
+    } else {
+        hr = AutoWrap(DISPATCH_METHOD, &title, This->pDoc, L"getTitle", 0);
+        if (SUCCEEDED(hr) && V_VT(&title) == VT_BSTR) {
+            *retval = SysAllocString(V_BSTR(&title));
+            if (!*retval) hr = E_OUTOFMEMORY;
+        } else if (SUCCEEDED(hr)) hr = E_FAIL;
     }
-    hres = AutoWrap(DISPATCH_METHOD, &ooframe, V_DISPATCH(&oocontr), L"getFrame",0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when getFrame \n");
-        return hres;
-    }
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, V_DISPATCH(&ooframe), L"Title",0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when Title \n");
-        return hres;
-    }
-
-    *retval = SysAllocString(V_BSTR(&vRes));
-
-    VariantClear(&vRes);
-    VariantClear(&oocontr);
-    VariantClear(&ooframe);
-
+    VariantClear(&url);
+    VariantClear(&title);
     TRACE_OUT;
-    return S_OK;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Workbook_get_Names(
