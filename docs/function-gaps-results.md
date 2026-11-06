@@ -113,24 +113,64 @@ The new probes were not run against the original DLL; the earlier behaviour
 above comes from the source code. The AddLine causes were confirmed with
 temporary debug output. MSI packages were not rebuilt, and native Windows was not rerun at this stage.
 
-## Not implemented
+## Second stage: annulled issues and old defects
 
-Closed as WONTFIX, as agreed for large or unclear tasks:
+At the user's request, five of the six issues closed as WONTFIX above were
+implemented after all, and windowing behaviour was tested on the native
+Windows VM. Only `Workbook.Styles` ([#3674](https://bugs.etersoft.ru/show_bug.cgi?id=3674))
+remains WONTFIX: the requested scope ("getStyle") is unclear and implies a
+complete Styles/Style object model.
 
-- `Outline.SummaryRow`/`SummaryColumn` ([#2345](https://bugs.etersoft.ru/show_bug.cgi?id=2345)): UNO
-  sheet outlines have no summary-position setting to store or apply.
-- `Application.WindowState` ([#3609](https://bugs.etersoft.ru/show_bug.cgi?id=3609)): the container
-  window's `IsMaximized`/`IsMinimized` do not change in the headless fixture
-  without a window manager, so the behaviour cannot be verified.
-- `Workbook.PrintPreview` ([#3610](https://bugs.etersoft.ru/show_bug.cgi?id=3610)): Excel's preview is
-  modal user interaction; nothing about it can be checked headlessly.
-- `Workbook.Styles` ([#3674](https://bugs.etersoft.ru/show_bug.cgi?id=3674)): the requested scope
-  ("getStyle") is unclear and implies a complete Styles/Style object model.
-- `Range.PasteSpecial`/`Application.CutCopyMode` ([#2570](https://bugs.etersoft.ru/show_bug.cgi?id=2570)):
-  these require a system clipboard and dispatcher model.
-- Complete `Window`/`Windows` and `ActiveWindow` ([#2439](https://bugs.etersoft.ru/show_bug.cgi?id=2439)):
-  `Application.Windows` still returns `E_NOTIMPL`; it is a whole object model.
+| Member | Issue | Behaviour |
+| --- | --- | --- |
+| `Outline.SummaryRow`/`SummaryColumn` | [#2345](https://bugs.etersoft.ru/show_bug.cgi?id=2345) | The defaults are now Excel's (Below/Right); the getters used to return Above/Left. Values are validated and stored per sheet in the document's user-defined properties, so they survive saving. OpenOffice and LibreOffice (checked up to 26.8) have no summary-position setting and always draw buttons below/right. Document user properties reject `long` values, so the setting is stored as `short`. |
+| `Window`, `Windows`, `Application.ActiveWindow`/`Windows`, `Workbook.Windows`/`Activate` | [#2439](https://bugs.etersoft.ru/show_bug.cgi?id=2439) | `i_windows.c` was rewritten; IUnknown and the collection used to be stubs. A window is the frame/controller of one workbook. Implemented: collection Count/Item (by index or name)/default/For Each; Activate/ActivateNext/ActivatePrevious, ActiveCell, ActiveSheet, Selection/RangeSelection, Caption, Close, Display* view flags, GridlineColor, Zoom, ScrollRow/ScrollColumn, SmallScroll/LargeScroll, VisibleRange, FreezePanes, Split/SplitRow/SplitColumn (frozen panes), Left/Top/Width/Height and Usable* in points, Visible, WindowState, Index, Type, WindowNumber. Activate/Close were declared as property getters and Close required its optional arguments; the `Windows._NewEnum` DISPID was 4 instead of -4. Geometry uses the window's Win32 HWND (`getWindowHandle`, SetWindowPos/GetWindowRect) when available: VCL's `setPosSize` ignored moves right after a state change. `freezeAtPosition(0, 0)` leaves an empty frozen split, so unfreezing uses `splitAtPosition(0, 0)`. `getVisibleRange()` returns a struct, not a range. |
+| `Application.WindowState`, `Window.WindowState` | [#3609](https://bugs.etersoft.ru/show_bug.cgi?id=3609) | The container window's `IsMaximized`/`IsMinimized`. LibreOffice has one top window per document: Application.WindowState reads the active workbook's window and sets all of them. |
+| `PrintPreview` (Workbook, Worksheet, Sheets, Range, Window) | [#3610](https://bugs.etersoft.ru/show_bug.cgi?id=3610) | `.uno:PrintPreview`, then wait (processing messages) until the preview closes, since Excel's preview is modal. The AOO preview controller does not implement XServiceInfo, so any controller that does not confirm SpreadsheetView counts as preview. A document without a visible view never enters preview, and the call then fails instead of silently returning. |
+| `Range.PasteSpecial`, `Application.CutCopyMode` | [#2570](https://bugs.etersoft.ru/show_bug.cgi?id=2570) | `.uno:InsertContents` with Excel's paste types All, Values, Formulas, Formats and Comments, the Add/Subtract/Multiply/Divide operations, SkipBlanks and Transpose. Types without an exact backend counterpart (column widths, validation, all except borders, number formats only) return `E_NOTIMPL`. `Range.Copy` to the clipboard sets `xlCopy`; `CutCopyMode = False` ends the mode and empties the clipboard, and PasteSpecial then fails as in Excel. |
+| `Range.Address`, `AddressLocal` | (old defect) | Implemented: A1 and R1C1, absolute/relative parts, RelativeTo, External (`[Book]Sheet!`), whole rows/columns as `$1:$3`/`$A:$C`. Its LCID was declared `[in]`. Arguments are parsed in Range's own Invoke: native `ITypeInfo::Invoke` rejected AddressLocal with DISP_E_BADCALLEE, while Wine accepted it. |
+| `Range.Value` | (old defect) | Text results of formulas are returned as strings (previously 0); formula errors are `VT_ERROR` with Excel's CVErr code (#DIV/0! 2007, #N/A 2042, #NUM! 2036 and so on). |
+| `Workbooks("name")` | (found while testing) | Selects a workbook by `Workbook.Name`; string indexes used to be rejected. |
+| `Workbook.Name` | (found while testing) | The file name from the document URL (decoded), or the model title for an unsaved workbook. It used to be the frame title ("Untitled 1 - OpenOffice Calc"), so setting a window caption renamed the workbook. |
 
-`Range.Address` still declares `[in] LCID` and therefore fails under late binding.
-`Range.Value` returns 0 for a formula with a text result. Both predate this
-stage and are not part of the reopened issues.
+UniOffice now links `gdi32` to convert window pixels to points with the
+screen DPI.
+
+Tests: `tests/outline-levels.vbs` (SummaryRow), `tests/windows.vbs`,
+`tests/windows-visible.vbs` with `windows-visible-preview-closer.vbs`,
+`tests/paste-special.vbs`, Address/Value checks in `tests/range-properties.vbs`
+and `tests/range-value-errors.c` (CVErr codes, which VBScript cannot read).
+`scripts/run-windows-tests.ps1` runs all new probes. It runs
+`windows-visible.vbs` against a visible office instance after stopping the
+headless ones.
+
+Results. Native Windows 10 22H2 (VM 744, AOO 4.1.17, elevated interactive
+session): `scripts/run-windows-tests.ps1` passed for PE32 and PE64. That covers
+the COM smoke and registration probes, five C probes, all 27 VBScript probes
+including `windows-visible.vbs` with geometry, window states, frozen panes,
+scrolling and the modal print preview, and the seven legacy scripts (counters
+158/0, 156 markers). Guest results:
+`C:\Users\guest\tmp\claude\unioffice-windows-dcf7b3610b2d4e179d343e514cdc154f`.
+The installed DLL/TLB were replaced by the tested builds (SHA-256 PE32
+`c862d89e…bc344`, PE64 `52f084ed…347b7`); MSI packages were not rebuilt.
+Wine (builder64, both architectures): 31 of 31 probes and the legacy suite
+with the same counters. `windows-visible.vbs` needs a desktop window manager and
+does not run in the headless Wine fixture.
+
+Native Windows exposed differences that Wine did not: `AddressLocal` through
+`ITypeInfo::Invoke`, the getter route of `Application.WindowState`, the
+preview controller without XServiceInfo, moves ignored by VCL, and
+`PolyPolygon` not reaching VBScript.
+
+### Remaining limits
+
+- Unfrozen splits are positioned in pixels by UNO, so `SplitRow`/`SplitColumn`
+  can only move frozen panes; `Split = True` without a position returns `E_NOTIMPL`.
+- Not implemented Window members: ActiveChart, ActivePane/Panes, NewWindow,
+  OnWindow, PrintOut, ScrollWorkbookTabs, SelectedSheets, SplitHorizontal/
+  SplitVertical, TabRatio, View, DisplayRightToLeft, PointsToScreenPixels,
+  RangeFromPoint, ScrollIntoView, GridlineColorIndex, EnableResize, and
+  Windows.Arrange.
+- In the Wine fixture, the user's `%TEMP%` directory is not writable for the
+  office process, so `Workbook.SaveAs` and UNO `storeAsURL` fail there;
+  `C:\users\Public` works.

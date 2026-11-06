@@ -19,6 +19,57 @@ Native Linux LibreOffice is the development priority, with its bridge still
 unfinished. Neither Word nor the full Excel API is covered by the passing legacy
 suite. An error-free call to a setter can conceal a no-op implementation.
 
+## Follow-up: implementation stages of 2026-11-06/07
+
+After the audit, the reopened and deferred issues about specific Excel
+members were implemented and tested; see the
+[function gap results](function-gaps-results.md). Issues that were REOPENED
+went to RESOLVED FIXED; deferred ones were closed. Only Workbook.Styles (#3674)
+was annulled as unclear in scope. The tables below keep the audit-time state for
+reference. This summary shows the state after the follow-up:
+
+| State | Audit result | After follow-up |
+| --- | ---: | ---: |
+| CLOSED/FIXED | 56 | 71 |
+| CLOSED/INVALID | 3 | 3 |
+| CLOSED/DUPLICATE | 3 | 3 |
+| CLOSED/MOVED | 1 | 1 |
+| RESOLVED/FIXED | 1 | 13 |
+| RESOLVED/WONTFIX | 0 | 1 |
+| DEFERRED | 31 | 12 |
+| REOPENED | 17 | 8 |
+
+Unfinished product issues: 20 (12 DEFERRED, 8 REOPENED), down from 48. They
+are client cases without an available reproduction, Word, release/publication
+tasks, the Linux office bridge, Vista/Windows 7 acceptance, file associations,
+COM lifetime revalidation and the persistence interfaces of #2558.
+
+| Issue | Final state | Change |
+| --- | --- | --- |
+| #1851 | RESOLVED FIXED | Range.Hidden changes row/column visibility. |
+| #1874 | RESOLVED FIXED | PageSetup.PrintTitleRows. |
+| #2077 | RESOLVED FIXED | Range.FormulaR1C1 through FormulaParser (XL_R1C1). |
+| #2345 | RESOLVED FIXED | SummaryRow/SummaryColumn: Excel defaults, kept per sheet; the backend draws buttons below/right only. |
+| #2512 | RESOLVED FIXED | Font.OutlineFont (CharContoured). |
+| #3149 | RESOLVED FIXED | PageSetup.PrintArea getter and clearing. |
+| #3673 | RESOLVED FIXED | Application.CentimetersToPoints. |
+| #4467 | RESOLVED FIXED | Both technical parts (#4470, #4471) done; gldsw not rerun. |
+| #2094, #4497 | CLOSED FIXED | Shapes.AddLine draws lines on the worksheet's page. |
+| #2439 | RESOLVED FIXED | Window/Windows, ActiveWindow, Workbook.Windows/Activate. |
+| #2446, #2447 | CLOSED FIXED | Names.Add and Name references. |
+| #2570 | RESOLVED FIXED | Range.PasteSpecial and Application.CutCopyMode. |
+| #3148, #4041 | CLOSED FIXED | Range.NumberFormat. |
+| #3578 | CLOSED FIXED | Application property tested on every object; added to Shapes/Shape. |
+| #3609 | RESOLVED FIXED | Application/Window.WindowState. |
+| #3610 | RESOLVED FIXED | Modal PrintPreview. |
+| #3674 | RESOLVED WONTFIX | Workbook.Styles: unclear scope. |
+| #4027, #4028 | CLOSED FIXED | Application.Interactive and ScreenUpdating. |
+| #4042 | CLOSED FIXED | Range.FormulaLocal. |
+| #4257 | CLOSED FIXED | Range.CurrentRegion. |
+| #4342, #5812 | CLOSED FIXED | Worksheet.UsedRange and its Rows/Columns.Count. |
+| #4470 | CLOSED FIXED | Workbook.Saved. |
+| #4471 | CLOSED FIXED | Sheet width read from the backend, not the version string. |
+
 ## Disposition rules
 
 - Close completed work when its original scope has implementation or recorded
