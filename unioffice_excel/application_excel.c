@@ -1853,8 +1853,10 @@ static HRESULT WINAPI IMP_Application_get_CutCopyMode(
         LCID lcid,
         XlCutCopyMode *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    _ApplicationImpl *This = APPEXCEL_THIS(iface);
+    if (!This || !RHS) return E_POINTER;
+    *RHS = This->cutcopymode;
+    return S_OK;
 }
 
 static HRESULT WINAPI IMP_Application_put_CutCopyMode(
@@ -1862,8 +1864,17 @@ static HRESULT WINAPI IMP_Application_put_CutCopyMode(
         LCID lcid,
         XlCutCopyMode RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    _ApplicationImpl *This = APPEXCEL_THIS(iface);
+    if (!This) return E_POINTER;
+    /* Excel only acts on False: the copied range is no longer available. */
+    if (!RHS) {
+        This->cutcopymode = 0;
+        if (OpenClipboard(NULL)) {
+            EmptyClipboard();
+            CloseClipboard();
+        }
+    }
+    return S_OK;
 }
 static HRESULT WINAPI IMP_Application_get_DataEntryMode(
         _Application* iface,
@@ -7268,6 +7279,7 @@ HRESULT _ApplicationConstructor(LPVOID *ppObj)
     _applicationexcell->pdWorkbooks = NULL;
     _applicationexcell->screenupdating = VARIANT_TRUE;
     _applicationexcell->interactive = VARIANT_TRUE;
+    _applicationexcell->cutcopymode = 0;
     _applicationexcell->visible = VARIANT_FALSE;
     _applicationexcell->sheetsinnewworkbook = 1;
     _applicationexcell->displayalerts = VARIANT_TRUE;

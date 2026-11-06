@@ -4261,10 +4261,10 @@ library MSO_TO_OOLib
 			[out, retval] long* RHS);
 
 		[id(dispid_application_cutcopymode), propget, helpstring("property CutCopyMode")] HRESULT CutCopyMode(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out, retval] XlCutCopyMode* RHS);
 		[id(dispid_application_cutcopymode), propput, helpstring("property CutCopyMode")] HRESULT CutCopyMode(
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[in] XlCutCopyMode RHS);
 
 		[id(dispid_application_dataentrymode), propget, helpstring("property DataEntryMode")] HRESULT DataEntryMode(

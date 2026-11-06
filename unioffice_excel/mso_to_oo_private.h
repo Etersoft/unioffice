@@ -272,6 +272,7 @@ typedef struct
 
     VARIANT_BOOL screenupdating;
     VARIANT_BOOL interactive;
+    LONG cutcopymode;                 /*XlCutCopyMode after Range.Copy/Cut, or 0*/
     VARIANT_BOOL displayalerts;
     VARIANT_BOOL visible;
     LONG sheetsinnewworkbook;

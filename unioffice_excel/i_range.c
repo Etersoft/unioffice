@@ -1769,6 +1769,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_RowHeight(
     return hres;
 }
 
+static _ApplicationImpl *range_application(RangeImpl *This);
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
         I_Range* iface,
         VARIANT RangeTo,
@@ -1811,6 +1813,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
 
     if (Is_Variant_Null(RangeTo)) {
         TRACE("(To Clipboard)\n");
+        if (range_application(This)) range_application(This)->cutcopymode = xlCopy;
         *value = (IDispatch*)iface;
         IDispatch_AddRef(*value);
         TRACE_OUT;
@@ -4281,6 +4284,122 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Parse(
     return E_NOTIMPL;
 }
 
+static _ApplicationImpl *range_application(RangeImpl *This)
+{
+    WorksheetImpl *sheet = (WorksheetImpl*)This->pwsheet;
+    WorkbookImpl *book = sheet ? (WorkbookImpl*)sheet->pwb : NULL;
+    WorkbooksImpl *books = book ? (WorkbooksImpl*)book->pworkbooks : NULL;
+    return books ? (_ApplicationImpl*)books->pApplication : NULL;
+}
+
+static HRESULT range_property_value(_ApplicationImpl *app, const WCHAR *name, VARIANT value, IDispatch **property)
+{
+    VARIANT text, result;
+    HRESULT hr;
+    *property = NULL;
+    MSO_TO_OO_GetDispatchPropertyValue(APPEXCEL(app), property);
+    if (!*property) return E_FAIL;
+    VariantInit(&result);
+    V_VT(&text) = VT_BSTR;
+    V_BSTR(&text) = SysAllocString(name);
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, *property, L"Name", 1, text);
+    VariantClear(&result);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, *property, L"Value", 1, value);
+    VariantClear(&result);
+    SysFreeString(V_BSTR(&text));
+    if (FAILED(hr)) {
+        IDispatch_Release(*property);
+        *property = NULL;
+    }
+    return hr;
+}
+
+static HRESULT range_paste_special(I_Range *iface, XlPasteType Paste, XlPasteSpecialOperation Operation,
+        VARIANT SkipBlanks, VARIANT Transpose, VARIANT *RHS)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    _ApplicationImpl *app;
+    static const WCHAR *names[6] = {L"Flags", L"FormulaCommand", L"SkipEmptyCells", L"Transpose", L"AsLink", L"MoveMode"};
+    const WCHAR *flags;
+    VARIANT values[6], selected, params, skip, transpose;
+    IDispatch *properties[6] = {0};
+    SAFEARRAY *array = NULL;
+    SHORT command;
+    BSTR verb;
+    HRESULT hr = S_OK;
+    LONG i;
+
+    if (RHS) VariantInit(RHS);
+    if (!This || !This->pwsheet) return E_POINTER;
+    app = range_application(This);
+    if (!app) return E_POINTER;
+    /* Like Excel, there is nothing to paste after CutCopyMode = False. */
+    if (!app->cutcopymode) return E_FAIL;
+    /* InsertContents letters: A all, S strings, V values, D dates, F formulas,
+       N notes, T formats. Kinds without an exact counterpart are refused. */
+    switch (Paste) {
+    case xlPasteAll:
+    case 13: /* xlPasteAllUsingSourceTheme */
+        flags = L"A"; break;
+    case xlPasteFormats: flags = L"T"; break;
+    case xlPasteFormulas: flags = L"SVDF"; break;
+    case xlPasteValues: flags = L"SVD"; break;
+    case xlPasteComments: flags = L"N"; break;
+    default: return E_NOTIMPL;
+    }
+    switch (Operation) {
+    case xlPasteSpecialOperationNone: command = 0; break;
+    case xlPasteSpecialOperationAdd: command = 1; break;
+    case xlPasteSpecialOperationSubtract: command = 2; break;
+    case xlPasteSpecialOperationMultiply: command = 3; break;
+    case xlPasteSpecialOperationDivide: command = 4; break;
+    default: return E_INVALIDARG;
+    }
+    VariantInit(&skip);
+    VariantInit(&transpose);
+    V_VT(&skip) = VT_BOOL;
+    V_BOOL(&skip) = VARIANT_FALSE;
+    V_VT(&transpose) = VT_BOOL;
+    V_BOOL(&transpose) = VARIANT_FALSE;
+    if (!Is_Variant_Null(SkipBlanks)) hr = VariantChangeTypeEx(&skip, &SkipBlanks, 0, 0, VT_BOOL);
+    if (SUCCEEDED(hr) && !Is_Variant_Null(Transpose)) hr = VariantChangeTypeEx(&transpose, &Transpose, 0, 0, VT_BOOL);
+    if (FAILED(hr)) return hr;
+
+    V_VT(&values[0]) = VT_BSTR;
+    V_BSTR(&values[0]) = SysAllocString(flags);
+    V_VT(&values[1]) = VT_I2;
+    V_I2(&values[1]) = command;
+    values[2] = skip;
+    values[3] = transpose;
+    V_VT(&values[4]) = VT_BOOL;
+    V_BOOL(&values[4]) = VARIANT_FALSE;
+    V_VT(&values[5]) = VT_I2;
+    V_I2(&values[5]) = 4; /* InsCellCmd INS_NONE: overwrite the target */
+
+    VariantInit(&selected);
+    hr = MSO_TO_OO_I_Range_Select(iface, &selected);
+    VariantClear(&selected);
+    if (SUCCEEDED(hr)) {
+        array = SafeArrayCreateVector(VT_DISPATCH, 0, 6);
+        if (!array) hr = E_OUTOFMEMORY;
+    }
+    for (i = 0; SUCCEEDED(hr) && i < 6; i++) {
+        hr = range_property_value(app, names[i], values[i], &properties[i]);
+        if (SUCCEEDED(hr)) hr = SafeArrayPutElement(array, &i, properties[i]);
+    }
+    if (SUCCEEDED(hr)) {
+        V_VT(&params) = VT_DISPATCH | VT_ARRAY;
+        V_ARRAY(&params) = array;
+        verb = SysAllocString(L".uno:InsertContents");
+        hr = MSO_TO_OO_ExecuteDispatchHelper_WB(((WorksheetImpl*)This->pwsheet)->pwb, verb, params);
+        SysFreeString(verb);
+    }
+    for (i = 0; i < 6; i++) if (properties[i]) IDispatch_Release(properties[i]);
+    if (array) SafeArrayDestroy(array);
+    SysFreeString(V_BSTR(&values[0]));
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range__PasteSpecial(
         I_Range* iface,
         XlPasteType Paste,
@@ -4289,8 +4408,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range__PasteSpecial(
         VARIANT Transpose,
         VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return range_paste_special(iface, Paste, Operation, SkipBlanks, Transpose, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_PivotField(
@@ -5004,8 +5122,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_PasteSpecial(
         VARIANT Transpose,
         VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return range_paste_special(iface, Paste, Operation, SkipBlanks, Transpose, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_AllowEdit(
