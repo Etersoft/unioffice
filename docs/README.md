@@ -2,6 +2,7 @@
 
 ## Setup, status and architecture
 
+- [Issue audit: completed work, reopened gaps and remaining verification](issue-audit-2026-11-06.md).
 - [Multi-office and Word roadmap](roadmap.md).
 - [Supported functions and Windows/Wine installation](supported-usage.md).
 - [Native Windows results, fixes and reproduction](native-windows-results.md)

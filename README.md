@@ -58,6 +58,9 @@ stated configurations and scenarios, rather than full Microsoft Excel coverage.
 Evidence: [native Windows](docs/native-windows-results.md) and
 [Wine acceptance](docs/installed-acceptance-results.md).
 
+The [2026-11-06 issue audit](docs/issue-audit-2026-11-06.md) distinguishes completed
+work from unfinished properties and historical client cases needing a recheck.
+
 ## Install and run
 
 Choose the package by the **client process bitness**:
