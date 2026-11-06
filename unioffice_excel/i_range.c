@@ -552,6 +552,34 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Font(
     return S_OK;
 }
 
+/* A formula yields a number, a string or an error (com.sun.star.sheet.FormulaResult). */
+static HRESULT range_formula_result(IDispatch *cell, VARIANT *value)
+{
+    static const struct { LONG uno; LONG excel; } errors[] = {
+        {532, 2007}, {32767, 2042}, {525, 2029}, {521, 2000}, {503, 2036},
+        {524, 2023}, {519, 2015}, {502, 2036}
+    };
+    LONG type = 1, code = 0;
+    UINT i;
+    HRESULT hr;
+
+    /* getError() is authoritative: some backends report errors as VALUE type. */
+    hr = uno_get_long(cell, L"getError", TRUE, &code);
+    if (FAILED(hr)) code = 0;
+    hr = uno_get_long(cell, L"FormulaResultType", FALSE, &type);
+    if (FAILED(hr)) type = 1;
+    if (!code && type == 2) return AutoWrap(DISPATCH_METHOD, value, cell, L"getString", 0);
+    if (code) {
+        V_VT(value) = VT_ERROR;
+        V_ERROR(value) = MAKE_HRESULT(SEVERITY_ERROR, FACILITY_CONTROL, 2015);
+        for (i = 0; i < sizeof(errors) / sizeof(errors[0]); i++)
+            if (errors[i].uno == code)
+                V_ERROR(value) = MAKE_HRESULT(SEVERITY_ERROR, FACILITY_CONTROL, errors[i].excel);
+        return S_OK;
+    }
+    return AutoWrap(DISPATCH_METHOD, value, cell, L"getValue", 0);
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
         I_Range* iface,
         VARIANT varRangeValueDataType,
@@ -587,6 +615,8 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Value(
 
     switch V_I4(&vartype){
     case vtFORMULA:
+        hres = range_formula_result(V_DISPATCH(&resultCell), pvarValue);
+        break;
     case vtVALUE:
         hres = AutoWrap(DISPATCH_METHOD, pvarValue, V_DISPATCH(&resultCell), L"getValue", 0);
         break;
@@ -2708,6 +2738,126 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_AddIndent(
     return E_NOTIMPL;
 }
 
+static BOOL address_flag(VARIANT *value, BOOL fallback)
+{
+    VARIANT flag;
+    BOOL result = fallback;
+    VariantInit(&flag);
+    if (!Is_Variant_Null(*value) && SUCCEEDED(VariantChangeTypeEx(&flag, value, 0, 0, VT_BOOL)))
+        result = V_BOOL(&flag) != VARIANT_FALSE;
+    VariantClear(&flag);
+    return result;
+}
+
+static int address_part(WCHAR *out, BOOL r1c1, BOOL row, LONG value, LONG origin, BOOL absolute)
+{
+    WCHAR letters[8];
+    int n = 0, i;
+    LONG column;
+
+    /* value/origin are zero-based backend coordinates. */
+    if (r1c1) {
+        if (absolute) return wsprintfW(out, row ? L"R%d" : L"C%d", (int)value + 1);
+        if (value == origin) return wsprintfW(out, row ? L"R" : L"C");
+        return wsprintfW(out, row ? L"R[%d]" : L"C[%d]", (int)(value - origin));
+    }
+    i = 0;
+    if (absolute) out[i++] = L'$';
+    if (row) return i + wsprintfW(out + i, L"%d", (int)value + 1);
+    column = value + 1;
+    while (column > 0 && n < 8) {
+        letters[n++] = L'A' + (column - 1) % 26;
+        column = (column - 1) / 26;
+    }
+    while (n) out[i++] = letters[--n];
+    out[i] = 0;
+    return i;
+}
+
+static HRESULT range_address_text(I_Range* iface, VARIANT RowAbsolute, VARIANT ColumnAbsolute,
+        XlReferenceStyle ReferenceStyle, VARIANT External, VARIANT RelativeTo, BSTR *RHS)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    LONG sr, sc, er, ec, all_rows = 0, all_columns = 0, orow = 0, ocol = 0, n;
+    BOOL rabs = address_flag(&RowAbsolute, TRUE), cabs = address_flag(&ColumnAbsolute, TRUE);
+    BOOL external = address_flag(&External, FALSE), r1c1 = ReferenceStyle == xlR1C1;
+    BOOL whole_rows, whole_columns;
+    IDispatch *sheet_rows = NULL, *sheet_columns = NULL, *sheet = range_oo_sheet(This);
+    WCHAR text[160], *p = text;
+    BSTR book = NULL, name = NULL;
+    VARIANT relative;
+    HRESULT hr;
+
+    if (!This || !RHS) return E_POINTER;
+    *RHS = NULL;
+    if (ReferenceStyle != xlA1 && ReferenceStyle != xlR1C1) return E_INVALIDARG;
+    hr = MSO_TO_OO_GetRangeAddress(iface, &sr, &sc, &er, &ec);
+    if (FAILED(hr)) return hr;
+    if (sheet) {
+        if (SUCCEEDED(uno_get_object(sheet, L"getRows", TRUE, &sheet_rows)))
+            uno_get_long(sheet_rows, L"getCount", TRUE, &all_rows);
+        if (SUCCEEDED(uno_get_object(sheet, L"getColumns", TRUE, &sheet_columns)))
+            uno_get_long(sheet_columns, L"getCount", TRUE, &all_columns);
+        if (sheet_rows) IDispatch_Release(sheet_rows);
+        if (sheet_columns) IDispatch_Release(sheet_columns);
+    }
+    /* Relative R1C1 offsets are measured from RelativeTo's top-left cell. */
+    VariantInit(&relative);
+    if (r1c1 && !Is_Variant_Null(RelativeTo)) {
+        LONG a, b, c, d;
+        hr = VariantCopyInd(&relative, &RelativeTo);
+        if (SUCCEEDED(hr) && V_VT(&relative) != VT_DISPATCH) hr = DISP_E_TYPEMISMATCH;
+        if (SUCCEEDED(hr)) hr = MSO_TO_OO_GetRangeAddress((I_Range*)V_DISPATCH(&relative), &a, &b, &c, &d);
+        VariantClear(&relative);
+        if (FAILED(hr)) return hr;
+        orow = a;
+        ocol = b;
+    }
+    whole_rows = all_columns && sc == 0 && ec == all_columns - 1;
+    whole_columns = all_rows && sr == 0 && er == all_rows - 1;
+
+    if (external) {
+        WorksheetImpl *wsh = (WorksheetImpl*)This->pwsheet;
+        hr = wsh ? I_Worksheet_get_Name((I_Worksheet*)wsh, &name) : E_POINTER;
+        if (SUCCEEDED(hr)) hr = wsh->pwb ? I_Workbook_get_Name(wsh->pwb, &book) : E_POINTER;
+        if (FAILED(hr)) goto done;
+        if (SysStringLen(book) + SysStringLen(name) > 100) { hr = E_FAIL; goto done; }
+        p += wsprintfW(p, L"[%s]%s!", book, name);
+    }
+    if (whole_rows && !whole_columns) {
+        /* Excel writes whole rows as $1:$3 (R1:R3) and whole columns as $A:$C. */
+        p += address_part(p, r1c1, TRUE, sr, orow, rabs);
+        *p++ = L':';
+        p += address_part(p, r1c1, TRUE, er, orow, rabs);
+    } else if (whole_columns && !whole_rows) {
+        p += address_part(p, r1c1, FALSE, sc, ocol, cabs);
+        *p++ = L':';
+        p += address_part(p, r1c1, FALSE, ec, ocol, cabs);
+    } else {
+        for (n = 0; n < 2; n++) {
+            LONG row = n ? er : sr, column = n ? ec : sc;
+            if (n) {
+                if (sr == er && sc == ec) break;
+                *p++ = L':';
+            }
+            if (r1c1) {
+                p += address_part(p, TRUE, TRUE, row, orow, rabs);
+                p += address_part(p, TRUE, FALSE, column, ocol, cabs);
+            } else {
+                p += address_part(p, FALSE, FALSE, column, ocol, cabs);
+                p += address_part(p, FALSE, TRUE, row, orow, rabs);
+            }
+        }
+    }
+    *p = 0;
+    *RHS = SysAllocString(text);
+    if (!*RHS) hr = E_OUTOFMEMORY;
+done:
+    SysFreeString(book);
+    SysFreeString(name);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_Address(
         I_Range* iface,
         VARIANT RowAbsolute,
@@ -2718,8 +2868,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Address(
         LCID lcid,
         BSTR *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return range_address_text(iface, RowAbsolute, ColumnAbsolute, ReferenceStyle, External, RelativeTo, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_AddressLocal(
@@ -2731,8 +2880,7 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_AddressLocal(
         VARIANT RelativeTo,
         BSTR *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    return range_address_text(iface, RowAbsolute, ColumnAbsolute, ReferenceStyle, External, RelativeTo, RHS);
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_AdvancedFilter(

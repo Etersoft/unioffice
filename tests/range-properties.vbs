@@ -84,6 +84,31 @@ Check oosheet.getCellByPosition(4, 10).getFormula() = "=A11+A12", "FormulaLocal 
 sheet.Range("E12").FormulaLocal = "text"
 Check sheet.Range("E12").Value = "text", "FormulaLocal accepts constants"
 
+' Address follows Excel's A1/R1C1, absolute/relative and whole row/column forms.
+Check sheet.Range("B5:C6").Address = "$B$5:$C$6", "Address"
+Check sheet.Range("B5").Address = "$B$5", "Single-cell Address"
+Check sheet.Range("B5:C6").Address(False, False) = "B5:C6", "Relative Address"
+Check sheet.Range("B5").Address(True, False) = "B$5", "Mixed Address"
+Check sheet.Range("AA10").Address = "$AA$10", "Two-letter column Address"
+Check sheet.Range("B5:C6").Address(, , -4150) = "R5C2:R6C3", "R1C1 Address"
+Check sheet.Range("B5").Address(False, False, -4150, , sheet.Range("A1")) = "R[4]C[1]", "Relative R1C1 Address"
+Check sheet.Range("B5").Address(False, False, -4150, , sheet.Range("B5")) = "RC", "Zero-offset R1C1 Address"
+Check sheet.Rows("2:3").Address = "$2:$3", "Whole-row Address"
+Check sheet.Columns(2).Address = "$B:$B", "Whole-column Address"
+Check sheet.Range("B5").Address(, , , True) = "[" & workbook.Name & "]" & sheet.Name & "!$B$5", "External Address"
+Check sheet.Range("B5").AddressLocal = "$B$5", "AddressLocal"
+Check sheet.Range("B5").CurrentRegion.Address = "$B$5:$C$6", "CurrentRegion.Address"
+
+' Value returns the formula result in its own type.
+sheet.Range("G1").Formula = "=""abc"""
+Check sheet.Range("G1").Value = "abc", "Text formula result"
+Check VarType(sheet.Range("G1").Value) = vbString, "Text formula result type"
+sheet.Range("G2").Formula = "=1/0"
+Check VarType(sheet.Range("G2").Value) = vbError, "Error formula result type"
+sheet.Range("G3").Formula = "=2+3"
+Check sheet.Range("G3").Value = 5, "Numeric formula result"
+Check sheet.Range("C11").Value = "R1C1, text", "Text result of an R1C1 formula"
+
 Set oosheet = Nothing
 Set document = Nothing
 Set documents = Nothing

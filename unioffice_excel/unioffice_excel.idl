@@ -1118,7 +1118,7 @@ library MSO_TO_OOLib
 			[in,defaultvalue(1)] XlReferenceStyle ReferenceStyle,
 			[in,optional] VARIANT External,
 			[in,optional] VARIANT RelativeTo,
-			[in] LCID lcid,
+			[lcid] LCID lcid,
 			[out,retval] BSTR* RHS); 
 //AddressLocal
 		[id(dispid_range_addresslocal),  propget,helpstring("property AddressLocal")] HRESULT AddressLocal(
