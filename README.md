@@ -18,6 +18,21 @@ Word support is planned; the current Word component is still a stub. See the
 [multi-office and Word roadmap](docs/roadmap.md) for the proposed stages and
 architecture. The verified capabilities below describe today's implementation.
 
+## Architecture: current path and planned Wine proxy
+
+![UniOffice architecture: the working Excel to Windows OpenOffice path, with planned Word, Wine COM/UNO proxy, native Linux UNO adapter and other office backends.](docs/diagrams/architecture.svg)
+
+**Green / solid:** the verified Excel path. **Blue / dashed:** planned components
+and connections. The proposed Wine proxy provides COM dispatch in a PE DLL;
+its native ELF companion uses the Linux UNO runtime to reach the office over UNO/URP.
+The office runs in a separate process. The existing Windows backend also works
+in native Windows, where the Wine/Unix route is unnecessary.
+
+The bridge is shared by Excel and future Word support; office-specific
+compatibility stays in their adapters. Backend selection and additional office
+adapters are planned. See the [editable Mermaid source](docs/diagrams/architecture.mmd),
+[bridge design](docs/linux-office-bridge.md) and [roadmap](docs/roadmap.md).
+
 ## Status and supported use
 
 The tested subset includes workbooks and worksheets, cell values/formulas,

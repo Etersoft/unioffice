@@ -1,0 +1,53 @@
+%%{init: {"theme":"base","fontFamily":"Arial, sans-serif","htmlLabels":false,"deterministicIds":true,"deterministicIDSeed":"unioffice-architecture","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"15px","primaryTextColor":"#172033","lineColor":"#64748b","clusterBkg":"#f8fafc","clusterBorder":"#cbd5e1"},"flowchart":{"htmlLabels":false,"curve":"basis","nodeSpacing":35,"rankSpacing":40,"padding":18}}}%%
+flowchart TB
+    accTitle: UniOffice architecture and planned Wine COM to UNO bridge
+    accDescr: Solid green connections show the working Excel to Windows OpenOffice path. Dashed blue connections show planned Word, backend selection, a Wine PE proxy and ELF adapter, Linux offices and further providers.
+
+    CLIENT(["Windows client under Wine<br/>1C · VBScript · native COM"])
+
+    subgraph UNIOFFICE["UniOffice · PE32 / PE64 DLLs"]
+        direction LR
+        EXCEL["Excel.Application<br/>Working subset"]
+        WORD["Word.Application<br/>Planned"]
+    end
+
+    SELECT{"Backend selection<br/>Planned"}
+    WINCOM["Windows Automation<br/>com.sun.star.ServiceManager"]
+    WINOFFICE["Windows Apache OpenOffice<br/>under Wine · Calc verified"]
+    OTHER["Additional API adapters<br/>Planned"]
+
+    subgraph HOST["unioffice-host · planned Wine bridge"]
+        direction TB
+        PROXY["COM proxy · Windows PE DLL<br/>IDispatch<br/>Owned Automation values"]
+        UNIXLIB["UNO adapter · Linux ELF .so<br/>Native UNO runtime<br/>Object references + values"]
+    end
+
+    LINUXOFFICE["Linux LibreOffice / OpenOffice<br/>Calc + Writer<br/>Separate office process"]
+    FUTURE["Other office suites<br/>Future integrations"]
+
+    CLIENT -->|COM| EXCEL
+    EXCEL -->|Current path| WINCOM
+    WINCOM -->|Windows COM| WINOFFICE
+
+    CLIENT -. COM .-> WORD
+    EXCEL -.-> SELECT
+    WORD -.-> SELECT
+    SELECT -.-> WINCOM
+    SELECT -.-> PROXY
+    PROXY -. "Wine Unix calls<br/>Object handles + typed buffers" .-> UNIXLIB
+    UNIXLIB -. "UNO / URP" .-> LINUXOFFICE
+    SELECT -.-> OTHER
+    OTHER -. "Office-specific API" .-> FUTURE
+
+    classDef client fill:#f1f5f9,stroke:#64748b,color:#172033,stroke-width:2px;
+    classDef working fill:#ecfdf5,stroke:#059669,color:#064e3b,stroke-width:2px;
+    classDef planned fill:#eef2ff,stroke:#6366f1,color:#312e81,stroke-width:2px,stroke-dasharray:6 4;
+
+    class CLIENT client;
+    class EXCEL,WINCOM,WINOFFICE working;
+    class WORD,SELECT,PROXY,OTHER,UNIXLIB,LINUXOFFICE,FUTURE planned;
+
+    style UNIOFFICE fill:#f8fafc,stroke:#cbd5e1,stroke-width:1px,color:#172033;
+    style HOST fill:#f5f3ff,stroke:#a5b4fc,stroke-width:1px,color:#312e81;
+    linkStyle 0,1,2 stroke:#059669,stroke-width:2px;
+    linkStyle 3,4,5,6,7,8,9,10,11 stroke:#818cf8,stroke-width:1.5px;
