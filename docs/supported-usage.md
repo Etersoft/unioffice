@@ -22,8 +22,10 @@ tested scenarios, not every possible combination of these properties.
 
 ## Runtime and package selection
 
-The tested runtime is Wine@Etersoft11.20.1-eter1 with **Windows Apache OpenOffice
-4.1.17 x86** registered as `com.sun.star.ServiceManager`. The Linux OpenOffice
+The tested runtimes are native Windows10 Pro22H2 x64 (Microsoft WSH) and
+Wine@Etersoft11.20.1-eter1, with **Windows Apache OpenOffice4.1.17 x86** registered
+as `com.sun.star.ServiceManager`. Complete OpenOffice's first-start setup in the
+user profile before Automation. The Linux OpenOffice
 installation alone does not supply this Windows COM backend. See the
 [backend setup results](openoffice-4.1.17-results.md).
 
@@ -35,6 +37,9 @@ Choose the UniOffice package by the **client process** architecture:
 | 64-bit | MSI/build/winegcc-64/unioffice.msi | CLIENT_BITS=64; --bits 64 |
 
 Both clients use the same tested x86 backend. Both packages can coexist.
+Installation is machine-wide (ALLUSERS=1) and requires administrator privileges;
+normal Automation runs without elevation. Before replacing an older per-user
+package, remove it under the identity that installed it.
 Registration is performed by MSI; manual DLL copying/registration is unnecessary.
 Build and packaging commands are in the [README](../README.md).
 
@@ -74,6 +79,8 @@ Word is an unfinished component: its class factory returns E_NOTIMPL, and the
 MSI packages contain Excel only. Dashed/dotted borders are unsupported by the
 tested AOO backend and return an error. Multi-area ranges, structural edits
 during enumeration, exhaustive full-row value/format/edit combinations and
-native Windows execution have not been validated. The tested integration
+other Windows versions have not been validated. Native Windows10 results and
+current package checksums are in the [native report](native-windows-results.md).
+The tested integration
 workflow runs clients sequentially; a historical parallel PE32 test5 fault was
 recorded without an isolated cause. No broader concurrency guarantee is made.

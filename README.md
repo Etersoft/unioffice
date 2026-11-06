@@ -4,8 +4,9 @@ UniOffice provides legacy Excel COM compatibility over Windows OpenOffice.
 The Word component is unfinished and is not included in the installer.
 See [supported functions and installation](docs/supported-usage.md) for the
 tested scope and runtime requirements.
-Both installed MSI variants passed the complete functional and maintenance
-workflow; see [package acceptance and checksums](docs/installed-acceptance-results.md).
+Both installed MSI variants passed native Windows10 and Wine functional and
+maintenance tests; see [native results and current checksums](docs/native-windows-results.md)
+and the [earlier Wine acceptance](docs/installed-acceptance-results.md).
 
 ## Building Windows DLLs
 

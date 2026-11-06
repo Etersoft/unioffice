@@ -3,6 +3,8 @@
 Validated on builder64 with Wine@Etersoft 11.20.1-eter1, using PE32 MinGW output
 built on Fedora and PE64 winegcc output built on builder64. Native Windows
 installation was not exercised in this environment.
+Native Windows10 was validated subsequently; see the
+[native results and machine-scope fix](native-windows-results.md).
 
 ## Package construction
 
