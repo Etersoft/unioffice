@@ -183,6 +183,22 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Cells(
     return hr;
 }
 
+/* Resolve each endpoint to an owned Range reference before reading coordinates. */
+static HRESULT worksheet_range_endpoint(I_Range *cells, VARIANT value, I_Range **result)
+{
+    VARIANT omitted;
+    *result = NULL;
+    if (V_VT(&value) == VT_BSTR) {
+        VariantInit(&omitted);
+        return I_Range_get__Default(cells, value, omitted, (IDispatch**)result);
+    }
+    if (V_VT(&value) == VT_DISPATCH && V_DISPATCH(&value))
+        return IDispatch_QueryInterface(V_DISPATCH(&value), &IID_I_Range, (void**)result);
+    if (V_VT(&value) == VT_UNKNOWN && V_UNKNOWN(&value))
+        return IUnknown_QueryInterface(V_UNKNOWN(&value), &IID_I_Range, (void**)result);
+    return E_INVALIDARG;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
         I_Worksheet* iface,
         VARIANT Cell1,
@@ -190,110 +206,51 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_get_Range(
         IDispatch **ppRange)
 {
     WorksheetImpl *This = (WorksheetImpl*)iface;
-    IDispatch *pRange;
-    I_Range *pCell1;
-    I_Range *pCell2;
-    IUnknown *punk = NULL;
-    HRESULT hres;
-    VARIANT vNull;
-    VariantInit(&vNull);
-    TRACE_IN;
-
-    MSO_TO_OO_CorrectArg(Cell1, &Cell1);
-    MSO_TO_OO_CorrectArg(Cell2, &Cell2);
-
-    if (Is_Variant_Null(Cell2)) {
-        hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &pRange);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get_Cells\n");
-            return hres;
-        }
-        hres = I_Range_get__Default((I_Range*)pRange,Cell1,vNull,ppRange);
-        if (FAILED(hres)) {
-            TRACE("ERROR when get__Default\n");
-            IDispatch_Release(pRange);
-            return hres;
-        }
-        IDispatch_Release(pRange);
-        TRACE_OUT;
-        return S_OK;
+    VARIANT first, last, omitted;
+    I_Range *cells = NULL, *start = NULL, *end = NULL, *range = NULL;
+    LONG first_row, first_column, last_row, last_column, unused_row, unused_column;
+    struct CELL_COORD top_left, bottom_right;
+    HRESULT hr;
+    if (!ppRange) return E_POINTER;
+    *ppRange = NULL;
+    VariantInit(&first);
+    VariantInit(&last);
+    VariantInit(&omitted);
+    hr = VariantCopyInd(&first, &Cell1);
+    if (SUCCEEDED(hr)) hr = VariantCopyInd(&last, &Cell2);
+    if (SUCCEEDED(hr)) hr = MSO_TO_OO_I_Worksheet_get_Cells(iface, (IDispatch**)&cells);
+    if (FAILED(hr)) goto done;
+    if (Is_Variant_Null(last)) {
+        hr = I_Range_get__Default(cells, first, omitted, ppRange);
+        goto done;
     }
-
-    if ((V_VT(&Cell1)==VT_BSTR)&&(V_VT(&Cell2)==VT_BSTR)) {
-            /*Два параметра и оба строковые переменные*/
-            WTRACE(L"2 Parametra BSTR %s   %s \n", V_BSTR(&Cell1), V_BSTR(&Cell2));
-
-            hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &pRange);
-            if (FAILED(hres)) {
-                TRACE("ERROR when get_Cells\n");
-                return hres;
-            }
-
-            hres = I_Range_get__Default((I_Range*)pRange,Cell1,vNull, (IDispatch**)&pCell1);
-            if (FAILED(hres)) {
-                TRACE("ERROR when get__Default\n");
-                IDispatch_Release(pRange);
-                return hres;
-            }
-            hres = I_Range_get__Default((I_Range*)pRange,Cell2,vNull, (IDispatch**)&pCell2);
-            if (FAILED(hres)) {
-                TRACE("ERROR when get__Default\n");
-                IDispatch_Release(pRange);
-                return hres;
-            }
-        IDispatch_Release(pRange);
-        } else {
-            pCell1 = (I_Range*) V_DISPATCH(&Cell1);
-            pCell2 = (I_Range*) V_DISPATCH(&Cell2);
-        }
-
-    if ((pCell1 == NULL) || (pCell2 == NULL)) {
-        TRACE("Error - one of the pointers is NULL \n");
-        return E_INVALIDARG;
+    hr = worksheet_range_endpoint(cells, first, &start);
+    if (SUCCEEDED(hr)) hr = worksheet_range_endpoint(cells, last, &end);
+    if (FAILED(hr)) goto done;
+    /* The legacy helper returns row/column pairs despite its parameter names. */
+    hr = MSO_TO_OO_GetRangeAddress(start, &first_row, &first_column, &unused_row, &unused_column);
+    if (SUCCEEDED(hr)) hr = MSO_TO_OO_GetRangeAddress(end, &unused_row, &unused_column, &last_row, &last_column);
+    if (FAILED(hr)) goto done;
+    hr = _I_RangeConstructor((void**)&range);
+    if (FAILED(hr)) goto done;
+    I_Range_AddRef(range);
+    top_left.x = first_column + 1;
+    top_left.y = first_row + 1;
+    bottom_right.x = last_column + 1;
+    bottom_right.y = last_row + 1;
+    hr = MSO_TO_OO_I_Range_Initialize(range, This->pAllRange, top_left, bottom_right);
+    if (SUCCEEDED(hr)) {
+        *ppRange = (IDispatch*)range;
+        range = NULL;
     }
-
-    LONG lCell1L, lCell1R, lCell1T, lCell1B;
-    LONG lCell2L, lCell2R, lCell2T, lCell2B;
-    /*long lRangeL, lRangeR, lRangeT, lRangeB;*/
-
-    hres = MSO_TO_OO_GetRangeAddress(pCell1, &lCell1L, &lCell1T, &lCell1R, &lCell1B);
-    if (hres != S_OK) {
-        return hres;
-    }
-
-    hres = MSO_TO_OO_GetRangeAddress(pCell2, &lCell2L, &lCell2T, &lCell2R, &lCell2B);
-    if (hres != S_OK) {
-        return hres;
-    }
-
-    /*Создаем новый объект I_Range*/
-    hres = _I_RangeConstructor((LPVOID*) &punk);
-
-    if (FAILED(hres)) return E_NOINTERFACE;
-
-    hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pRange);
-    if (pRange == NULL) {
-       return E_FAIL;
-    }
-    struct CELL_COORD cell1,cell2;
-    cell1.x = lCell1T + 1;
-    cell1.y = lCell1L + 1;
-    cell2.x = lCell2B + 1;
-    cell2.y = lCell2R + 1;
-    
-    TRACE(" cell1.x=%i \n    cell1.y=%i \n    cell2.x=%i \n    cell2.y=%i \n", cell1.x, cell1.y, cell2.x, cell2.y);
-    
-    hres = MSO_TO_OO_I_Range_Initialize(pRange,This->pAllRange, cell1, cell2);
-    if (hres != S_OK) {
-        IDispatch_Release(pRange);
-        return hres;
-    }
-
-    *ppRange = pRange;
-    I_Range_AddRef((I_Range*)*ppRange);
-    I_Range_Release(pRange);
-    TRACE_OUT;
-    return S_OK;
+done:
+    if (range) I_Range_Release(range);
+    if (end) I_Range_Release(end);
+    if (start) I_Range_Release(start);
+    if (cells) I_Range_Release(cells);
+    VariantClear(&last);
+    VariantClear(&first);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Paste(
@@ -2451,19 +2408,15 @@ static HRESULT WINAPI MSO_TO_OO_I_Worksheet_Invoke(
 
     /*special operation*/
     if ((dispIdMember == dispid_worksheet_cells) && (wFlags == DISPATCH_PROPERTYPUT)) {
-            if (pDispParams->cArgs == 3) {
-                hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &dret);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    TRACE("(case 2) ERROR get_cells hres = %08x\n",hres);
-                    return hres;
-                }
-                I_Range_get__Default((I_Range*)dret,pDispParams->rgvarg[2], pDispParams->rgvarg[1],&pretdisp);
-                I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
-                IDispatch_Release(dret);
-                IDispatch_Release(pretdisp);
-                return S_OK;
-            }
+        if (pDispParams->cArgs != 3) return DISP_E_BADPARAMCOUNT;
+        hres = MSO_TO_OO_I_Worksheet_get_Cells(iface, &dret);
+        if (FAILED(hres)) return hres;
+        pretdisp = NULL;
+        hres = I_Range_get__Default((I_Range*)dret, pDispParams->rgvarg[2], pDispParams->rgvarg[1], &pretdisp);
+        if (SUCCEEDED(hres)) hres = I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
+        if (pretdisp) IDispatch_Release(pretdisp);
+        IDispatch_Release(dret);
+        return hres;
     }
     /*special operation*/
     if ((dispIdMember == dispid_worksheet_range) && (wFlags == DISPATCH_PROPERTYPUT)) {

@@ -4530,67 +4530,41 @@ static HRESULT WINAPI IMP_Application_Invoke(
             return S_OK;
         }
     case dispid_application_cells:
-        if (wFlags==DISPATCH_PROPERTYPUT) {
-            switch (pDispParams->cArgs) {
-            case 3:
-                hres = IMP_Application_get_Cells(iface,&pdisp);
-                if (FAILED(hres)) {
-                    pExcepInfo->bstrDescription=SysAllocString(str_error);
-                    return hres;
-                }
-                /*необходимо привести к значению , т.к. иногда присылаются ссылки*/
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[2], &cell1);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell2);
-                MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &vtmp);
-                I_Range_get__Default((I_Range*)pdisp,cell1, cell2,&pretdisp);
-                I_Range_put_Value((I_Range*)pretdisp, vNull, 0, vtmp);
-                IDispatch_Release(pdisp);
-                IDispatch_Release(pretdisp);
-                return S_OK;
-            }
-            TRACE(" (case 8) (PUT) only realized with 3 parameters \n");
-            return E_NOTIMPL;
-        } else {
-            TRACE(" (case 8 (cells))\n");
-            hres = IMP_Application_get_Cells(iface,&pdisp);
-            if (FAILED(hres)) {
-                pExcepInfo->bstrDescription=SysAllocString(str_error);
-                return hres;
-            }
-	    /*здесь надо проверить параметры если они есть, то вызвать метод Range->_Default.*/
-            switch(pDispParams->cArgs) {
-            case 0:
-                if (pVarResult!=NULL){
-        	    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)pdisp;
-                }
-                break;
-            case 1:
-                if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1))) return E_FAIL;
-                I_Range_get__Default((I_Range*)pdisp,cell1,vNull,&pretdisp);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)pretdisp;
-                } else {
-                    I_Range_Release((I_Range*)pretdisp);
-                }
-                I_Range_Release((I_Range*)pdisp);
-                break;
-            case 2:
-                if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[0], &cell1))) return E_FAIL;
-                if (FAILED(MSO_TO_OO_CorrectArg(pDispParams->rgvarg[1], &cell2))) return E_FAIL;
-                I_Range_get__Default((I_Range*)pdisp,cell2,cell1, &pretdisp);
-                if (pVarResult!=NULL){
-                    V_VT(pVarResult)=VT_DISPATCH;
-                    V_DISPATCH(pVarResult)=(IDispatch *)pretdisp;
-                } else {
-                    I_Range_Release((I_Range*)pretdisp);
-                }
-                I_Range_Release((I_Range*)pdisp);
-                break;
-            }
+        if (wFlags == DISPATCH_PROPERTYPUT) {
+            if (pDispParams->cArgs != 3) return DISP_E_BADPARAMCOUNT;
+            hres = IMP_Application_get_Cells(iface, &pdisp);
+            if (FAILED(hres)) return hres;
+            pretdisp = NULL;
+            hres = I_Range_get__Default((I_Range*)pdisp, pDispParams->rgvarg[2], pDispParams->rgvarg[1], &pretdisp);
+            if (SUCCEEDED(hres)) hres = I_Range_put_Value((I_Range*)pretdisp, vNull, 0, pDispParams->rgvarg[0]);
+            if (pretdisp) IDispatch_Release(pretdisp);
+            IDispatch_Release(pdisp);
             return hres;
         }
+        hres = IMP_Application_get_Cells(iface, &pdisp);
+        if (FAILED(hres)) return hres;
+        pretdisp = NULL;
+        switch (pDispParams->cArgs) {
+        case 0:
+            pretdisp = pdisp;
+            IDispatch_AddRef(pretdisp);
+            break;
+        case 1:
+            hres = I_Range_get__Default((I_Range*)pdisp, pDispParams->rgvarg[0], vNull, &pretdisp);
+            break;
+        case 2:
+            hres = I_Range_get__Default((I_Range*)pdisp, pDispParams->rgvarg[1], pDispParams->rgvarg[0], &pretdisp);
+            break;
+        default:
+            hres = DISP_E_BADPARAMCOUNT;
+        }
+        IDispatch_Release(pdisp);
+        if (FAILED(hres)) return hres;
+        if (pVarResult) {
+            V_VT(pVarResult) = VT_DISPATCH;
+            V_DISPATCH(pVarResult) = pretdisp;
+        } else if (pretdisp) IDispatch_Release(pretdisp);
+        return hres;
     case dispid_application_version:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             return E_NOTIMPL;

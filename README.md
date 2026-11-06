@@ -119,6 +119,9 @@ native enum getter. See [mixed Weight and ABI validation](docs/border-weight-mix
 `tests/range-address-variable.vbs` checks that Range calls preserve their string arguments.
 Unsupported line styles now report an error through aggregate `Borders.LineStyle`
 and its `Value` alias. See [backend capabilities and style checks](docs/border-style-results.md).
+Worksheet ranges and cell indexers preserve caller-owned variants and return
+conversion errors; exported Cells ranges retain their worksheet parent. See
+[Range/Cells ownership results](docs/range-cell-ownership-results.md).
 
 Detailed findings, test outcomes, and pending work are recorded in
 [development notes](docs/development-notes.md). Its historical Winelib experiments

@@ -1,4 +1,4 @@
-/* IEnumVARIANT regression test; requires the disposable OpenOffice fixture. */
+/* COM contracts: Borders metadata/enumeration and Range argument handling. */
 #define COBJMACROS
 #include <windows.h>
 #include <ole2.h>
@@ -160,6 +160,41 @@ static void mixed_weight_contract(I_Borders *borders)
     CHECK(I_Borders_put_Weight(borders, xlThin) == S_OK);
 }
 
+static void range_argument_contract(IDispatch *dispatch)
+{
+    I_Range *range = NULL;
+    I_Worksheet *worksheet = NULL;
+    IDispatch *parent = NULL, *result = (IDispatch *)1;
+    VARIANT row, column;
+    VariantInit(&row);
+    VariantInit(&column);
+    V_VT(&row) = VT_I4;
+    V_I4(&row) = 2;
+    V_VT(&column) = VT_BSTR;
+    V_BSTR(&column) = SysAllocString(L"invalid-column");
+    CHECK(IDispatch_QueryInterface(dispatch, &IID_I_Range, (void **)&range) == S_OK && range);
+    if (!range) goto done;
+    CHECK(I_Range_get__Default(range, row, column, NULL) == E_POINTER);
+    CHECK(I_Range_get__Default(range, row, column, &result) == DISP_E_TYPEMISMATCH);
+    CHECK(result == NULL);
+    CHECK(V_VT(&column) == VT_BSTR && !lstrcmpW(V_BSTR(&column), L"invalid-column"));
+    CHECK(I_Range_get_Parent(range, &parent) == S_OK && parent);
+    if (!parent) goto done;
+    CHECK(IDispatch_QueryInterface(parent, &IID_I_Worksheet, (void **)&worksheet) == S_OK && worksheet);
+    if (!worksheet) goto done;
+    CHECK(I_Worksheet_get_Cells(worksheet, NULL) == E_POINTER);
+    CHECK(I_Worksheet_get_Range(worksheet, row, row, NULL) == E_POINTER);
+    result = (IDispatch *)1;
+    CHECK(I_Worksheet_get_Range(worksheet, row, row, &result) == E_INVALIDARG);
+    CHECK(result == NULL);
+done:
+    if (worksheet) I_Worksheet_Release(worksheet);
+    if (parent) IDispatch_Release(parent);
+    if (range) I_Range_Release(range);
+    VariantClear(&column);
+    VariantClear(&row);
+}
+
 int __cdecl main(void)
 {
     CLSID clsid;
@@ -184,6 +219,7 @@ int __cdecl main(void)
     V_BSTR(&argument) = SysAllocString(L"A1:D4");
     REQUIRE(invoke(excel, L"Range", DISPATCH_PROPERTYGET, &argument, 1, &range) == S_OK);
     VariantClear(&argument);
+    range_argument_contract(V_DISPATCH(&range));
     REQUIRE(invoke(V_DISPATCH(&range), L"Borders", DISPATCH_PROPERTYGET, NULL, 0, &collection) == S_OK);
     REQUIRE(IDispatch_QueryInterface(V_DISPATCH(&collection), &IID_I_Borders, (void **)&borders) == S_OK);
     REQUIRE(I_Borders_get_Count(borders, &count) == S_OK && count > 3 && count < 65);

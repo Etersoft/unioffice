@@ -140,81 +140,41 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         VARIANT varColumnIndex,
         IDispatch **ppObject)
 {
-    RangeImpl *This = (RangeImpl*)iface;
-    I_Range *pCell;
-    IUnknown *punk = NULL;
-    HRESULT hres;
-    TRACE_IN;
-
-    MSO_TO_OO_CorrectArg(varRowIndex, &varRowIndex);
-    MSO_TO_OO_CorrectArg(varColumnIndex, &varColumnIndex);
-
-    if (This == NULL) return E_POINTER;
-
+    I_Range *cell = NULL;
+    VARIANT row, column;
+    struct CELL_COORD coordinates;
+    HRESULT hr;
+    if (!ppObject) return E_POINTER;
     *ppObject = NULL;
-
-    if (V_VT(&varRowIndex)==VT_BSTR) {
-
-        hres = _I_RangeConstructor((LPVOID*) &punk);
-        if (FAILED(hres)) return E_NOINTERFACE;
-
-        hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
-
-        if (pCell == NULL) {
-            return E_FAIL;
-        }
-
-        hres = MSO_TO_OO_I_Range_Initialize_ByName(pCell, iface, varRowIndex);
-        if (FAILED(hres)){
-            I_Range_Release(pCell);
-            return hres;
-        }
-
-        *ppObject = (IDispatch*)pCell;
-        I_Range_AddRef((I_Range*)*ppObject);
-        I_Range_Release(pCell);
-        TRACE_OUT;
-        return S_OK;
-    } else {
-        /*преобразовываем любой тип к I4*/
-
-        hres = VariantChangeTypeEx(&varRowIndex, &varRowIndex, 0, 0, VT_I4);
-
-        hres = VariantChangeTypeEx(&varColumnIndex, &varColumnIndex, 0, 0, VT_I4);
-
-        if ((V_VT(&varRowIndex) != VT_I4) || (V_VT(&varColumnIndex) != VT_I4)) {
-            TRACE("ERROR when VariantChangeTypeEx");
-            return E_FAIL;
-        }
-        /*Создаем новый объект I_Range that occupy one cell*/
-        struct CELL_COORD cellCoord;
-
-        hres = _I_RangeConstructor((LPVOID*) &punk);
-
-        if (FAILED(hres)) return E_NOINTERFACE;
-
-        hres = I_Range_QueryInterface(punk, &IID_I_Range, (void**) &pCell);
-
-        if (pCell == NULL) {
-            return E_FAIL;
-        }
-
-        cellCoord.x = V_I4(&varColumnIndex);
-        cellCoord.y = V_I4(&varRowIndex);
-	
-        TRACE("cellCoord.x=%i, cellCoord.y=%i \n",cellCoord.x,cellCoord.y);
-        hres = MSO_TO_OO_I_Range_Initialize((I_Range*)pCell, iface, cellCoord, cellCoord);
-        if (FAILED(hres)){
-            I_Range_Release(pCell);
-            return hres;
-        }
-
-        *ppObject = (IDispatch*)pCell;
-        I_Range_AddRef((I_Range*)*ppObject);
-        I_Range_Release(pCell);
-        TRACE_OUT;
-        return S_OK;
+    VariantInit(&row);
+    VariantInit(&column);
+    hr = VariantCopyInd(&row, &varRowIndex);
+    if (SUCCEEDED(hr)) hr = VariantCopyInd(&column, &varColumnIndex);
+    if (FAILED(hr)) goto done;
+    if (V_VT(&row) != VT_BSTR) {
+        hr = VariantChangeTypeEx(&row, &row, 0, 0, VT_I4);
+        if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&column, &column, 0, 0, VT_I4);
+        if (FAILED(hr)) goto done;
     }
+    hr = _I_RangeConstructor((void**)&cell);
+    if (FAILED(hr)) goto done;
+    I_Range_AddRef(cell);
+    if (V_VT(&row) == VT_BSTR) {
+        hr = MSO_TO_OO_I_Range_Initialize_ByName(cell, iface, row);
+    } else {
+        coordinates.x = V_I4(&column);
+        coordinates.y = V_I4(&row);
+        hr = MSO_TO_OO_I_Range_Initialize(cell, iface, coordinates, coordinates);
+    }
+    if (SUCCEEDED(hr)) {
+        *ppObject = (IDispatch*)cell;
+        cell = NULL;
+    }
+done:
+    if (cell) I_Range_Release(cell);
+    VariantClear(&column);
+    VariantClear(&row);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_ColumnWidth(

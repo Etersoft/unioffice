@@ -387,6 +387,39 @@ markers22/0). Остальные6 tests не повторялись. Outputs:
 Оба MSI пересобраны, metadata/Unicode0; installer lifecycle не повторялся.
 Подробности: [Border styles](border-style-results.md). Новых Wine defects нет.
 
+## Worksheet.Range/Cells: входные аргументы и parent lifetime (2026-11-06)
+
+Аудит после Application.Range воспроизвёл ещё две порчи аргументов: PE64
+Worksheet.Range(address) менял строку после Borders.Count; PE32 Cells(row,"3")
+проходил первый string check и падал на втором. Worksheet.Range/default indexer
+теперь копируют входы VariantCopyInd в owned locals и освобождают их на всех
+выходах. Индексы преобразуются только в собственных копиях; conversion failure
+возвращается до создания cell. Application.Cells get/put и Worksheet.Cells put
+теперь возвращают HRESULT child calls и не используют несуществующий результат.
+
+Endpoints Worksheet.Range разрешаются независимо как BSTR или Range через QI;
+поддержаны string/object combinations, invalid types отвергаются. Temporary
+endpoint interfaces и Cells collection освобождаются. Native public ABI/IDL не менялись.
+
+При промежуточной PE64 проверке Cells упал до assertions. Отдельный Parent probe
+без строковых индексов воспроизвёл execute fault по адресу2 и timeout124. Причина:
+Worksheet.Cells отдавал private cache с weak pwsheet, Application.Cells освобождал
+временный Worksheet до использования Range. Commit2ad7996 возвращает отдельный
+Range с strong worksheet reference; private weak cache остаётся внутренним.
+Прежний разовый legacy test5 crash без matching backtrace ему не приписывается.
+
+На PE32/MinGW Fedora и PE64/winegcc builder64 прошли probes40/37/49 checks
+(Worksheet.Range inputs / Cells inputs / parent lifetime). Native тест проверил
+E_POINTER, E_INVALIDARG, DISP_E_TYPEMISMATCH, NULL failed outputs и intact BSTR:
+0 failures на обеих. Старые Application.Range/mixed Weight probes также PASS.
+Финальный полный прогон7 tests: counters158/0, markers156/0 каждый; старое
+расхождение tests4/6 сохранено. Outputs ~/tmp/claude/unioffice-excel-suite-kndhu5eq
+(32), -e3lqpp45 (64). Все исходные отказы сохранены. Оба MSI пересобраны,
+metadata/Unicode0; installer lifecycle не повторялся, регистрация/IDL не менялись.
+Подробности: [Range/Cells](range-cell-ownership-results.md),
+[Cells parent](cells-parent-lifetime-results.md). Нативная Windows не проверена;
+новых подтверждённых Wine defects нет. Range.Item stub остаётся отдельной задачей.
+
 ## Окружение и договорённости
 
 - Репозиторий: `/srv/lav/Projects/obsoleted/UniOffice/unioffice`.
@@ -565,7 +598,8 @@ Excel.Application доступным. Word `DllGetClassObject` пока возв
    интерфейсы не покрыты; Word содержит заглушки. Отсутствие extended border API в Windows AOO4.1.17
    подтверждено; dashed/dotted styles дают E_NOTIMPL, включая aggregate/Value.
    Для поддержки пунктиров нужен отдельный проверенный backend с extended API.
-   Другие случаи shallow VARIANT normalization требуют отдельного воспроизведения.
+   Worksheet.Range/Cells normalization и parent lifetime проверены и исправлены.
+   Range.Item и прочие normalization sites остаются отдельными возможными работами.
 3. При новых изменениях сохранять этапы отдельными коммитами, обновлять знания
    win-builder; winegcc на builder64, MinGW на Fedora.
 
