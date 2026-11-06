@@ -157,10 +157,12 @@ Wine (builder64, both architectures): 31 of 31 probes and the legacy suite
 with the same counters. `windows-visible.vbs` needs a desktop window manager and
 does not run in the headless Wine fixture.
 
-Native Windows exposed differences that Wine did not: `AddressLocal` through
-`ITypeInfo::Invoke`, the getter route of `Application.WindowState`, the
-preview controller without XServiceInfo, moves ignored by VCL, and
-`PolyPolygon` not reaching VBScript.
+Native Windows found three defects that the Wine runs did not reach: the
+`Application.WindowState` getter route, the preview controller without
+XServiceInfo, and window moves ignored by VCL. Two real Wine/Windows
+differences also appeared: `ITypeInfo::Invoke` passes the defaulted enum of
+`AddressLocal` incorrectly on Windows, and VBScript `a = a(0)` leaves the
+variable unchanged on Windows. Standalone examples are in `tests/compat/`.
 
 ### Remaining limits
 
