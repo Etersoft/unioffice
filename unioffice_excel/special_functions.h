@@ -178,3 +178,7 @@ HRESULT MSO_TO_OO_Name_Initialize_By_Index(
 BOOL    Is_Variant_Null(
         VARIANT var);
 
+
+BSTR MSO_TO_OO_SwapFormulaSeparators(
+        const WCHAR *text,
+        BOOL to_uno);

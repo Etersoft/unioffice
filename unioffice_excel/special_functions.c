@@ -1900,3 +1900,31 @@ BOOL    Is_Variant_Null(
 if ((V_VT(&var)==VT_EMPTY) || (V_VT(&var)==VT_NULL) || (V_VT(&var)==VT_ERROR)) return 1;
 return 0;
 }
+
+BSTR MSO_TO_OO_SwapFormulaSeparators(const WCHAR *text, BOOL to_uno)
+{
+    UINT i, length = lstrlenW(text);
+    BSTR out = SysAllocStringLen(text, length);
+    BOOL in_string = FALSE, in_name = FALSE;
+    int braces = 0;
+
+    /* Excel R1C1/English formulas use ',' between arguments and ',' / ';'
+       inside array constants; the UNO API grammar uses ';' and ';' / '|'. */
+    for (i = 0; out && i < length; i++) {
+        WCHAR c = out[i];
+        if (c == L'"' && !in_name) in_string = !in_string;
+        else if (c == L'\'' && !in_string) in_name = !in_name;
+        if (in_string || in_name) continue;
+        if (c == L'{') braces++;
+        else if (c == L'}' && braces) braces--;
+        else if (to_uno) {
+            if (c == L',') out[i] = L';';
+            else if (c == L';' && braces) out[i] = L'|';
+        } else {
+            if (c == L';') out[i] = L',';
+            else if (c == L'|' && braces) out[i] = L';';
+        }
+    }
+    return out;
+}
+

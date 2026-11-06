@@ -303,6 +303,123 @@ done:
     return hr;
 }
 
+static HRESULT uno_get_long(IDispatch *object, LPOLESTR name, BOOL method, LONG *value)
+{
+    VARIANT result;
+    HRESULT hr;
+    VariantInit(&result);
+    hr = AutoWrap(method ? DISPATCH_METHOD : DISPATCH_PROPERTYGET, &result, object, name, 0);
+    if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&result, &result, 0, 0, VT_I4);
+    if (SUCCEEDED(hr)) *value = V_I4(&result);
+    VariantClear(&result);
+    return hr;
+}
+
+static HRESULT uno_get_object(IDispatch *object, LPOLESTR name, BOOL method, IDispatch **value)
+{
+    VARIANT result;
+    HRESULT hr;
+    *value = NULL;
+    VariantInit(&result);
+    hr = AutoWrap(method ? DISPATCH_METHOD : DISPATCH_PROPERTYGET, &result, object, name, 0);
+    if (SUCCEEDED(hr) && V_VT(&result) == VT_DISPATCH && V_DISPATCH(&result)) {
+        *value = V_DISPATCH(&result);
+        return S_OK;
+    }
+    VariantClear(&result);
+    return FAILED(hr) ? hr : E_FAIL;
+}
+
+static IDispatch *range_oo_sheet(RangeImpl *This)
+{
+    return This->pwsheet ? ((WorksheetImpl*)This->pwsheet)->pOOSheet : NULL;
+}
+
+static IDispatch *range_oo_document(RangeImpl *This)
+{
+    WorksheetImpl *sheet = (WorksheetImpl*)This->pwsheet;
+    if (!sheet || !sheet->pwb) return NULL;
+    return ((WorkbookImpl*)sheet->pwb)->pDoc;
+}
+
+static HRESULT range_cell_at(IDispatch *range, LONG row, LONG column, IDispatch **cell)
+{
+    VARIANT vrow, vcolumn, result;
+    HRESULT hr;
+    *cell = NULL;
+    VariantInit(&result);
+    V_VT(&vrow) = VT_I4;
+    V_I4(&vrow) = row;
+    V_VT(&vcolumn) = VT_I4;
+    V_I4(&vcolumn) = column;
+    /* AutoWrap passes arguments in reverse order: getCellByPosition(column, row). */
+    hr = AutoWrap(DISPATCH_METHOD, &result, range, L"getCellByPosition", 2, vrow, vcolumn);
+    if (SUCCEEDED(hr) && V_VT(&result) == VT_DISPATCH) {
+        *cell = V_DISPATCH(&result);
+        return S_OK;
+    }
+    VariantClear(&result);
+    return FAILED(hr) ? hr : E_FAIL;
+}
+
+static HRESULT range_wrap_address(RangeImpl *This, IDispatch *source, IDispatch **result)
+{
+    IDispatch *address = NULL, *sheet = range_oo_sheet(This);
+    LONG sr = 0, sc = 0, er = 0, ec = 0;
+    VARIANT a[4], rect;
+    I_Range *range = NULL;
+    HRESULT hr;
+    int i;
+
+    *result = NULL;
+    if (!sheet) return E_POINTER;
+    hr = uno_get_object(source, L"getRangeAddress", TRUE, &address);
+    if (SUCCEEDED(hr)) hr = uno_get_long(address, L"StartRow", FALSE, &sr);
+    if (SUCCEEDED(hr)) hr = uno_get_long(address, L"StartColumn", FALSE, &sc);
+    if (SUCCEEDED(hr)) hr = uno_get_long(address, L"EndRow", FALSE, &er);
+    if (SUCCEEDED(hr)) hr = uno_get_long(address, L"EndColumn", FALSE, &ec);
+    if (address) IDispatch_Release(address);
+    if (FAILED(hr)) return hr;
+
+    for (i = 0; i < 4; i++) V_VT(&a[i]) = VT_I4;
+    V_I4(&a[0]) = er; V_I4(&a[1]) = ec; V_I4(&a[2]) = sr; V_I4(&a[3]) = sc;
+    VariantInit(&rect);
+    hr = AutoWrap(DISPATCH_METHOD, &rect, sheet, L"getCellRangeByPosition", 4, a[0], a[1], a[2], a[3]);
+    if (FAILED(hr)) return hr;
+    hr = _I_RangeConstructor((void**)&range);
+    if (SUCCEEDED(hr)) {
+        I_Range_AddRef(range);
+        hr = MSO_TO_OO_I_Range_Initialize3(range, V_DISPATCH(&rect), This->pwsheet, NULL);
+        if (SUCCEEDED(hr)) *result = (IDispatch*)range;
+        else I_Range_Release(range);
+    }
+    VariantClear(&rect);
+    return hr;
+}
+
+static HRESULT range_hidden_axis(I_Range *iface, IDispatch **axis)
+{
+    RangeImpl *This = (RangeImpl*)iface;
+    IDispatch *sheet = range_oo_sheet(This), *sheet_rows = NULL;
+    LONG sr, sc, er, ec, all_rows = 0;
+    BOOL columns = This->collection_kind == RANGE_COLUMNS;
+    HRESULT hr = S_OK;
+
+    /* Excel Hidden addresses whole rows or columns: column views and
+       full-height ranges hide columns, every other range hides its rows. */
+    if (This->collection_kind == RANGE_CELLS) {
+        hr = MSO_TO_OO_GetRangeAddress(iface, &sr, &sc, &er, &ec);
+        if (SUCCEEDED(hr) && sr == 0 && sheet) {
+            hr = uno_get_object(sheet, L"getRows", TRUE, &sheet_rows);
+            if (SUCCEEDED(hr)) hr = uno_get_long(sheet_rows, L"getCount", TRUE, &all_rows);
+            if (sheet_rows) IDispatch_Release(sheet_rows);
+            columns = SUCCEEDED(hr) && er == all_rows - 1;
+        }
+        if (FAILED(hr)) return hr;
+    }
+    return uno_get_object(This->pOORange, columns ? L"getColumns" : L"getRows", TRUE, axis);
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_get__Default(
         I_Range* iface,
         VARIANT varRowIndex,
@@ -1704,25 +1821,126 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Copy(
     return E_NOTIMPL;
 }
 
+static HRESULT range_number_formats(RangeImpl *This, IDispatch **formats, IDispatch **locale)
+{
+    IDispatch *document = range_oo_document(This), *cell = NULL;
+    VARIANT value, result;
+    HRESULT hr;
+
+    *formats = *locale = NULL;
+    if (!document) return E_POINTER;
+    hr = uno_get_object(document, L"getNumberFormats", TRUE, formats);
+    /* Excel NumberFormat uses English format codes; reuse a UNO Locale struct. */
+    if (SUCCEEDED(hr)) hr = range_cell_at(This->pOORange, 0, 0, &cell);
+    if (SUCCEEDED(hr)) hr = uno_get_object(cell, L"CharLocale", FALSE, locale);
+    if (cell) IDispatch_Release(cell);
+    VariantInit(&result);
+    V_VT(&value) = VT_BSTR;
+    V_BSTR(&value) = SysAllocString(L"en");
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, *locale, L"Language", 1, value);
+    SysFreeString(V_BSTR(&value));
+    V_BSTR(&value) = SysAllocString(L"US");
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, *locale, L"Country", 1, value);
+    SysFreeString(V_BSTR(&value));
+    V_BSTR(&value) = SysAllocString(L"");
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, *locale, L"Variant", 1, value);
+    SysFreeString(V_BSTR(&value));
+    if (FAILED(hr)) {
+        if (*formats) IDispatch_Release(*formats);
+        if (*locale) IDispatch_Release(*locale);
+        *formats = *locale = NULL;
+    }
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_NumberFormat(
         I_Range* iface,
-        VARIANT *pnumbformat)
+        VARIANT *RHS)
 {
-/*TODO*/
+    RangeImpl *This = (RangeImpl*)iface;
+    IDispatch *formats = NULL, *locale = NULL, *cell = NULL, *format = NULL;
+    LONG key = 0, standard = 0;
+    VARIANT vkey, vlocale, vtype, result;
+    HRESULT hr;
     TRACE_IN;
-    V_VT(pnumbformat) = VT_BSTR;
-    V_BSTR(pnumbformat) = SysAllocString(L"");
+
+    if (This == NULL || RHS == NULL) return E_POINTER;
+    VariantInit(RHS);
+    VariantInit(&result);
+    hr = range_number_formats(This, &formats, &locale);
+    if (SUCCEEDED(hr)) hr = range_cell_at(This->pOORange, 0, 0, &cell);
+    if (SUCCEEDED(hr)) hr = uno_get_long(cell, L"NumberFormat", FALSE, &key);
+    if (SUCCEEDED(hr)) {
+        /* The locale's standard key is Excel's "General". */
+        V_VT(&vlocale) = VT_DISPATCH;
+        V_DISPATCH(&vlocale) = locale;
+        V_VT(&vtype) = VT_I2;
+        V_I2(&vtype) = 0;
+        hr = AutoWrap(DISPATCH_METHOD, &result, formats, L"getStandardFormat", 2, vlocale, vtype);
+        if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&result, &result, 0, 0, VT_I4);
+        if (SUCCEEDED(hr)) standard = V_I4(&result);
+        VariantClear(&result);
+    }
+    if (SUCCEEDED(hr) && (key == standard || key == 0)) {
+        V_VT(RHS) = VT_BSTR;
+        V_BSTR(RHS) = SysAllocString(L"General");
+    } else if (SUCCEEDED(hr)) {
+        V_VT(&vkey) = VT_I4;
+        V_I4(&vkey) = key;
+        hr = AutoWrap(DISPATCH_METHOD, &result, formats, L"getByKey", 1, vkey);
+        if (SUCCEEDED(hr) && V_VT(&result) == VT_DISPATCH) {
+            format = V_DISPATCH(&result);
+            VariantInit(&result);
+            hr = AutoWrap(DISPATCH_PROPERTYGET, RHS, format, L"FormatString", 0);
+            IDispatch_Release(format);
+        }
+        VariantClear(&result);
+    }
+    if (cell) IDispatch_Release(cell);
+    if (formats) IDispatch_Release(formats);
+    if (locale) IDispatch_Release(locale);
     TRACE_OUT;
-    return S_OK;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_NumberFormat(
         I_Range* iface,
-        VARIANT numbformat)
+        VARIANT RHS)
 {
-/*TODO*/
-    TRACE_STUB;
-    return S_OK;
+    RangeImpl *This = (RangeImpl*)iface;
+    IDispatch *formats = NULL, *locale = NULL;
+    VARIANT code, vlocale, vfalse, key, result;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (This == NULL) return E_POINTER;
+    VariantInit(&code);
+    VariantInit(&key);
+    VariantInit(&result);
+    hr = VariantChangeTypeEx(&code, &RHS, 0, 0, VT_BSTR);
+    if (SUCCEEDED(hr)) hr = range_number_formats(This, &formats, &locale);
+    if (SUCCEEDED(hr)) {
+        V_VT(&vlocale) = VT_DISPATCH;
+        V_DISPATCH(&vlocale) = locale;
+        V_VT(&vfalse) = VT_BOOL;
+        V_BOOL(&vfalse) = VARIANT_FALSE;
+        hr = AutoWrap(DISPATCH_METHOD, &key, formats, L"queryKey", 3, vfalse, vlocale, code);
+        if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&key, &key, 0, 0, VT_I4);
+        if (SUCCEEDED(hr) && V_I4(&key) == -1) {
+            VariantClear(&key);
+            hr = AutoWrap(DISPATCH_METHOD, &key, formats, L"addNew", 2, vlocale, code);
+            if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&key, &key, 0, 0, VT_I4);
+        }
+    }
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, This->pOORange, L"NumberFormat", 1, key);
+    VariantClear(&result);
+    VariantClear(&key);
+    VariantClear(&code);
+    if (formats) IDispatch_Release(formats);
+    if (locale) IDispatch_Release(locale);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_NumberFormatLocal(
@@ -2079,34 +2297,38 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_Hidden(
         VARIANT *pparam)
 {
     RangeImpl *This = (RangeImpl*)iface;
-    VARIANT vRes,vtmp, vCellProt;
-    HRESULT hres;
-    VariantInit(&vRes);
-    VariantInit(&vCellProt);
-    VariantInit(&vtmp);
+    IDispatch *axis = NULL;
+    LONG count = 0, hidden = 0, i;
+    VARIANT index, item, visible;
+    HRESULT hr;
     TRACE_IN;
 
-    if (This == NULL) return E_POINTER;
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vCellProt, This->pOORange, L"CellProtection", 0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when get CellProtection \n");
-        return E_FAIL;
+    if (This == NULL || pparam == NULL) return E_POINTER;
+    VariantInit(pparam);
+    hr = range_hidden_axis(iface, &axis);
+    if (SUCCEEDED(hr)) hr = uno_get_long(axis, L"getCount", TRUE, &count);
+    for (i = 0; SUCCEEDED(hr) && i < count; i++) {
+        VariantInit(&item);
+        VariantInit(&visible);
+        V_VT(&index) = VT_I4;
+        V_I4(&index) = i;
+        hr = AutoWrap(DISPATCH_METHOD, &item, axis, L"getByIndex", 1, index);
+        if (SUCCEEDED(hr))
+            hr = AutoWrap(DISPATCH_PROPERTYGET, &visible, V_DISPATCH(&item), L"IsVisible", 0);
+        if (SUCCEEDED(hr)) hr = VariantChangeTypeEx(&visible, &visible, 0, 0, VT_BOOL);
+        if (SUCCEEDED(hr) && V_BOOL(&visible) == VARIANT_FALSE) hidden++;
+        VariantClear(&item);
+        VariantClear(&visible);
     }
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vRes, V_DISPATCH(&vCellProt), L"IsHidden", 0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when get IsHidden \n");
-        return E_FAIL;
+    if (axis) IDispatch_Release(axis);
+    if (FAILED(hr)) return hr;
+    /* Excel reports Null when only part of the rows or columns is hidden. */
+    if (hidden && hidden != count) {
+        V_VT(pparam) = VT_NULL;
+    } else {
+        V_VT(pparam) = VT_BOOL;
+        V_BOOL(pparam) = hidden ? VARIANT_TRUE : VARIANT_FALSE;
     }
-
-    hres = VariantChangeTypeEx(&vtmp, &vRes,0,0,VT_BOOL);
-    if (FAILED(hres)) {
-        TRACE("ERROR when VariantChangeTypeEx\n");
-        return E_FAIL;
-    }
-    *pparam = vtmp;
-
     TRACE_OUT;
     return S_OK;
 }
@@ -2116,37 +2338,25 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Hidden(
         VARIANT param)
 {
     RangeImpl *This = (RangeImpl*)iface;
-    VARIANT vRes, vCellProt, vtmp;
-    HRESULT hres;
-    VariantInit(&vRes);
-    VariantInit(&vCellProt);
-    VariantInit(&vtmp);
+    IDispatch *axis = NULL;
+    VARIANT value, visible, result;
+    HRESULT hr;
     TRACE_IN;
 
-    MSO_TO_OO_CorrectArg(param, &param);
-
     if (This == NULL) return E_POINTER;
-
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vCellProt, This->pOORange, L"CellProtection", 0);
-    if (FAILED(hres)) {
-        TRACE("ERROR when get CellProtection \n");
-        return E_FAIL;
-    }
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, V_DISPATCH(&vCellProt), L"IsHidden", 1, param);
-    if (FAILED(hres))  {
-       TRACE("ERROR when IsHidden \n");
-       return hres;
-    }
-
-    hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRes, This->pOORange, L"CellProtection", 1, vCellProt);
-    if (FAILED(hres))  {
-       TRACE("ERROR when CellProtection \n");
-       return hres;
-    }
-
+    VariantInit(&value);
+    VariantInit(&result);
+    hr = VariantChangeTypeEx(&value, &param, 0, 0, VT_BOOL);
+    if (FAILED(hr)) return hr;
+    V_VT(&visible) = VT_BOOL;
+    V_BOOL(&visible) = V_BOOL(&value) ? VARIANT_FALSE : VARIANT_TRUE;
+    hr = range_hidden_axis(iface, &axis);
+    if (SUCCEEDED(hr))
+        hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, axis, L"IsVisible", 1, visible);
+    if (axis) IDispatch_Release(axis);
+    VariantClear(&result);
     TRACE_OUT;
-    return S_OK;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_MergeArea(
@@ -2760,8 +2970,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_CurrentRegion(
         I_Range* iface,
         IDispatch **RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    RangeImpl *This = (RangeImpl*)iface;
+    IDispatch *sheet, *cursor = NULL;
+    VARIANT source, result;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (This == NULL || RHS == NULL) return E_POINTER;
+    *RHS = NULL;
+    sheet = range_oo_sheet(This);
+    if (!sheet) return E_POINTER;
+    VariantInit(&result);
+    V_VT(&source) = VT_DISPATCH;
+    V_DISPATCH(&source) = This->pOORange;
+    hr = AutoWrap(DISPATCH_METHOD, &result, sheet, L"createCursorByRange", 1, source);
+    if (SUCCEEDED(hr)) {
+        cursor = V_DISPATCH(&result);
+        VariantInit(&result);
+        hr = AutoWrap(DISPATCH_METHOD, &result, cursor, L"collapseToCurrentRegion", 0);
+        VariantClear(&result);
+    }
+    if (SUCCEEDED(hr)) hr = range_wrap_address(This, cursor, RHS);
+    if (cursor) IDispatch_Release(cursor);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_Cut(
@@ -3094,6 +3326,90 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_Formula(
     return I_Range_put_Value(iface, vNull, 0, RHS);
 }
 
+static HRESULT range_r1c1_parser(RangeImpl *This, IDispatch **parser)
+{
+    IDispatch *document = range_oo_document(This);
+    VARIANT name, result, value;
+    HRESULT hr;
+
+    *parser = NULL;
+    if (!document) return E_POINTER;
+    VariantInit(&result);
+    V_VT(&name) = VT_BSTR;
+    V_BSTR(&name) = SysAllocString(L"com.sun.star.sheet.FormulaParser");
+    hr = AutoWrap(DISPATCH_METHOD, &result, document, L"createInstance", 1, name);
+    SysFreeString(V_BSTR(&name));
+    if (FAILED(hr) || V_VT(&result) != VT_DISPATCH) {
+        VariantClear(&result);
+        return FAILED(hr) ? hr : E_FAIL;
+    }
+    *parser = V_DISPATCH(&result);
+    VariantInit(&result);
+    V_VT(&value) = VT_I4;
+    V_I4(&value) = 2; /* com.sun.star.sheet.AddressConvention.XL_R1C1 */
+    hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, *parser, L"FormulaConvention", 1, value);
+    V_VT(&value) = VT_BOOL;
+    V_BOOL(&value) = VARIANT_TRUE;
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, *parser, L"CompileEnglish", 1, value);
+    if (FAILED(hr)) {
+        IDispatch_Release(*parser);
+        *parser = NULL;
+    }
+    return hr;
+}
+
+static BOOL range_is_formula_text(VARIANT *value)
+{
+    return V_VT(value) == VT_BSTR && V_BSTR(value) && V_BSTR(value)[0] == L'=';
+}
+
+static HRESULT range_put_cellwise(RangeImpl *This, VARIANT *value, IDispatch *parser,
+        LPOLESTR text_property)
+{
+    LONG sr, sc, er, ec, row, column;
+    IDispatch *cell = NULL, *origin = NULL, *address = NULL;
+    VARIANT tokens, formula, vaddress, result;
+    HRESULT hr;
+
+    /* The first cell compiles the formula; relative references in its token
+       array then shift for every other cell, as Excel fills a range. */
+    VariantInit(&tokens);
+    VariantInit(&result);
+    hr = MSO_TO_OO_GetRangeAddress((I_Range*)This, &sr, &sc, &er, &ec);
+    if (SUCCEEDED(hr)) hr = range_cell_at(This->pOORange, 0, 0, &origin);
+    if (SUCCEEDED(hr) && parser) {
+        V_VT(&formula) = VT_BSTR;
+        V_BSTR(&formula) = MSO_TO_OO_SwapFormulaSeparators(V_BSTR(value), TRUE);
+        hr = uno_get_object(origin, L"getCellAddress", TRUE, &address);
+        if (SUCCEEDED(hr)) {
+            V_VT(&vaddress) = VT_DISPATCH;
+            V_DISPATCH(&vaddress) = address;
+            hr = AutoWrap(DISPATCH_METHOD, &tokens, parser, L"parseFormula", 2, vaddress, formula);
+        }
+        SysFreeString(V_BSTR(&formula));
+        if (address) IDispatch_Release(address);
+        if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, origin, L"setTokens", 1, tokens);
+    } else if (SUCCEEDED(hr)) {
+        hr = AutoWrap(DISPATCH_PROPERTYPUT, &result, origin, text_property, 1, *value);
+        if (SUCCEEDED(hr) && (er > sr || ec > sc))
+            hr = AutoWrap(DISPATCH_METHOD, &tokens, origin, L"getTokens", 0);
+    }
+    VariantClear(&result);
+    for (row = 0; SUCCEEDED(hr) && row <= er - sr; row++) {
+        for (column = 0; SUCCEEDED(hr) && column <= ec - sc; column++) {
+            if (!row && !column) continue;
+            hr = range_cell_at(This->pOORange, row, column, &cell);
+            if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &result, cell, L"setTokens", 1, tokens);
+            VariantClear(&result);
+            if (cell) IDispatch_Release(cell);
+            cell = NULL;
+        }
+    }
+    if (origin) IDispatch_Release(origin);
+    VariantClear(&tokens);
+    return hr;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaArray(
         I_Range* iface,
         VARIANT *RHS)
@@ -3146,16 +3462,43 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaLocal(
         I_Range* iface,
         VARIANT *RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    RangeImpl *This = (RangeImpl*)iface;
+    IDispatch *cell = NULL;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (This == NULL || RHS == NULL) return E_POINTER;
+    VariantInit(RHS);
+    hr = range_cell_at(This->pOORange, 0, 0, &cell);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_PROPERTYGET, RHS, cell, L"FormulaLocal", 0);
+    if (cell) IDispatch_Release(cell);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaLocal(
         I_Range* iface,
         VARIANT RHS)
 {
-    TRACE_NOTIMPL;
-    return E_NOTIMPL;
+    RangeImpl *This = (RangeImpl*)iface;
+    VARIANT value, empty;
+    HRESULT hr;
+    TRACE_IN;
+
+    if (This == NULL) return E_POINTER;
+    VariantInit(&value);
+    VariantInit(&empty);
+    hr = VariantCopyInd(&value, &RHS);
+    if (FAILED(hr)) return hr;
+    if (range_is_formula_text(&value))
+        hr = range_put_cellwise(This, &value, NULL, L"FormulaLocal");
+    else if (V_VT(&value) & VT_ARRAY)
+        hr = DISP_E_TYPEMISMATCH;
+    else
+        hr = I_Range_put_Value(iface, empty, 0, value);
+    VariantClear(&value);
+    TRACE_OUT;
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1(
@@ -3163,11 +3506,50 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1(
         LCID lcid,
         VARIANT *RHS)
 {
-    VARIANT tmp;
+    RangeImpl *This = (RangeImpl*)iface;
+    IDispatch *cell = NULL, *parser = NULL, *address = NULL;
+    VARIANT tokens, vaddress, text;
+    LONG type = 0;
+    HRESULT hr;
     TRACE_IN;
-    VariantInit(&tmp);
+
+    if (This == NULL || RHS == NULL) return E_POINTER;
+    VariantInit(RHS);
+    VariantInit(&tokens);
+    VariantInit(&text);
+    hr = range_cell_at(This->pOORange, 0, 0, &cell);
+    if (SUCCEEDED(hr)) hr = uno_get_long(cell, L"getType", TRUE, &type);
+    if (SUCCEEDED(hr) && type != vtFORMULA) {
+        hr = AutoWrap(DISPATCH_METHOD, RHS, cell, L"getFormula", 0);
+        IDispatch_Release(cell);
+        return hr;
+    }
+    if (SUCCEEDED(hr)) hr = range_r1c1_parser(This, &parser);
+    if (SUCCEEDED(hr)) hr = AutoWrap(DISPATCH_METHOD, &tokens, cell, L"getTokens", 0);
+    if (SUCCEEDED(hr)) hr = uno_get_object(cell, L"getCellAddress", TRUE, &address);
+    if (SUCCEEDED(hr)) {
+        V_VT(&vaddress) = VT_DISPATCH;
+        V_DISPATCH(&vaddress) = address;
+        hr = AutoWrap(DISPATCH_METHOD, &text, parser, L"printFormula", 2, vaddress, tokens);
+    }
+    if (SUCCEEDED(hr) && V_VT(&text) == VT_BSTR) {
+        BSTR plain = MSO_TO_OO_SwapFormulaSeparators(V_BSTR(&text), FALSE);
+        UINT length = plain ? SysStringLen(plain) : 0;
+        V_VT(RHS) = VT_BSTR;
+        V_BSTR(RHS) = SysAllocStringLen(NULL, length + 1);
+        if (V_BSTR(RHS)) {
+            V_BSTR(RHS)[0] = L'=';
+            memcpy(V_BSTR(RHS) + 1, plain, length * sizeof(WCHAR));
+        } else hr = E_OUTOFMEMORY;
+        SysFreeString(plain);
+    } else if (SUCCEEDED(hr)) hr = E_FAIL;
+    VariantClear(&text);
+    VariantClear(&tokens);
+    if (address) IDispatch_Release(address);
+    if (parser) IDispatch_Release(parser);
+    if (cell) IDispatch_Release(cell);
     TRACE_OUT;
-    return I_Range_get_Value(iface, tmp, lcid, RHS);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1(
@@ -3175,12 +3557,29 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_put_FormulaR1C1(
         LCID lcid,
         VARIANT RHS)
 {
-    /* .uno:SheetUseR1C1 */
-    VARIANT tmp;
+    RangeImpl *This = (RangeImpl*)iface;
+    IDispatch *parser = NULL;
+    VARIANT value, empty;
+    HRESULT hr;
     TRACE_IN;
-    VariantInit(&tmp);
+
+    if (This == NULL) return E_POINTER;
+    VariantInit(&value);
+    VariantInit(&empty);
+    hr = VariantCopyInd(&value, &RHS);
+    if (FAILED(hr)) return hr;
+    if (range_is_formula_text(&value)) {
+        hr = range_r1c1_parser(This, &parser);
+        if (SUCCEEDED(hr)) hr = range_put_cellwise(This, &value, parser, NULL);
+        if (parser) IDispatch_Release(parser);
+    } else if (V_VT(&value) & VT_ARRAY) {
+        hr = DISP_E_TYPEMISMATCH;
+    } else {
+        hr = I_Range_put_Value(iface, empty, lcid, value);
+    }
+    VariantClear(&value);
     TRACE_OUT;
-    return I_Range_put_Value(iface, tmp, lcid, RHS);
+    return hr;
 }
 
 static HRESULT WINAPI MSO_TO_OO_I_Range_get_FormulaR1C1Local(
