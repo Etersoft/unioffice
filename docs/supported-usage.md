@@ -1,0 +1,79 @@
+# Supported UniOffice usage
+
+The delivery target is the existing Excel Automation subset over Windows Apache
+OpenOffice. Further development should fix failures in this subset and complete
+its build/install/use/remove workflow. New COM methods require a concrete usage
+requirement; an unimplemented interface member is not automatically a task.
+
+## Verified functional scope
+
+| Area | Existing coverage |
+| --- | --- |
+| Application and documents | Excel.Application activation, workbooks, worksheets, collection access/enumeration, sheet add/delete/rename, document close and application quit |
+| Cells and ranges | String/numeric values, formulas and array scenarios in test5; Item/Cells addressing, selection, offsets, resize, row/column views and single-area enumeration |
+| Formatting | Legacy font properties, subscript/superscript, solid/double/absent borders, colors, supported weights and mixed-weight results |
+| Sheet layout | Group/ungroup and outline levels; page margins, orientation, zoom, centering and fit-to-page properties |
+| COM contracts | Published Application interface, owned arguments/results, retained parents and independent enumerator cursors |
+| Distribution | PE32/MinGW and PE64/winegcc MSI packages, registration, repair, architecture coexistence and removal |
+
+The original seven scripts are the functional baseline. Targeted probes cover
+previous defects and the added range/collection behavior. This table describes
+tested scenarios, not every possible combination of these properties.
+
+## Runtime and package selection
+
+The tested runtime is Wine@Etersoft11.20.1-eter1 with **Windows Apache OpenOffice
+4.1.17 x86** registered as `com.sun.star.ServiceManager`. The Linux OpenOffice
+installation alone does not supply this Windows COM backend. See the
+[backend setup results](openoffice-4.1.17-results.md).
+
+Choose the UniOffice package by the **client process** architecture:
+
+| Client | Package | Test selector |
+| --- | --- | --- |
+| 32-bit | MSI/build/mingw-32/unioffice.msi | CLIENT_BITS=32; --bits 32 |
+| 64-bit | MSI/build/winegcc-64/unioffice.msi | CLIENT_BITS=64; --bits 64 |
+
+Both clients use the same tested x86 backend. Both packages can coexist.
+Registration is performed by MSI; manual DLL copying/registration is unnecessary.
+Build and packaging commands are in the [README](../README.md).
+
+## Install and verify
+
+From the repository root, after installing Windows OpenOffice into the dedicated
+prefix, this installs and checks the 32-bit client in one graphical session:
+
+```sh
+export TMPDIR="$HOME/tmp/claude"
+export WINEPREFIX="$HOME/tmp/claude/unioffice-runtime/prefix"
+export WINE=/usr/lib/wine-etersoft/wine64 WINEDEBUG=-all CLIENT_BITS=32
+xvfb-run -a sh -c '
+set -eu
+"$WINE" msiexec /i "Z:$PWD/MSI/build/mingw-32/unioffice.msi" /qn /norestart
+sh tests/run-openoffice-backend.sh excel-backend.vbs "UniOffice integration: PASS"
+python3 scripts/run-excel-suite.py --bits 32
+'
+```
+
+For the 64-bit client, select winegcc-64, CLIENT_BITS=64 and --bits 64.
+Tests create documents and call Quit; use a dedicated prefix. The runner prints
+its result directory. Success requires all expected assertions, valid completion
+counters, no failed markers and a zero process status. The current scripts emit
+156 successful markers in total; their legacy counters total158 because tests4
+and6 each count one extra success. Changing the assertions requires reviewing
+the baseline in scripts/run-excel-suite.py.
+
+Repair uses `/i <package> REINSTALL=ALL REINSTALLMODE=amusv`. Remove with
+`msiexec /x <ProductCode> /qn`: the IDs and coexistence procedure are documented
+in [MSI validation](msi64-results.md). The automated coexistence test removes
+both packages and must run only in its disposable test prefix.
+
+## Boundaries
+
+Word is an unfinished component: its class factory returns E_NOTIMPL, and the
+MSI packages contain Excel only. Dashed/dotted borders are unsupported by the
+tested AOO backend and return an error. Multi-area ranges, structural edits
+during enumeration, exhaustive full-row value/format/edit combinations and
+native Windows execution have not been validated. The tested integration
+workflow runs clients sequentially; a historical parallel PE32 test5 fault was
+recorded without an isolated cause. No broader concurrency guarantee is made.

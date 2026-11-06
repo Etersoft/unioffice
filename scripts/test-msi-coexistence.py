@@ -53,9 +53,11 @@ def main():
     for bits in (32, 64):
         check_payload(bits)
         probe(bits, f'initial-{bits}')
-    msi(['/i', windows(packages[64]), 'REINSTALL=ALL', 'REINSTALLMODE=amusv'], 'repair-64')
-    check_payload(64)
-    probe(64, 'after-repair-64')
+    for bits in (32, 64):
+        msi(['/i', windows(packages[bits]), 'REINSTALL=ALL', 'REINSTALLMODE=amusv'], f'repair-{bits}')
+        for client in (32, 64):
+            check_payload(client)
+            probe(client, f'after-repair-{bits}-client-{client}')
     msi(['/x', products[64]], 'remove-64-first')
     check_payload(64, False)
     check_payload(32)

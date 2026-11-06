@@ -61,7 +61,8 @@ scripts/test-msi-coexistence.py was run inside Xvfb in that disposable prefix,
 starting with both updated products installed. It verified:
 
 1. Both installed payloads match and both Excel.Application cell round trips pass.
-2. MSI64 repair succeeds, restores registration, and PE64 Automation still works.
+2. MSI32 and MSI64 repair succeed; after each, both payloads match and both
+   Automation clients work.
 3. Removing MSI64 removes its files and preserves PE32 files and Automation.
 4. Reinstalling MSI64 succeeds; removing MSI32 preserves PE64 files and Automation.
 5. Removing the final MSI64 removes its files and the shared ProgID.

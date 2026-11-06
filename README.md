@@ -1,6 +1,11 @@
 # UniOffice
 
-UniOffice provides legacy Excel and Word COM compatibility components.
+UniOffice provides legacy Excel COM compatibility over Windows OpenOffice.
+The Word component is unfinished and is not included in the installer.
+See [supported functions and installation](docs/supported-usage.md) for the
+tested scope and runtime requirements.
+Both installed MSI variants passed the complete functional and maintenance
+workflow; see [package acceptance and checksums](docs/installed-acceptance-results.md).
 
 ## Building Windows DLLs
 
@@ -12,7 +17,7 @@ Windows DLLs**, not Winelib `.dll.so` libraries.
 # Direct MinGW driver:
 make libraries TOOLCHAIN=mingw MINGW=i686-w64-mingw32 -j4
 
-# Wine compiler driver targeting MinGW PE:
+# Wine compiler driver targeting Windows PE:
 make libraries TOOLCHAIN=winegcc -j4
 ```
 
@@ -86,6 +91,9 @@ preserves their checks/encoding, replaces blocking MsgBox dialogs with completio
 markers, and explicitly uses 32-bit cscript. Inspect `otchet.txt` and `script.log`
 in the printed result directory. Wine cscript may return zero after a script
 error, so completion markers and assertion totals determine success.
+The runner also requires the complete expected assertion count and a zero
+process status. Its result checks can be tested without Wine:
+`PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_excel_suite_runner.py`.
 
 Both PE32/MinGW and PE64/winegcc passed all seven legacy tests with Windows
 OpenOffice 4.1.17 x86 (zero failures),
