@@ -127,6 +127,7 @@ Check InStr(second.Name, " - ") = 0, "Unsaved Workbook.Name has no window suffix
 path = "C:\users\Public\uo window name.xls"
 second.SaveAs path
 Check second.Name = "uo window name.xls", "Saved Workbook.Name is the decoded file name"
+Check excel.Workbooks("uo window name.xls").Name = second.Name, "Workbooks by name"
 second.Worksheets(1).Range("A1").Value = second.Name
 
 ' Closing the window closes its workbook.

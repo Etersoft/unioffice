@@ -595,7 +595,20 @@ static HRESULT WINAPI MSO_TO_OO_I_Workbooks_get__Default(
     VariantInit(&i4_index);
     
     if (V_VT(&varIndex) == VT_BSTR) {
-        ERR(" BSTR parameters not supported \n");                
+        /* Workbooks("Book.xls") selects a workbook by its Name. */
+        int i;
+        for (i = 0; i < This->count_workbooks; i++) {
+            BSTR name = NULL;
+            if (This->pworkbook[i] && SUCCEEDED(I_Workbook_get_Name(This->pworkbook[i], &name)) &&
+                    !lstrcmpiW(name, V_BSTR(&varIndex))) {
+                SysFreeString(name);
+                *ppSheet = (IDispatch*)(This->pworkbook[i]);
+                I_Workbook_AddRef(This->pworkbook[i]);
+                return S_OK;
+            }
+            SysFreeString(name);
+        }
+        return DISP_E_BADINDEX;
     } else {
         hres = VariantChangeTypeEx(&i4_index, &varIndex,0,0,VT_I4);
         if (FAILED(hres)) {
