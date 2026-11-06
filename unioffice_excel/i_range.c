@@ -5232,6 +5232,43 @@ static HRESULT WINAPI MSO_TO_OO_I_Range_Invoke(
             return hres;
         }
         return S_OK;
+    case dispid_range_address:
+    case dispid_range_addresslocal:
+        /* Positional arguments are parsed here: native ITypeInfo::Invoke
+           rejects AddressLocal with DISP_E_BADCALLEE. */
+        if ((wFlags & DISPATCH_PROPERTYGET) && pDispParams->cNamedArgs == 0 && pDispParams->cArgs <= 5) {
+            VARIANT args[5], style;
+            XlReferenceStyle reference = xlA1;
+            BSTR text = NULL;
+            UINT k;
+            for (k = 0; k < 5; k++) {
+                VariantInit(&args[k]);
+                V_VT(&args[k]) = VT_ERROR;
+                V_ERROR(&args[k]) = DISP_E_PARAMNOTFOUND;
+            }
+            hres = S_OK;
+            for (k = 0; SUCCEEDED(hres) && k < pDispParams->cArgs; k++) {
+                VariantClear(&args[k]);
+                hres = VariantCopyInd(&args[k], &pDispParams->rgvarg[pDispParams->cArgs - 1 - k]);
+            }
+            if (SUCCEEDED(hres) && !Is_Variant_Null(args[2])) {
+                VariantInit(&style);
+                hres = VariantChangeTypeEx(&style, &args[2], 0, 0, VT_I4);
+                if (SUCCEEDED(hres)) reference = V_I4(&style);
+            }
+            if (SUCCEEDED(hres))
+                hres = range_address_text(iface, args[0], args[1], reference, args[3], args[4], &text);
+            for (k = 0; k < 5; k++) VariantClear(&args[k]);
+            if (FAILED(hres)) return hres;
+            if (pVarResult) {
+                V_VT(pVarResult) = VT_BSTR;
+                V_BSTR(pVarResult) = text;
+            } else SysFreeString(text);
+            return S_OK;
+        }
+        hres = get_typeinfo_range(&typeinfo);
+        if (FAILED(hres)) return hres;
+        return typeinfo->lpVtbl->Invoke(typeinfo, iface, dispIdMember, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
     case dispid_range_formular1c1:
         if (wFlags==DISPATCH_PROPERTYPUT) {
             if ((pDispParams->cArgs>2)||(pDispParams->cArgs==0)) return E_FAIL;
