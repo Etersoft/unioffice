@@ -19,6 +19,7 @@
  */
 
 #include "mso_to_oo_private.h"
+#include "special_functions.h"
 
 ITypeInfo *ti_shapes = NULL;
 
@@ -112,6 +113,29 @@ static ULONG WINAPI MSO_TO_OO_I_Shapes_Release(
 
 /*** I_Shapes methods ***/
 
+static HRESULT WINAPI MSO_TO_OO_I_Shapes_get_Application(
+        I_Shapes* iface,
+        IDispatch **value)
+{
+    ShapesImpl *This = (ShapesImpl*)iface;
+    if (!This || !value) return E_POINTER;
+    *value = NULL;
+    if (!This->pwsheet) return E_POINTER;
+    return I_Worksheet_get_Application((I_Worksheet*)This->pwsheet, value);
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Shapes_get_Parent(
+        I_Shapes* iface,
+        IDispatch **value)
+{
+    ShapesImpl *This = (ShapesImpl*)iface;
+    if (!This || !value) return E_POINTER;
+    *value = This->pwsheet;
+    if (!*value) return E_POINTER;
+    IDispatch_AddRef(*value);
+    return S_OK;
+}
+
 static HRESULT WINAPI MSO_TO_OO_I_Shapes_AddLine(
         I_Shapes* iface,
         float beginX,
@@ -138,7 +162,9 @@ static HRESULT WINAPI MSO_TO_OO_I_Shapes_AddLine(
         return E_FAIL;
     }
 
-    hres = MSO_TO_OO_I_Shape_Line_Initialize((I_Shape*)*ppValue, iface, beginX*10, beginY*10, endX*10, endY*10);
+    /* Excel coordinates are points; UNO drawing uses 1/100 mm. */
+    hres = MSO_TO_OO_I_Shape_Line_Initialize((I_Shape*)*ppValue, iface,
+            beginX * 2540.0f / 72, beginY * 2540.0f / 72, endX * 2540.0f / 72, endY * 2540.0f / 72);
     if (FAILED(hres)) {
         TRACE(" ERROR when call Shape_Line initialize\n");
         return E_FAIL;
@@ -235,7 +261,9 @@ const I_ShapesVtbl MSO_TO_OO_I_ShapesVtbl =
     MSO_TO_OO_I_Shapes_GetTypeInfo,
     MSO_TO_OO_I_Shapes_GetIDsOfNames,
     MSO_TO_OO_I_Shapes_Invoke,
-    MSO_TO_OO_I_Shapes_AddLine
+    MSO_TO_OO_I_Shapes_AddLine,
+    MSO_TO_OO_I_Shapes_get_Application,
+    MSO_TO_OO_I_Shapes_get_Parent
 };
 
 extern HRESULT _I_ShapesConstructor(LPVOID *ppObj)

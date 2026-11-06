@@ -195,6 +195,30 @@ static HRESULT WINAPI MSO_TO_OO_I_Shape_Invoke(
     return hres;
 }
 
+/*** I_Shape methods ***/
+static HRESULT WINAPI MSO_TO_OO_I_Shape_get_Application(
+        I_Shape* iface,
+        IDispatch **value)
+{
+    ShapeImpl *This = (ShapeImpl*)iface;
+    if (!This || !value) return E_POINTER;
+    *value = NULL;
+    if (!This->pShapes) return E_POINTER;
+    return I_Shapes_get_Application((I_Shapes*)This->pShapes, value);
+}
+
+static HRESULT WINAPI MSO_TO_OO_I_Shape_get_Parent(
+        I_Shape* iface,
+        IDispatch **value)
+{
+    ShapeImpl *This = (ShapeImpl*)iface;
+    if (!This || !value) return E_POINTER;
+    *value = This->pShapes;
+    if (!*value) return E_POINTER;
+    IDispatch_AddRef(*value);
+    return S_OK;
+}
+
 const I_ShapeVtbl MSO_TO_OO_I_ShapeVtbl =
 {
     MSO_TO_OO_I_Shape_QueryInterface,
@@ -203,7 +227,9 @@ const I_ShapeVtbl MSO_TO_OO_I_ShapeVtbl =
     MSO_TO_OO_I_Shape_GetTypeInfoCount,
     MSO_TO_OO_I_Shape_GetTypeInfo,
     MSO_TO_OO_I_Shape_GetIDsOfNames,
-    MSO_TO_OO_I_Shape_Invoke
+    MSO_TO_OO_I_Shape_Invoke,
+    MSO_TO_OO_I_Shape_get_Application,
+    MSO_TO_OO_I_Shape_get_Parent
 };
 
 extern HRESULT _I_ShapeConstructor(LPVOID *ppObj)

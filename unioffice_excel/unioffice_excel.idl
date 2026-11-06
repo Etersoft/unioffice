@@ -1939,7 +1939,9 @@ library MSO_TO_OOLib
 	]
 	interface I_Shape : IDispatch
 	{
-
+//Application, Parent
+		[propget, id(148), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+		[propget, id(150), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
 	};
 
 	[
@@ -1958,6 +1960,9 @@ library MSO_TO_OOLib
 			[in] float endX,
 			[in] float endY,
 			[out, retval] IDispatch **ppValue);
+//Application, Parent (appended to preserve the existing vtable)
+		[propget, id(148), helpstring("property Application")] HRESULT Application([out, retval] IDispatch **value);
+		[propget, id(150), helpstring("property Parent")] HRESULT Parent([out, retval] IDispatch **value);
 	};
 
 	[

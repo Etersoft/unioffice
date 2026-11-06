@@ -1469,7 +1469,6 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
 {
     ShapesImpl *This = (ShapesImpl*)iface;
     WorksheetImpl *wsh = (WorksheetImpl*)iwsh;
-    WorkbookImpl *wb = (WorkbookImpl*)(wsh->pwb);
     HRESULT hres;
     VARIANT vframe, param1, vRet;
     TRACE_IN;
@@ -1484,24 +1483,12 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
     This->pwsheet = (IDispatch*)wsh;
     I_Worksheet_AddRef((I_Worksheet*)This->pwsheet);
 
-    hres = AutoWrap(DISPATCH_PROPERTYGET, &vframe, wb->pDoc, L"DrawPages",1, param1);
-    if (FAILED(hres)) {
-        TRACE("ERROR when get DrawPages \n");
-        return E_FAIL;
-    }
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = 1;
-    hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vframe), L"insertNewByIndex",1, param1);
-    if (FAILED(hres)) {
-        TRACE("ERROR when insertNewByIndex \n");
-        return E_FAIL;
-    }
-
-    V_VT(&param1) = VT_I4;
-    V_I4(&param1) = 0;
-    hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vframe), L"getByIndex",1, param1);
-    if (FAILED(hres)) {
-        TRACE("ERROR when get getByIndex \n");
+    /* Each worksheet owns its draw page; Calc DrawPages.insertNewByIndex
+       would insert a whole new sheet instead. */
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, wsh->pOOSheet, L"getDrawPage", 0);
+    if (FAILED(hres) || V_VT(&vRet) != VT_DISPATCH) {
+        TRACE("ERROR when getDrawPage \n");
+        VariantClear(&vRet);
         return E_FAIL;
     }
 
@@ -1517,6 +1504,12 @@ HRESULT MSO_TO_OO_I_Shapes_Initialize(
 
     TRACE_OUT;
     return S_OK;
+}
+
+/* UNO Point/Size fields are long integers in 1/100 mm. */
+static LONG shape_coordinate(float value)
+{
+    return (LONG)(value < 0 ? value - 0.5f : value + 0.5f);
 }
 
 HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
@@ -1557,6 +1550,18 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     This->pOOShape = V_DISPATCH(&vline);
     IDispatch_AddRef(This->pOOShape);
 
+    /* A line shape takes its geometry only after insertion into the page. */
+    VariantClear(&vRet);
+    VariantClear(&param1);
+    V_VT(&param1) = VT_DISPATCH;
+    V_DISPATCH(&param1) = This->pOOShape;
+    IDispatch_AddRef(This->pOOShape);
+    hres = AutoWrap(DISPATCH_METHOD, &vRet, shapes->pOOPage, L"add",1, param1);
+    if (FAILED(hres)) {
+        TRACE("ERROR when add\n");
+        return E_FAIL;
+    }
+
     hres = AutoWrap(DISPATCH_METHOD, &position, V_DISPATCH(&vline), L"getPosition",0);
     if (FAILED(hres)) {
         TRACE("ERROR when getPosition \n");
@@ -1570,8 +1575,8 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     }
 
     VariantClear(&param1);
-    V_VT(&param1) = VT_R4;
-    V_R4(&param1) = x1;
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = shape_coordinate(x1);
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&position), L"X",1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when set X\n");
@@ -1579,8 +1584,8 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     }
     VariantClear(&vRet);
     VariantClear(&param1);
-    V_VT(&param1) = VT_R4;
-    V_R4(&param1) = y1;
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = shape_coordinate(y1);
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&position), L"Y",1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when set Y\n");
@@ -1588,8 +1593,8 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     }
     VariantClear(&vRet);
     VariantClear(&param1);
-    V_VT(&param1) = VT_R4;
-    V_R4(&param1) = x2-x1;
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = shape_coordinate(x2-x1);
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&size), L"Width",1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when set Width\n");
@@ -1597,8 +1602,8 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     }
     VariantClear(&vRet);
     VariantClear(&param1);
-    V_VT(&param1) = VT_R4;
-    V_R4(&param1) = y2-y1;
+    V_VT(&param1) = VT_I4;
+    V_I4(&param1) = shape_coordinate(y2-y1);
     hres = AutoWrap(DISPATCH_PROPERTYPUT, &vRet, V_DISPATCH(&size), L"Height",1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when set Height\n");
@@ -1622,18 +1627,6 @@ HRESULT MSO_TO_OO_I_Shape_Line_Initialize(
     hres = AutoWrap(DISPATCH_METHOD, &vRet, V_DISPATCH(&vline), L"setSize",1, param1);
     if (FAILED(hres)) {
         TRACE("ERROR when setSize\n");
-        return E_FAIL;
-    }
-
-    /*add shape to page*/
-    VariantClear(&vRet);
-    VariantClear(&param1);
-    V_VT(&param1) = VT_DISPATCH;
-    V_DISPATCH(&param1) = This->pOOShape;
-    IDispatch_AddRef(This->pOOShape);
-    hres = AutoWrap(DISPATCH_METHOD, &vRet, shapes->pOOPage, L"add",1, param1);
-    if (FAILED(hres)) {
-        TRACE("ERROR when add\n");
         return E_FAIL;
     }
 
