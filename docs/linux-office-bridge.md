@@ -15,6 +15,10 @@ this investigation does not establish runtime support for it.
   to `uno:socket,host=localhost,port=2002;urp;StarOffice.ServiceManager`.
   This is useful evidence of an earlier native UNO client, not a completed
   COM-to-UNO bridge. The historical executable was inspected, not run.
+  A subsequent public-source search located SDK DocumentLoader sources in
+  LibreOffice and Apache OpenOffice; see [related projects](related-projects.md).
+  Those provide a source-based starting point without recovering this binary's
+  exact historical source version.
 - `../unioffice-0.6/OOWrappers/oo_servicemanager.cpp` still calls
   `CLSIDFromProgID` and `CoCreateInstance` for `com.sun.star.ServiceManager`.
   The classes under `OOWrappers/com/sun/star/` wrap `IDispatch`; their names do
@@ -114,8 +118,9 @@ the frontend remains PE, not a legacy Winelib `.dll.so`.
 
 ## First implementation checkpoints
 
-1. Rebuild a native UNO client from source; connect to a dedicated Linux office
-   profile and create a Calc document, write/read a cell, then close it.
+1. Use the public SDK DocumentLoader example as a starting point for a native
+   UNO client; connect to a dedicated Linux office profile and create a Calc
+   document, write/read a cell, then close it.
 2. Implement the minimum COM/Unix adapter for that same round trip, including
    the PropertyValue structs needed to load a document. Run the existing direct
    backend probe before involving Excel compatibility.
