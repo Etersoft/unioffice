@@ -2,6 +2,7 @@
 """Package PE32 or PE64 Excel DLLs without modifying the checked-in MSI tables."""
 import argparse
 import os
+import re
 from pathlib import Path
 import shlex
 import shutil
@@ -78,7 +79,10 @@ def main():
             data = properties.read_bytes()
             data = data.replace(b'{643315BA-DEF8-4CBE-AB26-C54B71535DFD}', b'{4C7393FD-6C4A-5B3F-8EC2-B7AD16262864}')
             data = data.replace(b'{CD87087B-70BE-4BE2-B7F3-987AB335659D}', b'{AB670464-4388-5009-B76D-7D4FA37EE2CF}')
-            data = data.replace(b'ProductName\tUniOffice@Etersoft v0.5', b'ProductName\tUniOffice@Etersoft v0.5 (x64)')
+            # Mark the 64-bit product name whatever the version is.
+            data, marked = re.subn(rb'^(ProductName\t[^\r\n]*)', rb'\1 (x64)', data, count=1, flags=re.M)
+            if marked != 1:
+                raise SystemExit('ProductName is missing from Property.idt')
             properties.write_bytes(data)
         summary = work / '_SummaryInformation.idt'
         package_code = '{' + str(uuid.uuid4()).upper() + '}'
