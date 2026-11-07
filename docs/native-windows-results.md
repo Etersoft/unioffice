@@ -76,8 +76,9 @@ strict legacy suites and the new C probe passed there after the code fix.
 ## Package re-acceptance: 2026-11-07
 
 After the [function stages](function-gaps-results.md), both MSIs were rebuilt
-from commit 7f5ac32 (DLLs now also import gdi32) and accepted again on the same
-VM. The previously installed products, whose DLLs had been replaced by hand
+(DLLs now also import gdi32) and accepted again on the same VM, first from
+commit 7f5ac32 and then as release 0.6 from commit 3f287ed, which only changes
+the product version (ProductVersion 0.6; both installed products report 0.6). The previously installed products, whose DLLs had been replaced by hand
 during testing, were removed first, and no payload remained.
 
 | Check | PE32/MinGW | PE64/winegcc |
@@ -88,7 +89,9 @@ during testing, were removed first, and no payload remained.
 | Reinstallation, then the complete `run-windows-tests.ps1` per architecture: 34 probes (COM smoke, 5 C probes, 26 VBScript probes, visible windows, typelib registration) and the 7 legacy scripts at 158/0 with 156 markers | PASS | PASS |
 | Wine `test-msi-coexistence.py` in `unioffice-msi64` | PASS | PASS |
 
-Both products are installed again for review. The checksums in
+The table applies to both builds. Both 0.6 products are installed again for
+review. 0.6 keeps the earlier ProductCodes: remove an installed 0.5 first, or
+run msiexec /i with REINSTALL=ALL REINSTALLMODE=vomus to replace it in place. The checksums in
 [native-windows-packages.sha256](native-windows-packages.sha256) now list the new packages.
 Guest evidence: `C:\Users\Public\tmp\claude\uo-msi-accept` (accept.log,
 lifecycle.log, suite.log), results `unioffice-msi-windows-973e454fb3a145f9a566310cb13468bf`
